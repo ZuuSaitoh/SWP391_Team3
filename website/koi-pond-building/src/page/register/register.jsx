@@ -2,60 +2,33 @@ import React, { useState } from 'react';
 import './register.css';
 
 const Register = () => {
-  const [showPasswords, setShowPasswords] = useState(false);
-
-  // Toggle the visibility of both password fields based on checkbox state
-  const togglePasswordVisibility = (e) => {
-    setShowPasswords(e.target.checked);
-  };
-
-  return (
+  return(
     <div className='container'>
-      <div className="header">
-        <div className="text">Sign Up</div>
-        <div className="underline"></div>
+      <div className='header'>
+        <div className='text'>Sign Up</div>
+        <div className='underline'></div>
       </div>
-
-      <div className="inputs">
-        <div className="input">
-          <input type="text" placeholder="Full Name" name="name" required />
+      <div className='inputs'>
+        <div className='input'>
+          <input type ='text' placeholder='Username'/>
         </div>
-
-        <div className="input">
-          <input type="email" placeholder="Email" name="email" required />
+        <div className='input'>
+          <input type ='email' placeholder='Email'/>
         </div>
-
-        <div className="input">
-          <input
-            type={showPasswords ? 'text' : 'password'}
-            placeholder="Password"
-            name="password"
-            required
-          />
+        <div className='input'>
+          <input type ='password' placeholder='Password'/>
         </div>
-
-        <div className="input">
-          <input
-            type={showPasswords ? 'text' : 'password'}
-            placeholder="Confirm Password"
-            name="confirmPassword"
-            required
-          />
+        <div className='input'>
+          <input type ='password' placeholder='Confirm Password'/>
         </div>
       </div>
-
-      <div className="show-password">
-        <input
-          type="checkbox"
-          id="showPasswords"
-          onChange={togglePasswordVisibility}
-        />
-        <label htmlFor="showPasswords">Show Passwords</label>
+      <div className="already-haveAccount">Already have an Account? <span>Click here</span></div>
+      <div className="submit-container">
+        <div className="submit">Sign Up</div>
       </div>
-
-      <button type="submit">Sign Up</button>
     </div>
   );
+
 };
 
 export default Register;
