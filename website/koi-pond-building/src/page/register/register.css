@@ -11,8 +11,10 @@
   background-image: url('D:\FPTU\SWP391\SWP391_Team3\website\koi-pond-building\src\assets\koi_pond.jpg'); /* Replace with your image */
   background-size: cover;
   background-position: center;
-  clip-path: polygon(0 0, 75% 0, 65% 100%, 0 100%);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
+  box-shadow: 50px rgba(0, 0, 0, 0.25);
+  border: 2px solid #ddd; /* Adds a border around the image */
+  border-radius: 10px; /* Optional: adds rounded corners to the image container */
 }
 
 /* Right side form */
@@ -41,7 +43,7 @@
   align-items: center;
   gap: 25px;
   width: 100%;
-  margin-top: 25px;
+  margin-top: 50px;
 }
 
 .text {
@@ -61,8 +63,7 @@
   margin-top: 55px;
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  
+  gap: 5px;
 }
 
 .input {
@@ -71,26 +72,27 @@
   margin: auto;
   width: 350px;
   height: 80px;
-  background-color: rgb(194, 194, 194);
+  background-color: rgb(185, 27, 27);
   border-radius: 10px;
   outline: none;
+  border: 2px solid #aaa; /* Ensure input has a visible border */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .input input {
   height: 50px;
-  width: 320px;
+  width: 90%; /* Use percentage for responsive design */
   background: transparent;
   outline: none;
   color: #797979;
   font-size: 20px;
-  border: none;
+  border: none; /* Remove border from input field */
   padding-left: 30px;
 }
 
 .already-haveAccount {
   padding-left: 220px;
-  margin-top: -10px;
+  margin-top: -50px;
   color: #797979;
   font-size: 18px;
 }

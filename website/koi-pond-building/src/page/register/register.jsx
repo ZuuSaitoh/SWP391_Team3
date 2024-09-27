@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './register.css';
 
+
+
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
 

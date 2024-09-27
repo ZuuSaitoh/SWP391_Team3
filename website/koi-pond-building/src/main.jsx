@@ -7,6 +7,6 @@ import ForgotPassword from './page/forgetpassword/forgetpassword.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ForgotPassword />
+    <Register/>
   </StrictMode>,
 )
