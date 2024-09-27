@@ -1,13 +1,41 @@
-.container{
+/* Main container to hold both the image and the form */
+.register-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Left side with image */
+.image-container {
+  flex: 1;
+  background-image: url('D:\FPTU\SWP391\SWP391_Team3\website\koi-pond-building\src\assets\koi_pond.jpg'); /* Replace with your image */
+  background-size: cover;
+  background-position: center;
+  clip-path: polygon(0 0, 75% 0, 65% 100%, 0 100%);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+/* Right side form */
+.form-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  background-color: white;
+  margin: 0;
+}
+
+/* Original form container */
+.container {
   display: flex;
   flex-direction: column;
   margin: auto;
-  margin-top: 200px;
   padding-bottom: 30px;
   width: 600px;
 }
 
-.header{
+.header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -16,28 +44,28 @@
   margin-top: 25px;
 }
 
-.text{
+.text {
   font-size: 30px;
   font-weight: 700;
-  margin-bottom: -25px;
   color: rgb(0, 0, 0);
 }
 
-.underline{
+.underline {
   width: 70px;
   height: 3px;
   border-radius: 10px;
   background-color: rgb(23, 211, 201);
 }
 
-.inputs{
+.inputs {
   margin-top: 55px;
   display: flex;
   flex-direction: column;
   gap: 25px;
+  
 }
 
-.input{
+.input {
   display: flex;
   align-items: center;
   margin: auto;
@@ -46,9 +74,10 @@
   background-color: rgb(194, 194, 194);
   border-radius: 10px;
   outline: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-.input input{
+.input input {
   height: 50px;
   width: 320px;
   background: transparent;
@@ -59,26 +88,25 @@
   padding-left: 30px;
 }
 
-.already-haveAccount{
-  padding-left: 150px;
-  margin-top: 27px;
+.already-haveAccount {
+  padding-left: 220px;
+  margin-top: -10px;
   color: #797979;
   font-size: 18px;
 }
 
-.already-haveAccount span{
+.already-haveAccount span {
   color: rgb(23, 211, 201);
   cursor: pointer;
 }
 
-.submit-container{
+.submit-container {
   display: flex;
-  gap: px;
   margin: 60px auto;
   margin-top: 10px;
 }
 
-.submit{
+.submit {
   width: 220px;
   height: 59px;
   color: aliceblue;
