@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './login.css';
-
+import { useNavigate } from 'react-router-dom';
 
 
 const LoginPage = () => {
@@ -9,6 +9,12 @@ const LoginPage = () => {
   // Function to toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/register');  // Navigate to the /register page
   };
 
   return (
@@ -60,8 +66,8 @@ const LoginPage = () => {
           <div className='submit'>Sign In</div>
         </div>
         <div className='already-haveAccount'>
-          Don't have an Account? <span>Click here</span>
-        </div>
+      Don&apos;t have an Account? <span onClick={handleClick} >Click here</span>
+    </div>
       </div>
     </div>
   );

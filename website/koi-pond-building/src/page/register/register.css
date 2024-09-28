@@ -73,6 +73,7 @@
   width: 350px;
   height: 70px;
   border: none; 
+  outline: none;
   box-shadow: none;
   border-radius: 20px; 
   background-color: transparent;
