@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import './register.css';
+import './login.css';
 
 
 
-const RegisterPage = () => {
+const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   // Function to toggle password visibility
@@ -24,21 +24,12 @@ const RegisterPage = () => {
         </div>
         <div className='inputs'>
           <div className='input'>
-            <input type='text' placeholder='Username' />
-          </div>
-          <div className='input'>
-            <input type='email' placeholder='Email' />
+            <input type='text' placeholder='Username or Email' />
           </div>
           <div className='input'>
             <input
               type={showPassword ? 'text' : 'password'}
               placeholder='Password'
-            />
-          </div>
-          <div className='input'>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder='Confirm Password'
             />
           </div>
           <div className='show-password'>
@@ -53,14 +44,14 @@ const RegisterPage = () => {
         </div>
 
         <div className='submit-container'>
-          <div className='submit'>Sign Up</div>
+          <div className='submit'>Sign In</div>
         </div>
         <div className='already-haveAccount'>
-          Already have an Account? <span>Click here</span>
+          Don't have an Account? <span>Click here</span>
         </div>
       </div>
     </div>
   );
 };
 
-export default RegisterPage;
+export default LoginPage;

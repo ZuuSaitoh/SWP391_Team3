@@ -72,17 +72,18 @@
   margin: auto;
   width: 350px;
   height: 70px;
-  background-color: grey; 
   border: none; 
-  box-shadow: none; 
+  box-shadow: none;
+  border-radius: 20px; 
+  background-color: transparent;
 }
 
 .input input {
-  height: 50px;
+  height: 60px;
   width: 100%; 
-  border-radius: 5px; 
+  border-radius: 15px; 
   outline: none;
-  background: transparent;
+  background: rgb(209, 209, 209);
   font-size: 18px;
   border: none;
   padding-left: 15px; 
@@ -131,9 +132,8 @@
   display: flex;
 }
 
-.show-password {
+.show-password{
   margin: auto;
-  margin-top: -15px;
   padding-left: 210px;
   font-size: 16px;
   color: #797979;
