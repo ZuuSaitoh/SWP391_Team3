@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './forgetpassword.css';
-
+import { useNavigate } from 'react-router-dom';
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -8,6 +8,12 @@ const ForgotPassword = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setMessage(`A password reset link has been sent to ${email}. Please check your inbox.`);
+  };
+
+  const navigate = useNavigate();
+
+  const SignInHandle = () => {
+    navigate('/login');
   };
 
   return (
@@ -35,7 +41,7 @@ const ForgotPassword = () => {
           </div>
         </form>
         <div className="already-haveAccount">
-          Remember your password? <span>Sign In</span>
+          Remember your password? <span className='already-haveAccount-link' onClick={SignInHandle}>Sign In</span>
         </div>
         {message && (
           <div className="message">

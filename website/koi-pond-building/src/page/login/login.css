@@ -107,6 +107,11 @@
     color: rgb(23, 211, 201);
     cursor: pointer;
   }
+
+  .already-haveAccount-link:hover{
+    color: #ff4500;
+    text-decoration: underline; 
+  }
   
   .submit-container {
     display: flex;
@@ -132,16 +137,33 @@
     display: flex;
   }
   
-  .show-password{
-    margin: auto;
-    padding-left: 210px;
+  .password-options {
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    margin-top: 15px;
+  }
+  
+  .show-password {
     font-size: 16px;
     color: #797979;
   }
   
   .show-password label {
-    margin-left: 10px;
+    margin-left: 5px;
     cursor: pointer;
   }
   
+  .forgot-password-link {
+    margin-left: 100px;
+    color: #ff6347; 
+    cursor: pointer;
+    text-decoration: none; 
+    font-weight: bold; 
+    transition: color 0.3s ease; 
+  }
   
+  .forgot-password-link:hover {
+    color: #ff4500;
+    text-decoration: underline; 
+  }

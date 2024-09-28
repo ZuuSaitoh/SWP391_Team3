@@ -14,7 +14,11 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/register');  // Navigate to the /register page
+    navigate('/register');  
+  };
+
+  const forgotClick = () => {
+    navigate('/forgotPassword');
   };
 
   return (
@@ -25,7 +29,7 @@ const LoginPage = () => {
       {/* Right side with form */}
       <div className='form-container'>
         <div className='header'>
-          <div className='text'>Sign Up</div>
+          <div className='text'>Sign In</div>
           <div className='underline'></div>
         </div>
         <div className='inputs'>
@@ -51,22 +55,30 @@ const LoginPage = () => {
             ]}
             />
           </div>
-          <div className='show-password'>
-            <input
-              type='checkbox'
-              id='showPassword'
-              checked={showPassword}
-              onChange={togglePasswordVisibility}
-            />
-            <label htmlFor='showPassword'>Show Password</label>
-          </div>
+          
+          <div className="password-options">
+  <div className="forgot-password">
+    <span className="forgot-password-link" onClick={forgotClick}>
+      Forgot password?
+    </span>
+  </div>
+  <div className="show-password">
+    <input
+      type="checkbox"
+      id="showPassword"
+      checked={showPassword}
+      onChange={togglePasswordVisibility}
+    />
+    <label htmlFor="showPassword">Show Password</label>
+  </div>
+</div>
         </div>
 
         <div className='submit-container'>
           <div className='submit'>Sign In</div>
         </div>
         <div className='already-haveAccount'>
-      Don&apos;t have an Account? <span onClick={handleClick} >Click here</span>
+      Don&apos;t have an Account? <span className='already-haveAccount-link' onClick={handleClick} >Click here</span>
     </div>
       </div>
     </div>
