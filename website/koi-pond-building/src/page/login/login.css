@@ -8,7 +8,7 @@
   /* Left side with image */
   .image-container {
     flex: 1;
-    background-image: url('../koi_photo/koi_pond.jpg'); /* Replace with your image */
+    background-image: url('../koi_photo/koi_pond2.jpg'); /* Replace with your image */
     background-size: cover;
     background-position: center;
     clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
