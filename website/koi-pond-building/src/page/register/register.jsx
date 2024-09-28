@@ -33,6 +33,11 @@ const RegisterPage = () => {
             <input
               type={showPassword ? 'text' : 'password'}
               placeholder='Password'
+              rule={[{
+                required: true,
+                message: 'Please enter your password'
+              },
+              ]}
             />
           </div>
           <div className='input'>

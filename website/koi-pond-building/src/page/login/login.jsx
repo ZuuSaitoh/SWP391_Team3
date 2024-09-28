@@ -24,12 +24,25 @@ const LoginPage = () => {
         </div>
         <div className='inputs'>
           <div className='input'>
-            <input type='text' placeholder='Username or Email' />
+            <input 
+                type='text' 
+                placeholder='Username or Email'
+                rule={[{
+                    required: true,
+                    message: 'Please enter your Username or Email'
+                },
+            ]}
+            />
           </div>
           <div className='input'>
             <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder='Password'
+                type={showPassword ? 'text' : 'password'}
+                placeholder='Password'
+                rule={[{
+                    required: true,
+                    message: 'Please enter your password'
+                },
+            ]}
             />
           </div>
           <div className='show-password'>
