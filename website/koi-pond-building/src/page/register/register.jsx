@@ -67,7 +67,7 @@ const RegisterPage = () => {
           <div className='submit'>Sign Up</div>
         </div>
         <div className='already-haveAccount'>
-          Already have an Account? <span onClick={handleClick} >Click here</span>
+          Already have an Account? <span className='already-haveAccount-link' onClick={handleClick} >Click here</span>
         </div>
       </div>
     </div>
