@@ -1,35 +1,51 @@
 import React, { useState } from 'react';
-import './forgetpassword.css'; 
+import './forgetpassword.css';
 
-function ForgotPassword() {
+const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
-    setMessage(`Password reset link sent to ${email}`);
+    setMessage(`A password reset link has been sent to ${email}. Please check your inbox.`);
   };
 
   return (
-    <div className="koi-background">
-      <div className="koi-container">
-        <h2 className="koi-title">Forgot Password</h2>
-        <form className="koi-form" onSubmit={handleSubmit}>
-          <input
-            type="email"
-            className="koi-input"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <button type="submit" className="koi-button">Reset Password</button>
+    <div className="register-container">
+      <div className="image-container2" />
+      <div className="form-container">
+        <div className="header">
+          <h2 className="text">Forgot Password</h2>
+          <div className="underline" />
+        </div>
+        <form className="inputs" onSubmit={handleSubmit}>
+          <div className="input">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="submit-container">
+            <button type="submit" className="submit">
+              Reset Password
+            </button>
+          </div>
         </form>
-        {message && <p className="koi-message">{message}</p>}
+        <div className="already-haveAccount">
+          Remember your password? <span>Sign In</span>
+        </div>
+        {message && (
+          <div className="message">
+            <span className="message-icon">✉️</span>
+            {message}
+          </div>
+        )}
       </div>
     </div>
   );
-}
+};
 
 export default ForgotPassword;

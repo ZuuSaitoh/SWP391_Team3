@@ -12,17 +12,17 @@ import ForgotPassword from './page/forgetpassword/forgetpassword.jsx';
 
 const router = createBrowserRouter([
   {
-    path: "login",
+    path: "/login",
     element: <LoginPage/>,
   },
 
   {
-    path: "register",
+    path: "/register",
     element: <RegisterPage/>,
   },
 
   {
-    path: "forgotPassword",
+    path: "/forgotPassword",
     element: <ForgotPassword/>,
   },
 ]);
