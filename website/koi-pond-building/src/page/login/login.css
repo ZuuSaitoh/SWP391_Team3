@@ -1,20 +1,20 @@
 /* Main container to hold both the image and the form */
-.register-container {
+.login-container {
     display: flex;
     height: 100vh;
     width: 100vw;
   }
   
   /* Left side with image */
-  .image-container {
+  .image-container3 {
     flex: 1;
-    background-image: url('../koi_photo/koi_pond2.jpg'); /* Replace with your image */
+    background-image: url('../koi_photo/koi_pond.jpg'); 
     background-size: cover;
     background-position: center;
     clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
     box-shadow: 50px rgba(0, 0, 0, 0.25);
-    border: 2px solid #ddd; /* Adds a border around the image */
-    border-radius: 10px; /* Optional: adds rounded corners to the image container */
+    border: 2px solid #ddd;
+    border-radius: 10px; 
   }
   
   /* Right side form */
@@ -142,6 +142,7 @@
     justify-content: center; 
     align-items: center; 
     margin-top: 15px;
+    position: relative;
   }
   
   .show-password {
@@ -153,8 +154,14 @@
     margin-left: 5px;
     cursor: pointer;
   }
+
+  .forgot-password{
+    color: #ff6347;
+    text-align: center;
+  }
   
   .forgot-password-link {
+    display: flex;
     margin-left: 100px;
     color: #ff6347; 
     cursor: pointer;

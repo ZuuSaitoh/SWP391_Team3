@@ -22,9 +22,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className='register-container'>
+    <div className='login-container'>
       {/* Left side with image */}
-      <div className='image-container'></div>
+      <div className='image-container3'></div>
 
       {/* Right side with form */}
       <div className='form-container'>
