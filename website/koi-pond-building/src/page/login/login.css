@@ -138,39 +138,33 @@
   }
   
   .password-options {
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
     margin-top: 15px;
     position: relative;
+  }
+  
+  .forgot-password {
+    color: #ff6347;
+    margin-right: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.3s ease;
+  }
+  
+  .forgot-password:hover {
+    color: #ff4500; /* Hover effect */
+    text-decoration: underline;
   }
   
   .show-password {
     font-size: 16px;
     color: #797979;
+    margin-left: 10px; 
   }
   
   .show-password label {
     margin-left: 5px;
     cursor: pointer;
-  }
-
-  .forgot-password{
-    color: #ff6347;
-    text-align: center;
-  }
-  
-  .forgot-password-link {
-    display: flex;
-    margin-left: 100px;
-    color: #ff6347; 
-    cursor: pointer;
-    text-decoration: none; 
-    font-weight: bold; 
-    transition: color 0.3s ease; 
-  }
-  
-  .forgot-password-link:hover {
-    color: #ff4500;
-    text-decoration: underline; 
   }

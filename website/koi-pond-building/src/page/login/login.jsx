@@ -58,7 +58,7 @@ const LoginPage = () => {
             />
           </div>
           
-          <div className="password-options">
+<div className="password-options">
   <div className="forgot-password">
     <span className="forgot-password-link" onClick={forgotClick}>
       Forgot password?
