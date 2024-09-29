@@ -4,9 +4,12 @@ import App from "./App.jsx";
 import "./index.css";
 import Register from "./page/register/register.jsx";
 import ForgotPassword from "./page/forgetpassword/forgetpassword.jsx";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
+    <>
+      <App />
+      <ToastContainer/>
+    </>
 );
