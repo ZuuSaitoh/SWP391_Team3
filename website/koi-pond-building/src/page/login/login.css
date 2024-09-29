@@ -158,6 +158,11 @@
   font-size: 14px;
 }
 
+.forgot-password:hover {
+  color: #ff4500;
+  text-decoration: underline;
+}
+
 .show-password {
   font-size: 14px;
   color: #797979;
