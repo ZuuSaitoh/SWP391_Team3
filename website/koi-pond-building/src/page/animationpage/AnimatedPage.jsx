@@ -6,7 +6,7 @@ const animation = {
     exit: {opacity: 0, x: -100},
 }
 
-export const AnimatedPage = ({children}) => {
+const AnimatedPage = ({children}) => {
   return (
     <motion.div variants={animation} 
     initial="initial"
