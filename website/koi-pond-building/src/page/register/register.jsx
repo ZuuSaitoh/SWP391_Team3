@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './register.css';
 import { useNavigate } from 'react-router-dom';
-
+import AnimatedPage from '../animationpage/AnimatedPage';
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,6 +18,7 @@ const RegisterPage = () => {
   };
 
   return (
+    <AnimatedPage>
     <div className='register-container'>
       {/* Left side with image */}
       <div className='image-container'></div>
@@ -71,6 +72,7 @@ const RegisterPage = () => {
         </div>
       </div>
     </div>
+    </AnimatedPage>
   );
 };
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './login.css';
 import { useNavigate } from 'react-router-dom';
+import AnimatedPage from '../animationpage/AnimatedPage';
 
 
 const LoginPage = () => {
@@ -22,6 +23,7 @@ const LoginPage = () => {
   };
 
   return (
+    <AnimatedPage>
     <div className='login-container'>
       {/* Left side with image */}
       <div className='image-container3'></div>
@@ -82,6 +84,7 @@ const LoginPage = () => {
     </div>
       </div>
     </div>
+    </AnimatedPage>
   );
 };
 

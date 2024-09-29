@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './forgetpassword.css';
 import { useNavigate } from 'react-router-dom';
+import AnimatedPage from '../animationpage/AnimatedPage';
+
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -17,6 +19,7 @@ const ForgotPassword = () => {
   };
 
   return (
+    <AnimatedPage>
     <div className="register-container">
       <div className="image-container2" />
       <div className="form-container">
@@ -51,6 +54,7 @@ const ForgotPassword = () => {
         )}
       </div>
     </div>
+    </AnimatedPage>
   );
 };
 
