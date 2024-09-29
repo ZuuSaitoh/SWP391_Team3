@@ -141,31 +141,29 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 15px;
+  margin-top: 5px; 
   position: relative;
+  padding: 0 125px; 
 }
 
 .forgot-password {
   color: #ff6347;
-  margin-right: 10px;
   cursor: pointer;
   font-weight: bold;
   transition: color 0.3s ease;
 }
 
-.forgot-password:hover {
-  color: #ff4500;
-  /* Hover effect */
-  text-decoration: underline;
-}
-
 .show-password {
   font-size: 16px;
   color: #797979;
-  margin-left: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.show-password input {
+  margin-right: 5px; /* Add some space between checkbox and label */
 }
 
 .show-password label {
-  margin-left: 5px;
   cursor: pointer;
 }

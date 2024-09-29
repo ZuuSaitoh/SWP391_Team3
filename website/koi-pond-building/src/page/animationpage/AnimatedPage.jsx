@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
 const animation = {
   initial: { opacity: 0, x: 100 },
