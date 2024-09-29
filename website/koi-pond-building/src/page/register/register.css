@@ -1,4 +1,3 @@
-
 .register-container {
   display: flex;
   height: 100vh;
@@ -8,13 +7,13 @@
 /* Left side with image */
 .image-container {
   flex: 1;
-  background-image: url('../koi_photo/koi_pond2.jpg'); 
+  background-image: url('../koi_photo/koi_pond2.jpg');
   background-size: cover;
   background-position: center;
   clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
   box-shadow: 50px rgba(0, 0, 0, 0.25);
-  border: 2px solid #ddd; 
-  border-radius: 10px; 
+  border: 2px solid #ddd;
+  border-radius: 10px;
 }
 
 /* Right side form */
@@ -72,29 +71,29 @@
   margin: auto;
   width: 350px;
   height: 70px;
-  border: none; 
+  border: none;
   outline: none;
   box-shadow: none;
-  border-radius: 20px; 
+  border-radius: 20px;
   background-color: transparent;
 }
 
 .input input {
   height: 60px;
-  width: 100%; 
-  border-radius: 15px; 
+  width: 100%;
+  border-radius: 15px;
   outline: none;
   background: rgb(209, 209, 209);
   font-size: 18px;
   border: none;
-  padding-left: 15px; 
-  box-shadow: none; 
-  transition: background-color 0.3s, border 0.3s; 
+  padding-left: 15px;
+  box-shadow: none;
+  transition: background-color 0.3s, border 0.3s;
 }
 
 .input input:focus {
-  background-color: #e0e0e0; 
-  border: 1px solid #b3b3b3; 
+  background-color: #e0e0e0;
+  border: 1px solid #b3b3b3;
 }
 
 .already-haveAccount {
@@ -109,9 +108,9 @@
   cursor: pointer;
 }
 
-.already-haveAccount-link:hover{
+.already-haveAccount-link:hover {
   color: #ff4500;
-  text-decoration: underline; 
+  text-decoration: underline;
 }
 
 .submit-container {
@@ -120,7 +119,7 @@
   margin-top: 10px;
 }
 
-.submit:hover{
+.submit:hover {
   background-color: #c0392b;
 }
 
@@ -138,7 +137,7 @@
   display: flex;
 }
 
-.show-password{
+.show-password {
   margin: auto;
   padding-left: 210px;
   font-size: 16px;
@@ -149,5 +148,3 @@
   margin-left: 10px;
   cursor: pointer;
 }
-
-

@@ -1,29 +1,26 @@
-import Header from './component/Header/header.jsx'
+import Header from "./component/Header/header.jsx";
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
-import LoginPage from './page/login/login.jsx';
-import RegisterPage from './page/register/register.jsx';
-import ForgotPassword from './page/forgetpassword/forgetpassword.jsx';
+import LoginPage from "./page/login/login.jsx";
+import RegisterPage from "./page/register/register.jsx";
+import ForgotPassword from "./page/forgetpassword/forgetpassword.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/login",
-    element: <LoginPage/>,
+    element: <LoginPage />,
   },
 
   {
     path: "/register",
-    element: <RegisterPage/>,
+    element: <RegisterPage />,
   },
 
   {
     path: "/forgotPassword",
-    element: <ForgotPassword/>,
+    element: <ForgotPassword />,
   },
 ]);
 
@@ -34,4 +31,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 );
 //note
 
-export default App
+export default App;
