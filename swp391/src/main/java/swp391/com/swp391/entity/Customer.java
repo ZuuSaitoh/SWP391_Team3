@@ -1,10 +1,8 @@
 package swp391.com.swp391.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @Builder
@@ -31,5 +29,4 @@ public class Customer {
     private String phone;
     @Column(name = "point")
     private int point;
-
 }
