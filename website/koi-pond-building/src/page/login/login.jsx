@@ -80,7 +80,7 @@ function LoginPage() {
             <div className="input">
               <input
                 type="text"
-                placeholder="Username or Email"
+                placeholder="Username"
                 rule={[
                   {
                     required: true,
@@ -125,7 +125,7 @@ function LoginPage() {
               Sign In
             </div>
             <div className="submit" onClick={handleLoginGoogle}>
-              Sign In Google
+              <div ></div>
             </div>
           </div>
           <div className="already-haveAccount">
