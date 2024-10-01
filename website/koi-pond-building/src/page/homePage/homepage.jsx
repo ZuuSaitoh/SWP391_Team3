@@ -1,10 +1,18 @@
 import React, { useEffect } from "react";
 import "./homepage.css"; // We'll create this file for styling
+import person from "../koi_photo/person.png";
+import { useNavigate } from "react-router-dom";
 
 function HomePage() {
   useEffect(() => {
     console.log("HomePage component rendered");
   }, []);
+
+  const navigate = useNavigate();
+
+  const loginClick = () => {
+    navigate("/login");
+  };
 
   return (
     <div className="home-page">
@@ -26,6 +34,9 @@ function HomePage() {
             </li>
             <li>
               <a href="#contact">Contact</a>
+            </li>
+            <li>
+              <img src={person} onClick={loginClick}/>
             </li>
           </ul>
         </nav>
