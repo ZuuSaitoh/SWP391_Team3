@@ -1,24 +1,22 @@
 import React, { useState } from "react";
-import "./forgetpassword.css";
+import "./forgotpassword.css";
 import { useNavigate } from "react-router-dom";
 import AnimatedPage from "../animationpage/AnimatedPage";
 
-const ForgotPassword = () => {
+function ForgotPassword() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  async function handleResetPassword(e) {
     e.preventDefault();
-    setMessage(
-      `A password reset link has been sent to ${email}. Please check your inbox.`
-    );
-  };
+    // TODO: Implement actual password reset logic here
+    setMessage(`A password reset link has been sent to ${email}. Please check your inbox.`);
+  }
 
-  const navigate = useNavigate();
-
-  const SignInHandle = () => {
+  function SignInHandle() {
     navigate("/login");
-  };
+  }
 
   return (
     <AnimatedPage>
@@ -29,7 +27,7 @@ const ForgotPassword = () => {
             <h2 className="text">Forgot Password</h2>
             <div className="underline" />
           </div>
-          <form className="inputs" onSubmit={handleSubmit}>
+          <form className="inputs" onSubmit={handleResetPassword}>
             <div className="input">
               <input
                 type="email"
@@ -61,6 +59,6 @@ const ForgotPassword = () => {
       </div>
     </AnimatedPage>
   );
-};
+}
 
 export default ForgotPassword;
