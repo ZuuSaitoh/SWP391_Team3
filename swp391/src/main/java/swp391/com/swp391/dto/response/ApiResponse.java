@@ -39,4 +39,13 @@ public class ApiResponse <T> {
     public void setResult(T result) {
         this.result = result;
     }
+
+    public ApiResponse() {
+    }
+
+    public ApiResponse(int code, String message, T result) {
+        this.code = code;
+        this.message = message;
+        this.result = result;
+    }
 }
