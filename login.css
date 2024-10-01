@@ -1,0 +1,26 @@
+/* ... existing styles ... */
+
+.google-signin {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.google-logo {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 10px;
+}
+
+.btn-google {
+  background-color: white;
+  color: #757575;
+  border: 1px solid #dadce0;
+  padding: 10px 0;
+  font-weight: 500;
+}
+
+.btn-google:hover {
+  background-color: #f8f9fa;
+}
+
+/* ... existing styles ... */

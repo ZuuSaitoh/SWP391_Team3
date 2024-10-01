@@ -5,72 +5,61 @@ import { useNavigate } from "react-router-dom";
 import AnimatedPage from "../animationpage/AnimatedPage";
 import { toast } from "react-toastify";
 import './login.css'
+import googleLogo from '../koi_photo/google-logo.png';
 
-function LoginPage() {
+function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const auth = getAuth();
 
-  // Function to toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
-  const navigate = useNavigate();
 
   const handleClick = () => {
     navigate("/register");
   };
 
   const forgotClick = () => {
-    navigate("/forgotPassword");
+    console.log("Forgot password clicked");
+    navigate("/forgotpassword").catch(error => console.error("Navigation error:", error));
   };
 
-  const handleLoginGoogle = () => {
-    const auth = getAuth();
-    signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-
-        console.log(user);
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
-      })
-      .catch((error) => {
-        console.log(error);
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-      });
+  const handleLoginGoogle = async () => {
+    try {
+      const auth = getAuth();
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log("Google login successful", user);
+      toast.success("Logged in successfully with Google");
+      navigate("/dashboard"); // or wherever you want to redirect after successful login
+    } catch (error) {
+      console.error("Google login error", error);
+      if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user') {
+        console.log("Popup closed by user");
+      } else {
+        toast.error("Failed to login with Google: " + error.message);
+      }
+    }
   };
 
   const handleLogin = async (values) => {
     try {
-      const respone = await api.post("login", values);
-      console.log(respone);
-      if (role == "ADMIN") {
+      const response = await api.post("login", values);
+      console.log(response);
+      if (role === "ADMIN") {
         navigate("/dashboard");
       }
     } catch (err) {
       console.log(err);
-      //toast.error(err.respone.data);
+      toast.error(err.response?.data || "Login failed");
     }
   };
 
   return (
     <AnimatedPage>
       <div className="login-container">
-        {/* Left side with image */}
         <div className="image-container3"></div>
-
-        {/* Right side with form */}
         <div className="form-container">
           <div className="header">
             <div className="text">Sign In</div>
@@ -124,12 +113,12 @@ function LoginPage() {
             <div className="submit" onClick={handleLogin}>
               Sign In
             </div>
-            <div className="submit" onClick={handleLoginGoogle}>
-              <div ></div>
+            <div className="submit google-submit" onClick={handleLoginGoogle}>
+              <img src={googleLogo} alt="Google logo" />          
             </div>
           </div>
           <div className="already-haveAccount">
-            Don&apos;t have an Account?{" "}
+            Don't have an Account?{" "}
             <span className="already-haveAccount-link" onClick={handleClick}>
               Click here
             </span>
@@ -140,4 +129,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default Login;

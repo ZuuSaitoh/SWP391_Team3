@@ -12,18 +12,16 @@ function App() {
       path: "/",
       element: <HomePage />,
     },
-
     {
       path: "login",
       element: <LoginPage />,
     },
-
     {
       path: "register",
       element: <RegisterPage />,
     },
     {
-      path: "forgotpassword",
+      path: "/forgotpassword", // Make sure this matches exactly
       element: <ForgotPassword />,
     },
   ]);
