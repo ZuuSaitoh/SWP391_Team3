@@ -7,7 +7,7 @@
 /* Left side with image */
 .image-container {
   flex: 1;
-  background-image: url('../koi_photo/koi_pond2.jpg');
+  background-image: url('../koi_photo/signupImg.jpg');
   background-size: cover;
   background-position: center;
   clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
@@ -98,7 +98,7 @@
 
 .already-haveAccount {
   text-align: center;
-  margin-top: -50px;
+  margin-top: 10px;
   color: #797979;
   font-size: 18px;
 }
