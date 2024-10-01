@@ -21,7 +21,7 @@ function App() {
       element: <RegisterPage />,
     },
     {
-      path: "/forgotpassword", // Make sure this matches exactly
+      path: "/forgotpassword",
       element: <ForgotPassword />,
     },
   ]);
