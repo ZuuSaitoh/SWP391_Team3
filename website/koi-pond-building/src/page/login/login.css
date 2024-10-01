@@ -23,7 +23,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 2vw; /* Use viewport width units */
+  padding: 2vw;
+  /* Use viewport width units */
   background-color: white;
   margin: 0;
 }
@@ -70,8 +71,10 @@
   display: flex;
   align-items: center;
   margin: auto;
-  width: 80%; /* Use percentage */
-  max-width: 350px; /* Set a max-width */
+  width: 80%;
+  /* Use percentage */
+  max-width: 350px;
+  /* Set a max-width */
   height: 70px;
   border: none;
   box-shadow: none;
@@ -85,7 +88,8 @@
   border-radius: 15px;
   outline: none;
   background: rgb(209, 209, 209);
-  font-size: 2vw; /* Use viewport width units */
+  font-size: 2vw;
+  /* Use viewport width units */
   border: none;
   padding-left: 15px;
   box-shadow: none;
@@ -134,7 +138,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px; /* Add space between buttons */
+  margin-bottom: 10px;
+  /* Add space between buttons */
 }
 
 .google-signin {
@@ -182,7 +187,8 @@
   cursor: pointer;
   font-weight: bold;
   transition: color 0.3s ease;
-  font-size: 14px; /* Fixed font size */
+  font-size: 14px;
+  /* Fixed font size */
   line-height: 1.5;
   padding: 2px 4px;
   white-space: nowrap;
@@ -198,7 +204,8 @@
 }
 
 .show-password {
-  font-size: 14px; /* Fixed font size */
+  font-size: 14px;
+  /* Fixed font size */
   color: #797979;
   line-height: 1.5;
   white-space: nowrap;
@@ -224,6 +231,6 @@
 .password-options::after {
   content: '';
   display: block;
-  height: 20px; /* Adjust as needed */
+  height: 20px;
+  /* Adjust as needed */
 }
-

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "./HomePage.css"; // We'll create this file for styling
+import "./homepage.css"; // We'll create this file for styling
 
 function HomePage() {
   useEffect(() => {
