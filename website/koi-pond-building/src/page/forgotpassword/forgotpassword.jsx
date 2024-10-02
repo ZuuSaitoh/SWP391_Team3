@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import "./forgotpassword.css";
 import { useNavigate } from "react-router-dom";
 import AnimatedPage from "../animationpage/AnimatedPage";
+import { toast } from "react-toastify";
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -11,7 +12,8 @@ function ForgotPassword() {
   async function handleResetPassword(e) {
     e.preventDefault();
     // TODO: Implement actual password reset logic here
-    setMessage(`A password reset link has been sent to ${email}. Please check your inbox.`);
+    // For now, we'll just show a success message
+    toast.success(`A password reset link has been sent to ${email}. Please check your inbox.`);
   }
 
   function SignInHandle() {
