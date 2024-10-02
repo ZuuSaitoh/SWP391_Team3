@@ -1,14 +1,17 @@
 import React, { useState } from "react";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, signInWithPopup } from "firebase/auth";
 import { googleProvider } from "../../config/firebase";
 import { useNavigate } from "react-router-dom";
 import AnimatedPage from "../animationpage/AnimatedPage";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import './login.css'
 import googleLogo from '../koi_photo/google-logo.png';
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [username, setUsername] = useState(""); // Capture username
+  const [password, setPassword] = useState(""); // Capture password
   const navigate = useNavigate();
   const auth = getAuth();
 
@@ -31,12 +34,11 @@ function Login() {
 
   const handleLoginGoogle = async () => {
     try {
-      const auth = getAuth();
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       console.log("Google login successful", user);
       toast.success("Logged in successfully with Google");
-      navigate("/dashboard"); // or wherever you want to redirect after successful login
+      navigate("/dashboard");
     } catch (error) {
       console.error("Google login error", error);
       if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user') {
@@ -47,11 +49,17 @@ function Login() {
     }
   };
 
-  const handleLogin = async (values) => {
+  const handleLogin = async () => {
+    // Validate input fields
+    if (!username || !password) {
+      toast.error("Please enter your username and password");
+      return;
+    }
+
     try {
-      const response = await api.post("login", values);
+      const response = await api.post("login", { username, password });
       console.log(response);
-      if (role === "ADMIN") {
+      if (response.data.role === "ADMIN") {
         navigate("/dashboard");
       }
     } catch (err) {
@@ -74,24 +82,16 @@ function Login() {
               <input
                 type="text"
                 placeholder="Username"
-                rule={[
-                  {
-                    required: true,
-                    message: "Please enter your Username or Email",
-                  },
-                ]}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)} // Capture username
               />
             </div>
             <div className="input">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
-                rule={[
-                  {
-                    required: true,
-                    message: "Please enter your password",
-                  },
-                ]}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)} // Capture password
               />
             </div>
 
