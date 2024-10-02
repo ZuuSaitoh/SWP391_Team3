@@ -28,8 +28,7 @@ function Login() {
   };
 
   const forgotClick = () => {
-    console.log("Forgot password clicked");
-    navigate("/forgotpassword").catch(error => console.error("Navigation error:", error));
+    navigate("/forgotpassword");
   };
 
   const handleLoginGoogle = async () => {
