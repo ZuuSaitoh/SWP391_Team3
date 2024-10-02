@@ -118,7 +118,7 @@ function Login() {
               Sign In
             </div>
             <div className="submit google-submit" onClick={handleLoginGoogle}>
-              <img src={googleLogo} alt="Google logo" />          
+              <img src={googleLogo} alt="Google logo" />
             </div>
           </div>
           <div className="already-haveAccount">

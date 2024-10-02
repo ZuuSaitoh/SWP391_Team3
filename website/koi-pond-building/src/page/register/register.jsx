@@ -118,7 +118,7 @@ const RegisterPage = () => {
           </form>
 
           <div className="already-haveAccount">
-            Already have an Account?
+            Already have an Account?{" "}
             <span className="already-haveAccount-link" onClick={() => navigate("/login")}>
               Click here
             </span>

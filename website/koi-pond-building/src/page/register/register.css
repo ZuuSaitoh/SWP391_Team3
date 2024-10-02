@@ -1,39 +1,50 @@
+/* Thêm hoặc cập nhật những quy tắc này ở đầu file */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .register-container {
   display: flex;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
+  max-width: 100vw;
+  overflow: hidden;
 }
 
 /* Left side with image */
 .image-container {
   flex: 1;
+  max-width: 50%;
   background-image: url('../koi_photo/signupImg.jpg');
   background-size: cover;
   background-position: center;
   clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
-  box-shadow: 50px rgba(0, 0, 0, 0.25);
-  border: 2px solid #ddd;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
 
 /* Right side form */
 .form-container {
   flex: 1;
+  max-width: 50%;
+  padding: 2vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 20px;
-  background-color: white;
-  margin: 0;
+  align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Original form container */
 .container {
-  display: flex;
-  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
   margin: auto;
   padding-bottom: 30px;
-  width: 600px;
 }
 
 .header {
@@ -70,7 +81,7 @@
   align-items: center;
   margin: auto;
   width: 350px;
-  height: 70px;
+  height: 50px;
   border: none;
   outline: none;
   box-shadow: none;
@@ -79,12 +90,12 @@
 }
 
 .input input {
-  height: 60px;
+  height: 50px;
   width: 100%;
   border-radius: 15px;
   outline: none;
   background: rgb(209, 209, 209);
-  font-size: 18px;
+  font-size: 16px;
   border: none;
   padding-left: 15px;
   box-shadow: none;
@@ -115,8 +126,11 @@
 
 .submit-container {
   display: flex;
-  margin: 60px auto;
-  margin-top: 10px;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 350px;
+  margin: 20px auto;
 }
 
 .submit:hover {
@@ -138,13 +152,54 @@
 }
 
 .show-password1 {
-  margin: auto;
-  padding-left: 210px;
-  font-size: 16px;
+  font-size: 14px;
   color: #797979;
+  display: flex;
+  align-items: center;
+  margin-top: 10px; /* Tăng khoảng cách với input trên */
+  margin-left: auto; /* Push to the right */
 }
 
 .show-password1 label {
-  margin-left: 10px;
+  margin-left: 5px;
   cursor: pointer;
+}
+
+.password-options {
+  display: flex;
+  justify-content: flex-end; /* Change to flex-end to align items to the right */
+  align-items: center;
+  width: 100%;
+  max-width: 350px;
+  margin: 10px auto 0;
+}
+
+.forgot-password {
+  color: #ff6347;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.3s ease;
+  font-size: 14px;
+  margin-right: auto; /* Đẩy về bên trái */
+}
+
+.forgot-password:hover {
+  color: #ff4500;
+  text-decoration: underline;
+}
+
+/* Thêm media queries tương tự như trong login.css */
+@media (max-width: 768px) {
+  /* ... */
+}
+
+@media (max-width: 480px) {
+  .password-options {
+    flex-direction: row; /* Giữ trên cùng một hàng */
+    justify-content: flex-end; /* Align to the right on small screens */
+  }
+
+  .forgot-password, .show-password1 {
+    margin: 5px 0;
+  }
 }
