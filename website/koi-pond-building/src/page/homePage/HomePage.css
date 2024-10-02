@@ -8,6 +8,10 @@
   --light-text-color: #fff;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: 'Poppins', Arial, sans-serif;
   line-height: 1.6;
@@ -54,11 +58,13 @@ body {
   margin-left: 2rem;
 }
 
+/* Update the existing .nav-links a styles */
 .nav-links a {
   text-decoration: none;
-  color: var(--light-text-color); /* Đổi màu text thành trắng */
+  color: var(--light-text-color);
   font-weight: 500;
   transition: color 0.3s ease;
+  cursor: pointer; /* This ensures the cursor is a pointer */
 }
 
 .nav-links a:hover {
@@ -109,12 +115,14 @@ body {
   font-size: 4rem;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  animation: fadeIn 1s ease-in-out;
 }
 
 .hero p {
   font-size: 1.8rem;
   margin-bottom: 2rem;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  animation: fadeIn 1.5s ease-in-out;
 }
 
 .cta-button {
@@ -516,5 +524,16 @@ body {
   
   .hero p {
     font-size: 1.5rem;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Slightly lower starting position */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* Final position */
   }
 }

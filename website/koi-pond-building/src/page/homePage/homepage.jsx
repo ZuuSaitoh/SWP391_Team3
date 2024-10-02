@@ -1,12 +1,10 @@
 import React, { useEffect } from "react";
-import "./homepage.css";
+import "./HomePage.css";
 import person from "../koi_photo/person.png";
 import pond1 from "../koi_photo/pond1.jpg";
 import pond2 from "../koi_photo/pond2.jpg";
 import pond3 from "../koi_photo/pond3.jpg";
 import { useNavigate } from "react-router-dom";
-
-import koiBG from "../koi_photo/koiBG.jpg";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -15,18 +13,25 @@ function HomePage() {
     navigate("/login");
   };
 
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="home-page">
       <header className="header">
         <nav className="navbar">
           <div className="logo">Koi Pond Builders</div>
           <ul className="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#gallery">Gallery</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#testimonials">Testimonials</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a onClick={() => scrollToSection("home")}>Home</a></li>
+            <li><a onClick={() => scrollToSection("services")}>Services</a></li>
+            <li><a onClick={() => scrollToSection("gallery")}>Gallery</a></li>
+            <li><a onClick={() => scrollToSection("about")}>About</a></li>
+            <li><a onClick={() => scrollToSection("testimonials")}>Testimonials</a></li>
+            <li><a onClick={() => scrollToSection("contact")}>Contact</a></li>
             <li>
               <img src={person} alt="Login" onClick={loginClick} className="login-icon"/>
             </li>
