@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./forgotpassword.css";
 import { useNavigate } from "react-router-dom";
 import AnimatedPage from "../animationpage/AnimatedPage";
