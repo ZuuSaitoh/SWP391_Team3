@@ -6,6 +6,8 @@ import pond2 from "../koi_photo/pond2.jpg";
 import pond3 from "../koi_photo/pond3.jpg";
 import { useNavigate } from "react-router-dom";
 
+import koiBG from "../koi_photo/koiBG.jpg";
+
 function HomePage() {
   const navigate = useNavigate();
 

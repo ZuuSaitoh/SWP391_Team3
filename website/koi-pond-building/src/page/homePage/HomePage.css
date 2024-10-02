@@ -74,6 +74,7 @@ body {
 
 /* Hero section styles */
 .hero {
+<<<<<<< Updated upstream
   background-image: url('../koi_photo/homepageheader.jpg');
   background-size: cover;
   background-position: center;
@@ -101,9 +102,24 @@ body {
   z-index: 1;
   max-width: 800px;
   padding: 0 2rem;
+=======
+    background-image: url("../koi_photo/koiBG.jpg");
+    background-size: cover;
+    background-position: center;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: rgb(255, 254, 254);
+>>>>>>> Stashed changes
 }
 
+
+
 .hero h1 {
+<<<<<<< Updated upstream
   font-size: 4rem;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
@@ -113,6 +129,15 @@ body {
   font-size: 1.8rem;
   margin-bottom: 2rem;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+=======
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.hero p {
+    animation: fadeIn 1.5s ease-in-out;
+>>>>>>> Stashed changes
 }
 
 .cta-button {
@@ -128,10 +153,20 @@ body {
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
+<<<<<<< Updated upstream
 .cta-button:hover {
   background-color: var(--secondary-color);
   transform: translateY(-2px);
   box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+=======
+.services,
+.gallery,
+.about,
+.contact {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+>>>>>>> Stashed changes
 }
 
 /* Section styles */
@@ -171,10 +206,17 @@ body {
   box-shadow: 0 6px 8px rgba(0,0,0,0.15);
 }
 
+<<<<<<< Updated upstream
 .service-item i {
   font-size: 3rem;
   color: var(--primary-color);
   margin-bottom: 1rem;
+=======
+.contact input,
+.contact textarea {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+>>>>>>> Stashed changes
 }
 
 .service-item h3 {
@@ -465,6 +507,7 @@ body {
   .footer-section:last-child {
     flex-basis: 100%;
     text-align: center;
+<<<<<<< Updated upstream
     margin-bottom: 2rem;
   }
   
@@ -515,4 +558,21 @@ body {
   .hero p {
     font-size: 1.5rem;
   }
+=======
+    padding: 1rem 0;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+        /* Slightly lower starting position */
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        /* Final position */
+    }
+>>>>>>> Stashed changes
 }
