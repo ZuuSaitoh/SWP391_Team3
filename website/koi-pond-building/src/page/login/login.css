@@ -3,11 +3,14 @@
   display: flex;
   height: 100vh;
   width: 100vw;
+  overflow: hidden;
+  max-width: 100%;
 }
 
 /* Left side with image */
 .image-container3 {
   flex: 1;
+  max-width: 50%;
   background-image: url('../koi_photo/loginImg.jpg');
   background-size: cover;
   background-position: center;
@@ -19,12 +22,16 @@
 /* Right side form */
 .form-container {
   flex: 1;
+  max-width: 50%;
+  padding: 2vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 2vw;
+  align-items: center;
   background-color: white;
   margin: 0;
+  overflow-y: auto; 
+  overflow-x: hidden; 
 }
 
 /* Original form container */
@@ -42,7 +49,8 @@
   align-items: center;
   gap: 25px;
   width: 100%;
-  margin-top: 50px;
+  margin-top: 0;
+  margin-bottom: 30px;
   border: none;
   background: none;
   box-shadow: none;
@@ -64,7 +72,9 @@
 }
 
 .inputs {
-  margin-top: 55px;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 350px;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -74,7 +84,7 @@
   display: flex;
   align-items: center;
   margin: auto;
-  width: 80%;
+  width: 100%;
   max-width: 350px;
   height: 70px;
   border: none;
@@ -89,7 +99,7 @@
   border-radius: 15px;
   outline: none;
   background: rgb(209, 209, 209);
-  font-size: 2vw;
+  font-size: 16px; 
   border: none;
   padding-left: 15px;
   box-shadow: none;
@@ -103,7 +113,7 @@
 
 .already-haveAccount {
   text-align: center;
-  margin-top: -50px;
+  margin-top: 20px;
   color: #797979;
   font-size: 18px;
 }
@@ -124,10 +134,12 @@
   align-items: center; 
   gap: 10px;
   margin-top: 20px;
+  width: 100%;
+  max-width: 350px;
 }
 
 .submit {
-  width: 80%; 
+  width: 100%;
   max-width: 350px; 
   padding: 10px;
   border-radius: 25px;
@@ -142,7 +154,7 @@
 }
 
 .google-submit {
-  width: 80%; 
+  width: 100%;
   max-width: 350px; 
   background-color: white !important;
   color: #757575;
@@ -207,7 +219,7 @@
   align-items: center;
   margin-top: 15px;
   position: relative;
-  width: 80%;
+  width: 100%;
   max-width: 350px;
   margin-left: auto;
   margin-right: auto;
@@ -251,19 +263,16 @@
   cursor: pointer;
 }
 
-
 .password-options,
 .forgot-password,
 .show-password {
   transform-origin: center;
 }
 
-
 .password-options::after {
   content: '';
   display: block;
   height: 20px;
-
 }
 
 .google-signin-button {
@@ -289,4 +298,25 @@
   width: 18px;
   height: 18px;
   margin-right: 10px;
+}
+
+
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .image-container3, .form-container {
+    max-width: 100%;
+  }
+
+  .image-container3 {
+    height: 30vh;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 90%);
+  }
+
+  .form-container {
+    height: 70vh;
+    padding: 5vw;
+  }
 }
