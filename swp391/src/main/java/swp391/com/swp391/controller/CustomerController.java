@@ -17,6 +17,7 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/create")
     ApiResponse<Customer> createCustomer(@RequestBody @Valid CustomerCreationRequest request){
         ApiResponse<Customer> apiResponse = new ApiResponse<>();
@@ -24,20 +25,25 @@ public class CustomerController {
         return apiResponse;
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/fetchAll")
     List<Customer> getCustomer(){
         return customerService.getCustomer();
     }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/{id}")
     Customer getCustomer(@PathVariable int id){
         return customerService.getCustomerById(id);
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PutMapping("/update/{customer_id}")
     Customer updateCustomer(@PathVariable int customer_id, @RequestBody @Valid CustomerUpdateRequest request){
         return customerService.updateCustomer(customer_id, request);
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @DeleteMapping("/delete/{customer_id}")
     ApiResponse<String> deleteUserById(@PathVariable int customer_id){
         customerService.delete(customer_id);
