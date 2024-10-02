@@ -9,11 +9,11 @@ import "react-toastify/dist/ReactToastify.css"; // Import styles for react-toast
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+  const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirm_password, setConfirm_Password] = useState("");
   const navigate = useNavigate();
-
+  
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -27,11 +27,11 @@ const RegisterPage = () => {
       toast.error("Username must be at least 3 characters long");
       return false;
     }
-    if (!email) {
+    if (!mail) {
       toast.error("Email is required");
       return false;
     }
-    if (!/\S+@\S+\.\S+/.test(email)) {
+    if (!/\S+@\S+\.\S+/.test(mail)) {
       toast.error("Please enter a valid email address");
       return false;
     }
@@ -43,7 +43,7 @@ const RegisterPage = () => {
       toast.error("Password must be at least 6 characters long");
       return false;
     }
-    if (password !== confirmPassword) {
+    if (password !== confirm_password) {
       toast.error("Passwords do not match");
       return false;
     }
@@ -57,21 +57,31 @@ const RegisterPage = () => {
       return;
     }
 
-    const values = { username, email, password };
+    const values = { username, mail, password, confirm_password };
     await handleRegister(values);
   };
 
   const handleRegister = async (values) => {
     try {
-      const response = await api.post("register", values);
-      const { token } = response.data;
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(response.data));
-      navigate("/login");
+      console.log("Sending registration data:", values);
+      const response = await api.post("/customers/create", values);
+      console.log("Registration response:", response.data);
       toast.success("Registration successful!");
+      navigate("/login");
     } catch (err) {
-      console.log(err);
-      toast.error(err.response?.data || "Registration failed");
+      console.error("Registration error:", err);
+      if (err.response) {
+        console.error("Error data:", err.response.data);
+        console.error("Error status:", err.response.status);
+        console.error("Error headers:", err.response.headers);
+        toast.error(`Registration failed: ${err.response.data.message || err.response.data}`);
+      } else if (err.request) {
+        console.error("No response received:", err.request);
+        toast.error("No response from server. Please try again later.");
+      } else {
+        console.error("Error message:", err.message);
+        toast.error(`Error: ${err.message}`);
+      }
     }
   };
 
@@ -101,8 +111,8 @@ const RegisterPage = () => {
               <input 
                 type="email" 
                 placeholder="Email" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)} // Track email state
+                value={mail}
+                onChange={(e) => setMail(e.target.value)} // Track email state
                 required
               />
             </div>
@@ -114,7 +124,7 @@ const RegisterPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)} // Track password state
                 required
-                minLength={6}
+                minLength={8}
               />
             </div>
 
@@ -122,8 +132,8 @@ const RegisterPage = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)} // Track confirm password state
+                value={confirm_password}
+                onChange={(e) => setConfirm_Password(e.target.value)} // Track confirm password state
                 required
               />
             </div>
