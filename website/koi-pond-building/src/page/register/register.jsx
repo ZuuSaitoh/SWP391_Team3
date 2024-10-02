@@ -18,23 +18,47 @@ const RegisterPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-
-    // Validate empty fields
-    if (!username || !email || !password || !confirmPassword) {
-      toast.error("Please fill out all fields"); // Show error if fields are empty
-      return;
+  const validateForm = () => {
+    if (!username) {
+      toast.error("Username is required");
+      return false;
     }
-    
-    // Validate password match
+    if (username.length < 3) {
+      toast.error("Username must be at least 3 characters long");
+      return false;
+    }
+    if (!email) {
+      toast.error("Email is required");
+      return false;
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      toast.error("Please enter a valid email address");
+      return false;
+    }
+    if (!password) {
+      toast.error("Password is required");
+      return false;
+    }
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return false;
+    }
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match"); // Show error if passwords don't match
+      toast.error("Passwords do not match");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
       return;
     }
 
     const values = { username, email, password };
-    await handleRegister(values); // Call the registration function
+    await handleRegister(values);
   };
 
   const handleRegister = async (values) => {
@@ -44,10 +68,10 @@ const RegisterPage = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(response.data));
       navigate("/login");
-      toast.success("Registration successful!"); // Show success notification
+      toast.success("Registration successful!");
     } catch (err) {
       console.log(err);
-      toast.error(err.response?.data || "Registration failed"); // Show error on failure
+      toast.error(err.response?.data || "Registration failed");
     }
   };
 
@@ -66,10 +90,11 @@ const RegisterPage = () => {
             <div className="input">
               <input 
                 type="text" 
-                placeholder="Username" 
+                placeholder="Username (min 3 characters)" 
                 value={username}
                 onChange={(e) => setUsername(e.target.value)} // Track username state
                 required
+                minLength={3}
               />
             </div>
             <div className="input">
@@ -85,10 +110,11 @@ const RegisterPage = () => {
             <div className="input">
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Password"
+                placeholder="Password (min 6 characters)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)} // Track password state
                 required
+                minLength={6}
               />
             </div>
 

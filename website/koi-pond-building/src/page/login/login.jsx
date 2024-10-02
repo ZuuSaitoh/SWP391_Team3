@@ -3,15 +3,16 @@ import { getAuth, signInWithPopup } from "firebase/auth";
 import { googleProvider } from "../../config/firebase";
 import { useNavigate } from "react-router-dom";
 import AnimatedPage from "../animationpage/AnimatedPage";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import './login.css'
+import './login.css';
 import googleLogo from '../koi_photo/google-logo.png';
+import api from "../../config/axios.jsx";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const [username, setUsername] = useState(""); // Capture username
-  const [password, setPassword] = useState(""); // Capture password
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const auth = getAuth();
 
@@ -49,17 +50,36 @@ function Login() {
     }
   };
 
-  const handleLogin = async () => {
-    // Validate input fields
-    if (!username || !password) {
-      toast.error("Please enter your username and password");
+  const validateForm = () => {
+    if (!username) {
+      toast.error("Username is required");
+      return false;
+    }
+    if (username.length < 3) {
+      toast.error("Username must be at least 3 characters long");
+      return false;
+    }
+    if (!password) {
+      toast.error("Password is required");
+      return false;
+    }
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
       return;
     }
 
     try {
       const response = await api.post("login", { username, password });
-      console.log(response);
       if (response.data.role === "ADMIN") {
+        toast.success("Login successful");
         navigate("/dashboard");
       }
     } catch (err) {
@@ -71,27 +91,43 @@ function Login() {
   return (
     <AnimatedPage>
       <div className="login-container">
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <div className="image-container3"></div>
         <div className="form-container">
           <div className="header">
             <div className="text">Sign In</div>
             <div className="underline"></div>
           </div>
-          <div className="inputs">
+          <form className="inputs" onSubmit={handleSubmit}>
             <div className="input">
               <input
                 type="text"
-                placeholder="Username"
+                placeholder="Username (min 3 characters)"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)} // Capture username
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                minLength={3}
               />
             </div>
             <div className="input">
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Password"
+                placeholder="Password (min 6 characters)"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)} // Capture password
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
               />
             </div>
 
@@ -111,12 +147,13 @@ function Login() {
                 <label htmlFor="showPassword">Show Password</label>
               </div>
             </div>
-          </div>
+
+            <div className="submit-container">
+              <button type="submit" className="submit">Sign In</button>
+            </div>
+          </form>
 
           <div className="submit-container">
-            <div className="submit" onClick={handleLogin}>
-              Sign In
-            </div>
             <div className="submit google-submit" onClick={handleLoginGoogle}>
               <img src={googleLogo} alt="Google logo" />
             </div>
