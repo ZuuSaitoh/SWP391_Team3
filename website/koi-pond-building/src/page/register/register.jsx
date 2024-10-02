@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./register.css";
 import { useNavigate } from "react-router-dom";
 import AnimatedPage from "../animationpage/AnimatedPage";
+import api from "../../config/axios.jsx";
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,6 +25,21 @@ const RegisterPage = () => {
 
   const handleClick = () => {
     navigate("/login");
+  };
+
+  const handleregister = async (values) => {
+    console.log(values);
+
+    try{
+      const response = await api.post("register", values);
+      const {token} = response.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user",JSON.stringify(response.data));
+      navigate("/login");
+    }catch(err){
+      console.log(err);
+      alert(err.response.data);
+    }
   };
 
   return (
@@ -76,7 +92,7 @@ const RegisterPage = () => {
           {error && <p style={{ color: "red" }}>{error}</p>}
 
           <div className="submit-container">
-            <div className="submit" onClick={handleSubmit}>
+            <div className="submit" onFinish={handleregister} onClick={handleSubmit}>
               Sign Up
             </div>
           </div>
