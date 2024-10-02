@@ -138,13 +138,10 @@
 }
 
 .show-password1 {
-  display: flex;
-  align-items: center;
-  margin: 10px auto;
+  margin: auto;
+  padding-left: 210px;
   font-size: 16px;
   color: #797979;
-  justify-content: flex-end; /* Align to the right */
-  width: 350px; /* Same width as the input fields */
 }
 
 .show-password1 label {

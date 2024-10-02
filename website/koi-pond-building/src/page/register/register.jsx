@@ -19,22 +19,17 @@ const RegisterPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent the form from refreshing the page
+    e.preventDefault(); // Prevent default form submission behavior
 
-    // Check if any field is empty
-    if (
-      !username.trim() ||
-      !email.trim() ||
-      !password.trim() ||
-      !confirmPassword.trim()
-    ) {
-      toast.error("Please fill out all fields."); // Show error if fields are empty
+    // Validate empty fields
+    if (!username || !email || !password || !confirmPassword) {
+      toast.error("Please fill out all fields"); // Show error if fields are empty
       return;
     }
-
-    // Check if passwords match
+    
+    // Validate password match
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match."); // Show error if passwords don't match
+      toast.error("Passwords do not match"); // Show error if passwords don't match
       return;
     }
 
@@ -49,18 +44,17 @@ const RegisterPage = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(response.data));
       navigate("/login");
-      toast.success("Sign Up successful!"); // Show success notification
+      toast.success("Registration successful!"); // Show success notification
     } catch (err) {
       console.log(err);
-      toast.error(err.response?.data || "Sign Up failed"); // Show error on failure
+      toast.error(err.response?.data || "Registration failed"); // Show error on failure
     }
   };
 
   return (
     <AnimatedPage>
       <div className="register-container">
-        <ToastContainer />{" "}
-        {/* This is needed to show the toast notifications */}
+        <ToastContainer /> {/* This is needed to show the toast notifications */}
         <div className="image-container"></div>
         <div className="form-container">
           <div className="header">
@@ -70,18 +64,18 @@ const RegisterPage = () => {
 
           <form className="inputs" onSubmit={handleSubmit}>
             <div className="input">
-              <input
-                type="text"
-                placeholder="Username"
+              <input 
+                type="text" 
+                placeholder="Username" 
                 value={username}
                 onChange={(e) => setUsername(e.target.value)} // Track username state
                 required
               />
             </div>
             <div className="input">
-              <input
-                type="email"
-                placeholder="Email"
+              <input 
+                type="email" 
+                placeholder="Email" 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)} // Track email state
                 required
@@ -119,18 +113,13 @@ const RegisterPage = () => {
             </div>
 
             <div className="submit-container">
-              <button type="submit" className="submit">
-                Sign Up
-              </button>
+              <button type="submit" className="submit">Sign Up</button>
             </div>
           </form>
 
           <div className="already-haveAccount">
             Already have an Account?
-            <span
-              className="already-haveAccount-link"
-              onClick={() => navigate("/login")}
-            >
+            <span className="already-haveAccount-link" onClick={() => navigate("/login")}>
               Click here
             </span>
           </div>
