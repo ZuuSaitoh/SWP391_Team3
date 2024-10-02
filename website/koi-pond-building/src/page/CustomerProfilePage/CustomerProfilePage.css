@@ -1,7 +1,6 @@
 body {
   margin: 0;
   padding: 0;
-  background-image: url('../koi_photo/customerpage.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -90,6 +89,10 @@ p {
   min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
+  background-image: url('../koi_photo/customerpage.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 .edit-input {
