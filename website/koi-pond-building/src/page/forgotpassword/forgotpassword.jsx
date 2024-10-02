@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./forgotpassword.css";
 import { useNavigate } from "react-router-dom";
 import AnimatedPage from "../animationpage/AnimatedPage";
@@ -11,7 +11,9 @@ function ForgotPassword() {
   async function handleResetPassword(e) {
     e.preventDefault();
     // TODO: Implement actual password reset logic here
-    setMessage(`A password reset link has been sent to ${email}. Please check your inbox.`);
+    setMessage(
+      `A password reset link has been sent to ${email}. Please check your inbox.`
+    );
   }
 
   function SignInHandle() {
