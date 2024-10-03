@@ -1,0 +1,123 @@
+.footer {
+    background-color: #333;
+    color: var(--light-text-color);
+    padding: 3rem 2rem 1rem;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-section {
+    flex-basis: calc(33.333% - 2rem);
+    margin-bottom: 2rem;
+}
+
+.footer-section:first-child {
+    flex-basis: calc(30% - 2rem);
+}
+
+.footer-section:nth-child(2) {
+    flex-basis: calc(40% - 2rem);
+    text-align: center;
+}
+
+.footer-section:last-child {
+    flex-basis: calc(30% - 2rem);
+    text-align: right;
+}
+
+.footer-section h3 {
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.footer-section p {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.quick-menu {
+    list-style: none;
+    padding: 0;
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+    column-gap: 2rem;
+}
+
+.quick-menu li {
+    margin-bottom: 0.5rem;
+}
+
+.quick-menu a {
+    color: var(--light-text-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.quick-menu a:hover {
+    color: var(--primary-color);
+}
+
+.social-icons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.social-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.social-icon:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+
+    .footer-section,
+    .footer-section:first-child,
+    .footer-section:nth-child(2),
+    .footer-section:last-child {
+        flex-basis: 100%;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .social-icons,
+    .quick-menu {
+        justify-content: center;
+    }
+
+    .quick-menu {
+        columns: 1;
+        -webkit-columns: 1;
+        -moz-columns: 1;
+    }
+}

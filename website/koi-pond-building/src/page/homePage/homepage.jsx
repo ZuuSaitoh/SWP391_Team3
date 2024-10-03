@@ -5,11 +5,11 @@ import pond1 from "../koi_photo/pond1.jpg";
 import pond2 from "../koi_photo/pond2.jpg";
 import pond3 from "../koi_photo/pond3.jpg";
 import { useNavigate } from "react-router-dom";
+import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer";
 
 function HomePage() {
   const navigate = useNavigate();
-
-  // Scroll to top button
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -28,12 +28,10 @@ function HomePage() {
     });
   };
 
-  // Login button
   const loginClick = () => {
     navigate("/login");
   };
 
-  // Scroll to section
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
     if (section) {
@@ -41,45 +39,15 @@ function HomePage() {
     }
   };
 
+  const navigateToServiceDesign = () => {
+    navigate("/service-design");
+  };
+
   return (
     <div className="home-page">
-      <header className="header">
-        <nav className="navbar">
-          <div className="logo">Koi Pond Builders</div>
-          <ul className="nav-links">
-            <li>
-              <a onClick={() => scrollToSection("home")}>Home</a>
-            </li>
-            <li>
-              <a onClick={() => scrollToSection("services")}>Services</a>
-            </li>
-            <li>
-              <a onClick={() => scrollToSection("gallery")}>Gallery</a>
-            </li>
-            <li>
-              <a onClick={() => scrollToSection("about")}>About</a>
-            </li>
-            <li>
-              <a onClick={() => scrollToSection("testimonials")}>
-                Testimonials
-              </a>
-            </li>
-            <li>
-              <a onClick={() => scrollToSection("contact")}>Contact</a>
-            </li>
-            <li>
-              <img
-                src={person}
-                alt="Login"
-                onClick={loginClick}
-                className="login-icon"
-              />
-            </li>
-          </ul>
-        </nav>
-      </header>
-
+      <Header isTransparent={true} />
       <main>
+        {/* Your existing main content */}
         <section id="home" className="hero">
           <div className="hero-content">
             <h1>Create Your Dream Koi Pond</h1>
@@ -93,7 +61,7 @@ function HomePage() {
         <section id="services" className="services">
           <h2>Our Services</h2>
           <div className="service-list">
-            <div className="service-item">
+            <div className="service-item" onClick={navigateToServiceDesign}>
               <i className="fas fa-pencil-ruler"></i>
               <h3>Pond Design</h3>
               <p>Custom designs tailored to your space and preferences</p>
@@ -218,65 +186,12 @@ function HomePage() {
           </div>
         </section>
       </main>
-
-      <div
-        className={`scroll-to-top ${showScrollTop ? "visible" : ""}`}
-        onClick={scrollToTop}
-      >
-        ▲
-      </div>
-
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-section">
-            <h3>Koi Pond Builders</h3>
-            <p>Creating serene water gardens since 2005</p>
-          </div>
-          <div className="footer-section">
-            <h3>Quick Menu</h3>
-            <ul className="quick-menu">
-              <li>
-                <a href="#home">Home</a>
-              </li>
-              <li>
-                <a href="#services">Services</a>
-              </li>
-              <li>
-                <a href="#gallery">Gallery</a>
-              </li>
-              <li>
-                <a href="#about">About</a>
-              </li>
-              <li>
-                <a href="#testimonials">Testimonials</a>
-              </li>
-              <li>
-                <a href="#contact">Contact</a>
-              </li>
-            </ul>
-          </div>
-          <div className="footer-section">
-            <h3>Follow Us</h3>
-            <div className="social-icons">
-              <a href="#" className="social-icon">
-                <i className="fab fa-facebook-f"></i>
-              </a>
-              <a href="#" className="social-icon">
-                <i className="fab fa-twitter"></i>
-              </a>
-              <a href="#" className="social-icon">
-                <i className="fab fa-instagram"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div className="footer-bottom">
-          <p>
-            &copy; {new Date().getFullYear()} Koi Pond Builders. All rights
-            reserved.
-          </p>
-        </div>
-      </footer>
+      {showScrollTop && (
+        <button className="scroll-to-top" onClick={scrollToTop}>
+          ▲
+        </button>
+      )}
+      <Footer />
     </div>
   );
 }
