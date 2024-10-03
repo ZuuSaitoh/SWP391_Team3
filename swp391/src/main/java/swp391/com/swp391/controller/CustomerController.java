@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import swp391.com.swp391.dto.request.CustomerCreationRequest;
 import swp391.com.swp391.dto.request.CustomerUpdateRequest;
 import swp391.com.swp391.dto.response.ApiResponse;
+import swp391.com.swp391.dto.response.CustomerResponse;
 import swp391.com.swp391.entity.Customer;
 import swp391.com.swp391.service.CustomerService;
 
@@ -27,9 +28,17 @@ public class CustomerController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/fetchAll")
-    List<Customer> getCustomer(){
-        return customerService.getCustomer();
+
+    ApiResponse<List<Customer>> getCustomer(){
+        return new ApiResponse<List<Customer>>(9999,"List of User", customerService.getCustomer());
     }
+//    List<Customer> getCustomer(){
+//        return customerService.getCustomer();
+//    }
+//    ApiResponse<List<CustomerResponse>> getCustomer(){
+//        return new ApiResponse<List<CustomerResponse>>(customerService.getCustomer());
+//    }
+
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/{id}")
