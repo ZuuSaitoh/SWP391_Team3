@@ -1,5 +1,6 @@
 /* Thêm hoặc cập nhật những quy tắc này ở đầu file */
-html, body {
+html,
+body {
   overflow-x: hidden;
   width: 100%;
   margin: 0;
@@ -8,6 +9,7 @@ html, body {
 
 /* Main container to hold both the image and the form */
 .login-container {
+  position: relative;
   display: flex;
   height: 100vh;
   width: 100%;
@@ -29,15 +31,14 @@ html, body {
 
 /* Right side form */
 .form-container {
+  flex: 1;
+  max-width: 50%;
+  padding: 60px 2rem 2rem;
+  /* Increase top padding */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start; /* Thay đổi từ flex-end sang flex-start */
-  padding: 2rem;
-  width: 100%;
-  max-width: 500px; /* Giữ nguyên max-width */
-  margin-right: auto; /* Thay đổi từ margin-left sang margin-right */
-  margin-left: 10%; /* Tăng margin bên trái để đẩy sang phải thêm */
+  align-items: flex-start;
 }
 
 /* Original form container */
@@ -52,7 +53,7 @@ html, body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Thay đổi từ flex-end sang flex-start */
+  align-items: flex-start;
   gap: 25px;
   margin-top: 0;
   margin-bottom: 30px;
@@ -81,12 +82,12 @@ html, body {
   max-width: 350px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Thay đổi từ flex-end sang flex-start */
+  align-items: flex-start;
 }
 
 .input {
   width: 100%;
-  max-width: 350px; /* Giữ nguyên chiều rộng tối đa của mỗi input */
+  max-width: 350px;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
@@ -99,9 +100,9 @@ html, body {
 }
 
 .input input {
-  height: 50px; /* Giảm chiều cao để phù hợp với các nút */
-  font-size: 16px; /* Kích thước chữ đồng nhất */
-  padding: 0 15px; /* Thêm padding ngang */
+  height: 50px;
+  font-size: 16px;
+  padding: 0 15px;
   width: 100%;
   border-radius: 15px;
   outline: none;
@@ -120,10 +121,10 @@ html, body {
 .already-haveAccount {
   width: 100%;
   max-width: 350px;
-  text-align: left; /* Thay đổi từ right sang left */
+  text-align: left;
   margin-top: 20px;
   color: #797979;
-  font-size: 16px; /* Kích thước chữ đồng nhất */
+  font-size: 16px;
 }
 
 .already-haveAccount span {
@@ -141,44 +142,45 @@ html, body {
   max-width: 350px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Thay đổi từ flex-end sang flex-start */
+  align-items: flex-start;
   gap: 10px;
   margin-top: 20px;
   margin-bottom: 15px;
 }
 
-.submit, .google-submit {
-  width: 100%; /* Giữ nguyên chiều rộng đầy đủ */
+.submit,
+.google-submit {
+  width: 100%;
   max-width: 350px;
-  height: 50px; /* Chiều cao đồng nhất với input */
+  height: 50px;
   padding: 10px;
   border-radius: 25px;
   color: white;
   background-color: #ff7f50;
   text-align: center;
   cursor: pointer;
-  font-size: 16px; /* Kích thước chữ đồng nhất */
+  font-size: 16px;
   border: none;
   outline: none;
   box-shadow: none;
-  margin: 10px 0; /* Remove auto margin */
+  margin: 10px 0;
 }
 
 .google-submit {
-  width: 220px; /* Match the width of the Sign In button */
-  height: 50px; /* Chiều cao đồng nhất */
-  font-size: 16px; /* Kích thước chữ đồng nhất */
+  width: 220px;
+  height: 50px;
+  font-size: 16px;
   background-color: white !important;
   color: #757575;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #dadce0 !important; 
+  border: 1px solid #dadce0 !important;
   outline: none !important;
   box-shadow: none !important;
-  border-radius: 25px; 
+  border-radius: 25px;
   padding: 10px;
-  margin: 10px 0; /* Remove auto margin */
+  margin: 10px 0;
 }
 
 .google-submit img {
@@ -244,7 +246,7 @@ html, body {
   transition: color 0.3s ease;
   font-size: 14px;
   padding: 0;
-  margin-right: 0; /* Xóa margin bên phải */
+  margin-right: 0;
 }
 
 .show-password {
@@ -305,12 +307,36 @@ html, body {
   cursor: pointer;
 }
 
+/* Add this new style for the back to homepage button */
+.back-to-home {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  /* Decrease this value to move the button more to the left */
+  padding: 10px 15px;
+  background-color: rgba(255, 127, 80, 0.8);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  z-index: 1000;
+  /* Ensure it's above everything */
+  white-space: nowrap;
+}
+
+.back-to-home:hover {
+  background-color: rgba(255, 99, 71, 0.9);
+}
+
 @media (max-width: 768px) {
   .login-container {
     flex-direction: column;
   }
 
-  .image-container3, .form-container {
+  .image-container3,
+  .form-container {
     max-width: 100%;
   }
 
@@ -322,55 +348,78 @@ html, body {
   .form-container {
     height: 70vh;
     padding: 5vw;
-    align-items: center; /* Căn giữa trên màn hình nhỏ */
-    margin-left: auto; /* Đặt lại margin trái về auto trên màn hình nhỏ */
-    margin-right: auto; /* Loại bỏ margin phải trên màn hình nhỏ */
-    max-width: 100%; /* Sử dụng toàn bộ chiều rộng trên màn hình nhỏ */
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    padding-top: 70px;
+    /* Increase top padding for mobile */
   }
 
   .container {
     padding: 0 15px;
   }
 
-  .header, .inputs, .password-options, .submit-container, .already-haveAccount {
-    align-items: center; /* Center align on smaller screens */
+  .header,
+  .inputs,
+  .password-options,
+  .submit-container,
+  .already-haveAccount {
+    align-items: center;
   }
 
   .already-haveAccount {
-    text-align: center; /* Center text on smaller screens */
+    text-align: center;
+  }
+
+  .back-to-home {
+    top: 10px;
+    left: 15px;
+    /* Adjust for smaller screens */
+    font-size: 12px;
+    padding: 8px 12px;
   }
 }
 
 @media (max-width: 480px) {
   .password-options {
-    flex-direction: row; /* Giữ trên cùng một hàng */
-    justify-content: space-between; /* Đẩy về hai bên */
-    flex-wrap: nowrap; /* Ngăn xuống dòng */
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: nowrap;
   }
 
-  .forgot-password, .show-password {
+  .forgot-password,
+  .show-password {
     margin: 5px 0;
   }
-  
+
   .forgot-password {
-    margin-right: 15px; /* Giảm margin bên phải trên màn hình nhỏ */
+    margin-right: 15px;
   }
-  
+
   .input input,
   .submit,
   .google-submit {
-    font-size: 14px; /* Giảm kích thước chữ trên màn hình nhỏ */
+    font-size: 14px;
   }
-  
+
   .submit-container,
   .input,
   .submit,
   .google-submit {
-    max-width: 100%; /* Sử dụng toàn bộ chiều rộng trên màn hình nhỏ */
+    max-width: 100%;
   }
-  
+
   .submit,
   .google-submit {
-    width: 100%; /* Full width on small screens */
+    width: 100%;
+  }
+}
+
+/* Add a new media query for very large screens */
+@media (min-width: 1400px) {
+  .back-to-home {
+    left: 40px;
+    /* Adjust for very large screens */
   }
 }

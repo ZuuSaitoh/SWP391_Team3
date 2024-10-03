@@ -88,21 +88,16 @@ function Login() {
     }
   };
 
+  const handleBackToHome = () => {
+    navigate("/");
+  };
+
   return (
     <AnimatedPage>
       <div className="login-container">
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
+        <button className="back-to-home" onClick={handleBackToHome}>
+          Back to Homepage
+        </button>
         <div className="image-container3"></div>
         <div className="form-container">
           <div className="header">

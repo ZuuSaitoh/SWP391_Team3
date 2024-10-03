@@ -40,7 +40,7 @@ const RegisterPage = () => {
       return false;
     }
     if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long");
+      toast.error("Password must be at least 8 characters long");
       return false;
     }
     if (password !== confirm_password) {
@@ -120,7 +120,7 @@ const RegisterPage = () => {
             <div className="input">
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Password (min 6 characters)"
+                placeholder="Password (min 8 characters)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)} // Track password state
                 required

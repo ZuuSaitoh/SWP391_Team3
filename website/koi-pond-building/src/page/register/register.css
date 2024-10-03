@@ -1,5 +1,6 @@
 /* Thêm hoặc cập nhật những quy tắc này ở đầu file */
-html, body {
+html,
+body {
   overflow-x: hidden;
   width: 100%;
   margin: 0;
@@ -70,7 +71,7 @@ html, body {
 }
 
 .inputs {
-  margin-top: 55px;
+  margin-top: 120px;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -156,8 +157,10 @@ html, body {
   color: #797979;
   display: flex;
   align-items: center;
-  margin-top: 10px; /* Tăng khoảng cách với input trên */
-  margin-left: auto; /* Push to the right */
+  margin-top: 10px;
+  /* Tăng khoảng cách với input trên */
+  margin-left: auto;
+  /* Push to the right */
 }
 
 .show-password1 label {
@@ -167,7 +170,8 @@ html, body {
 
 .password-options {
   display: flex;
-  justify-content: flex-end; /* Change to flex-end to align items to the right */
+  justify-content: flex-end;
+  /* Change to flex-end to align items to the right */
   align-items: center;
   width: 100%;
   max-width: 350px;
@@ -180,7 +184,8 @@ html, body {
   font-weight: bold;
   transition: color 0.3s ease;
   font-size: 14px;
-  margin-right: auto; /* Đẩy về bên trái */
+  margin-right: auto;
+  /* Đẩy về bên trái */
 }
 
 .forgot-password:hover {
@@ -195,11 +200,14 @@ html, body {
 
 @media (max-width: 480px) {
   .password-options {
-    flex-direction: row; /* Giữ trên cùng một hàng */
-    justify-content: flex-end; /* Align to the right on small screens */
+    flex-direction: row;
+    /* Giữ trên cùng một hàng */
+    justify-content: flex-end;
+    /* Align to the right on small screens */
   }
 
-  .forgot-password, .show-password1 {
+  .forgot-password,
+  .show-password1 {
     margin: 5px 0;
   }
 }
