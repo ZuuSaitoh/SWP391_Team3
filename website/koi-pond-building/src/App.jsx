@@ -14,6 +14,8 @@ import ForgotPassword from "./page/forgotpassword/forgotpassword.jsx";
 import CustomerProfilePage from "./page/CustomerProfilePage/CustomerProfilePage.jsx";
 import ServiceDesign from "./page/serviceDesign/serviceDesign.jsx";
 import AnimatedPage from "./page/animationpage/AnimatedPage.jsx";
+import ServiceClean from "./page/serviceClean/serviceClean.jsx";
+import ServiceMaintenance from "./page/serviceMaintenance/serviceMaintenance.jsx";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -41,6 +43,8 @@ const AnimatedRoutes = () => {
         {location.pathname === "/register" && <RegisterPage />}
         {location.pathname === "/forgotpassword" && <ForgotPassword />}
         {location.pathname === "/customer-profile" && <CustomerProfilePage />}
+        {location.pathname === "/service-clean" && <ServiceClean />}
+        {location.pathname === "/service-maintenance" && <ServiceMaintenance />}
       </AnimatedPage>
     </AnimatePresence>
   );

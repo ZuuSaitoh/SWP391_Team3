@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./HomePage.css";
-import person from "../koi_photo/person.png";
 import pond1 from "../koi_photo/pond1.jpg";
 import pond2 from "../koi_photo/pond2.jpg";
 import pond3 from "../koi_photo/pond3.jpg";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
+
+import { ReactComponent as PondDesignIcon } from "../koi_photo/design.png";
+import { ReactComponent as PondCleaningIcon } from "../koi_photo/clean.png";
+import { ReactComponent as PondMaintenanceIcon } from "../koi_photo/maintenance.png";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -43,6 +46,14 @@ function HomePage() {
     navigate("/service-design");
   };
 
+  const navigateToServiceClean = () => {
+    navigate("/service-clean");
+  };
+
+  const navigateToServiceMaintenance = () => {
+    navigate("/service-maintenance");
+  };
+
   return (
     <div className="home-page">
       <Header isTransparent={true} />
@@ -62,17 +73,32 @@ function HomePage() {
           <h2>Our Services</h2>
           <div className="service-list">
             <div className="service-item" onClick={navigateToServiceDesign}>
-              <i className="fas fa-pencil-ruler"></i>
+              <img
+                src={pondDesignIcon}
+                alt="Pond Design"
+                className="service-icon"
+              />
               <h3>Pond Design</h3>
               <p>Custom designs tailored to your space and preferences</p>
             </div>
-            <div className="service-item">
-              <i className="fas fa-hard-hat"></i>
-              <h3>Pond Cleaner</h3>
+            <div className="service-item" onClick={navigateToServiceClean}>
+              <img
+                src={pondCleaningIcon}
+                alt="Pond Cleaning"
+                className="service-icon"
+              />
+              <h3>Cleaning Pond Service</h3>
               <p>Professional cleaning service for your pond</p>
             </div>
-            <div className="service-item">
-              <i className="fas fa-tools"></i>
+            <div
+              className="service-item"
+              onClick={navigateToServiceMaintenance}
+            >
+              <img
+                src={pondMaintenanceIcon}
+                alt="Pond Maintenance"
+                className="service-icon"
+              />
               <h3>Maintenance</h3>
               <p>Regular upkeep to keep your pond pristine</p>
             </div>

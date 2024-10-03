@@ -1,0 +1,161 @@
+.service-maintenance-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.maintenance-hero {
+    background-image: url('../koi_photo/homepageheader.jpg');
+    /* Change this to an appropriate maintenance image */
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--light-text-color);
+    position: relative;
+}
+
+.maintenance-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.maintenance-hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    padding: 0 2rem;
+}
+
+.maintenance-hero h1 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: maintenanceFadeIn 1s ease-in-out;
+}
+
+.maintenance-hero p {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    animation: maintenanceFadeIn 1.5s ease-in-out;
+}
+
+.maintenance-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+    font-family: 'Poppins', Arial, sans-serif;
+}
+
+.maintenance-content h1,
+.maintenance-content h2,
+.maintenance-content h3 {
+    color: #333;
+}
+
+.maintenance-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.maintenance-content p {
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+.maintenance-intro {
+    font-size: 1.1em;
+    margin-bottom: 4rem;
+}
+
+.maintenance-services ol,
+.maintenance-process ol {
+    padding-left: 20px;
+}
+
+.maintenance-services li,
+.maintenance-process li {
+    margin-bottom: 20px;
+}
+
+.maintenance-benefits,
+.maintenance-why-choose-us,
+.maintenance-process,
+.maintenance-packages {
+    margin-top: 6rem;
+}
+
+@keyframes maintenanceFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .maintenance-hero h1 {
+        font-size: 3rem;
+    }
+
+    .maintenance-hero p {
+        font-size: 1.5rem;
+    }
+}
+
+.maintenance-scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    z-index: 1000;
+}
+
+.maintenance-scroll-to-top:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-5px);
+}
+
+@keyframes maintenanceBounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}
