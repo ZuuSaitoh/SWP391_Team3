@@ -26,14 +26,33 @@ function HomePage() {
         <nav className="navbar">
           <div className="logo">Koi Pond Builders</div>
           <ul className="nav-links">
-            <li><a onClick={() => scrollToSection("home")}>Home</a></li>
-            <li><a onClick={() => scrollToSection("services")}>Services</a></li>
-            <li><a onClick={() => scrollToSection("gallery")}>Gallery</a></li>
-            <li><a onClick={() => scrollToSection("about")}>About</a></li>
-            <li><a onClick={() => scrollToSection("testimonials")}>Testimonials</a></li>
-            <li><a onClick={() => scrollToSection("contact")}>Contact</a></li>
             <li>
-              <img src={person} alt="Login" onClick={loginClick} className="login-icon"/>
+              <a onClick={() => scrollToSection("home")}>Home</a>
+            </li>
+            <li>
+              <a onClick={() => scrollToSection("services")}>Services</a>
+            </li>
+            <li>
+              <a onClick={() => scrollToSection("gallery")}>Gallery</a>
+            </li>
+            <li>
+              <a onClick={() => scrollToSection("about")}>About</a>
+            </li>
+            <li>
+              <a onClick={() => scrollToSection("testimonials")}>
+                Testimonials
+              </a>
+            </li>
+            <li>
+              <a onClick={() => scrollToSection("contact")}>Contact</a>
+            </li>
+            <li>
+              <img
+                src={person}
+                alt="Login"
+                onClick={loginClick}
+                className="login-icon"
+              />
             </li>
           </ul>
         </nav>
@@ -44,7 +63,9 @@ function HomePage() {
           <div className="hero-content">
             <h1>Create Your Dream Koi Pond</h1>
             <p>Expert design and construction for serene water gardens</p>
-            <a href="#contact" className="cta-button">Get a Free Quote</a>
+            <a href="#contact" className="cta-button">
+              Get a Free Quote
+            </a>
           </div>
         </section>
 
@@ -58,8 +79,8 @@ function HomePage() {
             </div>
             <div className="service-item">
               <i className="fas fa-hard-hat"></i>
-              <h3>Construction</h3>
-              <p>Professional installation with quality materials</p>
+              <h3>Pond Cleaner</h3>
+              <p>Professional cleaning service for your pond</p>
             </div>
             <div className="service-item">
               <i className="fas fa-tools"></i>
@@ -78,7 +99,9 @@ function HomePage() {
             </div>
             <div className="gallery-item">
               <img src={pond2} alt="Koi Pond 2" />
-              <div className="gallery-item-caption">Natural Stone Waterfall</div>
+              <div className="gallery-item-caption">
+                Natural Stone Waterfall
+              </div>
             </div>
             <div className="gallery-item">
               <img src={pond3} alt="Koi Pond 3" />
@@ -93,13 +116,14 @@ function HomePage() {
             <div className="about-text">
               <p>
                 We are passionate about creating beautiful koi ponds that bring
-                tranquility to your outdoor space. With years of experience and a
-                dedication to quality, we ensure each project exceeds expectations.
+                tranquility to your outdoor space. With years of experience and
+                a dedication to quality, we ensure each project exceeds
+                expectations.
               </p>
               <p>
-                Our team of experts combines artistic vision with technical expertise
-                to create stunning water features that enhance your property and provide
-                a peaceful retreat for you and your family.
+                Our team of experts combines artistic vision with technical
+                expertise to create stunning water features that enhance your
+                property and provide a peaceful retreat for you and your family.
               </p>
             </div>
             <div className="about-stats">
@@ -123,15 +147,24 @@ function HomePage() {
           <h2>What Our Clients Say</h2>
           <div className="testimonial-container">
             <div className="testimonial-item">
-              <p>"Koi Pond Builders transformed our backyard into a serene oasis. Their attention to detail and craftsmanship is unparalleled."</p>
+              <p>
+                "Koi Pond Builders transformed our backyard into a serene oasis.
+                Their attention to detail and craftsmanship is unparalleled."
+              </p>
               <h4>- Dũng Senpai.</h4>
             </div>
             <div className="testimonial-item">
-              <p>"The team was professional, punctual, and a pleasure to work with. Our new koi pond has become the highlight of our garden."</p>
+              <p>
+                "The team was professional, punctual, and a pleasure to work
+                with. Our new koi pond has become the highlight of our garden."
+              </p>
               <h4>- Thầy Phát.</h4>
             </div>
             <div className="testimonial-item">
-              <p>"From design to completion, the process was smooth and the results exceeded our expectations. Highly recommended!"</p>
+              <p>
+                "From design to completion, the process was smooth and the
+                results exceeded our expectations. Highly recommended!"
+              </p>
               <h4>- Tuấn Anh.</h4>
             </div>
           </div>
@@ -145,13 +178,21 @@ function HomePage() {
               <input type="email" placeholder="Your Email" required />
               <input type="tel" placeholder="Your Phone" />
               <textarea placeholder="Your Message" required></textarea>
-              <button type="submit" className="submit-button">Send Message</button>
+              <button type="submit" className="submit-button">
+                Send Message
+              </button>
             </form>
             <div className="contact-info">
               <h3>Get in Touch</h3>
-              <p><i className="fas fa-map-marker-alt"></i> 549/44/19 Lê Văn Thọ</p>
-              <p><i className="fas fa-phone"></i> (084) 0934103416</p>
-              <p><i className="fas fa-envelope"></i> lamhdse184108@fpt.edu.vn</p>
+              <p>
+                <i className="fas fa-map-marker-alt"></i> 549/44/19 Lê Văn Thọ
+              </p>
+              <p>
+                <i className="fas fa-phone"></i> (084) 0934103416
+              </p>
+              <p>
+                <i className="fas fa-envelope"></i> lamhdse184108@fpt.edu.vn
+              </p>
             </div>
           </div>
         </section>
@@ -166,25 +207,46 @@ function HomePage() {
           <div className="footer-section">
             <h3>Quick Menu</h3>
             <ul className="quick-menu">
-              <li><a href="#home">Home</a></li>
-              <li><a href="#services">Services</a></li>
-              <li><a href="#gallery">Gallery</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#testimonials">Testimonials</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li>
+                <a href="#home">Home</a>
+              </li>
+              <li>
+                <a href="#services">Services</a>
+              </li>
+              <li>
+                <a href="#gallery">Gallery</a>
+              </li>
+              <li>
+                <a href="#about">About</a>
+              </li>
+              <li>
+                <a href="#testimonials">Testimonials</a>
+              </li>
+              <li>
+                <a href="#contact">Contact</a>
+              </li>
             </ul>
           </div>
           <div className="footer-section">
             <h3>Follow Us</h3>
             <div className="social-icons">
-              <a href="#" className="social-icon"><i className="fab fa-facebook-f"></i></a>
-              <a href="#" className="social-icon"><i className="fab fa-twitter"></i></a>
-              <a href="#" className="social-icon"><i className="fab fa-instagram"></i></a>
+              <a href="#" className="social-icon">
+                <i className="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" className="social-icon">
+                <i className="fab fa-twitter"></i>
+              </a>
+              <a href="#" className="social-icon">
+                <i className="fab fa-instagram"></i>
+              </a>
             </div>
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} Koi Pond Builders. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Koi Pond Builders. All rights
+            reserved.
+          </p>
         </div>
       </footer>
     </div>
