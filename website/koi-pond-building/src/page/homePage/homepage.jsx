@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./HomePage.css";
 import person from "../koi_photo/person.png";
 import pond1 from "../koi_photo/pond1.jpg";
@@ -9,10 +9,31 @@ import { useNavigate } from "react-router-dom";
 function HomePage() {
   const navigate = useNavigate();
 
+  // Scroll to top button
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.pageYOffset > 300);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  // Login button
   const loginClick = () => {
     navigate("/login");
   };
 
+  // Scroll to section
   const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
     if (section) {
@@ -197,6 +218,13 @@ function HomePage() {
           </div>
         </section>
       </main>
+
+      <div
+        className={`scroll-to-top ${showScrollTop ? "visible" : ""}`}
+        onClick={scrollToTop}
+      >
+        ▲
+      </div>
 
       <footer className="footer">
         <div className="footer-content">

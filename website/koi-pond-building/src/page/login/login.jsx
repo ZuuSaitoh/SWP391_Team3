@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import AnimatedPage from "../animationpage/AnimatedPage";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import './login.css';
-import googleLogo from '../koi_photo/google-logo.png';
+import "./login.css";
+import googleLogo from "../koi_photo/google-logo.png";
 import api from "../../config/axios.jsx";
 
 function Login() {
@@ -30,7 +30,9 @@ function Login() {
 
   const forgotClick = () => {
     console.log("Forgot password clicked");
-    navigate("/forgotpassword").catch(error => console.error("Navigation error:", error));
+    navigate("/forgotpassword").catch((error) =>
+      console.error("Navigation error:", error)
+    );
   };
 
   const handleLoginGoogle = async () => {
@@ -42,7 +44,10 @@ function Login() {
       navigate("/dashboard");
     } catch (error) {
       console.error("Google login error", error);
-      if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user') {
+      if (
+        error.code === "auth/cancelled-popup-request" ||
+        error.code === "auth/popup-closed-by-user"
+      ) {
         console.log("Popup closed by user");
       } else {
         toast.error("Failed to login with Google: " + error.message);
@@ -78,7 +83,7 @@ function Login() {
 
     try {
       const response = await api.post("login", { username, password });
-      if (response.data.role === "ADMIN") {
+      if (response.data.role === "Manager") {
         toast.success("Login successful");
         navigate("/dashboard");
       }
@@ -144,7 +149,9 @@ function Login() {
             </div>
 
             <div className="submit-container">
-              <button type="submit" className="submit">Sign In</button>
+              <button type="submit" className="submit">
+                Sign In
+              </button>
             </div>
           </form>
 
