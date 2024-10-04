@@ -158,9 +158,7 @@ body {
   display: flex;
   align-items: center;
   margin-top: 10px;
-  /* Tăng khoảng cách với input trên */
   margin-left: auto;
-  /* Push to the right */
 }
 
 .register-show-password label {
@@ -171,7 +169,6 @@ body {
 .password-options {
   display: flex;
   justify-content: flex-end;
-  /* Change to flex-end to align items to the right */
   align-items: center;
   width: 100%;
   max-width: 350px;
@@ -185,7 +182,6 @@ body {
   transition: color 0.3s ease;
   font-size: 14px;
   margin-right: auto;
-  /* Đẩy về bên trái */
 }
 
 .forgot-password:hover {
@@ -193,7 +189,6 @@ body {
   text-decoration: underline;
 }
 
-/* Thêm media queries tương tự như trong login.css */
 @media (max-width: 768px) {
   /* ... */
 }
@@ -201,9 +196,7 @@ body {
 @media (max-width: 480px) {
   .password-options {
     flex-direction: row;
-    /* Giữ trên cùng một hàng */
     justify-content: flex-end;
-    /* Align to the right on small screens */
   }
 
   .forgot-password,

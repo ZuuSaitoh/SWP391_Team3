@@ -34,26 +34,28 @@ body {
   flex: 1;
   max-width: 50%;
   padding: 60px 2rem 2rem;
-  /* Increase top padding */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center; 
 }
 
-/* Original form container */
+
 .container {
   width: 100%;
   max-width: 400px;
   margin: auto;
   padding-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
 }
 
 .login-header {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center; 
   gap: 25px;
   margin-top: 0;
   margin-bottom: 30px;
@@ -68,6 +70,7 @@ body {
   color: #d35400;
   background: none;
   border: none;
+  text-align: center; /* Adjust the text alignment */
 }
 
 .login-underline {
@@ -82,7 +85,7 @@ body {
   max-width: 350px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center; /* Center the contents horizontally */
 }
 
 .login-input {
@@ -121,7 +124,7 @@ body {
 .login-already-have-account {
   width: 100%;
   max-width: 350px;
-  text-align: left;
+  text-align: center; /* Adjust the text alignment */
   margin-top: 20px;
   color: #797979;
   font-size: 16px;
@@ -142,7 +145,7 @@ body {
   max-width: 350px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center; /* Center the contents horizontally */
   gap: 10px;
   margin-top: 20px;
   margin-bottom: 15px;
@@ -311,7 +314,7 @@ body {
 .login-back-to-home {
   position: fixed;
   top: 20px;
-  left: 20px;
+  left: 40px; /* Increase this value to move the button more to the right */
   /* Decrease this value to move the button more to the left */
   padding: 10px 15px;
   background-color: rgba(255, 127, 80, 0.8);
@@ -418,9 +421,8 @@ body {
 
 /* Add a new media query for very large screens */
 @media (min-width: 1400px) {
-  .login-back-to-home {
-    left: 40px;
-    /* Adjust for very large screens */
+  .login-form-container {
+    padding-left: 5%; /* Add some padding to the left */
   }
 }
 
