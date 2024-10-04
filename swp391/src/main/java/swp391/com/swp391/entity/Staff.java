@@ -8,33 +8,29 @@ import javax.lang.model.element.Name;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "staff")
 public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "staffId")
-    int staffId;
+    private int staffId;
     @Column(name = "username")
-    String username;
+    private String username;
     @Column(name = "password")
-    String password;
+    private String password;
     @Column(name = "mail")
-    String mail;
+    private String mail;
     @Column(name = "fullName")
-    String fullName;
+    private String fullName;
     @Column(name = "address")
-    String address;
+    private String address;
     @Column(name = "phone")
-    String phone;
+    private String phone;
     @Column(name = "role")
-    String role;
+    private String role;
 
     public Staff() {
-
     }
 
     public int getStaffId() {

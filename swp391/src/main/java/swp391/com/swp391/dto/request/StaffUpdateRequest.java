@@ -1,5 +1,7 @@
 package swp391.com.swp391.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,10 +11,16 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StaffUpdateRequest {
+    @NotBlank(message = "ENTER_ALL_FIELDS")
     String password;
+    @NotBlank(message = "ENTER_ALL_FIELDS")
     String mail;
+    @NotBlank(message = "ENTER_ALL_FIELDS")
     String fullName;
+    @NotBlank(message = "ENTER_ALL_FIELDS")
     String address;
+    @NotBlank(message = "ENTER_ALL_FIELDS")
+    @Pattern(regexp = "^(\\+84|0[3|5|7|8|9])+([0-9]{8})$", message = "PHONE_NUMBER_INVALID", flags = Pattern.Flag.CASE_INSENSITIVE)
     String phone;
 
     public String getPassword() {
@@ -55,12 +63,4 @@ public class StaffUpdateRequest {
         this.phone = phone;
     }
 
-    public StaffUpdateRequest() {
-    }
-
-    public StaffUpdateRequest(String fullName, String address, String phone) {
-        this.fullName = fullName;
-        this.address = address;
-        this.phone = phone;
-    }
 }
