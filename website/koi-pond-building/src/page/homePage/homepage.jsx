@@ -17,10 +17,20 @@ function HomePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isHeaderScrolled, setIsHeaderScrolled] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
+    // Fetch current user information from localStorage or your authentication system
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      setCurrentUser(user);
+    }
+
     const handleScroll = () => {
-      setShowScrollTop(window.pageYOffset > 300);
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      setIsHeaderScrolled(scrollTop > 50);
+      setShowScrollTop(scrollTop > 300);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -67,7 +77,11 @@ function HomePage() {
 
   return (
     <div className="home-page">
-      <Header isTransparent={true} />
+      <Header 
+        isTransparent={!isHeaderScrolled} 
+        isScrolled={isHeaderScrolled}
+        currentUser={currentUser}
+      />
       <main>
         {/* Your existing main content */}
         <section id="home" className="hero">
@@ -223,11 +237,13 @@ function HomePage() {
           </div>
         </section>
       </main>
-      {showScrollTop && (
-        <button className="scroll-to-top" onClick={scrollToTop}>
-          ▲
-        </button>
-      )}
+      <button 
+        className={`scroll-to-top ${showScrollTop ? 'visible' : ''}`}
+        onClick={scrollToTop}
+        aria-label="Scroll to top"
+      >
+        ▲
+      </button>
       <Footer />
       <ToastContainer />
     </div>

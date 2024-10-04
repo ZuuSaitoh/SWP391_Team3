@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import person from "../../page/koi_photo/person.png";
 import "./Header.css";
 
-function Header({ isTransparent = true }) {
+function Header({ isTransparent, isScrolled, currentUser }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,7 +23,7 @@ function Header({ isTransparent = true }) {
   };
 
   return (
-    <header className={`header ${isTransparent ? "transparent" : "solid"}`}>
+    <header className={`header ${isScrolled ? 'scrolled' : ''} ${isTransparent ? 'transparent' : ''}`}>
       <nav className="navbar">
         <div className="logo">Koi Pond Builders</div>
         <ul className="nav-links">
@@ -47,15 +47,18 @@ function Header({ isTransparent = true }) {
           <li>
             <a onClick={() => navigateToSection("contact")}>Contact</a>
           </li>
-          <li>
-            <img
-              src={person}
-              alt="Login"
-              onClick={loginClick}
-              className="login-icon"
-            />
-          </li>
         </ul>
+        <div className="login-container">
+          {currentUser ? (
+            <span className="user-greeting">Hi, {currentUser.username}</span>
+          ) : null}
+          <img
+            src={person}
+            alt="Login"
+            onClick={loginClick}
+            className="login-icon"
+          />
+        </div>
       </nav>
     </header>
   );

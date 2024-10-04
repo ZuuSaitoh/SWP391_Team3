@@ -29,7 +29,6 @@ body {
   background-color: transparent;
   padding: 1rem 0;
   position: absolute;
-  /* Thay đổi từ fixed thành absolute */
   width: 100%;
   top: 0;
   z-index: 1000;
@@ -48,7 +47,6 @@ body {
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--light-text-color);
-  /* Đổi màu logo thành trắng */
 }
 
 .nav-links {
@@ -113,20 +111,18 @@ body {
   padding: 0 2rem;
 }
 
-
-
 .hero h1 {
-  font-size: 4rem;
+  font-size: 3.5rem;
   margin-bottom: 1rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   animation: fadeIn 1s ease-in-out;
   color: white;
 }
 
 .hero p {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   margin-bottom: 2rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   animation: fadeIn 1.5s ease-in-out;
   color: white;
 }
@@ -175,26 +171,29 @@ body {
 /* Services section styles */
 .service-list {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 2rem;
 }
 
 .service-item {
+  flex: 0 1 calc(33.333% - 2rem);
+  min-width: 250px;
+  max-width: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 1rem;
+  padding: 1.5rem;
   background-color: #f8f8f8;
   border-radius: 8px;
-  transition: transform 0.3s ease;
-  width: 250px;
-  /* Adjust as needed */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .service-item:hover {
   transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .service-icon {
@@ -220,13 +219,14 @@ body {
 
 .gallery-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 2rem;
 }
 
 .gallery-item {
-  flex-basis: calc(33.333% - 2rem);
+  flex: 0 1 calc(33.333% - 2rem);
+  min-width: 250px;
   max-width: 350px;
   position: relative;
   overflow: hidden;
@@ -296,13 +296,15 @@ body {
 /* Testimonials section styles */
 .testimonial-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 2rem;
 }
 
 .testimonial-item {
-  flex-basis: calc(33.333% - 2rem);
+  flex: 0 1 calc(33.333% - 2rem);
+  min-width: 250px;
+  max-width: 350px;
   background-color: var(--light-text-color);
   padding: 2rem;
   border-radius: 10px;
@@ -513,6 +515,14 @@ body {
 }
 
 /* Responsive styles */
+@media (max-width: 1024px) {
+  .service-item,
+  .gallery-item,
+  .testimonial-item {
+    flex: 0 1 calc(50% - 2rem);
+  }
+}
+
 @media (max-width: 768px) {
 
   .service-item,
@@ -541,6 +551,14 @@ body {
   .social-icons {
     justify-content: center;
   }
+
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero p {
+    font-size: 1.2rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -548,15 +566,15 @@ body {
   .service-item,
   .gallery-item,
   .testimonial-item {
-    flex-basis: 100%;
+    flex: 0 1 100%;
   }
 
   .hero h1 {
-    font-size: 3rem;
+    font-size: 2rem;
   }
 
   .hero p {
-    font-size: 1.5rem;
+    font-size: 1rem;
   }
 }
 
@@ -591,13 +609,31 @@ body {
   cursor: pointer;
   border: none;
   outline: none;
-  transition: background-color 0.3s, transform 0.3s;
+  transition: background-color 0.3s, transform 0.3s, opacity 0.3s;
   z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.scroll-to-top.visible {
+  opacity: 1;
+  visibility: visible;
 }
 
 .scroll-to-top:hover {
   background-color: var(--secondary-color);
   transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+  .scroll-to-top {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    bottom: 15px;
+    right: 15px;
+  }
 }
 
 /* Toast notification styles */
