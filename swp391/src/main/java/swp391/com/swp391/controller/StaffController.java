@@ -16,24 +16,28 @@ public class StaffController {
     private StaffService staffService;
 
     //hàm này dùng để tạo 1 nhân viên mới
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/create")
     public Staff createStaff(@RequestBody StaffCreattionRequest request){
         return staffService.createStaff(request);
     }
 
     //hàm này dùng để xem danh sách toàn bộ Staff
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/view")
     List<Staff> viewAllStaffLists(){
         return staffService.viewAllStaffLists();
     }
 
     //hàm này dùng để xem thông tin của Staff dựa vào staffId
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/{staffId}")
     Staff viewStaffById(@PathVariable("staffId") String userId){
         return staffService.viewStaffById(userId);
     }
 
     //hàm này dùng để cập nhật thông tin của staff dựa trên staffId
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PutMapping("/{staffId}")
     Staff updateStaff(@PathVariable String staffId, @RequestBody StaffUpdateRequest request){
         return staffService.updateStaff(staffId, request);
@@ -41,6 +45,7 @@ public class StaffController {
 
     //hàm này dùng để xóa Staff dựa trên staffId
     //hàm này chưa hoàn thiện
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @DeleteMapping("/{staffId}")
     String deleteUser(@PathVariable String userId){
         staffService.deleteStaff(userId);

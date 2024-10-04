@@ -1,18 +1,28 @@
 package swp391.com.swp391.service;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import swp391.com.swp391.dto.request.StaffCreattionRequest;
 import swp391.com.swp391.dto.request.StaffUpdateRequest;
 import swp391.com.swp391.entity.Staff;
+import swp391.com.swp391.mapper.CustomerMapper;
 import swp391.com.swp391.repository.StaffRepository;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class StaffService {
     @Autowired
     private StaffRepository staffRepository;
+    @Autowired
+    CustomerMapper customerMapper;
 
     //hàm này dùng để tạo ra 1 staff mới
     public Staff createStaff(StaffCreattionRequest request){
