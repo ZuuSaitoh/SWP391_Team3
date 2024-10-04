@@ -6,7 +6,6 @@
 
 .clean-hero {
     background-image: url('../koi_photo/homepageheader.jpg');
-    /* Change this to an appropriate cleaning image */
     background-size: cover;
     background-position: center;
     height: 100vh;

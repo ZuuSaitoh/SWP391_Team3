@@ -22,15 +22,18 @@ function ForgotPassword() {
 
   return (
     <AnimatedPage>
-      <div className="register-container">
-        <div className="image-container2" />
-        <div className="form-container">
-          <div className="header">
-            <h2 className="text">Forgot Password</h2>
-            <div className="underline" />
+      <div className="forgot-password-container">
+        <div className="forgot-password-image-container2" />
+        <div className="forgot-password-form-container">
+          <div className="forgot-password-header">
+            <h2 className="forgot-password-text">Forgot Password</h2>
+            <div className="forgot-password-underline" />
           </div>
-          <form className="inputs" onSubmit={handleResetPassword}>
-            <div className="input">
+          <form
+            className="forgot-password-inputs"
+            onSubmit={handleResetPassword}
+          >
+            <div className="forgot-password-input">
               <input
                 type="email"
                 placeholder="Enter your email"
@@ -39,21 +42,24 @@ function ForgotPassword() {
                 required
               />
             </div>
-            <div className="submit-container">
-              <button type="submit" className="submit">
+            <div className="forgot-password-submit-container">
+              <button type="submit" className="forgot-password-submit">
                 Reset Password
               </button>
             </div>
           </form>
-          <div className="already-haveAccount">
+          <div className="forgot-password-remember-account">
             Remember your password?{" "}
-            <span className="already-haveAccount-link" onClick={SignInHandle}>
+            <span
+              className="forgot-password-sign-in-link"
+              onClick={SignInHandle}
+            >
               Sign In
             </span>
           </div>
           {message && (
-            <div className="message">
-              <span className="message-icon">✉️</span>
+            <div className="forgot-password-message">
+              <span className="forgot-password-message-icon">✉️</span>
               {message}
             </div>
           )}

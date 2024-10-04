@@ -3,8 +3,8 @@ import "./register.css";
 import { useNavigate } from "react-router-dom";
 import AnimatedPage from "../animationpage/AnimatedPage";
 import api from "../../config/axios.jsx";
-import { toast, ToastContainer } from "react-toastify"; // Import toast
-import "react-toastify/dist/ReactToastify.css"; // Import styles for react-toastify
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,7 +13,7 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [confirm_password, setConfirm_Password] = useState("");
   const navigate = useNavigate();
-  
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -52,7 +52,7 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -67,14 +67,18 @@ const RegisterPage = () => {
       const response = await api.post("/customers/create", values);
       console.log("Registration response:", response.data);
       toast.success("Registration successful!");
-      navigate("/login");
+      navigate("/login?registered=true"); // Add this parameter
     } catch (err) {
       console.error("Registration error:", err);
       if (err.response) {
         console.error("Error data:", err.response.data);
         console.error("Error status:", err.response.status);
         console.error("Error headers:", err.response.headers);
-        toast.error(`Registration failed: ${err.response.data.message || err.response.data}`);
+        toast.error(
+          `Registration failed: ${
+            err.response.data.message || err.response.data
+          }`
+        );
       } else if (err.request) {
         console.error("No response received:", err.request);
         toast.error("No response from server. Please try again later.");
@@ -87,37 +91,38 @@ const RegisterPage = () => {
 
   return (
     <AnimatedPage>
-      <div className="register-container">
-        <ToastContainer /> {/* This is needed to show the toast notifications */}
-        <div className="image-container"></div>
-        <div className="form-container">
-          <div className="header">
-            <div className="text">Sign Up</div>
-            <div className="underline"></div>
+      <div className="register-page-container">
+        <ToastContainer />{" "}
+        {/* This is needed to show the toast notifications */}
+        <div className="register-image-container"></div>
+        <div className="register-form-container">
+          <div className="register-header">
+            <div className="register-text">Sign Up</div>
+            <div className="register-underline"></div>
           </div>
 
-          <form className="inputs" onSubmit={handleSubmit}>
-            <div className="input">
-              <input 
-                type="text" 
-                placeholder="Username (min 3 characters)" 
+          <form className="register-inputs" onSubmit={handleSubmit}>
+            <div className="register-input">
+              <input
+                type="text"
+                placeholder="Username (min 3 characters)"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)} // Track username state
                 required
                 minLength={3}
               />
             </div>
-            <div className="input">
-              <input 
-                type="email" 
-                placeholder="Email" 
+            <div className="register-input">
+              <input
+                type="email"
+                placeholder="Email"
                 value={mail}
                 onChange={(e) => setMail(e.target.value)} // Track email state
                 required
               />
             </div>
 
-            <div className="input">
+            <div className="register-input">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password (min 8 characters)"
@@ -128,7 +133,7 @@ const RegisterPage = () => {
               />
             </div>
 
-            <div className="input">
+            <div className="register-input">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Confirm Password"
@@ -138,24 +143,29 @@ const RegisterPage = () => {
               />
             </div>
 
-            <div className="show-password1">
+            <div className="register-show-password">
               <input
                 type="checkbox"
-                id="showPassword"
+                id="registerShowPassword"
                 checked={showPassword}
                 onChange={togglePasswordVisibility}
               />
-              <label htmlFor="showPassword">Show Password</label>
+              <label htmlFor="registerShowPassword">Show Password</label>
             </div>
 
-            <div className="submit-container">
-              <button type="submit" className="submit">Sign Up</button>
+            <div className="register-submit-container">
+              <button type="submit" className="register-submit">
+                Sign Up
+              </button>
             </div>
           </form>
 
-          <div className="already-haveAccount">
+          <div className="register-already-have-account">
             Already have an Account?{" "}
-            <span className="already-haveAccount-link" onClick={() => navigate("/login")}>
+            <span
+              className="register-already-have-account-link"
+              onClick={() => navigate("/login")}
+            >
               Click here
             </span>
           </div>

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { getAuth, signInWithPopup } from "firebase/auth";
 import { googleProvider } from "../../config/firebase";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import AnimatedPage from "../animationpage/AnimatedPage";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,7 +14,9 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
   const auth = getAuth();
+  const [notification, setNotification] = useState("");
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -69,7 +71,7 @@ function Login() {
       return false;
     }
     if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long");
+      toast.error("Password must be at least 8 characters long");
       return false;
     }
     return true;
@@ -77,19 +79,38 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!validateForm()) {
       return;
     }
 
+    const values = { username, password };
+    await handleLogin(values);
+  };
+
+  const handleLogin = async (values) => {
     try {
-      const response = await api.post("login", { username, password });
-      if (response.data.role === "Manager") {
-        toast.success("Login successful");
-        navigate("/dashboard");
-      }
+      console.log("Sending login data:", values);
+      const response = await api.post("/customers/auth/token", values);
+      console.log("Login response:", response.data);
+      toast.success("Login successful!");
+      navigate("/?login=success"); // Redirect to homepage with success parameter
     } catch (err) {
-      console.log(err);
-      toast.error(err.response?.data || "Login failed");
+      console.error("Login error:", err);
+      if (err.response) {
+        console.error("Error data:", err.response.data);
+        console.error("Error status:", err.response.status);
+        console.error("Error headers:", err.response.headers);
+        toast.error(
+          `Login failed: ${err.response.data.message || err.response.data}`
+        );
+      } else if (err.request) {
+        console.error("No response received:", err.request);
+        toast.error("No response from server. Please try again later.");
+      } else {
+        console.error("Error message:", err.message);
+        toast.error(`Error: ${err.message}`);
+      }
     }
   };
 
@@ -97,20 +118,31 @@ function Login() {
     navigate("/");
   };
 
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const registered = queryParams.get("registered");
+    if (registered === "true") {
+      toast.success("Registration successful! Please log in.");
+    }
+  }, [location]);
+
   return (
     <AnimatedPage>
-      <div className="login-container">
-        <button className="back-to-home" onClick={handleBackToHome}>
+      <div className="login-page-container">
+        <button className="login-back-to-home" onClick={handleBackToHome}>
           Back to Homepage
         </button>
-        <div className="image-container3"></div>
-        <div className="form-container">
-          <div className="header">
-            <div className="text">Sign In</div>
-            <div className="underline"></div>
+        <div className="login-image-container3"></div>
+        <div className="login-form-container">
+          {notification && (
+            <div className="login-notification">{notification}</div>
+          )}
+          <div className="login-header">
+            <div className="login-text">Sign In</div>
+            <div className="login-underline"></div>
           </div>
-          <form className="inputs" onSubmit={handleSubmit}>
-            <div className="input">
+          <form className="login-inputs" onSubmit={handleSubmit}>
+            <div className="login-input">
               <input
                 type="text"
                 placeholder="Username (min 3 characters)"
@@ -120,7 +152,7 @@ function Login() {
                 minLength={3}
               />
             </div>
-            <div className="input">
+            <div className="login-input">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password (min 6 characters)"
@@ -131,43 +163,50 @@ function Login() {
               />
             </div>
 
-            <div className="password-options">
-              <div className="forgot-password">
-                <span className="forgot-password-link" onClick={forgotClick}>
+            <div className="login-password-options">
+              <div className="login-forgot-password">
+                <span
+                  className="login-forgot-password-link"
+                  onClick={forgotClick}
+                >
                   Forgot password?
                 </span>
               </div>
-              <div className="show-password">
+              <div className="login-show-password">
                 <input
                   type="checkbox"
-                  id="showPassword"
+                  id="loginShowPassword"
                   checked={showPassword}
                   onChange={togglePasswordVisibility}
                 />
-                <label htmlFor="showPassword">Show Password</label>
+                <label htmlFor="loginShowPassword">Show Password</label>
               </div>
             </div>
 
-            <div className="submit-container">
-              <button type="submit" className="submit">
+            <div className="login-submit-container">
+              <button type="submit" className="login-submit">
                 Sign In
               </button>
             </div>
           </form>
 
-          <div className="submit-container">
-            <div className="submit google-submit" onClick={handleLoginGoogle}>
+          <div className="login-submit-container">
+            <div className="login-google-submit" onClick={handleLoginGoogle}>
               <img src={googleLogo} alt="Google logo" />
             </div>
           </div>
-          <div className="already-haveAccount">
+          <div className="login-already-have-account">
             Don't have an Account?{" "}
-            <span className="already-haveAccount-link" onClick={handleClick}>
+            <span
+              className="login-already-have-account-link"
+              onClick={handleClick}
+            >
               Click here
             </span>
           </div>
         </div>
       </div>
+      <ToastContainer />
     </AnimatedPage>
   );
 }

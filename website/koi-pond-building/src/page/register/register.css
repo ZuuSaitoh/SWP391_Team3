@@ -7,7 +7,7 @@ body {
   padding: 0;
 }
 
-.register-container {
+.register-page-container {
   display: flex;
   height: 100vh;
   width: 100%;
@@ -16,7 +16,7 @@ body {
 }
 
 /* Left side with image */
-.image-container {
+.register-image-container {
   flex: 1;
   max-width: 50%;
   background-image: url('../koi_photo/signupImg.jpg');
@@ -28,7 +28,7 @@ body {
 }
 
 /* Right side form */
-.form-container {
+.register-form-container {
   flex: 1;
   max-width: 50%;
   padding: 2vw;
@@ -48,7 +48,7 @@ body {
   padding-bottom: 30px;
 }
 
-.header {
+.register-header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -57,27 +57,27 @@ body {
   margin-top: 50px;
 }
 
-.text {
+.register-text {
   font-size: 30px;
   font-weight: 700;
   color: #d35400;
 }
 
-.underline {
+.register-underline {
   width: 70px;
   height: 3px;
   border-radius: 10px;
   background-color: rgb(233, 129, 81);
 }
 
-.inputs {
+.register-inputs {
   margin-top: 120px;
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-.input {
+.register-input {
   display: flex;
   align-items: center;
   margin: auto;
@@ -90,7 +90,7 @@ body {
   background-color: transparent;
 }
 
-.input input {
+.register-input input {
   height: 50px;
   width: 100%;
   border-radius: 15px;
@@ -103,29 +103,29 @@ body {
   transition: background-color 0.3s, border 0.3s;
 }
 
-.input input:focus {
+.register-input input:focus {
   background-color: #e0e0e0;
   border: 1px solid #b3b3b3;
 }
 
-.already-haveAccount {
+.register-already-have-account {
   text-align: center;
   margin-top: 10px;
   color: #797979;
   font-size: 18px;
 }
 
-.already-haveAccount span {
+.register-already-have-account-link {
   color: rgb(23, 211, 201);
   cursor: pointer;
 }
 
-.already-haveAccount-link:hover {
+.register-already-have-account-link:hover {
   color: #ff4500;
   text-decoration: underline;
 }
 
-.submit-container {
+.register-submit-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -134,11 +134,11 @@ body {
   margin: 20px auto;
 }
 
-.submit:hover {
+.register-submit:hover {
   background-color: #c0392b;
 }
 
-.submit {
+.register-submit {
   width: 220px;
   height: 59px;
   color: aliceblue;
@@ -152,7 +152,7 @@ body {
   display: flex;
 }
 
-.show-password1 {
+.register-show-password {
   font-size: 14px;
   color: #797979;
   display: flex;
@@ -163,7 +163,7 @@ body {
   /* Push to the right */
 }
 
-.show-password1 label {
+.register-show-password label {
   margin-left: 5px;
   cursor: pointer;
 }
@@ -207,7 +207,7 @@ body {
   }
 
   .forgot-password,
-  .show-password1 {
+  .register-show-password {
     margin: 5px 0;
   }
 }

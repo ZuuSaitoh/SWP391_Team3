@@ -3,16 +3,19 @@ import "./HomePage.css";
 import pond1 from "../koi_photo/pond1.jpg";
 import pond2 from "../koi_photo/pond2.jpg";
 import pond3 from "../koi_photo/pond3.jpg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import { ReactComponent as PondDesignIcon } from "../koi_photo/design.png";
-import { ReactComponent as PondCleaningIcon } from "../koi_photo/clean.png";
-import { ReactComponent as PondMaintenanceIcon } from "../koi_photo/maintenance.png";
+import PondDesignIcon from "../koi_photo/design.png";
+import PondCleaningIcon from "../koi_photo/clean.png";
+import PondMaintenanceIcon from "../koi_photo/maintenance.png";
 
 function HomePage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -23,6 +26,14 @@ function HomePage() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const loginSuccess = queryParams.get("login");
+    if (loginSuccess === "success") {
+      toast.success("Login successful! Welcome back!");
+    }
+  }, [location]);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -74,7 +85,7 @@ function HomePage() {
           <div className="service-list">
             <div className="service-item" onClick={navigateToServiceDesign}>
               <img
-                src={pondDesignIcon}
+                src={PondDesignIcon}
                 alt="Pond Design"
                 className="service-icon"
               />
@@ -83,7 +94,7 @@ function HomePage() {
             </div>
             <div className="service-item" onClick={navigateToServiceClean}>
               <img
-                src={pondCleaningIcon}
+                src={PondCleaningIcon}
                 alt="Pond Cleaning"
                 className="service-icon"
               />
@@ -95,7 +106,7 @@ function HomePage() {
               onClick={navigateToServiceMaintenance}
             >
               <img
-                src={pondMaintenanceIcon}
+                src={PondMaintenanceIcon}
                 alt="Pond Maintenance"
                 className="service-icon"
               />
@@ -218,6 +229,7 @@ function HomePage() {
         </button>
       )}
       <Footer />
+      <ToastContainer />
     </div>
   );
 }
