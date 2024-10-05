@@ -23,7 +23,7 @@
 }
 
 .header.scrolled {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.9);
     padding: 0.5rem 0;
 }
 
@@ -149,4 +149,15 @@
     .login-icon {
         margin-left: 0;
     }
+}
+
+/* Ensure text is visible when header is scrolled */
+.header.scrolled .logo,
+.header.scrolled .nav-links a,
+.header.scrolled .user-greeting {
+    color: var(--light-text-color);
+}
+
+.header.scrolled .login-icon {
+    filter: invert(1);
 }

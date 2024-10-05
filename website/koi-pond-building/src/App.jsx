@@ -18,6 +18,7 @@ import ServiceDesign from "./page/serviceDesign/serviceDesign.jsx";
 import AnimatedPage from "./page/animationpage/AnimatedPage.jsx";
 import ServiceClean from "./page/serviceClean/serviceClean.jsx";
 import ServiceMaintenance from "./page/serviceMaintenance/serviceMaintenance.jsx";
+import DashBoard from "./page/dashBoard/dashBoard.jsx";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -63,6 +64,7 @@ const AnimatedRoutes = () => {
           />
           <Route path="/service-clean" element={<ServiceClean />} />
           <Route path="/service-maintenance" element={<ServiceMaintenance />} />
+          <Route path="/dashboard" element={<DashBoard />} />
         </Routes>
       </AnimatedPage>
     </AnimatePresence>
@@ -84,19 +86,20 @@ function App() {
   // return <RouterProvider router={router} />;
   return (
     <Routes>
-    <Route path="/" element={<HomePage />} />
-    <Route path="/service-design" element={<ServiceDesign />} />
-    <Route path="/login" element={<LoginPage />} />
-    <Route path="/register" element={<RegisterPage />} />
-    <Route path="/forgotpassword" element={<ForgotPassword />} />
-    <Route
-      path="/customer-profile/:customerId"
-      element={<CustomerProfilePage />}
-    />
-    <Route path="/service-clean" element={<ServiceClean />} />
-    <Route path="/service-maintenance" element={<ServiceMaintenance />} />
-  </Routes>
-  )
+      <Route path="/" element={<HomePage />} />
+      <Route path="/service-design" element={<ServiceDesign />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/forgotpassword" element={<ForgotPassword />} />
+      <Route
+        path="/customer-profile/:customerId"
+        element={<CustomerProfilePage />}
+      />
+      <Route path="/service-clean" element={<ServiceClean />} />
+      <Route path="/service-maintenance" element={<ServiceMaintenance />} />
+      <Route path="/dashboard" element={<DashBoard />} />
+    </Routes>
+  );
 }
 
 export default App;

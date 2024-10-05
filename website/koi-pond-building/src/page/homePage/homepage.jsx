@@ -8,7 +8,6 @@ import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ScrollToTop from "react-scroll-to-top";
 import PondDesignIcon from "../koi_photo/design.png";
 import PondCleaningIcon from "../koi_photo/clean.png";
 import PondMaintenanceIcon from "../koi_photo/maintenance.png";
@@ -88,11 +87,7 @@ function HomePage() {
 
   return (
     <div className="home-page">
-      <Header
-      // isTransparent={!isHeaderScrolled}
-      // isScrolled={isHeaderScrolled}
-      // currentUser={currentUser}
-      />
+      <Header />
       <main>
         {/* Your existing main content */}
         <section id="home" className="hero">
@@ -251,15 +246,11 @@ function HomePage() {
 
       <Footer />
       <ToastContainer />
-      {/* {showScrollTop && (
-        <button
-          className={`scroll-to-top ${showScrollTop ? "show" : ""}`}
-          onClick={scrollToTop}
-        >
-          ↑
-        </button>
-      )} */}
-      <ScrollToTop smooth />
+      {showScrollTop && (
+        <div className="service-scroll-to-top" onClick={scrollToTop}>
+          ▲
+        </div>
+      )}
     </div>
   );
 }

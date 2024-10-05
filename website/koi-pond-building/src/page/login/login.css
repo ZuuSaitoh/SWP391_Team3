@@ -1,10 +1,12 @@
-/* Thêm hoặc cập nhật những quy tắc này ở đầu file */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 html,
 body {
   overflow-x: hidden;
   width: 100%;
   margin: 0;
   padding: 0;
+  font-family: 'Poppins', sans-serif;
 }
 
 /* Main container to hold both the image and the form */
@@ -24,9 +26,9 @@ body {
   background-image: url('../koi_photo/loginImg.jpg');
   background-size: cover;
   background-position: center;
-  clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+  border-radius: 0 10px 10px 0;
 }
 
 /* Right side form */
@@ -37,7 +39,8 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
+  background-color: #ffffff;
 }
 
 
@@ -48,36 +51,30 @@ body {
   padding-bottom: 30px;
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
 }
 
 .login-header {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center; 
-  gap: 25px;
-  margin-top: 0;
-  margin-bottom: 30px;
-  border: none;
-  background: none;
-  box-shadow: none;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 40px;
 }
 
 .login-text {
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 700;
   color: #d35400;
-  background: none;
-  border: none;
-  text-align: center; /* Adjust the text alignment */
+  text-align: center;
 }
 
 .login-underline {
-  width: 70px;
-  height: 3px;
-  border-radius: 10px;
-  background-color: rgb(233, 129, 81);
+  width: 60px;
+  height: 4px;
+  border-radius: 2px;
+  background-color: #d35400;
 }
 
 .login-inputs {
@@ -85,7 +82,8 @@ body {
   max-width: 350px;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center the contents horizontally */
+  align-items: center;
+  /* Center the contents horizontally */
 }
 
 .login-input {
@@ -94,37 +92,37 @@ body {
   margin-bottom: 20px;
   display: flex;
   align-items: center;
-  margin: auto;
-  height: 70px;
-  border: none;
-  box-shadow: none;
-  border-radius: 20px;
-  background-color: transparent;
+  height: 55px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.login-input:focus-within {
+  box-shadow: 0 0 0 2px rgba(211, 84, 0, 0.2);
 }
 
 .login-input input {
-  height: 50px;
-  font-size: 16px;
-  padding: 0 15px;
+  height: 100%;
   width: 100%;
-  border-radius: 15px;
-  outline: none;
-  background: rgb(209, 209, 209);
+  padding: 0 15px;
   border: none;
-  padding-left: 15px;
-  box-shadow: none;
-  transition: background-color 0.3s, border 0.3s;
+  outline: none;
+  background-color: transparent;
+  font-size: 16px;
+  color: #333;
 }
 
-.login-input input:focus {
-  background-color: #e0e0e0;
-  border: 1px solid #b3b3b3;
+.login-input input::placeholder {
+  color: #999;
 }
 
 .login-already-have-account {
   width: 100%;
   max-width: 350px;
-  text-align: center; /* Adjust the text alignment */
+  text-align: center;
+  /* Adjust the text alignment */
   margin-top: 20px;
   color: #797979;
   font-size: 16px;
@@ -145,8 +143,9 @@ body {
   max-width: 350px;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center the contents horizontally */
-  gap: 10px;
+  align-items: center;
+  /* Center the contents horizontally */
+  gap: 15px;
   margin-top: 20px;
   margin-bottom: 15px;
 }
@@ -154,36 +153,38 @@ body {
 .login-submit,
 .login-google-submit {
   width: 100%;
-  max-width: 350px;
   height: 50px;
-  padding: 10px;
   border-radius: 25px;
-  color: white;
-  background-color: #ff7f50;
-  text-align: center;
-  cursor: pointer;
   font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-submit {
+  background-color: #d35400;
+  color: white;
   border: none;
-  outline: none;
-  box-shadow: none;
-  margin: 10px 0;
+}
+
+.login-submit:hover {
+  background-color: #a04000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .login-google-submit {
-  width: 220px;
-  height: 50px;
-  font-size: 16px;
-  background-color: white !important;
-  color: #757575;
+  background-color: white;
+  color: #666;
+  border: 1px solid #ddd;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #dadce0 !important;
-  outline: none !important;
-  box-shadow: none !important;
-  border-radius: 25px;
-  padding: 10px;
-  margin: 10px 0;
+}
+
+.login-google-submit:hover {
+  background-color: #f8f8f8;
+  border-color: #ccc;
 }
 
 .login-google-submit img {
@@ -238,23 +239,23 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  padding: 0;
-  margin-bottom: 20px;
 }
 
 .login-forgot-password {
-  color: #ff6347;
+  color: #d35400;
   cursor: pointer;
-  font-weight: bold;
-  transition: color 0.3s ease;
+  font-weight: 500;
   font-size: 14px;
-  padding: 0;
-  margin-right: 0;
+  transition: color 0.3s ease;
+}
+
+.login-forgot-password:hover {
+  color: #a04000;
 }
 
 .login-show-password {
   font-size: 14px;
-  color: #797979;
+  color: #666;
   display: flex;
   align-items: center;
 }
@@ -314,23 +315,22 @@ body {
 .login-back-to-home {
   position: fixed;
   top: 20px;
-  left: 40px; /* Increase this value to move the button more to the right */
-  /* Decrease this value to move the button more to the left */
+  left: 20px;
   padding: 10px 15px;
-  background-color: rgba(255, 127, 80, 0.8);
+  background-color: rgba(211, 84, 0, 0.8);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 500;
   transition: background-color 0.3s ease;
   z-index: 1000;
-  /* Ensure it's above everything */
   white-space: nowrap;
 }
 
 .login-back-to-home:hover {
-  background-color: rgba(255, 99, 71, 0.9);
+  background-color: rgba(211, 84, 0, 1);
 }
 
 @media (max-width: 768px) {
@@ -422,7 +422,8 @@ body {
 /* Add a new media query for very large screens */
 @media (min-width: 1400px) {
   .login-form-container {
-    padding-left: 5%; /* Add some padding to the left */
+    padding-left: 5%;
+    /* Add some padding to the left */
   }
 }
 
@@ -434,11 +435,11 @@ body {
 }
 
 .Toastify__toast {
-  font-family: 'Poppins', Arial, sans-serif;
-  border-radius: 4px;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 8px;
   background-color: white;
   color: #333;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .Toastify__toast--success {
@@ -455,7 +456,6 @@ body {
 }
 
 .Toastify__progress-bar {
-  background-color: rgba(0, 0, 0, 0.2);
   height: 4px;
 }
 

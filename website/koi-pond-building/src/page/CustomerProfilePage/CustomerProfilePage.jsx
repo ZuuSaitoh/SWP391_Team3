@@ -22,6 +22,7 @@ function CustomerProfilePage() {
         console.log(response.data);
         const customerData = {
           name: response.data.fullName,
+          username: response.data.username,
           email: response.data.mail || "No email provided", // Handle null email
           phone: response.data.phone,
           address: response.data.address,
@@ -100,19 +101,21 @@ function CustomerProfilePage() {
   };
 
   if (isLoading) {
-    return <p>Loading customer data...</p>; // Simple loading message
+    return <div className="loading"><div className="loader"></div>Loading customer data...</div>;
   }
 
   if (isError) {
-    return <p>Failed to load customer data. Please try again later.</p>; // Error message
+    return <div className="error"><i className="fas fa-exclamation-triangle"></i> Failed to load customer data. Please try again later.</div>;
   }
 
   return (
     <AnimatedPage>
-      <Link to="/">hOME</Link>
       <div className="page-background">
         <div className="customer-profile-container">
-          <h1>Customer Profile</h1>
+          <Link to="/" className="home-link">
+            <i className="fas fa-home"></i> Home
+          </Link>
+          <h1 className="profile-title">Customer Profile</h1>
           <div className="customer-info">
             <div className="profile-picture-container">
               <img
@@ -126,7 +129,7 @@ function CustomerProfilePage() {
                     htmlFor="profile-picture-input"
                     className="profile-picture-label"
                   >
-                    Change Picture
+                    <i className="fas fa-camera"></i> Change Picture
                   </label>
                   <input
                     id="profile-picture-input"
@@ -146,26 +149,30 @@ function CustomerProfilePage() {
                     value={editedCustomer.name}
                     onChange={handleChange}
                     className="edit-input"
+                    placeholder="Name"
                   />
                   <input
                     name="phone"
                     value={editedCustomer.phone}
                     onChange={handleChange}
                     className="edit-input"
+                    placeholder="Phone"
                   />
                   <input
                     name="address"
                     value={editedCustomer.address}
                     onChange={handleChange}
                     className="edit-input"
+                    placeholder="Address"
                   />
                 </>
               ) : (
                 <>
-                  <h2>Name: {customer.name}</h2>
-                  <p>Email: {customer.email}</p>
-                  <p>Phone: {customer.phone}</p>
-                  <p>Address: {customer.address}</p>
+                  <h2>{customer.name}</h2>
+                  <p><i className="fas fa-user"></i> {customer.username}</p>
+                  <p><i className="fas fa-envelope"></i> {customer.email}</p>
+                  <p><i className="fas fa-phone"></i> {customer.phone}</p>
+                  <p><i className="fas fa-map-marker-alt"></i> {customer.address}</p>
                 </>
               )}
             </div>
@@ -173,20 +180,27 @@ function CustomerProfilePage() {
           {isEditing ? (
             <div className="edit-buttons">
               <button onClick={handleSave} className="save-button">
-                Save
+                <i className="fas fa-save"></i> Save
               </button>
               <button onClick={handleCancel} className="cancel-button">
-                Cancel
+                <i className="fas fa-times"></i> Cancel
               </button>
             </div>
           ) : (
             <button onClick={handleEdit} className="edit-button">
-              Edit Profile
+              <i className="fas fa-edit"></i> Edit Profile
             </button>
           )}
           <div className="customer-stats">
             <h3>Customer Statistics</h3>
-            <p>Loyalty Points: {customer.loyaltyPoints}</p>
+            <div className="stats-container">
+              <div className="stat-item">
+                <i className="fas fa-star"></i>
+                <span className="stat-value">{customer.loyaltyPoints}</span>
+                <span className="stat-label">Loyalty Points</span>
+              </div>
+              {/* Add more stat items here if needed */}
+            </div>
           </div>
         </div>
       </div>

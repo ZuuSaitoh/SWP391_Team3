@@ -3,8 +3,9 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import person from "../../page/koi_photo/person.png";
 import "./Header.css";
 
-function Header({ isTransparent, isScrolled }) {
+function Header({ isTransparent }) {
   const [currentUser, setCurrentUser] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -13,6 +14,14 @@ function Header({ isTransparent, isScrolled }) {
     if (storedUser) {
       setCurrentUser(JSON.parse(storedUser));
     }
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // const handleProfileClick = () => {
@@ -44,7 +53,7 @@ function Header({ isTransparent, isScrolled }) {
   return (
     <header
       className={`header ${isScrolled ? "scrolled" : ""} ${
-        isTransparent ? "transparent" : ""
+        isTransparent && !isScrolled ? "transparent" : ""
       }`}
     >
       <nav className="navbar">

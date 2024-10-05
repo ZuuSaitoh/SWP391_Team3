@@ -7,21 +7,21 @@ import ScrollToTop from "react-scroll-to-top";
 function ServiceClean() {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     setShowScrollTop(window.pageYOffset > 300);
-  //   };
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.pageYOffset > 300);
+    };
 
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, []);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  // const scrollToTop = () => {
-  //   window.scrollTo({
-  //     top: 0,
-  //     behavior: "smooth",
-  //   });
-  // };
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <div className="service-clean-page">
@@ -122,13 +122,12 @@ function ServiceClean() {
           {/* Add testimonials or reviews here */}
         </section>
       </div>
-      {/* {showScrollTop && (
+      {showScrollTop && (
         <div className="clean-scroll-to-top" onClick={scrollToTop}>
           ▲
         </div>
-      )} */}
+      )}
       <Footer />
-      <ScrollToTop smooth />
     </div>
   );
 }
