@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import axios from "axios";
+import axios from "../../config/axios"; // Make sure to use the configured axios instance
 import AnimatedPage from "../animationpage/AnimatedPage";
 import "./CustomerProfilePage.css";
 
@@ -45,15 +45,36 @@ function CustomerProfilePage() {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    const updatedCustomer = { ...editedCustomer };
-    if (newProfilePicture) {
-      updatedCustomer.profilePicture = newProfilePicture;
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+      const updatedCustomer = {
+        fullName: editedCustomer.name,
+        mail: editedCustomer.email,
+        phone: editedCustomer.phone,
+        address: editedCustomer.address,
+        // Note: We're not updating the profile picture or loyalty points here
+      };
+
+      const response = await axios.put(
+        `/customers/update/${customerId}`,
+        updatedCustomer
+      );
+
+      if (response.status === 200) {
+        setCustomer(editedCustomer);
+        setIsEditing(false);
+        setNewProfilePicture(null);
+        console.log("Customer data updated successfully:", response.data);
+      } else {
+        throw new Error("Failed to update customer data");
+      }
+    } catch (error) {
+      console.error("Error updating customer data:", error);
+      // You might want to show an error message to the user here
+    } finally {
+      setIsLoading(false);
     }
-    setCustomer(updatedCustomer);
-    setIsEditing(false);
-    setNewProfilePicture(null);
-    console.log("Saving customer data:", updatedCustomer);
   };
 
   const handleCancel = () => {
@@ -127,12 +148,6 @@ function CustomerProfilePage() {
                     className="edit-input"
                   />
                   <input
-                    name="email"
-                    value={editedCustomer.email}
-                    onChange={handleChange}
-                    className="edit-input"
-                  />
-                  <input
                     name="phone"
                     value={editedCustomer.phone}
                     onChange={handleChange}
@@ -147,7 +162,7 @@ function CustomerProfilePage() {
                 </>
               ) : (
                 <>
-                  <h2>{customer.name}</h2>
+                  <h2>Name: {customer.name}</h2>
                   <p>Email: {customer.email}</p>
                   <p>Phone: {customer.phone}</p>
                   <p>Address: {customer.address}</p>
