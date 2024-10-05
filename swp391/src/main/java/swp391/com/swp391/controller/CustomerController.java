@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import swp391.com.swp391.dto.request.CustomerCreationRequest;
+import swp391.com.swp391.dto.request.CustomerUpdatePasswordRequest;
 import swp391.com.swp391.dto.request.CustomerUpdateRequest;
 import swp391.com.swp391.dto.response.ApiResponse;
 import swp391.com.swp391.dto.response.CustomerResponse;
@@ -57,5 +58,12 @@ public class CustomerController {
     ApiResponse<String> deleteUserById(@PathVariable int customer_id){
         customerService.delete(customer_id);
         return new ApiResponse<String>(1012, "User deleted", "User deleted");
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @PutMapping("/update/password/{mail}")
+    ApiResponse<String> updatePasswordByMail(@PathVariable String mail, @RequestBody CustomerUpdatePasswordRequest request){
+        customerService.updatePassword(mail, request);
+        return new ApiResponse<String>(2222, "Update password", "Update successfully!");
     }
 }

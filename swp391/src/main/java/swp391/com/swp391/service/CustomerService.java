@@ -11,8 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import swp391.com.swp391.dto.request.CustomerCreationRequest;
+import swp391.com.swp391.dto.request.CustomerUpdatePasswordRequest;
 import swp391.com.swp391.dto.request.CustomerUpdateRequest;
-import swp391.com.swp391.dto.response.CustomerResponse;
 import swp391.com.swp391.entity.Customer;
 import swp391.com.swp391.exception.AppException;
 import swp391.com.swp391.exception.ErrorCode;
@@ -68,10 +68,24 @@ public class CustomerService {
         customer.setFullName(request.getFullName());
         return customerRepository.save(customer);
     }
+
     public void delete(int customer_id){
         customerRepository.deleteById(String.valueOf(customer_id));
     }
+
     public int getCustomerIdByUsername(String username){
         return  customerRepository.findByUsername(username).map(Customer::getId).orElseThrow(() -> new RuntimeException("Customer not found"));
+    }
+
+    public Customer getCustomerByMail(String mail){
+        return customerRepository.findByMail(mail).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+    }
+
+
+    public Customer updatePassword(String mail, CustomerUpdatePasswordRequest request){
+        Customer customer = getCustomerByMail(mail);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        customer.setPassword(passwordEncoder.encode(request.getPassword()));
+        return customerRepository.save(customer);
     }
 }

@@ -16,6 +16,7 @@ public enum ErrorCode {
     PASSWORD_NOT_MATCH(1010, "Password didn't match! Try again!"),
     PHONE_NUMBER_INVALID(1011, "Phone number invalid, please try again"),
     USER_DELETED(1012, "User deleted"),
+    EMAIL_NOT_EXISTED(1013, "Email don't existed!"),
     ;
 
     ErrorCode(int code, String message) {
