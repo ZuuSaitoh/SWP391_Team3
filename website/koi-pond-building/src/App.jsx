@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import {
   createBrowserRouter,
+  Route,
   RouterProvider,
+  Routes,
   useLocation,
   useNavigationType,
 } from "react-router-dom";
@@ -37,28 +39,64 @@ const AnimatedRoutes = () => {
     <AnimatePresence mode="wait">
       <ScrollToTop />
       <AnimatedPage key={location.pathname}>
-        {location.pathname === "/" && <HomePage />}
+        {/* {location.pathname === "/" && <HomePage />}
         {location.pathname === "/service-design" && <ServiceDesign />}
         {location.pathname === "/login" && <LoginPage />}
         {location.pathname === "/register" && <RegisterPage />}
         {location.pathname === "/forgotpassword" && <ForgotPassword />}
-        {location.pathname === "/customer-profile" && <CustomerProfilePage />}
+        {location.pathname === "/customer-profile/:customerId" && (
+          <CustomerProfilePage />
+        )}
         {location.pathname === "/service-clean" && <ServiceClean />}
-        {location.pathname === "/service-maintenance" && <ServiceMaintenance />}
+        {location.pathname === "/service-maintenance" && <ServiceMaintenance />} */}
+
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/service-design" element={<ServiceDesign />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route
+            path="/customer-profile/:customerId"
+            element={<CustomerProfilePage />}
+          />
+          <Route path="/service-clean" element={<ServiceClean />} />
+          <Route path="/service-maintenance" element={<ServiceMaintenance />} />
+        </Routes>
       </AnimatedPage>
     </AnimatePresence>
   );
 };
 
 function App() {
-  const router = createBrowserRouter([
-    {
-      path: "*",
-      element: <AnimatedRoutes />,
-    },
-  ]);
+  // const router = createBrowserRouter([
+  //   {
+  //     path: "*",
+  //     element: <AnimatedRoutes />,
+  //   },
+  //   {
+  //     path: "/forgot-password",
+  //     element: <ForgotPassword />,
+  //   },
+  // ]);
 
-  return <RouterProvider router={router} />;
+  // return <RouterProvider router={router} />;
+  return (
+    <Routes>
+    <Route path="/" element={<HomePage />} />
+    <Route path="/service-design" element={<ServiceDesign />} />
+    <Route path="/login" element={<LoginPage />} />
+    <Route path="/register" element={<RegisterPage />} />
+    <Route path="/forgotpassword" element={<ForgotPassword />} />
+    <Route
+      path="/customer-profile/:customerId"
+      element={<CustomerProfilePage />}
+    />
+    <Route path="/service-clean" element={<ServiceClean />} />
+    <Route path="/service-maintenance" element={<ServiceMaintenance />} />
+  </Routes>
+  )
 }
 
 export default App;

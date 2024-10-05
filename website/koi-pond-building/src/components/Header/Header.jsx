@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import person from "../../page/koi_photo/person.png";
 import "./Header.css";
 
@@ -15,9 +15,13 @@ function Header({ isTransparent, isScrolled }) {
     }
   }, []);
 
-  const loginClick = () => {
-    navigate("/login");
-  };
+  // const handleProfileClick = () => {
+  //   navigate(`/customer-profile/${currentUser.id}`);
+  // };
+
+  // const loginClick = () => {
+  //   navigate("/login");
+  // };
 
   const logoutClick = () => {
     localStorage.removeItem("authToken");
@@ -25,7 +29,7 @@ function Header({ isTransparent, isScrolled }) {
     setCurrentUser(null);
     navigate("/");
   };
-
+  console.log(currentUser);
   const navigateToSection = (sectionId) => {
     if (location.pathname === "/") {
       const section = document.getElementById(sectionId);
@@ -70,21 +74,26 @@ function Header({ isTransparent, isScrolled }) {
         <div className="login-container">
           {currentUser ? (
             <>
-              <span className="user-greeting">
+              {/* onClick={handleProfileClick} */}
+              <Link
+                to={`/customer-profile/${currentUser.id}`}
+                className="user-greeting"
+              >
                 Welcome, {currentUser.username}!
-              </span>
+              </Link>
               <button onClick={logoutClick} className="logout-button">
                 Logout
               </button>
             </>
           ) : (
+            <a href="/login">
+                          {/* onClick={loginClick} */}
             <img
               src={person}
               alt="Login"
-              onClick={loginClick}
               className="login-icon"
-            />
-          )}
+            /></a>
+          )} 
         </div>
       </nav>
     </header>

@@ -12,6 +12,7 @@ import ScrollToTop from "react-scroll-to-top";
 import PondDesignIcon from "../koi_photo/design.png";
 import PondCleaningIcon from "../koi_photo/clean.png";
 import PondMaintenanceIcon from "../koi_photo/maintenance.png";
+import { u } from "framer-motion/client";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -19,10 +20,13 @@ function HomePage() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-
+  console.log("da vao home");
   useEffect(() => {
     // Fetch current user information from localStorage or your authentication system
     const user = JSON.parse(localStorage.getItem("user"));
+    // toast.success("Login successful! Welcome back!");
+
+    console.log(user);
     if (user) {
       setCurrentUser(user);
     }
@@ -45,10 +49,12 @@ function HomePage() {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const loginSuccess = queryParams.get("login");
+
+    console.log(loginSuccess);
     if (loginSuccess === "success") {
       toast.success("Login successful! Welcome back!");
     }
-  }, [location]);
+  }, [location.search]);
 
   const loginClick = () => {
     navigate("/login");

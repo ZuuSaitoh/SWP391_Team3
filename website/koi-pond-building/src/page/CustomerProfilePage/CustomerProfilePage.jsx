@@ -1,32 +1,45 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
 import AnimatedPage from "../animationpage/AnimatedPage";
 import "./CustomerProfilePage.css";
 
-// Mock customer data
-const mockCustomer = {
-  id: "1",
-  name: "John Doe",
-  email: "john.doe@example.com",
-  phone: "+1 (555) 123-4567",
-  address: "123 Main St, Anytown, USA 12345",
-  profilePicture: "https://via.placeholder.com/150",
-  totalOrders: 15,
-  loyaltyPoints: 500,
-  memberSince: "2022-01-01",
-  recentOrders: [
-    { id: "001", date: "2023-05-15", total: 150.0, status: "Delivered" },
-    { id: "002", date: "2023-04-30", total: 89.99, status: "Shipped" },
-    { id: "003", date: "2023-04-15", total: 210.5, status: "Processing" },
-  ],
-};
-
 function CustomerProfilePage() {
-  const { customerId } = useParams();
-  const [customer, setCustomer] = useState(mockCustomer);
+  const { customerId } = useParams(); // Fetch customerId from URL params
+  const [customer, setCustomer] = useState(null); // Initially null before fetching
+  const [isLoading, setIsLoading] = useState(true); // To show loading state
+  const [isError, setIsError] = useState(false); // To show error state
   const [isEditing, setIsEditing] = useState(false);
-  const [editedCustomer, setEditedCustomer] = useState(customer);
+  const [editedCustomer, setEditedCustomer] = useState(null);
   const [newProfilePicture, setNewProfilePicture] = useState(null);
+  console.log(customerId);
+  useEffect(() => {
+    const fetchCustomerData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/customers/${customerId}`
+        );
+        console.log(response.data);
+        const customerData = {
+          name: response.data.fullName,
+          email: response.data.mail || "No email provided", // Handle null email
+          phone: response.data.phone,
+          address: response.data.address,
+          loyaltyPoints: response.data.point,
+          profilePicture: "https://via.placeholder.com/150", // Placeholder as the backend doesn't provide it
+        };
+        setCustomer(customerData);
+        setEditedCustomer(customerData); // Set this so you can edit the customer
+        setIsLoading(false); // Data fetched, no longer loading
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+        setIsError(true); // Set error state if fetch fails
+        setIsLoading(false); // Stop loading state in case of error
+      }
+    };
+
+    fetchCustomerData();
+  }, [customerId]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -65,8 +78,17 @@ function CustomerProfilePage() {
     }
   };
 
+  if (isLoading) {
+    return <p>Loading customer data...</p>; // Simple loading message
+  }
+
+  if (isError) {
+    return <p>Failed to load customer data. Please try again later.</p>; // Error message
+  }
+
   return (
     <AnimatedPage>
+      <Link to="/">hOME</Link>
       <div className="page-background">
         <div className="customer-profile-container">
           <h1>Customer Profile</h1>
@@ -149,35 +171,7 @@ function CustomerProfilePage() {
           )}
           <div className="customer-stats">
             <h3>Customer Statistics</h3>
-            <p>Total Orders: {customer.totalOrders}</p>
             <p>Loyalty Points: {customer.loyaltyPoints}</p>
-            <p>
-              Member Since:{" "}
-              {new Date(customer.memberSince).toLocaleDateString()}
-            </p>
-          </div>
-          <div className="recent-orders">
-            <h3>Recent Orders</h3>
-            <table className="orders-table">
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Date</th>
-                  <th>Total</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {customer.recentOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td>{order.id}</td>
-                    <td>{new Date(order.date).toLocaleDateString()}</td>
-                    <td>${order.total.toFixed(2)}</td>
-                    <td>{order.status}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </div>
       </div>

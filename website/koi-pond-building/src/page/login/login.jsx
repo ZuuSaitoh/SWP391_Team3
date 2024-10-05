@@ -80,7 +80,6 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) {
       return;
     }
@@ -93,14 +92,12 @@ function Login() {
     try {
       console.log("Sending login data:", values);
       const response = await api.post("/customers/auth/token", values);
-
       // Extract token from the response
       const token = response.data.result.token;
       const isAuthenticated = response.data.result.authenticated;
 
       console.log("Login response:", response.data);
 
-      // Store the token in localStorage or sessionStorage
       if (isAuthenticated) {
         // Decode the token
         const decodedToken = jwtDecode(token);
@@ -115,27 +112,30 @@ function Login() {
           "user",
           JSON.stringify({ id: customerId, username })
         );
-
-        toast.success("Login successful!");
-        navigate("/?login=success"); // Redirect to homepage with success parameter
+        // jsadjksadjk
+        // Redirect to homepage with success parameter
+        navigate("/?login=success");
       } else {
         toast.error("Authentication failed.");
       }
     } catch (err) {
       console.error("Login error:", err);
       if (err.response) {
+        toast.error("Authentication failed.");
         console.error("Error data:", err.response.data);
         console.error("Error status:", err.response.status);
         console.error("Error headers:", err.response.headers);
-        toast.error(
+        setNotification(
           `Login failed: ${err.response.data.message || err.response.data}`
         );
       } else if (err.request) {
+        toast.error("Authentication failed.");
         console.error("No response received:", err.request);
-        toast.error("No response from server. Please try again later.");
+        setNotification("No response from server. Please try again later.");
       } else {
+        toast.error("Authentication failed.");
         console.error("Error message:", err.message);
-        toast.error(`Error: ${err.message}`);
+        setNotification(`Error: ${err.message}`);
       }
     }
   };
