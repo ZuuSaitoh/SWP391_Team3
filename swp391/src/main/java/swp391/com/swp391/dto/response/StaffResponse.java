@@ -13,12 +13,12 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StaffResponse {
-    int staffId;
-    String username;
-    String password;
-    String mail;
-    String fullName;
-    String address;
-    String phone;
-    String role;
+    private int staffId;
+    private String username;
+    private String password;
+    private String mail;
+    private String fullName;
+    private String address;
+    private String phone;
+    private String role;
 }
