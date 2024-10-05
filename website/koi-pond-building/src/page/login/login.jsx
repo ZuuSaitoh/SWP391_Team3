@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./login.css";
 import googleLogo from "../koi_photo/google-logo.png";
 import api from "../../config/axios.jsx";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -92,9 +93,34 @@ function Login() {
     try {
       console.log("Sending login data:", values);
       const response = await api.post("/customers/auth/token", values);
+
+      // Extract token from the response
+      const token = response.data.result.token;
+      const isAuthenticated = response.data.result.authenticated;
+
       console.log("Login response:", response.data);
-      toast.success("Login successful!");
-      navigate("/?login=success"); // Redirect to homepage with success parameter
+
+      // Store the token in localStorage or sessionStorage
+      if (isAuthenticated) {
+        // Decode the token
+        const decodedToken = jwtDecode(token);
+        console.log("Decoded token:", decodedToken);
+
+        // Extract user information from the decoded token
+        const { customerId, sub: username } = decodedToken;
+
+        // Store the token and user info in localStorage
+        localStorage.setItem("authToken", token);
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ id: customerId, username })
+        );
+
+        toast.success("Login successful!");
+        navigate("/?login=success"); // Redirect to homepage with success parameter
+      } else {
+        toast.error("Authentication failed.");
+      }
     } catch (err) {
       console.error("Login error:", err);
       if (err.response) {
@@ -206,7 +232,7 @@ function Login() {
           </div>
         </div>
       </div>
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={5000} />
     </AnimatedPage>
   );
 }

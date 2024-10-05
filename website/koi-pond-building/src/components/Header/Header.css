@@ -46,7 +46,7 @@
 .nav-links {
     display: flex;
     list-style: none;
-    align-items: center; 
+    align-items: center;
     margin: 0;
     padding: 0;
 }
@@ -71,7 +71,7 @@
     height: 24px;
     cursor: pointer;
     filter: invert(1);
-    margin-left: 2rem; 
+    margin-left: 2rem;
 }
 
 .solid .login-icon {
@@ -96,7 +96,7 @@
     height: 24px;
     cursor: pointer;
     filter: invert(1);
-    margin-left: 2rem; 
+    margin-left: 2rem;
 }
 
 .solid .login-icon {
@@ -105,8 +105,23 @@
 
 
 .login-container {
-    margin-left: 20px; 
-    padding-left: 2rem; 
+    margin-left: 20px;
+    padding-left: 2rem;
+}
+
+.logout-button {
+    background-color: var(--primary-color);
+    color: var(--light-text-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: var(--secondary-color);
 }
 
 @media (max-width: 768px) {

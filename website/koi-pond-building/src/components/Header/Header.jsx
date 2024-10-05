@@ -1,14 +1,29 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import person from "../../page/koi_photo/person.png";
 import "./Header.css";
 
-function Header({ isTransparent, isScrolled, currentUser }) {
+function Header({ isTransparent, isScrolled }) {
+  const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setCurrentUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   const loginClick = () => {
     navigate("/login");
+  };
+
+  const logoutClick = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    setCurrentUser(null);
+    navigate("/");
   };
 
   const navigateToSection = (sectionId) => {
@@ -23,7 +38,11 @@ function Header({ isTransparent, isScrolled, currentUser }) {
   };
 
   return (
-    <header className={`header ${isScrolled ? 'scrolled' : ''} ${isTransparent ? 'transparent' : ''}`}>
+    <header
+      className={`header ${isScrolled ? "scrolled" : ""} ${
+        isTransparent ? "transparent" : ""
+      }`}
+    >
       <nav className="navbar">
         <div className="logo">Koi Pond Builders</div>
         <ul className="nav-links">
@@ -50,14 +69,22 @@ function Header({ isTransparent, isScrolled, currentUser }) {
         </ul>
         <div className="login-container">
           {currentUser ? (
-            <span className="user-greeting">Hi, {currentUser.username}</span>
-          ) : null}
-          <img
-            src={person}
-            alt="Login"
-            onClick={loginClick}
-            className="login-icon"
-          />
+            <>
+              <span className="user-greeting">
+                Welcome, {currentUser.username}!
+              </span>
+              <button onClick={logoutClick} className="logout-button">
+                Logout
+              </button>
+            </>
+          ) : (
+            <img
+              src={person}
+              alt="Login"
+              onClick={loginClick}
+              className="login-icon"
+            />
+          )}
         </div>
       </nav>
     </header>
