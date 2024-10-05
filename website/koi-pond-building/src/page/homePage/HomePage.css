@@ -516,6 +516,7 @@ body {
 
 /* Responsive styles */
 @media (max-width: 1024px) {
+
   .service-item,
   .gallery-item,
   .testimonial-item {
@@ -592,50 +593,6 @@ body {
   }
 }
 
-/* Scroll to Top Button styles */
-.scroll-to-top {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: var(--primary-color);
-  color: var(--light-text-color);
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 24px;
-  cursor: pointer;
-  border: none;
-  outline: none;
-  transition: background-color 0.3s, transform 0.3s, opacity 0.3s;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.scroll-to-top.visible {
-  opacity: 1;
-  visibility: visible;
-}
-
-.scroll-to-top:hover {
-  background-color: var(--secondary-color);
-  transform: translateY(-5px);
-}
-
-@media (max-width: 768px) {
-  .scroll-to-top {
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
-    bottom: 15px;
-    right: 15px;
-  }
-}
-
 /* Toast notification styles */
 .Toastify__toast-container {
   width: 320px;
@@ -669,4 +626,36 @@ body {
 
 .Toastify__close-button {
   color: #888;
+}
+
+/* Scroll to top button styles */
+.scroll-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: var(--light-text-color);
+  border: none;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1000;
+}
+
+.scroll-to-top.show {
+  opacity: 0.7;
+  visibility: visible;
+}
+
+.scroll-to-top:hover {
+  opacity: 1;
+  transform: translateY(-3px);
 }

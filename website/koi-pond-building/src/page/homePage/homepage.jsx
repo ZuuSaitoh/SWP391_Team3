@@ -8,7 +8,7 @@ import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import ScrollToTop from "react-scroll-to-top";
 import PondDesignIcon from "../koi_photo/design.png";
 import PondCleaningIcon from "../koi_photo/clean.png";
 import PondMaintenanceIcon from "../koi_photo/maintenance.png";
@@ -22,18 +22,23 @@ function HomePage() {
 
   useEffect(() => {
     // Fetch current user information from localStorage or your authentication system
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       setCurrentUser(user);
     }
 
     const handleScroll = () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
       setIsHeaderScrolled(scrollTop > 50);
       setShowScrollTop(scrollTop > 300);
+      console.log("Scroll position:", scrollTop);
+      console.log("Show scroll top:", scrollTop > 300);
     };
 
     window.addEventListener("scroll", handleScroll);
+    // Call handleScroll initially to set the correct initial state
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -44,13 +49,6 @@ function HomePage() {
       toast.success("Login successful! Welcome back!");
     }
   }, [location]);
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
 
   const loginClick = () => {
     navigate("/login");
@@ -75,12 +73,19 @@ function HomePage() {
     navigate("/service-maintenance");
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <div className="home-page">
-      <Header 
-        isTransparent={!isHeaderScrolled} 
-        isScrolled={isHeaderScrolled}
-        currentUser={currentUser}
+      <Header
+      // isTransparent={!isHeaderScrolled}
+      // isScrolled={isHeaderScrolled}
+      // currentUser={currentUser}
       />
       <main>
         {/* Your existing main content */}
@@ -237,15 +242,18 @@ function HomePage() {
           </div>
         </section>
       </main>
-      <button 
-        className={`scroll-to-top ${showScrollTop ? 'visible' : ''}`}
-        onClick={scrollToTop}
-        aria-label="Scroll to top"
-      >
-        ▲
-      </button>
+
       <Footer />
       <ToastContainer />
+      {/* {showScrollTop && (
+        <button
+          className={`scroll-to-top ${showScrollTop ? "show" : ""}`}
+          onClick={scrollToTop}
+        >
+          ↑
+        </button>
+      )} */}
+      <ScrollToTop smooth />
     </div>
   );
 }
