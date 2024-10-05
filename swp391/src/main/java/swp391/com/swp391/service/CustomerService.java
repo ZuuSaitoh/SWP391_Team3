@@ -71,4 +71,7 @@ public class CustomerService {
     public void delete(int customer_id){
         customerRepository.deleteById(String.valueOf(customer_id));
     }
+    public int getCustomerIdByUsername(String username){
+        return  customerRepository.findByUsername(username).map(Customer::getId).orElseThrow(() -> new RuntimeException("Customer not found"));
+    }
 }

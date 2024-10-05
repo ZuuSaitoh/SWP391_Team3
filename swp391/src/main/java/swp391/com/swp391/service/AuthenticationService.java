@@ -32,6 +32,8 @@ import java.util.Date;
 public class AuthenticationService {
     @Autowired
     CustomerRepository customerRepository;
+    @Autowired
+    CustomerService customerService;
 
     @NonFinal
     @Value("${jwt.secret}")
@@ -52,6 +54,7 @@ public class AuthenticationService {
     }
 
     private String generateToken(String username){
+        int customerId = customerService.getCustomerIdByUsername(username);
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
@@ -59,7 +62,7 @@ public class AuthenticationService {
                 .issuer("swp391.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
-                .claim("customerId", "Custom")
+                .claim("customerId", customerId)
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 
