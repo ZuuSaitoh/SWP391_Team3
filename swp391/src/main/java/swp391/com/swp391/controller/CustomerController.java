@@ -62,7 +62,7 @@ public class CustomerController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PutMapping("/update/password/{mail}")
-    ApiResponse<String> updatePasswordByMail(@PathVariable String mail, @RequestBody CustomerUpdatePasswordRequest request){
+    ApiResponse<String> updatePasswordByMail(@PathVariable String mail, @RequestBody @Valid CustomerUpdatePasswordRequest request){
         customerService.updatePassword(mail, request);
         return new ApiResponse<String>(2222, "Update password", "Update successfully!");
     }

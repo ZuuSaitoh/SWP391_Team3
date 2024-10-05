@@ -84,6 +84,9 @@ public class CustomerService {
 
     public Customer updatePassword(String mail, CustomerUpdatePasswordRequest request){
         Customer customer = getCustomerByMail(mail);
+        if (customer.getPassword().isEmpty()){
+            throw new AppException(ErrorCode.LOGIN_GG_NOT_PASSWORD);
+        }
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         customer.setPassword(passwordEncoder.encode(request.getPassword()));
         return customerRepository.save(customer);

@@ -17,6 +17,7 @@ public enum ErrorCode {
     PHONE_NUMBER_INVALID(1011, "Phone number invalid, please try again"),
     USER_DELETED(1012, "User deleted"),
     EMAIL_NOT_EXISTED(1013, "Email don't existed!"),
+    LOGIN_GG_NOT_PASSWORD(1014, "Can't change the password because you've login by GG method!"),
     ;
 
     ErrorCode(int code, String message) {
