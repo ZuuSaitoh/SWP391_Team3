@@ -3,6 +3,7 @@ import "./forgotpassword.css";
 import { useNavigate } from "react-router-dom";
 import AnimatedPage from "../animationpage/AnimatedPage";
 
+
 function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -80,7 +81,7 @@ function ForgotPassword() {
   return (
     <AnimatedPage>
       <div className="forgot-password-container">
-        <div className="forgot-password-image-container2" />
+        <div className="forgot-password-image-container2"></div>
         <div className="forgot-password-form-container">
           <div className="forgot-password-header">
             <h2 className="forgot-password-text">Forgot Password</h2>
