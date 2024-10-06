@@ -20,8 +20,8 @@ function Header({ isTransparent }) {
       setIsScrolled(scrollPosition > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // const handleProfileClick = () => {
@@ -79,6 +79,9 @@ function Header({ isTransparent }) {
           <li>
             <a onClick={() => navigateToSection("contact")}>Contact</a>
           </li>
+          <li>
+            <a href="/staff">Staff</a>
+          </li>
         </ul>
         <div className="login-container">
           {currentUser ? (
@@ -96,13 +99,10 @@ function Header({ isTransparent }) {
             </>
           ) : (
             <a href="/login">
-                          {/* onClick={loginClick} */}
-            <img
-              src={person}
-              alt="Login"
-              className="login-icon"
-            /></a>
-          )} 
+              {/* onClick={loginClick} */}
+              <img src={person} alt="Login" className="login-icon" />
+            </a>
+          )}
         </div>
       </nav>
     </header>

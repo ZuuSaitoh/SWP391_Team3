@@ -49,11 +49,23 @@ function HomePage() {
     const queryParams = new URLSearchParams(location.search);
     const loginSuccess = queryParams.get("login");
 
-    console.log(loginSuccess);
     if (loginSuccess === "success") {
-      toast.success("Login successful! Welcome back!");
+      // Delay the toast notification slightly to ensure the component is mounted
+      setTimeout(() => {
+        toast.success("Login successful! Welcome back!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }, 100);
+
+      // Remove the query parameter after showing the toast
+      navigate(location.pathname, { replace: true });
     }
-  }, [location.search]);
+  }, [location.search, navigate]);
 
   const loginClick = () => {
     navigate("/login");
