@@ -110,19 +110,18 @@ function CustomerProfilePage() {
 
   const getStatusClass = (status) => {
     switch (status.toLowerCase()) {
-      case 'pending':
-        return 'status-pending';
-      case 'processing':
-        return 'status-processing';
-      case 'completed':
-        return 'status-completed';
-      case 'cancelled':
-        return 'status-cancelled';
+      case "pending":
+        return "status-pending";
+      case "processing":
+        return "status-processing";
+      case "completed":
+        return "status-completed";
+      case "cancelled":
+        return "status-cancelled";
       default:
-        return '';
+        return "";
     }
   };
-
 
   const handleChangePassword = () => {
     // Implement password change logic here
@@ -131,11 +130,20 @@ function CustomerProfilePage() {
   };
 
   if (isLoading) {
-    return <div className="loading"><div className="loader"></div>Loading customer data...</div>;
+    return (
+      <div className="loading">
+        <div className="loader"></div>Loading customer data...
+      </div>
+    );
   }
 
   if (isError) {
-    return <div className="error"><i className="fas fa-exclamation-triangle"></i> Failed to load customer data. Please try again later.</div>;
+    return (
+      <div className="error">
+        <i className="fas fa-exclamation-triangle"></i> Failed to load customer
+        data. Please try again later.
+      </div>
+    );
   }
 
   return (
@@ -199,10 +207,18 @@ function CustomerProfilePage() {
               ) : (
                 <>
                   <h2>{customer.name}</h2>
-                  <p><i className="fas fa-user"></i> {customer.username}</p>
-                  <p><i className="fas fa-envelope"></i> {customer.email}</p>
-                  <p><i className="fas fa-phone"></i> {customer.phone}</p>
-                  <p><i className="fas fa-map-marker-alt"></i> {customer.address}</p>
+                  <p>
+                    <i className="fas fa-user"></i> {customer.username}
+                  </p>
+                  <p>
+                    <i className="fas fa-envelope"></i> {customer.email}
+                  </p>
+                  <p>
+                    <i className="fas fa-phone"></i> {customer.phone}
+                  </p>
+                  <p>
+                    <i className="fas fa-map-marker-alt"></i> {customer.address}
+                  </p>
                 </>
               )}
             </div>
@@ -221,7 +237,10 @@ function CustomerProfilePage() {
               <button onClick={handleEdit} className="edit-button">
                 <i className="fas fa-edit"></i> Edit Profile
               </button>
-              <button onClick={handleChangePassword} className="change-password-button">
+              <button
+                onClick={handleChangePassword}
+                className="change-password-button"
+              >
                 <i className="fas fa-key"></i> Change Password
               </button>
             </div>
@@ -245,9 +264,15 @@ function CustomerProfilePage() {
                   <div className="order-info">
                     <span className="order-id">Order #{order.id}</span>
                     <br />
-                    <span className="order-date">{new Date(order.orderDate).toLocaleDateString()}</span>
+                    <span className="order-date">
+                      {new Date(order.orderDate).toLocaleDateString()}
+                    </span>
                   </div>
-                  <span className={`order-status-badge ${getStatusClass(order.status)}`}>
+                  <span
+                    className={`order-status-badge ${getStatusClass(
+                      order.status
+                    )}`}
+                  >
                     {order.status}
                   </span>
                 </li>

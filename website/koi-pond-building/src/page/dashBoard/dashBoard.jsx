@@ -1,143 +1,276 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import './dashBoard.css';
-import { FaShoppingBag, FaMoneyBillWave, FaUsers, FaChartLine, FaTachometerAlt, FaList, FaCog, FaSignOutAlt, FaBars } from 'react-icons/fa';
-import axios from '../../config/axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "./dashBoard.css";
+import CustomerProfileDashboard from "./customerProfileDashBoard";
 
-function Dashboard() {
-  const [stats, setStats] = useState({
-    totalOrders: 0,
-    totalSales: 0,
-    totalVisits: 0,
-    totalBalance: 0,
-  });
+const Dashboard = () => {
   const [customers, setCustomers] = useState([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
+  const [staffs, setStaffs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeView, setActiveView] = useState("customers");
+  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+  const navigate = useNavigate();
+  const [showAddCustomerForm, setShowAddCustomerForm] = useState(false);
+  const [newCustomer, setNewCustomer] = useState({
+    username: "",
+    password: "",
+    confirm_password: "",
+    mail: "",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsLoading(true);
-        const customersResponse = await axios.get('/customers/fetchAll');
-        if (Array.isArray(customersResponse.data)) {
-          setCustomers(customersResponse.data);
-          
-          // Update stats based on customer data
-          setStats({
-            totalOrders: customersResponse.data.length, // Placeholder: using customer count as order count
-            totalSales: customersResponse.data.reduce((sum, customer) => sum + (customer.point || 0), 0), // Using points as sales
-            totalVisits: customersResponse.data.length * 2, // Placeholder: assuming each customer visited twice
-            totalBalance: customersResponse.data.reduce((sum, customer) => sum + (customer.point || 0) * 10, 0), // Placeholder: using points * 10 as balance
-          });
+        const [customersResponse, staffsResponse] = await Promise.all([
+          axios.get("http://localhost:8080/customers/fetchAll"),
+          axios.get("http://localhost:8080/staffs/fetchAll"),
+        ]);
+
+        console.log("Customers response:", customersResponse.data);
+        console.log("Staffs response:", staffsResponse.data);
+
+        if (customersResponse.data.code === 9999) {
+          setCustomers(customersResponse.data.result);
+          console.log("Customers set:", customersResponse.data.result);
         } else {
-          throw new Error('Received invalid data format for customers');
+          setError("Failed to fetch customers");
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError(error.message);
+
+        if (staffsResponse.data.code === 9999) {
+          setStaffs(staffsResponse.data.result);
+          console.log("Staffs set:", staffsResponse.data.result);
+        } else {
+          setError("Failed to fetch staffs");
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("An error occurred while fetching data");
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+  console.log("Rendering dashboard. Customers:", customers);
+  console.log("Rendering dashboard. Staffs:", staffs);
+
+  if (loading) return <div className="dashboard-loading">Loading...</div>;
+  if (error) return <div className="dashboard-error">{error}</div>;
+
+  const handleViewProfile = (customerId) => {
+    navigate(`/customer/${customerId}`);
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const handleAddCustomer = async (e) => {
+    e.preventDefault();
+    if (newCustomer.password !== newCustomer.confirm_password) {
+      alert("Passwords don't match");
+      return;
+    }
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/customers/create",
+        newCustomer
+      );
+      if (response.data.code === 1000) {
+        alert("Customer created successfully");
+        setCustomers([...customers, response.data.result]);
+        setShowAddCustomerForm(false);
+        setNewCustomer({
+          username: "",
+          password: "",
+          confirm_password: "",
+          mail: "",
+        });
+      } else {
+        alert("Failed to create customer");
+      }
+    } catch (err) {
+      console.error("Error creating customer:", err);
+      alert("An error occurred while creating the customer");
+    }
+  };
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const handleViewStaffProfile = (staffId) => {
+    navigate(`/staff/${staffId}`);
+  };
+
+  const renderAddCustomerForm = () => (
+    <div className="add-customer-form">
+      <h2>Add New Customer</h2>
+      <form onSubmit={handleAddCustomer}>
+        <input
+          type="text"
+          placeholder="Username"
+          value={newCustomer.username}
+          onChange={(e) =>
+            setNewCustomer({ ...newCustomer, username: e.target.value })
+          }
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={newCustomer.password}
+          onChange={(e) =>
+            setNewCustomer({ ...newCustomer, password: e.target.value })
+          }
+          required
+        />
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          value={newCustomer.confirm_password}
+          onChange={(e) =>
+            setNewCustomer({ ...newCustomer, confirm_password: e.target.value })
+          }
+          required
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          value={newCustomer.mail}
+          onChange={(e) =>
+            setNewCustomer({ ...newCustomer, mail: e.target.value })
+          }
+          required
+        />
+        <button type="submit">Create Customer</button>
+        <button type="button" onClick={() => setShowAddCustomerForm(false)}>
+          Cancel
+        </button>
+      </form>
+    </div>
+  );
+
+  const renderCustomers = () => (
+    <div className="table-container">
+      <button
+        onClick={() => setShowAddCustomerForm(true)}
+        className="add-customer-btn"
+      >
+        Add New Customer
+      </button>
+      {showAddCustomerForm && renderAddCustomerForm()}
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Points</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {customers
+            .sort((a, b) => a.id - b.id)
+            .map((customer) => (
+              <tr key={customer.id}>
+                <td>{customer.id}</td>
+                <td>{customer.username}</td>
+                <td>{customer.fullName}</td>
+                <td>{customer.mail}</td>
+                <td>{customer.address}</td>
+                <td>{customer.phone}</td>
+                <td>{customer.point}</td>
+                <td>
+                  <button
+                    onClick={() => handleViewProfile(customer.id)}
+                    className="view-profile-btn"
+                  >
+                    View Profile
+                  </button>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const renderStaffs = () => (
+    <div className="table-container">
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>Staff ID</th>
+            <th>Username</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {staffs.map((staff) => (
+            <tr key={staff.staffId}>
+              <td>{staff.staffId}</td>
+              <td>{staff.username}</td>
+              <td>{staff.fullName}</td>
+              <td>{staff.mail}</td>
+              <td>{staff.address}</td>
+              <td>{staff.phone}</td>
+              <td>{staff.role || "N/A"}</td>
+              <td>
+                <button
+                  onClick={() => handleViewStaffProfile(staff.staffId)}
+                  className="view-profile-btn"
+                >
+                  View Profile
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 
   return (
-    <div className={`dashboard-container ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+    <div className="dashboard">
       <div className="sidebar">
-        <div className="sidebar-header">
-          <h2>Admin Panel</h2>
-          <button onClick={toggleSidebar} className="toggle-sidebar">
-            <FaBars />
-          </button>
-        </div>
-        <nav className="sidebar-nav">
-          <Link to="/dashboard" className="sidebar-link active"><FaTachometerAlt /> <span>Dashboard</span></Link>
-          <Link to="/dashboard" className="sidebar-link"><FaUsers /> <span>Customers</span></Link>
-          <Link to="/dashboard" className="sidebar-link"><FaList /> <span>Orders</span></Link>
-          <Link to="/dashboard" className="sidebar-link"><FaCog /> <span>Services</span></Link>
-          <Link to="/logout" className="sidebar-link"><FaSignOutAlt /> <span>Logout</span></Link>
-        </nav>
+        <button
+          className={`sidebar-button ${
+            activeView === "customers" ? "active" : ""
+          }`}
+          onClick={() => setActiveView("customers")}
+        >
+          Customers
+        </button>
+        <button
+          className={`sidebar-button ${
+            activeView === "staffs" ? "active" : ""
+          }`}
+          onClick={() => setActiveView("staffs")}
+        >
+          Staffs
+        </button>
       </div>
       <div className="main-content">
-        <h1 className="dashboard-title">Dashboard</h1>
-        <div className="stats-container">
-          <div className="stat-card">
-            <div className="stat-icon"><FaShoppingBag /></div>
-            <div className="stat-content">
-              <h2>Total Orders</h2>
-              <p>{stats.totalOrders.toLocaleString()}</p>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon"><FaMoneyBillWave /></div>
-            <div className="stat-content">
-              <h2>Total Sales</h2>
-              <p>${stats.totalSales.toLocaleString()}</p>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon"><FaUsers /></div>
-            <div className="stat-content">
-              <h2>Total Visits</h2>
-              <p>{stats.totalVisits.toLocaleString()}</p>
-            </div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon"><FaChartLine /></div>
-            <div className="stat-content">
-              <h2>Total Balance</h2>
-              <p>${stats.totalBalance.toLocaleString()}</p>
-            </div>
-          </div>
+        <h1>
+          {activeView === "customers"
+            ? "Customer Dashboard"
+            : "Staff Dashboard"}
+        </h1>
+        <div className="table-container">
+          {activeView === "customers" ? renderCustomers() : renderStaffs()}
         </div>
-        <div className="dashboard-sections">
-          <div className="dashboard-section full-width">
-            <h2>All Customers</h2>
-            {customers.length > 0 ? (
-              <table className="customers-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Points</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {customers.map((customer) => (
-                    <tr key={customer.id}>
-                      <td>{customer.fullName}</td>
-                      <td>{customer.mail}</td>
-                      <td>{customer.phone}</td>
-                      <td>{customer.point}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p>No customers found.</p>
-            )}
-          </div>
-        </div>
+        {selectedCustomerId && (
+          <CustomerProfileDashboard customerId={selectedCustomerId} />
+        )}
       </div>
     </div>
   );
-}
+};
 
 export default Dashboard;

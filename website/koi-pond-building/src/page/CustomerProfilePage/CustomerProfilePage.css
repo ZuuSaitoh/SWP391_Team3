@@ -210,8 +210,13 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .customer-stats {
@@ -354,4 +359,56 @@ body {
 
 .change-password-button:hover {
   background-color: #357abd;
+}
+
+.customer-profile-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.customer-profile-page h1 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.profile-info p {
+  margin-bottom: 10px;
+}
+
+.profile-info strong {
+  color: #3498db;
+  margin-right: 10px;
+}
+
+.back-to-dashboard-btn {
+  display: block;
+  margin-top: 20px;
+  padding: 10px 15px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.back-to-dashboard-btn:hover {
+  background-color: #2980b9;
+}
+
+.customer-profile-loading,
+.customer-profile-error {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 50px;
+  color: #2c3e50;
+}
+
+.customer-profile-error {
+  color: #e74c3c;
 }
