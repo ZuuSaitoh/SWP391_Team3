@@ -2,10 +2,14 @@ import React, { useState, useEffect } from "react";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import "./serviceDesign.css";
-import serviceHeaderImage from "../koi_photo/homepageheader.jpg";
+import slider1 from "../koi_photo/slider/slider1.jpg";
+import slider2 from "../koi_photo/slider/slider2.jpg";
+import slider3 from "../koi_photo/slider/slider3.jpg";
 
 function ServiceDesign() {
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slides = [slider1, slider2, slider3];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,6 +19,24 @@ function ServiceDesign() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+//set time to change slide 
+  useEffect(() => {
+    const slideInterval = setInterval(() => {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
+    }, 6000);
+
+    return () => {
+      clearInterval(slideInterval);
+    };
+  }, []);
+
+  const nextSlide = () => {
+    setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
+  };
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -27,9 +49,22 @@ function ServiceDesign() {
     <div className="service-design-page">
       <Header isTransparent={true} />
       <section className="service-hero">
+        <div className="hero-slider">
+          {slides.map((slide, index) => (
+            <div
+              key={index}
+              className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
+              style={{ backgroundImage: `url(${slide})` }}
+            ></div>
+          ))}
+        </div>
         <div className="service-hero-content">
           <h1>Koi Pond Design and Construction</h1>
           <p>Expert design and construction for serene water gardens</p>
+        </div>
+        <div className="slider-controls">
+          <button onClick={prevSlide} className="slider-control prev">&#10094;</button>
+          <button onClick={nextSlide} className="slider-control next">&#10095;</button>
         </div>
       </section>
       <div className="service-content">

@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import "./HomePage.css";
-import pond1 from "../koi_photo/pond1.jpg";
-import pond2 from "../koi_photo/pond2.jpg";
-import pond3 from "../koi_photo/pond3.jpg";
+import pond1 from "../koi_photo/pond/pond1.jpg";
+import pond2 from "../koi_photo/pond/pond2.jpg";
+import pond3 from "../koi_photo/pond/pond3.jpg";
 import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PondDesignIcon from "../koi_photo/design.png";
-import PondCleaningIcon from "../koi_photo/clean.png";
-import PondMaintenanceIcon from "../koi_photo/maintenance.png";
+import PondDesignIcon from "../koi_photo/logo-icon/design.png";
+import PondCleaningIcon from "../koi_photo/logo-icon/clean.png";
+import PondMaintenanceIcon from "../koi_photo/logo-icon/maintenance.png";
 import { u } from "framer-motion/client";
-import slider1 from "../koi_photo/slider1.jpg";
-import slider2 from "../koi_photo/slider2.jpg";
-import slider3 from "../koi_photo/slider3.jpg";
+import slider1 from "../koi_photo/slider/slider1.jpg";
+import slider2 from "../koi_photo/slider/slider2.jpg";
+import slider3 from "../koi_photo/slider/slider3.jpg";
 
 function HomePage() {
   const navigate = useNavigate();

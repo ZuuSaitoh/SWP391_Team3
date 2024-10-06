@@ -6,7 +6,7 @@ import AnimatedPage from "../animationpage/AnimatedPage";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./login.css";
-import googleLogo from "../koi_photo/google-logo.png";
+import googleLogo from "../koi_photo/logo-icon/google-logo.png";
 import api from "../../config/axios.jsx";
 import { jwtDecode } from "jwt-decode";
 

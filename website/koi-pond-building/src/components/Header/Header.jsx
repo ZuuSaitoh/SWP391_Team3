@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import person from "../../page/koi_photo/person.png";
+import person from "../../page/koi_photo/logo-icon/person.png";
 import "./Header.css";
 
 function Header({ isTransparent }) {
