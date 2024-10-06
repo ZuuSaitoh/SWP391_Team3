@@ -256,3 +256,102 @@ body {
   font-size: 0.9rem;
   color: #666;
 }
+
+/* Add these new styles at the end of the file */
+
+.order-status {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-top: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.order-status h3 {
+  color: #333;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.order-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.order-item {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-info {
+  flex-grow: 1;
+}
+
+.order-id {
+  font-weight: 600;
+  color: #333;
+}
+
+.order-date {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.order-status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.status-pending {
+  background-color: #ffeeba;
+  color: #856404;
+}
+
+.status-processing {
+  background-color: #b8daff;
+  color: #004085;
+}
+
+.status-completed {
+  background-color: #c3e6cb;
+  color: #155724;
+}
+
+.status-cancelled {
+  background-color: #f5c6cb;
+  color: #721c24;
+}
+
+/* Add this to your existing CSS file */
+
+.profile-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.change-password-button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.change-password-button:hover {
+  background-color: #357abd;
+}

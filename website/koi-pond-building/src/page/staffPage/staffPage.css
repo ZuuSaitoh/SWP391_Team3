@@ -199,3 +199,73 @@ button:hover {
   color: #7f8c8d;
   font-style: italic;
 }
+
+/* Add these styles at the end of your existing CSS file */
+
+.create-order-form {
+  background-color: #e8f6f3;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.create-order-form h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.create-order-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.create-order-form input,
+.create-order-form select,
+.create-order-form textarea {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.create-order-form textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+.create-order-form button {
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.create-order-form button:hover {
+  background-color: #2980b9;
+}
+
+/* Update the existing create-order-form styles */
+
+.create-order-form input[type="number"],
+.create-order-form input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.create-order-form input[type="number"]:focus,
+.create-order-form input[type="text"]:focus,
+.create-order-form textarea:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}

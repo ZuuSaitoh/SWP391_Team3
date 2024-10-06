@@ -20,6 +20,7 @@ import ServiceMaintenance from "./page/serviceMaintenance/serviceMaintenance.jsx
 import DashBoard from "./page/dashBoard/dashBoard.jsx";
 import StaffPage from "./page/staffPage/staffPage.jsx";
 import ProtectedRoutes from "./utils/ProtectedRoutes.jsx";
+import ChangePassword from "./page/changePassword/changePassword.jsx";
 function App() {
   return (
     <Routes>
@@ -36,9 +37,9 @@ function App() {
           element={<CustomerProfilePage />}
         />
       </Route>
-
       <Route path="/dashboard" element={<DashBoard />} />
       <Route path="/staff" element={<StaffPage />} />
+      <Route path="/change-password" element={<ChangePassword />} />
     </Routes>
   );
 }

@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from "../../config/axios"; // Make sure to use the configured axios instance
 import AnimatedPage from "../animationpage/AnimatedPage";
 import "./CustomerProfilePage.css";
+import { useNavigate } from "react-router-dom";
 
 function CustomerProfilePage() {
   const { customerId } = useParams(); // Fetch customerId from URL params
@@ -12,7 +13,8 @@ function CustomerProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedCustomer, setEditedCustomer] = useState(null);
   const [newProfilePicture, setNewProfilePicture] = useState(null);
-  console.log(customerId);
+  const [orders, setOrders] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchCustomerData = async () => {
       try {
@@ -32,6 +34,12 @@ function CustomerProfilePage() {
         setCustomer(customerData);
         setEditedCustomer(customerData); // Set this so you can edit the customer
         setIsLoading(false); // Data fetched, no longer loading
+
+        // Fetch customer orders
+        // const ordersResponse = await axios.get(
+        //   `http://localhost:8080/customers/${customerId}/orders`
+        // );
+        // setOrders(ordersResponse.data);
       } catch (error) {
         console.error("Error fetching customer data:", error);
         setIsError(true); // Set error state if fetch fails
@@ -98,6 +106,28 @@ function CustomerProfilePage() {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const getStatusClass = (status) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'status-pending';
+      case 'processing':
+        return 'status-processing';
+      case 'completed':
+        return 'status-completed';
+      case 'cancelled':
+        return 'status-cancelled';
+      default:
+        return '';
+    }
+  };
+
+
+  const handleChangePassword = () => {
+    // Implement password change logic here
+    console.log("Change password clicked");
+    navigate("/change-password");
   };
 
   if (isLoading) {
@@ -187,9 +217,14 @@ function CustomerProfilePage() {
               </button>
             </div>
           ) : (
-            <button onClick={handleEdit} className="edit-button">
-              <i className="fas fa-edit"></i> Edit Profile
-            </button>
+            <div className="profile-buttons">
+              <button onClick={handleEdit} className="edit-button">
+                <i className="fas fa-edit"></i> Edit Profile
+              </button>
+              <button onClick={handleChangePassword} className="change-password-button">
+                <i className="fas fa-key"></i> Change Password
+              </button>
+            </div>
           )}
           <div className="customer-stats">
             <h3>Customer Statistics</h3>
@@ -201,6 +236,23 @@ function CustomerProfilePage() {
               </div>
               {/* Add more stat items here if needed */}
             </div>
+          </div>
+          <div className="order-status">
+            <h3>Recent Orders</h3>
+            <ul className="order-list">
+              {orders.map((order) => (
+                <li key={order.id} className="order-item">
+                  <div className="order-info">
+                    <span className="order-id">Order #{order.id}</span>
+                    <br />
+                    <span className="order-date">{new Date(order.orderDate).toLocaleDateString()}</span>
+                  </div>
+                  <span className={`order-status-badge ${getStatusClass(order.status)}`}>
+                    {order.status}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
