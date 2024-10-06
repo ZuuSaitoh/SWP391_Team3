@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "./forgotpassword.css";
-import { useNavigate } from "react-router-dom";
+import "./changePassword.css";
 import AnimatedPage from "../animationpage/AnimatedPage";
+import { useNavigate } from "react-router-dom";
 
 
 function ForgotPassword() {
@@ -57,6 +57,8 @@ function ForgotPassword() {
           headers: {
             "Content-Type": "application/json",
           },
+          mode: 'cors', // Ensure this is set to 'cors'
+          credentials: 'include', // Include this if you're using cookies or authentication
           body: JSON.stringify(resetData),
         }
       );
@@ -75,7 +77,7 @@ function ForgotPassword() {
   }
 
   function SignInHandle() {
-    navigate("/login");
+    navigate("/");
   }
 
   return (

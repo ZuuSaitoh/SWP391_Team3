@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from "../../config/axios"; // Make sure to use the configured axios instance
 import AnimatedPage from "../animationpage/AnimatedPage";
 import "./CustomerProfilePage.css";
+import { useNavigate } from "react-router-dom";
 
 function CustomerProfilePage() {
   const { customerId } = useParams(); // Fetch customerId from URL params
@@ -13,7 +14,7 @@ function CustomerProfilePage() {
   const [editedCustomer, setEditedCustomer] = useState(null);
   const [newProfilePicture, setNewProfilePicture] = useState(null);
   const [orders, setOrders] = useState([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchCustomerData = async () => {
       try {
@@ -122,6 +123,13 @@ function CustomerProfilePage() {
     }
   };
 
+
+  const handleChangePassword = () => {
+    // Implement password change logic here
+    console.log("Change password clicked");
+    navigate("/change-password");
+  };
+
   if (isLoading) {
     return <div className="loading"><div className="loader"></div>Loading customer data...</div>;
   }
@@ -209,9 +217,14 @@ function CustomerProfilePage() {
               </button>
             </div>
           ) : (
-            <button onClick={handleEdit} className="edit-button">
-              <i className="fas fa-edit"></i> Edit Profile
-            </button>
+            <div className="profile-buttons">
+              <button onClick={handleEdit} className="edit-button">
+                <i className="fas fa-edit"></i> Edit Profile
+              </button>
+              <button onClick={handleChangePassword} className="change-password-button">
+                <i className="fas fa-key"></i> Change Password
+              </button>
+            </div>
           )}
           <div className="customer-stats">
             <h3>Customer Statistics</h3>
