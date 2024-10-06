@@ -12,7 +12,8 @@ function CustomerProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedCustomer, setEditedCustomer] = useState(null);
   const [newProfilePicture, setNewProfilePicture] = useState(null);
-  console.log(customerId);
+  const [orders, setOrders] = useState([]);
+
   useEffect(() => {
     const fetchCustomerData = async () => {
       try {
@@ -32,6 +33,12 @@ function CustomerProfilePage() {
         setCustomer(customerData);
         setEditedCustomer(customerData); // Set this so you can edit the customer
         setIsLoading(false); // Data fetched, no longer loading
+
+        // Fetch customer orders
+        // const ordersResponse = await axios.get(
+        //   `http://localhost:8080/customers/${customerId}/orders`
+        // );
+        // setOrders(ordersResponse.data);
       } catch (error) {
         console.error("Error fetching customer data:", error);
         setIsError(true); // Set error state if fetch fails
@@ -97,6 +104,21 @@ function CustomerProfilePage() {
         setNewProfilePicture(reader.result);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const getStatusClass = (status) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'status-pending';
+      case 'processing':
+        return 'status-processing';
+      case 'completed':
+        return 'status-completed';
+      case 'cancelled':
+        return 'status-cancelled';
+      default:
+        return '';
     }
   };
 
@@ -201,6 +223,23 @@ function CustomerProfilePage() {
               </div>
               {/* Add more stat items here if needed */}
             </div>
+          </div>
+          <div className="order-status">
+            <h3>Recent Orders</h3>
+            <ul className="order-list">
+              {orders.map((order) => (
+                <li key={order.id} className="order-item">
+                  <div className="order-info">
+                    <span className="order-id">Order #{order.id}</span>
+                    <br />
+                    <span className="order-date">{new Date(order.orderDate).toLocaleDateString()}</span>
+                  </div>
+                  <span className={`order-status-badge ${getStatusClass(order.status)}`}>
+                    {order.status}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
