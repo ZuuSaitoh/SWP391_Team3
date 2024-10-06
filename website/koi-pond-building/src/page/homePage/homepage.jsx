@@ -12,6 +12,9 @@ import PondDesignIcon from "../koi_photo/design.png";
 import PondCleaningIcon from "../koi_photo/clean.png";
 import PondMaintenanceIcon from "../koi_photo/maintenance.png";
 import { u } from "framer-motion/client";
+import slider1 from "../koi_photo/slider1.jpg";
+import slider2 from "../koi_photo/slider2.jpg";
+import slider3 from "../koi_photo/slider3.jpg";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -19,6 +22,9 @@ function HomePage() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isHeaderScrolled, setIsHeaderScrolled] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slides = [slider1, slider2, slider3];
+
   console.log("da vao home");
   useEffect(() => {
     // Fetch current user information from localStorage or your authentication system
@@ -96,19 +102,49 @@ function HomePage() {
       behavior: "smooth",
     });
   };
+//set time to change slide
+  useEffect(() => {
+    const slideInterval = setInterval(() => {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
+    }, 6000); 
+
+    return () => {
+      clearInterval(slideInterval);
+    };
+  }, []);
+
+  const nextSlide = () => {
+    setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
+  };
 
   return (
     <div className="home-page">
       <Header />
       <main>
-        {/* Your existing main content */}
         <section id="home" className="hero">
+          <div className="hero-slider">
+            {slides.map((slide, index) => (
+              <div
+                key={index}
+                className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
+                style={{ backgroundImage: `url(${slide})` }}
+              ></div>
+            ))}
+          </div>
           <div className="hero-content">
             <h1>Create Your Dream Koi Pond</h1>
             <p>Expert design and construction for serene water gardens</p>
             <a href="#contact" className="cta-button">
               Get a Free Quote
             </a>
+          </div>
+          <div className="slider-controls">
+            <button onClick={prevSlide} className="slider-control prev">&#10094;</button>
+            <button onClick={nextSlide} className="slider-control next">&#10095;</button>
           </div>
         </section>
 
