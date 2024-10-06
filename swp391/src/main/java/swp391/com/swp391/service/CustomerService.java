@@ -61,6 +61,7 @@ public class CustomerService {
         return customerRepository.findById(String.valueOf(customer_id))
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
+
     public Customer updateCustomer(int customer_id, CustomerUpdateRequest request){
         Customer customer = getCustomerById(customer_id);
         customer.setAddress(request.getAddress());

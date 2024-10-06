@@ -18,6 +18,8 @@ public enum ErrorCode {
     USER_DELETED(1012, "User deleted"),
     EMAIL_NOT_EXISTED(1013, "Email don't existed!"),
     LOGIN_GG_NOT_PASSWORD(1014, "Can't change the password because you've login by GG method!"),
+    INVALID_SERVICE_TYPE(1015, "Service must be Cleaning Pond Service or Maintenance!"),
+    SERVICE_NOT_EXISTED(1015, "Service does not existed!"),
     ;
 
     ErrorCode(int code, String message) {

@@ -1,6 +1,5 @@
 package swp391.com.swp391.dto.request;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -12,8 +11,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ServiceCreationRequest {
-    @NotBlank(message = "ENTER_ALL_FIELDS")
+public class ServiceUpdateRequest {    @NotBlank(message = "ENTER_ALL_FIELDS")
     String service_name;
     @NotNull(message = "ENTER_ALL_FIELDS")
     double price;
@@ -54,4 +52,5 @@ public class ServiceCreationRequest {
     public void setService_type(String service_type) {
         this.service_type = service_type;
     }
+
 }

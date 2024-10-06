@@ -29,7 +29,6 @@ public class CustomerController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/fetchAll")
-
     ApiResponse<List<Customer>> getCustomer(){
         return new ApiResponse<List<Customer>>(9999,"List of User", customerService.getCustomer());
     }
