@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import swp391.com.swp391.dto.request.StaffCreationRequest;
+import swp391.com.swp391.dto.request.StaffUpdatePasswordRequest;
 import swp391.com.swp391.dto.request.StaffUpdateRequest;
 import swp391.com.swp391.entity.Staff;
 import swp391.com.swp391.exception.AppException;
@@ -59,11 +60,29 @@ public class StaffService {
     //hàm này dùng để cập nhật thông tin của staff dựa trên staffId
     public Staff updateStaff(int staffId, StaffUpdateRequest request){
         Staff staff = viewStaffById(staffId);
-        staff.setPassword(request.getPassword());
         staff.setMail(request.getMail());
         staff.setFullName(request.getFullName());
         staff.setAddress(request.getAddress());
         staff.setPhone(request.getPhone());
+        return staffRepository.save(staff);
+    }
+
+    public int getStaffIdByUsername(String username){
+        return staffRepository.findByUsername(username).map(Staff::getStaffId).orElseThrow(() -> new RuntimeException("Staff not found"));
+    }
+
+    public Staff getStaffByMail(String mail) {
+        return staffRepository.findByMail(mail).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+    }
+
+    //hàm này dùng để thay đổi password của staff dựa trên mail
+    public Staff updateStaffPasswordByMail(String mail, StaffUpdatePasswordRequest request) {
+        Staff staff = getStaffByMail(mail);
+        if(staff.getPassword().isEmpty()){
+            throw new AppException(ErrorCode.LOGIN_GG_NOT_PASSWORD);
+        }
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        staff.setPassword(passwordEncoder.encode(request.getPassword()));
         return staffRepository.save(staff);
     }
 

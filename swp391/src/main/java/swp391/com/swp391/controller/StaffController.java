@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import swp391.com.swp391.dto.request.StaffCreationRequest;
+import swp391.com.swp391.dto.request.StaffUpdatePasswordRequest;
 import swp391.com.swp391.dto.request.StaffUpdateRequest;
 import swp391.com.swp391.dto.response.ApiResponse;
 import swp391.com.swp391.entity.Staff;
@@ -45,6 +46,14 @@ public class StaffController {
     @PutMapping("/update/{staffId}")
     Staff updateStaff(@PathVariable int staffId, @RequestBody @Valid StaffUpdateRequest request){
         return staffService.updateStaff(staffId, request);
+    }
+
+    //hàm này dùng để thay đổi password của staff dựa trên Mail
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @PutMapping("/update/password/{mail}")
+    ApiResponse<String> updateStaffPasswordByMail(@PathVariable String mail, @RequestBody @Valid StaffUpdatePasswordRequest request){
+        staffService.updateStaffPasswordByMail(mail, request);
+        return new ApiResponse<String>(2222,"Update Password","Update Successfully!");
     }
 
     //hàm này dùng để xóa Staff dựa trên staffId
