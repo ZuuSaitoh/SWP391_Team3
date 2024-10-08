@@ -65,4 +65,10 @@ public class CustomerController {
         customerService.updatePassword(mail, request);
         return new ApiResponse<String>(2222, "Update password", "Update successfully!");
     }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/checkMail/{mail}")
+    ApiResponse<Boolean> checkExistedMail(@PathVariable String mail){
+        return  new ApiResponse<Boolean>(4444, "Status of emails!", customerService.checkExistedMail(mail));
+    }
 }

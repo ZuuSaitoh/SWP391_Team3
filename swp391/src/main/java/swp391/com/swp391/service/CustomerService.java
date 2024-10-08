@@ -92,4 +92,8 @@ public class CustomerService {
         customer.setPassword(passwordEncoder.encode(request.getPassword()));
         return customerRepository.save(customer);
     }
+
+    public boolean checkExistedMail(String mail){
+        return customerRepository.existsByMail(mail);
+    }
 }

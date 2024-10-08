@@ -29,18 +29,18 @@ public class GmailController {
 //        return "OTP sent to " + email;
 //    }
 
-    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-    @GetMapping("/send-otp")
-    ApiResponse<String> sendOtp(@RequestParam String email) {
-        if (!customerRepository.existsByMail(email)){
-            throw new AppException(ErrorCode.EMAIL_NOT_EXISTED);
-        }
-        // Sinh OTP ngẫu nhiên
-        String otp = emailService.generateOTP();
-
-        // Gửi OTP đến email
-        emailService.sendOtpEmail(email, otp);
-
-        return new ApiResponse<String>(1111,"OTP sent to " + email, otp);
-    }
+//    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+//    @GetMapping("/send-otp")
+//    ApiResponse<String> sendOtp(@RequestParam String email) {
+//        if (!customerRepository.existsByMail(email)){
+//            throw new AppException(ErrorCode.EMAIL_NOT_EXISTED);
+//        }
+//        // Sinh OTP ngẫu nhiên
+//        String otp = emailService.generateOTP();
+//
+//        // Gửi OTP đến email
+//        emailService.sendOtpEmail(email, otp);
+//
+//        return new ApiResponse<String>(1111,"OTP sent to " + email, otp);
+//    }
 }
