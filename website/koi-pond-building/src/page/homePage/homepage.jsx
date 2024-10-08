@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./HomePage.css";
 import pond1 from "../koi_photo/pond/pond1.jpg";
 import pond2 from "../koi_photo/pond/pond2.jpg";
@@ -15,6 +15,9 @@ import { u } from "framer-motion/client";
 import slider1 from "../koi_photo/slider/slider1.jpg";
 import slider2 from "../koi_photo/slider/slider2.jpg";
 import slider3 from "../koi_photo/slider/slider3.jpg";
+import member1 from "../koi_photo/member/member 1.jpg";
+import member2 from "../koi_photo/member/member 2.jpg";
+import member3 from "../koi_photo/member/member 3.png";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -24,6 +27,13 @@ function HomePage() {
   const [currentUser, setCurrentUser] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [slider1, slider2, slider3];
+  const [animatedStats, setAnimatedStats] = useState({
+    years: 0,
+    projects: 0,
+    satisfaction: 0,
+    awards: 0
+  });
+  const animationTriggered = useRef(false);
 
   console.log("da vao home");
   useEffect(() => {
@@ -43,6 +53,15 @@ function HomePage() {
       setShowScrollTop(scrollTop > 300);
       console.log("Scroll position:", scrollTop);
       console.log("Show scroll top:", scrollTop > 300);
+
+      const aboutSection = document.getElementById('about');
+      if (aboutSection && !animationTriggered.current) {
+        const rect = aboutSection.getBoundingClientRect();
+        if (rect.top <= window.innerHeight && rect.bottom >= 0) {
+          animateStats();
+          animationTriggered.current = true;
+        }
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -120,6 +139,31 @@ function HomePage() {
   const prevSlide = () => {
     setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
   };
+
+  const animateStats = () => {
+    const duration = 2000; // Animation duration in ms
+    const frameDuration = 1000 / 60; // 60 fps
+    const totalFrames = Math.round(duration / frameDuration);
+    let frame = 0;
+
+    const counter = setInterval(() => {
+      frame++;
+      const progress = frame / totalFrames;
+      setAnimatedStats({
+        years: Math.floor(easeOutQuad(progress) * 15),
+        projects: Math.floor(easeOutQuad(progress) * 500),
+        satisfaction: Math.floor(easeOutQuad(progress) * 100),
+        awards: Math.floor(easeOutQuad(progress) * 50)
+      });
+
+      if (frame === totalFrames) {
+        clearInterval(counter);
+      }
+    }, frameDuration);
+  };
+
+  // Easing function for smoother animation
+  const easeOutQuad = (t) => t * (2 - t);
 
   return (
     <div className="home-page">
@@ -209,29 +253,73 @@ function HomePage() {
           <div className="about-content">
             <div className="about-text">
               <p>
-                We are passionate about creating beautiful koi ponds that bring
-                tranquility to your outdoor space. With years of experience and
-                a dedication to quality, we ensure each project exceeds
-                expectations.
+                At Koi Pond Builders, we are passionate about creating beautiful koi ponds that bring tranquility and elegance to your outdoor spaces. Founded in 2008, our company has grown from a small team of enthusiasts to a leading name in custom koi pond design and construction.
               </p>
               <p>
-                Our team of experts combines artistic vision with technical
-                expertise to create stunning water features that enhance your
-                property and provide a peaceful retreat for you and your family.
+                Our journey began with a simple love for the serene beauty of koi ponds and a desire to share that beauty with others. Over the years, we've honed our skills, embraced innovative techniques, and assembled a team of experts dedicated to turning your aquatic dreams into reality.
+              </p>
+              <p>
+                What sets us apart is our holistic approach to pond building. We don't just construct ponds; we create entire ecosystems. Our designs seamlessly blend water, stone, and plant life to create a harmonious environment that's as healthy for its inhabitants as it is beautiful for its owners.
+              </p>
+              <p>
+                We pride ourselves on our attention to detail, from the initial consultation to the final touches. Our team of skilled designers, engineers, and horticulturists work collaboratively to ensure that each project is tailored to our clients' unique visions and the specific requirements of their space.
+              </p>
+              <p>
+                Sustainability is at the heart of our philosophy. We utilize eco-friendly materials and energy-efficient systems in our designs, ensuring that your koi pond is not only a beautiful addition to your property but also an environmentally responsible one.
+              </p>
+              <p>
+                Education is also a key part of our mission. We believe that informed clients make the best pond owners, which is why we offer comprehensive guidance on pond maintenance and koi care. Our relationship with our clients doesn't end at installation; we're here to support you throughout your koi pond journey.
+              </p>
+              <p>
+                As we look to the future, we're excited to continue pushing the boundaries of what's possible in koi pond design. Whether you're dreaming of a small meditation pond or an expansive koi paradise, we have the passion, expertise, and creativity to bring your vision to life.
+              </p>
+              <p>
+                Thank you for considering Koi Pond Builders for your project. We look forward to helping you create your own slice of aquatic paradise.
               </p>
             </div>
             <div className="about-stats">
               <div className="stat-item">
-                <h3>15+</h3>
-                <p>Years Experience</p>
+                <h3>{animatedStats.years}+</h3>
+                <p>Years of Experience</p>
               </div>
               <div className="stat-item">
-                <h3>500+</h3>
+                <h3>{animatedStats.projects}+</h3>
                 <p>Projects Completed</p>
               </div>
               <div className="stat-item">
-                <h3>100%</h3>
+                <h3>{animatedStats.satisfaction}%</h3>
                 <p>Client Satisfaction</p>
+              </div>
+              <div className="stat-item">
+                <h3>{animatedStats.awards}+</h3>
+                <p>Awards Won</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="team" className="team">
+          <h2>Our Team</h2>
+          <div className="team-container">
+            <div className="team-member">
+              <img src={member2} alt="Kazuto Kirigaya" />
+              <div className="team-member-info">
+                <h3>Kazuto Kirigaya</h3>
+                <p>Founder & CEO</p>
+              </div>
+            </div>
+            <div className="team-member">
+              <img src={member1} alt="Asada Shino" />
+              <div className="team-member-info">
+                <h3>Asada Shino</h3>
+                <p>COO</p>
+              </div>
+            </div>
+            <div className="team-member">
+              <img src={member3} alt="Asuna Yuuki" />
+              <div className="team-member-info">
+                <h3>Asuna Yuuki</h3>
+                <p>Architect</p>
               </div>
             </div>
           </div>
@@ -287,6 +375,30 @@ function HomePage() {
               <p>
                 <i className="fas fa-envelope"></i> lamhdse184108@fpt.edu.vn
               </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="blog" className="blog">
+          <h2>Latest News</h2>
+          <div className="blog-container">
+            <div className="blog-post">
+              <img src="/path/to/blog-image-1.jpg" alt="Blog post 1" />
+              <h3>The Benefits of Koi Ponds for Mental Health</h3>
+              <p>Discover how a koi pond can improve your well-being and create a peaceful atmosphere in your backyard.</p>
+              <a href="#" className="read-more">Read More</a>
+            </div>
+            <div className="blog-post">
+              <img src="/path/to/blog-image-2.jpg" alt="Blog post 2" />
+              <h3>Top 5 Koi Varieties for Beginners</h3>
+              <p>Learn about the best koi varieties for those just starting their journey into the world of koi keeping.</p>
+              <a href="#" className="read-more">Read More</a>
+            </div>
+            <div className="blog-post">
+              <img src="/path/to/blog-image-3.jpg" alt="Blog post 3" />
+              <h3>Seasonal Maintenance Tips for Your Koi Pond</h3>
+              <p>Essential maintenance tasks to keep your koi pond healthy and beautiful throughout the year.</p>
+              <a href="#" className="read-more">Read More</a>
             </div>
           </div>
         </section>
