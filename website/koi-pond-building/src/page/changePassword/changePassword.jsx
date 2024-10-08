@@ -73,7 +73,7 @@ function ForgotPassword() {
         <div className="forgot-password-image-container2"></div>
         <div className="forgot-password-form-container">
           <div className="forgot-password-header">
-            <h2 className="forgot-password-text">Forgot Password</h2>
+            <h2 className="forgot-password-text">Change Password</h2>
             <div className="forgot-password-underline" />
           </div>
           {!isEmailVerified ? (

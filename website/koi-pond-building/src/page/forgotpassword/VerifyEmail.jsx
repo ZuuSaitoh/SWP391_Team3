@@ -7,6 +7,7 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
   const [generatedOtp, setGeneratedOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
 
   useEffect(() => {
     let timer;
@@ -16,8 +17,35 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
     return () => clearTimeout(timer);
   }, [countdown]);
 
+  const checkEmailExists = async () => {
+    setIsCheckingEmail(true);
+    try {
+      const response = await fetch(`http://localhost:8080/customers/checkMail/${email}`);
+      const data = await response.json();
+      if (response.ok && data.result === true) {
+        return true;
+      } else {
+        setMessage("Email not found. Please check your email address.");
+        return false;
+      }
+    } catch (error) {
+      console.error("Error checking email:", error);
+      setMessage("An error occurred while checking your email.");
+      return false;
+    } finally {
+      setIsCheckingEmail(false);
+    }
+  };
+
   const sendOtp = async (e) => {
     e.preventDefault();
+    
+    const emailExists = await checkEmailExists();
+    if (!emailExists) {
+      setMessage("Email not found. Please check your email address.");
+      return;
+    }
+
     const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
     setGeneratedOtp(newOtp);
 
@@ -30,14 +58,15 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
     };
 
     try {
-      await emailjs.send(
+      const result = await emailjs.send(
         "service_flpieon",
         "template_qs6prd4",
         emailData,
         "bOlGczQDScAz13xZx"
       );
+      console.log(result.text);
       setOtpSent(true);
-      setCountdown(30); // Changed from 60 to 30
+      setCountdown(60);
       setMessage("OTP sent to your email. Please check your inbox.");
     } catch (error) {
       console.error("Error sending OTP:", error);
@@ -47,7 +76,7 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
 
   const verifyOtp = (e) => {
     e.preventDefault();
-    if (otp === generatedOtp && countdown > 0) { // Added check for countdown > 0
+    if (otp === generatedOtp && countdown > 0) {
       setIsEmailVerified(true);
       setMessage("OTP verified successfully. Please set your new password.");
     } else if (countdown === 0) {
@@ -71,8 +100,8 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
             />
           </div>
           <div className="forgot-password-submit-container">
-            <button type="submit" className="forgot-password-submit">
-              Send OTP
+            <button type="submit" className="forgot-password-submit" disabled={isCheckingEmail}>
+              {isCheckingEmail ? "Checking..." : "Send OTP"}
             </button>
           </div>
         </form>
@@ -95,7 +124,7 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
           <div className="resend-otp-container">
             <button
               onClick={sendOtp}
-              disabled={countdown > 0}
+              disabled={countdown > 0 || isCheckingEmail}
               className="resend-otp-button"
             >
               {countdown > 0 ? `Resend OTP (${countdown}s)` : "Resend OTP"}

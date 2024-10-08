@@ -41,6 +41,7 @@ const StaffProfileDashboard = () => {
         fullName: editedStaff.fullName,
         address: editedStaff.address,
         phone: editedStaff.phone,
+        role: editedStaff.role, // Include role in the update
       };
 
       const response = await axios.put(
@@ -128,6 +129,17 @@ const StaffProfileDashboard = () => {
             onChange={handleChange}
             placeholder="Phone"
           />
+          <select
+            name="role"
+            value={editedStaff.role || ""}
+            onChange={handleChange}
+          >
+            <option value="">Select Role</option>
+            <option value="Manager">Manager</option>
+            <option value="Design Staff">Design Staff</option>
+            <option value="Construction Staff">Construction Staff</option>
+            <option value="Consulting Staff">Consulting Staff</option>
+          </select>
           <div className="edit-actions">
             <button onClick={handleSave} className="save-btn">
               Save

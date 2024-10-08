@@ -20,6 +20,15 @@ const Dashboard = () => {
     mail: "",
   });
 
+  const [showAddStaffForm, setShowAddStaffForm] = useState(false);
+  const [newStaff, setNewStaff] = useState({
+    username: "",
+    password: "",
+    confirm_password: "",
+    mail: "",
+    role: "",
+  });
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -99,6 +108,37 @@ const Dashboard = () => {
     navigate(`/staff/${staffId}`);
   };
 
+  const handleAddStaff = async (e) => {
+    e.preventDefault();
+    if (newStaff.password !== newStaff.confirm_password) {
+      alert("Passwords don't match");
+      return;
+    }
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/staffs/create",
+        newStaff
+      );
+      if (response.data.code === 1000) {
+        alert("Staff created successfully");
+        setStaffs([...staffs, response.data.result]);
+        setShowAddStaffForm(false);
+        setNewStaff({
+          username: "",
+          password: "",
+          confirm_password: "",
+          mail: "",
+          role: "",
+        });
+      } else {
+        alert("Failed to create staff");
+      }
+    } catch (err) {
+      console.error("Error creating staff:", err);
+      alert("An error occurred while creating the staff");
+    }
+  };
+
   const renderAddCustomerForm = () => (
     <div className="add-customer-form">
       <h2>Add New Customer</h2>
@@ -141,6 +181,63 @@ const Dashboard = () => {
         />
         <button type="submit">Create Customer</button>
         <button type="button" onClick={() => setShowAddCustomerForm(false)}>
+          Cancel
+        </button>
+      </form>
+    </div>
+  );
+
+  const renderAddStaffForm = () => (
+    <div className="add-staff-form">
+      <h2>Add New Staff</h2>
+      <form onSubmit={handleAddStaff}>
+        <input
+          type="text"
+          placeholder="Username"
+          value={newStaff.username}
+          onChange={(e) =>
+            setNewStaff({ ...newStaff, username: e.target.value })
+          }
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={newStaff.password}
+          onChange={(e) =>
+            setNewStaff({ ...newStaff, password: e.target.value })
+          }
+          required
+        />
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          value={newStaff.confirm_password}
+          onChange={(e) =>
+            setNewStaff({ ...newStaff, confirm_password: e.target.value })
+          }
+          required
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          value={newStaff.mail}
+          onChange={(e) => setNewStaff({ ...newStaff, mail: e.target.value })}
+          required
+        />
+        <select
+          value={newStaff.role}
+          onChange={(e) => setNewStaff({ ...newStaff, role: e.target.value })}
+          required
+        >
+          <option value="">Select Role</option>
+          <option value="Manager">Manager</option>
+          <option value="Design Staff">Design Staff</option>
+          <option value="Construction Staff">Construction Staff</option>
+          <option value="Consulting Staff">Consulting Staff</option>
+        </select>
+        <button type="submit">Create Staff</button>
+        <button type="button" onClick={() => setShowAddStaffForm(false)}>
           Cancel
         </button>
       </form>
@@ -198,6 +295,13 @@ const Dashboard = () => {
 
   const renderStaffs = () => (
     <div className="table-container">
+      <button
+        onClick={() => setShowAddStaffForm(true)}
+        className="add-staff-btn"
+      >
+        Add New Staff
+      </button>
+      {showAddStaffForm && renderAddStaffForm()}
       <table className="data-table">
         <thead>
           <tr>
