@@ -20,7 +20,12 @@ public enum ErrorCode {
     LOGIN_GG_NOT_PASSWORD(1014, "Can't change the password because you've login by GG method!"),
     INVALID_SERVICE_TYPE(1015, "Service must be Cleaning Pond Service or Maintenance!"),
     SERVICE_NOT_EXISTED(1015, "Service does not existed!"),
-    INVALID_STAFF_TYPE(1016,"Staff does not existed!")
+    INVALID_STAFF_TYPE(1016,"Staff does not existed!"),
+    STAFF_NOT_EXISTED(1017, "Staff not existed"),
+    ORDER_NOT_EXISTED(1018, "Order not existed"),
+    RATING_MIN(1019, "Rating at least 1"),
+    RATING_MAX(1020, "Rating at most 5"),
+    SHORT_FEEDBACK(1021, "Feedback at least 5 characters!")
     ;
 
     ErrorCode(int code, String message) {
