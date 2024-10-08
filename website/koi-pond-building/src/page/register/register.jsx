@@ -5,6 +5,7 @@ import AnimatedPage from "../animationpage/AnimatedPage";
 import api from "../../config/axios.jsx";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import VerifyEmail from "./VerifyEmail";
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -12,6 +13,8 @@ const RegisterPage = () => {
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm_password, setConfirm_Password] = useState("");
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -89,6 +92,12 @@ const RegisterPage = () => {
     }
   };
 
+  const handleChangeEmail = () => {
+    setIsEmailVerified(false);
+    setMail("");
+    setMessage("");
+  };
+
   return (
     <AnimatedPage>
       <div className="register-page-container">
@@ -101,64 +110,79 @@ const RegisterPage = () => {
             <div className="register-underline"></div>
           </div>
 
-          <form className="register-inputs" onSubmit={handleSubmit}>
-            <div className="register-input">
-              <input
-                type="text"
-                placeholder="Username (min 3 characters)"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)} // Track username state
-                required
-                minLength={3}
-              />
-            </div>
-            <div className="register-input">
-              <input
-                type="email"
-                placeholder="Email"
-                value={mail}
-                onChange={(e) => setMail(e.target.value)} // Track email state
-                required
-              />
-            </div>
+          {!isEmailVerified ? (
+            <VerifyEmail
+              email={mail}
+              setEmail={setMail}
+              setIsEmailVerified={setIsEmailVerified}
+              setMessage={setMessage}
+            />
+          ) : (
+            <form className="register-inputs" onSubmit={handleSubmit}>
+              <div className="register-input">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={mail}
+                  disabled={true}
+                  required
+                />
+              </div>
+              <div className="register-submit-container">
+                <button type="button" className="register-submit change-email" onClick={handleChangeEmail}>
+                  Change Email
+                </button>
+              </div>
+              <div className="register-input">
+                <input
+                  type="text"
+                  placeholder="Username (min 3 characters)"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)} // Track username state
+                  required
+                  minLength={3}
+                />
+              </div>
+              <div className="register-input">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password (min 8 characters)"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)} // Track password state
+                  required
+                  minLength={8}
+                />
+              </div>
 
-            <div className="register-input">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password (min 8 characters)"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)} // Track password state
-                required
-                minLength={8}
-              />
-            </div>
+              <div className="register-input">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Confirm Password"
+                  value={confirm_password}
+                  onChange={(e) => setConfirm_Password(e.target.value)} // Track confirm password state
+                  required
+                />
+              </div>
 
-            <div className="register-input">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Confirm Password"
-                value={confirm_password}
-                onChange={(e) => setConfirm_Password(e.target.value)} // Track confirm password state
-                required
-              />
-            </div>
+              <div className="register-show-password">
+                <input
+                  type="checkbox"
+                  id="registerShowPassword"
+                  checked={showPassword}
+                  onChange={togglePasswordVisibility}
+                />
+                <label htmlFor="registerShowPassword">Show Password</label>
+              </div>
 
-            <div className="register-show-password">
-              <input
-                type="checkbox"
-                id="registerShowPassword"
-                checked={showPassword}
-                onChange={togglePasswordVisibility}
-              />
-              <label htmlFor="registerShowPassword">Show Password</label>
-            </div>
+              <div className="register-submit-container">
+                <button type="submit" className="register-submit">
+                  Sign Up
+                </button>
+              </div>
+            </form>
+          )}
 
-            <div className="register-submit-container">
-              <button type="submit" className="register-submit">
-                Sign Up
-              </button>
-            </div>
-          </form>
+          {message && <p className="register-message">{message}</p>}
 
           <div className="register-already-have-account">
             Already have an Account?{" "}

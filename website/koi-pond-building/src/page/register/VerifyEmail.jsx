@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import emailjs from "emailjs-com";
-import "./changePassword.css";
+import "./register.css";
+import { toast } from "react-toastify";
 
 function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
   const [otp, setOtp] = useState("");
@@ -23,14 +24,14 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
 
     const emailData = {
       to_email: email,
-      to_name: email,
+      to_name: email, 
       from_name: "KoiPond Design",
       email: email,
-      message: newOtp,
+      message: `Your OTP is: ${newOtp}`,
     };
 
     try {
-      const result =await emailjs.send(
+      const result = await emailjs.send(
         "service_flpieon",
         "template_qs6prd4",
         emailData,
@@ -48,9 +49,11 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
 
   const verifyOtp = (e) => {
     e.preventDefault();
-    if (otp === generatedOtp && countdown > 0) { // Added check for countdown > 0
+    if (otp === generatedOtp && countdown > 0) {
       setIsEmailVerified(true);
-      setMessage("OTP verified successfully. Please set your new password.");
+      setMessage(
+        "Email verified successfully. You can now complete your registration."
+      );
     } else if (countdown === 0) {
       setMessage("OTP has expired. Please request a new one.");
     } else {
@@ -59,10 +62,10 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
   };
 
   return (
-    <div className="forgot-password-inputs">
+    <div className="register-inputs">
       {!otpSent ? (
         <form onSubmit={sendOtp}>
-          <div className="forgot-password-input">
+          <div className="register-input">
             <input
               type="email"
               placeholder="Enter your email"
@@ -71,15 +74,15 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
               required
             />
           </div>
-          <div className="forgot-password-submit-container">
-            <button type="submit" className="forgot-password-submit">
+          <div className="register-submit-container">
+            <button type="submit" className="register-submit">
               Send OTP
             </button>
           </div>
         </form>
       ) : (
         <form onSubmit={verifyOtp}>
-          <div className="forgot-password-input">
+          <div className="register-input">
             <input
               type="text"
               placeholder="Enter OTP"
@@ -88,8 +91,8 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
               required
             />
           </div>
-          <div className="forgot-password-submit-container">
-            <button type="submit" className="forgot-password-submit">
+          <div className="register-submit-container">
+            <button type="submit" className="register-submit">
               Verify OTP
             </button>
           </div>

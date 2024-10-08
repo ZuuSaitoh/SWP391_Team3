@@ -120,7 +120,6 @@ function Login() {
           JSON.stringify({ id: customerId, username })
         );
 
-        toast.success("Login successful!");
         navigate("/?login=success");
       } else {
         toast.error("Authentication failed.");

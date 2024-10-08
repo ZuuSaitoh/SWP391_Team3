@@ -53,7 +53,7 @@ function ForgotPassword() {
 
       if (response.ok) {
         toast.success("Password reset successfully. You can now sign in.");
-        navigate("/login");
+        navigate("/");
       } else {
         toast.error(data.message || "Error resetting password");
       }
