@@ -13,7 +13,7 @@ import javax.lang.model.element.Name;
 public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "staffId")
+    @Column(name = "staff_id")
     private int staffId;
     @Column(name = "username")
     private String username;
@@ -21,7 +21,7 @@ public class Staff {
     private String password;
     @Column(name = "mail")
     private String mail;
-    @Column(name = "fullName")
+    @Column(name = "full_name")
     private String fullName;
     @Column(name = "address")
     private String address;

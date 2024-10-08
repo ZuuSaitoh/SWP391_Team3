@@ -2,6 +2,7 @@ package swp391.com.swp391.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,6 +25,9 @@ public class StaffCreationRequest {
     @NotBlank(message = "ENTER_ALL_FIELDS")
     @Email(message = "INVALID_EMAIL")
     String mail;
+    @NotBlank(message = "ENTER_ALL_FIELDS")
+    @Pattern(regexp = "Manager|Design Staff|Construction Staff|Consulting Staff", message = "INVALID_STAFF_TYPE")
+    String role;
 
     public @NotBlank(message = "ENTER_ALL_FIELDS") @Size(min = 3, message = "USERNAME_INVALID") String getUsername() {
         return username;
@@ -55,5 +59,13 @@ public class StaffCreationRequest {
 
     public void setMail(@NotBlank(message = "ENTER_ALL_FIELDS") @Email(message = "INVALID_EMAIL") String mail) {
         this.mail = mail;
+    }
+
+    public @NotBlank(message = "ENTER_ALL_FIELDS") @Pattern(regexp = "Manager|Design Staff|Construction Staff|Consulting Staff", message = "INVALID_STAFF_TYPE") String getRole() {
+        return role;
+    }
+
+    public void setRole(@NotBlank(message = "ENTER_ALL_FIELDS") @Pattern(regexp = "Manager|Design Staff|Construction Staff|Consulting Staff", message = "INVALID_STAFF_TYPE") String role) {
+        this.role = role;
     }
 }

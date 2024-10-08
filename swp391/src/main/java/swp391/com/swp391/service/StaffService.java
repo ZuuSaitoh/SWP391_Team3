@@ -43,6 +43,7 @@ public class StaffService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         staff.setPassword(passwordEncoder.encode(request.getPassword()));
         staff.setMail(request.getMail());
+        staff.setRole(request.getRole());
         return staffRepository.save(staff);
     }
 
@@ -64,6 +65,7 @@ public class StaffService {
         staff.setFullName(request.getFullName());
         staff.setAddress(request.getAddress());
         staff.setPhone(request.getPhone());
+        staff.setRole(request.getRole());
         return staffRepository.save(staff);
     }
 
