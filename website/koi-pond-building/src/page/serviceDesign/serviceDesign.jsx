@@ -145,6 +145,71 @@ function ServiceDesign() {
           </div>
         </section>
 
+        <section className="service-pricing">
+          <h2>Pricing Information</h2>
+          <div className="pricing-tables">
+            <div className="pricing-table">
+              <h3>Architectural Design Pricing</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Design Style</th>
+                    <th>Price (m²)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Japanese</td>
+                    <td>420,000</td>
+                  </tr>
+                  <tr>
+                    <td>Traditional</td>
+                    <td>300,000</td>
+                  </tr>
+                  <tr>
+                    <td>Classical</td>
+                    <td>520,000</td>
+                  </tr>
+                  <tr>
+                    <td>Modern</td>
+                    <td>250,000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div className="pricing-table">
+              <h3>Koi Pond Construction Pricing</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Area</th>
+                    <th>Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>10 - 20 m²</td>
+                    <td>From 25,000,000/m²</td>
+                  </tr>
+                  <tr>
+                    <td>20 - 50 m²</td>
+                    <td>From 21,000,000/m²</td>
+                  </tr>
+                  <tr>
+                    <td>50 - 100 m²</td>
+                    <td>From 15,000,000/m²</td>
+                  </tr>
+                  <tr>
+                    <td>Over 100 m²</td>
+                    <td>From 9,000,000/m²</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
         <section className="service-process">
           <h2>Our Service Process</h2>
           <div className="process-timeline">

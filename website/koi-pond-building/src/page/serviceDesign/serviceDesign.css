@@ -514,3 +514,72 @@
         animation: fadeInUp 0.8s ease-out both;
     }
 }
+
+.service-pricing {
+    margin-top: 6rem;
+    padding: 2rem;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+
+.service-pricing h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.pricing-tables {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.pricing-table {
+    flex: 1;
+    min-width: 300px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.pricing-table h3 {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+    margin: 0;
+}
+
+.pricing-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.pricing-table th,
+.pricing-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.pricing-table th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+}
+
+.pricing-table tr:last-child td {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .pricing-tables {
+        flex-direction: column;
+    }
+    
+    .pricing-table {
+        width: 100%;
+    }
+}
+
+/* ... (remaining styles) */
