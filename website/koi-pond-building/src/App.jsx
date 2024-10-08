@@ -18,11 +18,12 @@ import ServiceDesign from "./page/serviceDesign/serviceDesign.jsx";
 import ServiceClean from "./page/serviceClean/serviceClean.jsx";
 import ServiceMaintenance from "./page/serviceMaintenance/serviceMaintenance.jsx";
 import DashBoard from "./page/dashBoard/dashBoard.jsx";
-import StaffPage from "./page/staffPage/staffPage.jsx";
 import ProtectedRoutes from "./utils/ProtectedRoutes.jsx";
 import ChangePassword from "./page/changePassword/changePassword.jsx";
-import CustomerProfileDashBoard from './page/dashBoard/customerProfileDashBoard';
-import StaffProfileDashBoard from './page/dashBoard/staffProfileDashBoard';
+import CustomerProfileDashBoard from "./page/dashBoard/customerProfileDashBoard";
+import StaffProfileDashBoard from "./page/dashBoard/staffProfileDashBoard";
+import DesignStaffPage from "./page/staffPage/designStaffPage/designStaffPage.jsx";
+
 function App() {
   return (
     <Routes>
@@ -40,10 +41,11 @@ function App() {
         />
       </Route>
       <Route path="/dashboard" element={<DashBoard />} />
-      <Route path="/staff" element={<StaffPage />} />
+
       <Route path="/change-password" element={<ChangePassword />} />
       <Route path="/customer/:Id" element={<CustomerProfileDashBoard />} />
       <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
+      <Route path="/designStaffPage" element={<DesignStaffPage />} />
     </Routes>
   );
 }
