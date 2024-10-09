@@ -75,14 +75,40 @@ function ServiceMaintenance() {
       
       <div className="maintenance-content">
         <section className="maintenance-intro">
-          <h2>Professional Koi Pond Maintenance</h2>
+          <h2>Expert Koi Pond Maintenance</h2>
           <p>
-            Regular maintenance is crucial for the health and longevity of your Koi pond. Our professional maintenance services ensure that your pond remains a beautiful and thriving ecosystem for your prized Koi.
+            At Koi Pond Builders, we understand that a beautiful and healthy Koi pond requires regular, professional care. Our expert maintenance services ensure that your aquatic paradise remains a thriving ecosystem for your prized Koi, while providing you with a serene and enjoyable outdoor space.
           </p>
         </section>
 
+        <section className="maintenance-importance">
+          <h2>The Importance of Professional Maintenance</h2>
+          <div className="importance-grid">
+            <div className="importance-item">
+              <i className="fas fa-fish"></i>
+              <h3>Fish Health</h3>
+              <p>Regular maintenance ensures optimal water conditions for your Koi, promoting their health and longevity.</p>
+            </div>
+            <div className="importance-item">
+              <i className="fas fa-leaf"></i>
+              <h3>Ecosystem Balance</h3>
+              <p>Professional care maintains the delicate balance of your pond's ecosystem, supporting both fish and plant life.</p>
+            </div>
+            <div className="importance-item">
+              <i className="fas fa-tint"></i>
+              <h3>Water Quality</h3>
+              <p>Our services keep your pond water clean, clear, and properly balanced for optimal aesthetics and fish health.</p>
+            </div>
+            <div className="importance-item">
+              <i className="fas fa-cog"></i>
+              <h3>Equipment Longevity</h3>
+              <p>Regular maintenance of filters, pumps, and other equipment ensures their efficient operation and extends their lifespan.</p>
+            </div>
+          </div>
+        </section>
+
         <section className="maintenance-services">
-          <h2>Our Maintenance Services</h2>
+          <h2>Our Comprehensive Maintenance Services</h2>
           <div className="services-grid">
             <div className="service-item">
               <i className="fas fa-water"></i>
@@ -90,7 +116,7 @@ function ServiceMaintenance() {
               <p>Regular testing and balancing of water parameters to ensure optimal conditions for your Koi.</p>
             </div>
             <div className="service-item">
-              <i className="fas fa-leaf"></i>
+              <i className="fas fa-broom"></i>
               <h3>Debris Removal</h3>
               <p>Routine cleaning to remove leaves, twigs, and other debris from the pond surface and bottom.</p>
             </div>
@@ -100,10 +126,42 @@ function ServiceMaintenance() {
               <p>Regular cleaning and maintenance of filters to ensure efficient water purification.</p>
             </div>
             <div className="service-item">
-              <i className="fas fa-fish"></i>
+              <i className="fas fa-heartbeat"></i>
               <h3>Fish Health Monitoring</h3>
               <p>Regular check-ups on your Koi to ensure they remain healthy and free from diseases.</p>
             </div>
+            <div className="service-item">
+              <i className="fas fa-leaf"></i>
+              <h3>Aquatic Plant Care</h3>
+              <p>Pruning, fertilizing, and managing aquatic plants to maintain a balanced ecosystem.</p>
+            </div>
+            <div className="service-item">
+              <i className="fas fa-thermometer-half"></i>
+              <h3>Seasonal Adjustments</h3>
+              <p>Adapting maintenance routines to seasonal changes to ensure year-round pond health.</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="maintenance-process">
+          <h2>Our Maintenance Process</h2>
+          <div className="process-timeline">
+            {[
+              { step: 1, title: "Initial Assessment", description: "We thoroughly evaluate your pond's current condition and specific needs.", icon: "🔍" },
+              { step: 2, title: "Customized Plan", description: "We create a tailored maintenance plan based on your pond's unique requirements.", icon: "📝" },
+              { step: 3, title: "Regular Maintenance Visits", description: "Our experts perform scheduled maintenance tasks to keep your pond in top condition.", icon: "🔧" },
+              { step: 4, title: "Water Quality Testing", description: "We conduct regular water tests to ensure optimal conditions for your Koi.", icon: "🧪" },
+              { step: 5, title: "Equipment Check and Cleaning", description: "We inspect and clean all pond equipment to ensure efficient operation.", icon: "⚙️" },
+              { step: 6, title: "Detailed Reporting", description: "After each visit, we provide a comprehensive report of services performed and recommendations.", icon: "📊" }
+            ].map((item, index) => (
+              <div key={index} className="process-step">
+                <div className="step-number">{item.step}</div>
+                <div className="step-content">
+                  <h3>{item.icon} {item.title}</h3>
+                  <p>{item.description}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -116,18 +174,23 @@ function ServiceMaintenance() {
                 <li>Monthly water quality check</li>
                 <li>Bi-weekly debris removal</li>
                 <li>Quarterly filter cleaning</li>
+                <li>Seasonal fish health check</li>
               </ul>
               <p className="price">Starting at $X/month</p>
+              <button className="plan-cta">Choose Plan</button>
             </div>
-            <div className="plan">
+            <div className="plan featured">
+              <div className="featured-banner">Most Popular</div>
               <h3>Standard Plan</h3>
               <ul>
                 <li>Bi-weekly water quality check</li>
                 <li>Weekly debris removal</li>
                 <li>Monthly filter cleaning</li>
-                <li>Quarterly fish health check</li>
+                <li>Bi-monthly fish health check</li>
+                <li>Quarterly aquatic plant care</li>
               </ul>
               <p className="price">Starting at $Y/month</p>
+              <button className="plan-cta">Choose Plan</button>
             </div>
             <div className="plan">
               <h3>Premium Plan</h3>
@@ -136,17 +199,37 @@ function ServiceMaintenance() {
                 <li>Twice-weekly debris removal</li>
                 <li>Bi-weekly filter cleaning</li>
                 <li>Monthly fish health check</li>
+                <li>Monthly aquatic plant care</li>
                 <li>24/7 emergency support</li>
               </ul>
               <p className="price">Starting at $Z/month</p>
+              <button className="plan-cta">Choose Plan</button>
+            </div>
+          </div>
+        </section>
+
+        <section className="maintenance-faq">
+          <h2>Frequently Asked Questions</h2>
+          <div className="faq-container">
+            <div className="faq-item">
+              <h3>How often should I have my Koi pond professionally maintained?</h3>
+              <p>The frequency of professional maintenance depends on various factors such as pond size, number of fish, and surrounding environment. Generally, we recommend at least monthly maintenance visits, with more frequent visits during peak seasons.</p>
+            </div>
+            <div className="faq-item">
+              <h3>Can I perform some maintenance tasks myself?</h3>
+              <p>While some basic tasks like surface skimming can be done by pond owners, professional maintenance ensures thorough care and early detection of potential issues. We also provide guidance on daily pond care practices for pond owners.</p>
+            </div>
+            <div className="faq-item">
+              <h3>How do seasonal changes affect pond maintenance?</h3>
+              <p>Each season brings unique challenges for Koi ponds. Our maintenance plans adapt to these seasonal changes, adjusting care routines for spring preparation, summer algae control, fall cleanup, and winter protection.</p>
             </div>
           </div>
         </section>
 
         <section className="maintenance-cta">
-          <h2>Ready to Maintain Your Koi Pond?</h2>
-          <p>Contact us today to schedule your professional Koi pond maintenance service!</p>
-          <a href="#contact" className="cta-button">Get a Free Quote</a>
+          <h2>Ready to Ensure Your Koi Pond's Health and Beauty?</h2>
+          <p>Contact us today to schedule your professional Koi pond maintenance service or to learn more about our customized maintenance plans.</p>
+          <button className="cta-button">Get a Free Consultation</button>
         </section>
       </div>
       
