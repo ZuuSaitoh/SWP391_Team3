@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./dashBoard.css";
-import CustomerProfileDashboard from "./customerProfileDashBoard";
 
 const Dashboard = () => {
   const [customers, setCustomers] = useState([]);
@@ -28,6 +27,8 @@ const Dashboard = () => {
     mail: "",
     role: "",
   });
+
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -244,8 +245,21 @@ const Dashboard = () => {
     </div>
   );
 
+  const renderSearchBar = () => (
+    <div className="search-bar-container">
+      <input
+        type="text"
+        placeholder={`Search ${activeView}...`}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="search-bar"
+      />
+    </div>
+  );
+
   const renderCustomers = () => (
     <div className="table-container">
+      {renderSearchBar()}
       <button
         onClick={() => setShowAddCustomerForm(true)}
         className="add-customer-btn"
@@ -268,6 +282,14 @@ const Dashboard = () => {
         </thead>
         <tbody>
           {customers
+            .filter((customer) => {
+              if (!customer) return false;
+              const searchLower = search.toLowerCase().trim();
+              return searchLower === '' ||
+                (customer.username && customer.username.toLowerCase().includes(searchLower)) ||
+                (customer.fullName && customer.fullName.toLowerCase().includes(searchLower)) ||
+                (customer.mail && customer.mail.toLowerCase().includes(searchLower));
+            })
             .sort((a, b) => a.id - b.id)
             .map((customer) => (
               <tr key={customer.id}>
@@ -295,6 +317,7 @@ const Dashboard = () => {
 
   const renderStaffs = () => (
     <div className="table-container">
+      {renderSearchBar()}
       <button
         onClick={() => setShowAddStaffForm(true)}
         className="add-staff-btn"
@@ -316,33 +339,52 @@ const Dashboard = () => {
           </tr>
         </thead>
         <tbody>
-          {staffs.map((staff) => (
-            <tr key={staff.staffId}>
-              <td>{staff.staffId}</td>
-              <td>{staff.username}</td>
-              <td>{staff.fullName}</td>
-              <td>{staff.mail}</td>
-              <td>{staff.address}</td>
-              <td>{staff.phone}</td>
-              <td>{staff.role || "N/A"}</td>
-              <td>
-                <button
-                  onClick={() => handleViewStaffProfile(staff.staffId)}
-                  className="view-profile-btn"
-                >
-                  View Profile
-                </button>
-              </td>
-            </tr>
-          ))}
+          {staffs
+            .filter((staff) => {
+              if (!staff) return false;
+              const searchLower = search.toLowerCase().trim();
+              return searchLower === '' ||
+                (staff.username && staff.username.toLowerCase().includes(searchLower)) ||
+                (staff.fullName && staff.fullName.toLowerCase().includes(searchLower)) ||
+                (staff.mail && staff.mail.toLowerCase().includes(searchLower));
+            })
+            .map((staff) => (
+              <tr key={staff.staffId}>
+                <td>{staff.staffId}</td>
+                <td>{staff.username}</td>
+                <td>{staff.fullName}</td>
+                <td>{staff.mail}</td>
+                <td>{staff.address}</td>
+                <td>{staff.phone}</td>
+                <td>{staff.role || "N/A"}</td>
+                <td>
+                  <button
+                    onClick={() => handleViewStaffProfile(staff.staffId)}
+                    className="view-profile-btn"
+                  >
+                    View Profile
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
   );
 
+  const handleBackToHome = () => {
+    navigate('/'); // Assuming '/' is your home page route
+  };
+
   return (
     <div className="dashboard">
       <div className="sidebar">
+        <div className="sidebar-header">
+          <h2>Dashboard</h2>
+          <button onClick={handleBackToHome} className="back-home-btn">
+            &#8592; {/* Left arrow character */}
+          </button>
+        </div>
         <button
           className={`sidebar-button ${
             activeView === "customers" ? "active" : ""

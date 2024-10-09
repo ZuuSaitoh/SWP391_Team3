@@ -295,7 +295,9 @@
   margin-top: 10px;
 }
 
-.save-btn, .cancel-btn, .edit-customer-btn {
+.save-btn,
+.cancel-btn,
+.edit-customer-btn {
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
@@ -388,8 +390,10 @@ body {
   padding: 15px;
   margin: 0;
   transition: all 0.3s ease;
-  word-break: break-word; /* This will break long words */
-  overflow-wrap: break-word; /* This will ensure the text wraps */
+  word-break: break-word;
+  /* This will break long words */
+  overflow-wrap: break-word;
+  /* This will ensure the text wraps */
 }
 
 .profile-info p strong {
@@ -641,4 +645,124 @@ body {
 
 .add-staff-btn:hover {
   background-color: #27ae60;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-staff-btn:hover {
+  background-color: #27ae60;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-staff-form button[type="button"] {
+  background-color: #e74c3c;
+}
+
+.add-staff-form button:hover {
+  background-color: #2980b9;
+}
+
+.add-staff-form button[type="button"]:hover {
+  background-color: #c0392b;
+}
+
+.add-staff-btn {
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  background-color: #2ecc71;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-staff-btn:hover {
+  background-color: #27ae60;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h2 {
+  color: #ecf0f1;
+  margin: 0;
+}
+
+.back-home-btn {
+  background: none;
+  border: 1px solid #ecf0f1;
+  color: #ecf0f1;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  /* Changed from 50% to 4px for square corners */
+  transition: all 0.3s ease;
+  width: 40px;
+  /* Set a fixed width */
+  height: 40px;
+  /* Set a fixed height to match the width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-home-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.view-profile-btn {
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(52, 152, 219, 0.1);
+}
+
+.view-profile-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+}
+
+.view-profile-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(52, 152, 219, 0.2);
+}
+
+.search-bar-container {
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
 }
