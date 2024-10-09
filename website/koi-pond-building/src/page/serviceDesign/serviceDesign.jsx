@@ -73,6 +73,10 @@ function ServiceDesign() {
     };
   }, []);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="service-design-page">
       <Header isTransparent={true} />

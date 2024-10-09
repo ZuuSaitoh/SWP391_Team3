@@ -18,6 +18,9 @@ import slider3 from "../koi_photo/slider/slider3.jpg";
 import member1 from "../koi_photo/member/member 1.jpg";
 import member2 from "../koi_photo/member/member 2.jpg";
 import member3 from "../koi_photo/member/member 3.png";
+import blog1 from "../koi_photo/pond/koi_pond.jpg";
+import blog2 from "../koi_photo/pond/koi_pond2.jpg";
+import blog3 from "../koi_photo/pond/pond3.jpg";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -182,9 +185,7 @@ function HomePage() {
           <div className="hero-content">
             <h1>Create Your Dream Koi Pond</h1>
             <p>Expert design and construction for serene water gardens</p>
-            <a href="#contact" className="cta-button">
-              Get a Free Quote
-            </a>
+            {/* The "Get a Free Quote" button has been removed */}
           </div>
           <div className="slider-controls">
             <button onClick={prevSlide} className="slider-control prev">&#10094;</button>
@@ -352,53 +353,38 @@ function HomePage() {
           </div>
         </section>
 
-        <section id="contact" className="contact">
-          <h2>Contact Us</h2>
-          <div className="contact-container">
-            <form className="contact-form">
-              <input type="text" placeholder="Your Name" required />
-              <input type="email" placeholder="Your Email" required />
-              <input type="tel" placeholder="Your Phone" />
-              <textarea placeholder="Your Message" required></textarea>
-              <button type="submit" className="submit-button">
-                Send Message
-              </button>
-            </form>
-            <div className="contact-info">
-              <h3>Get in Touch</h3>
-              <p>
-                <i className="fas fa-map-marker-alt"></i> 549/44/19 Lê Văn Thọ
-              </p>
-              <p>
-                <i className="fas fa-phone"></i> (084) 0934103416
-              </p>
-              <p>
-                <i className="fas fa-envelope"></i> lamhdse184108@fpt.edu.vn
-              </p>
-            </div>
-          </div>
-        </section>
-
         <section id="blog" className="blog">
           <h2>Latest News</h2>
           <div className="blog-container">
             <div className="blog-post">
-              <img src="/path/to/blog-image-1.jpg" alt="Blog post 1" />
-              <h3>The Benefits of Koi Ponds for Mental Health</h3>
-              <p>Discover how a koi pond can improve your well-being and create a peaceful atmosphere in your backyard.</p>
-              <a href="#" className="read-more">Read More</a>
+              <div className="blog-image">
+                <img src={blog1} alt="Blog post 1" />
+              </div>
+              <div className="blog-content">
+                <h3>The Benefits of Koi Ponds for Mental Health</h3>
+                <p>Discover how a koi pond can improve your well-being and create a peaceful atmosphere in your backyard.</p>
+                <a href="#" className="read-more">Read More <i className="fas fa-arrow-right"></i></a>
+              </div>
             </div>
             <div className="blog-post">
-              <img src="/path/to/blog-image-2.jpg" alt="Blog post 2" />
-              <h3>Top 5 Koi Varieties for Beginners</h3>
-              <p>Learn about the best koi varieties for those just starting their journey into the world of koi keeping.</p>
-              <a href="#" className="read-more">Read More</a>
+              <div className="blog-image">
+                <img src={blog2} alt="Blog post 2" />
+              </div>
+              <div className="blog-content">
+                <h3>Top 5 Koi Varieties for Beginners</h3>
+                <p>Learn about the best koi varieties for those just starting their journey into the world of koi keeping.</p>
+                <a href="#" className="read-more">Read More <i className="fas fa-arrow-right"></i></a>
+              </div>
             </div>
             <div className="blog-post">
-              <img src="/path/to/blog-image-3.jpg" alt="Blog post 3" />
-              <h3>Seasonal Maintenance Tips for Your Koi Pond</h3>
-              <p>Essential maintenance tasks to keep your koi pond healthy and beautiful throughout the year.</p>
-              <a href="#" className="read-more">Read More</a>
+              <div className="blog-image">
+                <img src={blog3} alt="Blog post 3" />
+              </div>
+              <div className="blog-content">
+                <h3>Seasonal Maintenance Tips for Your Koi Pond</h3>
+                <p>Essential maintenance tasks to keep your koi pond healthy and beautiful throughout the year.</p>
+                <a href="#" className="read-more">Read More <i className="fas fa-arrow-right"></i></a>
+              </div>
             </div>
           </div>
         </section>

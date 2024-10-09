@@ -8,29 +8,17 @@ function Footer() {
         <div className="footer-section">
           <h3>Koi Pond Builders</h3>
           <p>Creating serene water gardens since 2005</p>
+          <div className="footer-logo">
+            <img src="/path/to/your/logo.png" alt="Koi Pond Builders Logo" />
+          </div>
         </div>
         <div className="footer-section">
-          <h3>Quick Menu</h3>
-          <ul className="quick-menu">
-            <li>
-              <a href="#home">Home</a>
-            </li>
-            <li>
-              <a href="#services">Services</a>
-            </li>
-            <li>
-              <a href="#gallery">Gallery</a>
-            </li>
-            <li>
-              <a href="#about">About</a>
-            </li>
-            <li>
-              <a href="#testimonials">Testimonials</a>
-            </li>
-            <li>
-              <a href="#contact">Contact</a>
-            </li>
-          </ul>
+          <h3>Get in Touch</h3>
+          <div className="contact-info">
+            <p><i className="fas fa-map-marker-alt"></i> 549/44/19 Lê Văn Thọ</p>
+            <p><i className="fas fa-phone"></i> (084) 0934103416</p>
+            <p><i className="fas fa-envelope"></i> lamhdse184108@fpt.edu.vn</p>
+          </div>
         </div>
         <div className="footer-section">
           <h3>Follow Us</h3>
@@ -43,6 +31,9 @@ function Footer() {
             </a>
             <a href="#" className="social-icon">
               <i className="fab fa-instagram"></i>
+            </a>
+            <a href="#" className="social-icon">
+              <i className="fab fa-linkedin-in"></i>
             </a>
           </div>
         </div>

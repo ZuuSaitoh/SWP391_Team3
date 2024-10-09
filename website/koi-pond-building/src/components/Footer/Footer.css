@@ -1,7 +1,8 @@
 .footer {
-    background-color: #333;
-    color: var(--light-text-color);
-    padding: 3rem 2rem 1rem;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    padding: 4rem 2rem 2rem;
+    font-family: 'Poppins', sans-serif;
 }
 
 .footer-content {
@@ -17,53 +18,69 @@
     margin-bottom: 2rem;
 }
 
-.footer-section:first-child {
-    flex-basis: calc(30% - 2rem);
-}
-
-.footer-section:nth-child(2) {
-    flex-basis: calc(40% - 2rem);
-    text-align: center;
-}
-
-.footer-section:last-child {
-    flex-basis: calc(30% - 2rem);
-    text-align: right;
-}
-
 .footer-section h3 {
-    margin-bottom: 1rem;
-    color: var(--primary-color);
-    font-size: 1.2rem;
+    color: #ffffff;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.footer-section h3::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    width: 50px;
+    height: 2px;
+    background-color: #ffffff;
+}
+
+/* Align the line for "Koi Pond Builders" to the left */
+.footer-section:first-child h3::after {
+    left: 0;
+}
+
+/* Center the line for "Get in Touch" */
+.footer-section:nth-child(2) h3::after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Align the line for "Follow Us" to the right */
+.footer-section:last-child h3::after {
+    right: 0;
+    left: auto;
 }
 
 .footer-section p {
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
 }
 
-.quick-menu {
-    list-style: none;
-    padding: 0;
-    columns: 2;
-    -webkit-columns: 2;
-    -moz-columns: 2;
-    column-gap: 2rem;
+.footer-logo img {
+    max-width: 150px;
+    margin-top: 1rem;
 }
 
-.quick-menu li {
-    margin-bottom: 0.5rem;
+.contact-info p {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.8rem;
 }
 
-.quick-menu a {
-    color: var(--light-text-color);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: color 0.3s ease;
+.contact-info i {
+    margin-right: 10px;
+    color: #ffffff;
+    font-size: 1.1rem;
 }
 
-.quick-menu a:hover {
-    color: var(--primary-color);
+/* Center the content of the "Get in Touch" section */
+.footer-section:nth-child(2) {
+    text-align: center;
+}
+
+.footer-section:nth-child(2) .contact-info p {
+    justify-content: center;
 }
 
 .social-icons {
@@ -76,48 +93,47 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: 36px;
-    height: 36px;
-    background-color: var(--primary-color);
-    color: var(--light-text-color);
+    width: 40px;
+    height: 40px;
+    background-color: #333;
+    color: #ffffff;
     border-radius: 50%;
     text-decoration: none;
     transition: all 0.3s ease;
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
 .social-icon:hover {
-    background-color: var(--secondary-color);
-    transform: translateY(-2px);
+    background-color: #ffffff;
+    color: #1a1a1a;
+    transform: translateY(-3px);
 }
 
 .footer-bottom {
     text-align: center;
-    margin-top: 2rem;
-    padding-top: 1rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
 }
 
 @media (max-width: 768px) {
-
-    .footer-section,
-    .footer-section:first-child,
-    .footer-section:nth-child(2),
-    .footer-section:last-child {
+    .footer-section {
         flex-basis: 100%;
         text-align: center;
         margin-bottom: 2rem;
     }
 
-    .social-icons,
-    .quick-menu {
+    .footer-section h3::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .social-icons {
         justify-content: center;
     }
 
-    .quick-menu {
-        columns: 1;
-        -webkit-columns: 1;
-        -moz-columns: 1;
+    .contact-info p {
+        justify-content: center;
     }
 }
