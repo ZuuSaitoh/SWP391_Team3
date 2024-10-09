@@ -22,6 +22,7 @@ import ProtectedRoutes from "./utils/ProtectedRoutes.jsx";
 import ChangePassword from "./page/changePassword/changePassword.jsx";
 import CustomerProfileDashBoard from "./page/dashBoard/customerProfileDashBoard";
 import StaffProfileDashBoard from "./page/dashBoard/staffProfileDashBoard";
+import OrderViewDashboard from "./page/dashBoard/orderViewDashBoard";
 import DesignStaffPage from "./page/staffPage/designStaffPage/designStaffPage.jsx";
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
       <Route path="/customer/:Id" element={<CustomerProfileDashBoard />} />
       <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
       <Route path="/designStaffPage" element={<DesignStaffPage />} />
+      <Route path="/order/:orderId" element={<OrderViewDashboard />} />
     </Routes>
   );
 }

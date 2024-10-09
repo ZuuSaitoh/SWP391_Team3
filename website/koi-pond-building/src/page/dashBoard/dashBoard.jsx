@@ -6,6 +6,7 @@ import "./dashBoard.css";
 const Dashboard = () => {
   const [customers, setCustomers] = useState([]);
   const [staffs, setStaffs] = useState([]);
+  const [orders, setOrders] = useState([]); // New state for orders
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeView, setActiveView] = useState("customers");
@@ -28,31 +29,33 @@ const Dashboard = () => {
     role: "",
   });
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [customersResponse, staffsResponse] = await Promise.all([
+        const [customersResponse, staffsResponse, ordersResponse] = await Promise.all([
           axios.get("http://localhost:8080/customers/fetchAll"),
           axios.get("http://localhost:8080/staffs/fetchAll"),
+          axios.get("http://localhost:8080/orders/fetchAll"),
         ]);
-
-        console.log("Customers response:", customersResponse.data);
-        console.log("Staffs response:", staffsResponse.data);
 
         if (customersResponse.data.code === 9999) {
           setCustomers(customersResponse.data.result);
-          console.log("Customers set:", customersResponse.data.result);
         } else {
           setError("Failed to fetch customers");
         }
 
         if (staffsResponse.data.code === 9999) {
           setStaffs(staffsResponse.data.result);
-          console.log("Staffs set:", staffsResponse.data.result);
         } else {
           setError("Failed to fetch staffs");
+        }
+
+        if (ordersResponse.data.code === 9999) {
+          setOrders(ordersResponse.data.result);
+        } else {
+          setError("Failed to fetch orders");
         }
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -285,10 +288,15 @@ const Dashboard = () => {
             .filter((customer) => {
               if (!customer) return false;
               const searchLower = search.toLowerCase().trim();
-              return searchLower === '' ||
-                (customer.username && customer.username.toLowerCase().includes(searchLower)) ||
-                (customer.fullName && customer.fullName.toLowerCase().includes(searchLower)) ||
-                (customer.mail && customer.mail.toLowerCase().includes(searchLower));
+              return (
+                searchLower === "" ||
+                (customer.username &&
+                  customer.username.toLowerCase().includes(searchLower)) ||
+                (customer.fullName &&
+                  customer.fullName.toLowerCase().includes(searchLower)) ||
+                (customer.mail &&
+                  customer.mail.toLowerCase().includes(searchLower))
+              );
             })
             .sort((a, b) => a.id - b.id)
             .map((customer) => (
@@ -343,10 +351,14 @@ const Dashboard = () => {
             .filter((staff) => {
               if (!staff) return false;
               const searchLower = search.toLowerCase().trim();
-              return searchLower === '' ||
-                (staff.username && staff.username.toLowerCase().includes(searchLower)) ||
-                (staff.fullName && staff.fullName.toLowerCase().includes(searchLower)) ||
-                (staff.mail && staff.mail.toLowerCase().includes(searchLower));
+              return (
+                searchLower === "" ||
+                (staff.username &&
+                  staff.username.toLowerCase().includes(searchLower)) ||
+                (staff.fullName &&
+                  staff.fullName.toLowerCase().includes(searchLower)) ||
+                (staff.mail && staff.mail.toLowerCase().includes(searchLower))
+              );
             })
             .map((staff) => (
               <tr key={staff.staffId}>
@@ -372,8 +384,65 @@ const Dashboard = () => {
     </div>
   );
 
+  const renderOrders = () => (
+    <div className="table-container">
+      {renderSearchBar()}
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer Name</th>
+            <th>Staff Name</th>
+            <th>Order Date</th>
+            <th>End Date</th>
+            <th>Rating</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders
+            .filter((order) => {
+              if (!order) return false;
+              const searchLower = search.toLowerCase().trim();
+              return (
+                searchLower === "" ||
+                order.order_id.toString().includes(searchLower) ||
+                order.customer_id.username.toLowerCase().includes(searchLower) ||
+                order.staff_id.username.toLowerCase().includes(searchLower)
+              );
+            })
+            .map((order) => (
+              <tr key={order.order_id}>
+                <td>{order.order_id}</td>
+                <td>{order.customer_id.username}</td>
+                <td>{order.staff_id.username}</td>
+                <td>{new Date(order.order_date).toLocaleString()}</td>
+                <td>{order.end_date ? new Date(order.end_date).toLocaleString() : 'N/A'}</td>
+                <td>{order.rating || 'N/A'}</td>
+                <td>
+                  <button
+                    onClick={() => handleViewOrderDetails(order.order_id)}
+                    className="view-profile-btn"
+                  >
+                    View Details
+                  </button>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const handleViewOrderDetails = (orderId) => {
+    // Implement the logic to view order details
+    console.log(`Viewing details for order ${orderId}`);
+    // You can navigate to a new page or open a modal with order details
+    navigate(`/order/${orderId}`);
+  };
+
   const handleBackToHome = () => {
-    navigate('/'); // Assuming '/' is your home page route
+    navigate("/"); // Assuming '/' is your home page route
   };
 
   return (
@@ -401,15 +470,29 @@ const Dashboard = () => {
         >
           Staffs
         </button>
+        <button
+          className={`sidebar-button ${
+            activeView === "orders" ? "active" : ""
+          }`}
+          onClick={() => setActiveView("orders")}
+        >
+          Orders
+        </button>
       </div>
       <div className="main-content">
         <h1>
           {activeView === "customers"
             ? "Customer Dashboard"
-            : "Staff Dashboard"}
+            : activeView === "staffs"
+            ? "Staff Dashboard"
+            : "Order Dashboard"}
         </h1>
         <div className="table-container">
-          {activeView === "customers" ? renderCustomers() : renderStaffs()}
+          {activeView === "customers"
+            ? renderCustomers()
+            : activeView === "staffs"
+            ? renderStaffs()
+            : renderOrders()}
         </div>
         {selectedCustomerId && (
           <CustomerProfileDashboard customerId={selectedCustomerId} />
