@@ -80,7 +80,7 @@ function Header({ isTransparent }) {
             <a onClick={() => navigateToSection("contact")}>Contact</a>
           </li>
           <li>
-            <a href="/staff">Staff</a>
+            <a href="/designStaffPage">Staff</a>
           </li>
         </ul>
         <div className="login-container">

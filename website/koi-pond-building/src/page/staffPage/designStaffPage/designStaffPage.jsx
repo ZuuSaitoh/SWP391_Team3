@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Form, Image, Input, Modal, Table, Upload } from "antd";
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/file";
 
@@ -22,6 +22,12 @@ function DesignStaffPage() {
     } catch (err) {
       toast.error(err.response.data);
     }
+  };
+
+  const navigate = useNavigate();
+
+  const backToHomepage = () => {
+    navigate("/");
   };
 
   const handleSubmit = async (values) => {
@@ -125,7 +131,7 @@ function DesignStaffPage() {
   return (
     <div>
       <Button onClick={() => setShowModal(true)}>Add new design</Button>
-      <Button onClick={() => Navigate("/")} style={{ marginLeft: "10px" }}>
+      <Button onClick={backToHomepage} style={{ marginLeft: "10px" }}>
         Return to Homepage
       </Button>
       <Table dataSource={datas} columns={columns} />
