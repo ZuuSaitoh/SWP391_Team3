@@ -15,6 +15,7 @@ import swp391.com.swp391.repository.StaffRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -32,12 +33,12 @@ public class OrderService {
         Customer customer = customerRepository.findById(String.valueOf(request.getCustomer_id()))
                 .orElseThrow(()->new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        order.setCustomer_id(customer);
+        order.setCustomer(customer);
 
         Staff staff = staffRepository.findById(String.valueOf(request.getStaff_id()))
                 .orElseThrow(()->new AppException(ErrorCode.STAFF_NOT_EXISTED));
 
-        order.setStaff_id(staff);
+        order.setStaff(staff);
 //        order.setDesign_id(request.getDesign_id());
         order.setOrder_date(LocalDateTime.now());
         return orderRepository.save(order);
@@ -64,5 +65,13 @@ public class OrderService {
         order.setRating(request.getRating());
         order.setFeedback_date(LocalDateTime.now());
         return orderRepository.save(order);
+    }
+
+    public Optional<List<Order>> getOrderByCustomerId(int id){
+        return orderRepository.findByCustomer_Id(id);
+    }
+
+    public Optional<List<Order>> getOrderByStaffId(int id){
+        return orderRepository.findByStaff_staffId(id);
     }
 }

@@ -14,17 +14,17 @@ import lombok.experimental.FieldDefaults;
 public class Design {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int design_id;
+    int designId;
 
-    public Design(int design_id) {
-        this.design_id = design_id;
+    public Design(int designId) {
+        this.designId = designId;
     }
 
-    public int getDesign_id() {
-        return design_id;
+    public int getDesignId() {
+        return designId;
     }
 
-    public void setDesign_id(int design_id) {
-        this.design_id = design_id;
+    public void setDesignId(int designId) {
+        this.designId = designId;
     }
 }

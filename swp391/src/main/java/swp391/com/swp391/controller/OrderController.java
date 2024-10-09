@@ -10,6 +10,7 @@ import swp391.com.swp391.entity.Order;
 import swp391.com.swp391.service.OrderService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/orders")
@@ -49,5 +50,19 @@ public class OrderController {
     ApiResponse<Order> updateRatingAndFeedback(@PathVariable int id, @RequestBody @Valid OrderUpdateFeedbackRequest request){
         return new ApiResponse<Order>
                 (9997, "Update rating and feedback",orderService.updateRatingAndFeedback(id, request));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/customer/fetchAll/{id}")
+    ApiResponse<Optional<List<Order>>> getAllOrderByCustomer_id(@PathVariable int id){
+        return new ApiResponse<Optional<List<Order>>>
+                (9996, "Customer list of order", orderService.getOrderByCustomerId(id));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/staff/fetchAll/{id}")
+    ApiResponse<Optional<List<Order>>> getAllOrderByStaffId(@PathVariable int id){
+        return new ApiResponse<Optional<List<Order>>>
+                (9996, "Customer list of order", orderService.getOrderByStaffId(id));
     }
 }

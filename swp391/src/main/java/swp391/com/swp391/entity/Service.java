@@ -15,33 +15,33 @@ public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "service_id")
-    int service_id;
+    int serviceId;
     @Column(name = "service_name")
-    String service_name;
+    String serviceName;
     @Column(name = "price")
     double price;
     @Column(name = "description")
     String description;
     @Column(name = "service_type")
-    String service_type;
+    String serviceType;
 
     public Service() {
     }
 
-    public int getService_id() {
-        return service_id;
+    public int getServiceId() {
+        return serviceId;
     }
 
-    public void setService_id(int service_id) {
-        this.service_id = service_id;
+    public void setServiceId(int serviceId) {
+        this.serviceId = serviceId;
     }
 
-    public String getService_name() {
-        return service_name;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public void setService_name(String service_name) {
-        this.service_name = service_name;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     public double getPrice() {
@@ -60,12 +60,12 @@ public class Service {
         this.description = description;
     }
 
-    public String getService_type() {
-        return service_type;
+    public String getServiceType() {
+        return serviceType;
     }
 
-    public void setService_type(String service_type) {
-        this.service_type = service_type;
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
     }
 
 }

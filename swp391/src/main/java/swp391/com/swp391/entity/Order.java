@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -22,14 +21,14 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id", nullable = false)
-    Customer customer_id;
+    Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "staff_id", referencedColumnName = "staff_id", nullable = false)
-    Staff staff_id;
+    Staff staff;
 
     @ManyToOne
-    @JoinColumn(name = "design_id", referencedColumnName = "design_id", nullable = true)
+    @JoinColumn(name = "design_id", referencedColumnName = "designId", nullable = true)
     Design design_id;
 
     @Column(name = "order_date")
@@ -58,20 +57,20 @@ public class Order {
         this.order_id = order_id;
     }
 
-    public Customer getCustomer_id() {
-        return customer_id;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomer_id(Customer customer_id) {
-        this.customer_id = customer_id;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
-    public Staff getStaff_id() {
-        return staff_id;
+    public Staff getStaff() {
+        return staff;
     }
 
-    public void setStaff_id(Staff staff_id) {
-        this.staff_id = staff_id;
+    public void setStaff(Staff staff) {
+        this.staff = staff;
     }
 
     public Design getDesign_id() {

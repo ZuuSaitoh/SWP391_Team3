@@ -27,10 +27,10 @@ public class ServiceService {
 
     public swp391.com.swp391.entity.Service createService(ServiceCreationRequest request){
         swp391.com.swp391.entity.Service service = new swp391.com.swp391.entity.Service();
-        service.setService_name(request.getService_name());
+        service.setServiceName(request.getService_name());
         service.setPrice(request.getPrice());
         service.setDescription(request.getDescription());
-        service.setService_type(request.getService_type());
+        service.setServiceType(request.getService_type());
         return (swp391.com.swp391.entity.Service) serviceRepository.save(service);
     }
 
@@ -45,10 +45,10 @@ public class ServiceService {
 
     public swp391.com.swp391.entity.Service updateService(int service_id, ServiceUpdateRequest request){
         swp391.com.swp391.entity.Service service = getServiceById(service_id);
-        service.setService_name(request.getService_name());
+        service.setServiceName(request.getService_name());
         service.setDescription(request.getDescription());
         service.setPrice(request.getPrice());
-        service.setService_type(request.getService_type());
+        service.setServiceType(request.getService_type());
         return serviceRepository.save(service);
     }
 
