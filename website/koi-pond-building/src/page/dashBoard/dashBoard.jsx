@@ -392,10 +392,9 @@ const Dashboard = () => {
           <tr>
             <th>Order ID</th>
             <th>Customer Name</th>
+            <th>Customer Email</th>
             <th>Staff Name</th>
-            <th>Order Date</th>
-            <th>End Date</th>
-            <th>Rating</th>
+            <th>Staff Role</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -407,18 +406,19 @@ const Dashboard = () => {
               return (
                 searchLower === "" ||
                 order.order_id.toString().includes(searchLower) ||
-                order.customer_id.username.toLowerCase().includes(searchLower) ||
-                order.staff_id.username.toLowerCase().includes(searchLower)
+                order.customer.username.toLowerCase().includes(searchLower) ||
+                order.customer.mail.toLowerCase().includes(searchLower) ||
+                order.staff.username.toLowerCase().includes(searchLower) ||
+                order.staff.role.toLowerCase().includes(searchLower)
               );
             })
             .map((order) => (
               <tr key={order.order_id}>
                 <td>{order.order_id}</td>
-                <td>{order.customer_id.username}</td>
-                <td>{order.staff_id.username}</td>
-                <td>{new Date(order.order_date).toLocaleString()}</td>
-                <td>{order.end_date ? new Date(order.end_date).toLocaleString() : 'N/A'}</td>
-                <td>{order.rating || 'N/A'}</td>
+                <td>{order.customer.username}</td>
+                <td>{order.customer.mail}</td>
+                <td>{order.staff.username}</td>
+                <td>{order.staff.role}</td>
                 <td>
                   <button
                     onClick={() => handleViewOrderDetails(order.order_id)}
@@ -435,9 +435,6 @@ const Dashboard = () => {
   );
 
   const handleViewOrderDetails = (orderId) => {
-    // Implement the logic to view order details
-    console.log(`Viewing details for order ${orderId}`);
-    // You can navigate to a new page or open a modal with order details
     navigate(`/order/${orderId}`);
   };
 
