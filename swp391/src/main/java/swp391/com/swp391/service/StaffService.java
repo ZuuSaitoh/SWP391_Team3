@@ -92,4 +92,11 @@ public class StaffService {
     public void deleteStaff(int staffId){
         staffRepository.deleteById(String.valueOf(staffId));
     }
+
+    //Hàm này dùng để lấy Role dựa trên username đó
+    public String getRoleByUsername(String username) {
+        var staff = staffRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return staff.getRole();
+    }
 }
