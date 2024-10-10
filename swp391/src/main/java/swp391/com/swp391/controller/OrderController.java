@@ -40,7 +40,7 @@ public class OrderController {
 
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-    @PutMapping("/update-end-date/{id}")
+    @GetMapping("/update-end-date/{id}")
     ApiResponse<Order> updateEndDate(@PathVariable int id){
         return new ApiResponse<Order>(9998,"Update end date", orderService.updateEndDate(id));
     }
