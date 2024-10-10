@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "./dashBoard.css";
 
 const OrderViewDashboard = () => {
@@ -32,6 +33,23 @@ const OrderViewDashboard = () => {
     navigate("/dashboard");
   };
 
+  const handleUpdateEndDate = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/orders/update-end-date/${orderId}`
+      );
+      if (response.data.code === 9998) {
+        setOrder(response.data.result);
+        toast.success("End date updated successfully");
+      } else {
+        toast.error("Failed to update end date");
+      }
+    } catch (err) {
+      console.error("Error updating end date:", err);
+      toast.error("An error occurred while updating the end date");
+    }
+  };
+
   if (loading)
     return <div className="dashboard-loading">Loading order details...</div>;
   if (error) return <div className="dashboard-error">{error}</div>;
@@ -51,11 +69,29 @@ const OrderViewDashboard = () => {
         <div className="order-section">
           <h2>Order Information</h2>
           <InfoRow label="ORDER ID" value={order.order_id} />
-          <InfoRow label="ORDER DATE" value={new Date(order.order_date).toLocaleString()} />
-          <InfoRow label="END DATE" value={order.end_date ? new Date(order.end_date).toLocaleString() : "N/A"} />
+          <InfoRow
+            label="ORDER DATE"
+            value={new Date(order.order_date).toLocaleString()}
+          />
+          <InfoRow
+            label="END DATE"
+            value={
+              order.end_date ? new Date(order.end_date).toLocaleString() : "N/A"
+            }
+          />
           <InfoRow label="RATING" value={order.rating || "N/A"} />
           <InfoRow label="FEEDBACK" value={order.feedback || "N/A"} />
-          <InfoRow label="FEEDBACK DATE" value={order.feedback_date ? new Date(order.feedback_date).toLocaleString() : "N/A"} />
+          <InfoRow
+            label="FEEDBACK DATE"
+            value={
+              order.feedback_date
+                ? new Date(order.feedback_date).toLocaleString()
+                : "N/A"
+            }
+          />
+          <button onClick={handleUpdateEndDate} className="update-end-date-btn">
+            Update End Date
+          </button>
         </div>
 
         <div className="customer-section">

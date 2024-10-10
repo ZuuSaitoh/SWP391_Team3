@@ -24,6 +24,7 @@ import CustomerProfileDashBoard from "./page/dashBoard/customerProfileDashBoard"
 import StaffProfileDashBoard from "./page/dashBoard/staffProfileDashBoard";
 import OrderViewDashboard from "./page/dashBoard/orderViewDashBoard";
 import DesignStaffPage from "./page/staffPage/designStaffPage/designStaffPage.jsx";
+import LoginStaff from "./page/login staff/loginStaff.jsx";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
       <Route path="/service-clean" element={<ServiceClean />} />
       <Route path="/service-maintenance" element={<ServiceMaintenance />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/login-staff" element={<LoginStaff />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgotpassword" element={<ForgotPassword />} />
       <Route element={<ProtectedRoutes />}>

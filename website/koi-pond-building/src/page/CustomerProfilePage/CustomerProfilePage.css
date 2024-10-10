@@ -285,14 +285,16 @@ body {
 }
 
 .order-item {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.3s ease;
+}
+
+.order-item:hover {
+  background-color: #f8f9fa;
 }
 
 .order-info {
@@ -302,10 +304,11 @@ body {
 .order-id {
   font-weight: 600;
   color: #333;
+  font-size: 1.1em;
 }
 
 .order-date {
-  font-size: 0.9rem;
+  font-size: 0.9em;
   color: #666;
 }
 
@@ -411,4 +414,49 @@ body {
 
 .customer-profile-error {
   color: #e74c3c;
+}
+
+/* Add these styles to your existing CSS file */
+
+.order-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.order-info {
+  flex-grow: 1;
+}
+
+.view-order-button {
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9em;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.view-order-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.view-order-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

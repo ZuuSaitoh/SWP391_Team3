@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
 import "./dashBoard.css";
 
 const Dashboard = () => {
@@ -30,15 +32,28 @@ const Dashboard = () => {
   });
 
   const [search, setSearch] = useState("");
+  const [staffName, setStaffName] = useState("");
+  const [staffRole, setStaffRole] = useState("");
 
   useEffect(() => {
+    const token = localStorage.getItem("staffAuthToken");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setStaffName(decodedToken.sub);
+      setStaffRole(decodedToken.role);
+    } else {
+      // Redirect to login if no token is found
+      navigate("/staff-login");
+    }
+
     const fetchData = async () => {
       try {
-        const [customersResponse, staffsResponse, ordersResponse] = await Promise.all([
-          axios.get("http://localhost:8080/customers/fetchAll"),
-          axios.get("http://localhost:8080/staffs/fetchAll"),
-          axios.get("http://localhost:8080/orders/fetchAll"),
-        ]);
+        const [customersResponse, staffsResponse, ordersResponse] =
+          await Promise.all([
+            axios.get("http://localhost:8080/customers/fetchAll"),
+            axios.get("http://localhost:8080/staffs/fetchAll"),
+            axios.get("http://localhost:8080/orders/fetchAll"),
+          ]);
 
         if (customersResponse.data.code === 9999) {
           setCustomers(customersResponse.data.result);
@@ -66,7 +81,7 @@ const Dashboard = () => {
     };
 
     fetchData();
-  }, []);
+  }, [navigate]);
 
   console.log("Rendering dashboard. Customers:", customers);
   console.log("Rendering dashboard. Staffs:", staffs);
@@ -442,48 +457,68 @@ const Dashboard = () => {
     navigate("/"); // Assuming '/' is your home page route
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("staffAuthToken");
+    localStorage.removeItem("staffUser");
+    toast.success("Logged out successfully");
+    navigate("/login-staff");
+  };
+
   return (
     <div className="dashboard">
       <div className="sidebar">
         <div className="sidebar-header">
           <h2>Dashboard</h2>
-          <button onClick={handleBackToHome} className="back-home-btn">
-            &#8592; {/* Left arrow character */}
+          <div className="staff-info">
+            <p className="welcome-message">Welcome, <span className="staff-name">{staffName}</span>!</p>
+            <p className="staff-role">Role: <span className="role-value">{staffRole}</span></p>
+          </div>
+        </div>
+        <div className="sidebar-content">
+          <button
+            className={`sidebar-button ${
+              activeView === "customers" ? "active" : ""
+            }`}
+            onClick={() => setActiveView("customers")}
+          >
+            Customers
+          </button>
+          <button
+            className={`sidebar-button ${
+              activeView === "staffs" ? "active" : ""
+            }`}
+            onClick={() => setActiveView("staffs")}
+          >
+            Staffs
+          </button>
+          <button
+            className={`sidebar-button ${
+              activeView === "orders" ? "active" : ""
+            }`}
+            onClick={() => setActiveView("orders")}
+          >
+            Orders
           </button>
         </div>
-        <button
-          className={`sidebar-button ${
-            activeView === "customers" ? "active" : ""
-          }`}
-          onClick={() => setActiveView("customers")}
-        >
-          Customers
-        </button>
-        <button
-          className={`sidebar-button ${
-            activeView === "staffs" ? "active" : ""
-          }`}
-          onClick={() => setActiveView("staffs")}
-        >
-          Staffs
-        </button>
-        <button
-          className={`sidebar-button ${
-            activeView === "orders" ? "active" : ""
-          }`}
-          onClick={() => setActiveView("orders")}
-        >
-          Orders
-        </button>
+        <div className="sidebar-footer">
+          <button onClick={handleBackToHome} className="back-home-btn">
+            &#8592; Back to Home
+          </button>
+          <button onClick={handleLogout} className="staff-logout-btn">
+            Logout
+          </button>
+        </div>
       </div>
       <div className="main-content">
-        <h1>
-          {activeView === "customers"
-            ? "Customer Dashboard"
-            : activeView === "staffs"
-            ? "Staff Dashboard"
-            : "Order Dashboard"}
-        </h1>
+        <div className="main-header">
+          <h1>
+            {activeView === "customers"
+              ? "Customer Dashboard"
+              : activeView === "staffs"
+              ? "Staff Dashboard"
+              : "Order Dashboard"}
+          </h1>
+        </div>
         <div className="table-container">
           {activeView === "customers"
             ? renderCustomers()

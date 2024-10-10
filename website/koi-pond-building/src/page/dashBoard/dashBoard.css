@@ -48,8 +48,9 @@
 .sidebar {
   width: 250px;
   background-color: #2c3e50;
-  padding: 30px 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  color: #ecf0f1;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-button {
@@ -689,40 +690,78 @@ body {
 }
 
 .sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  padding: 20px;
+  background-color: #1e2a3a;
+  border-bottom: 1px solid #34495e;
   margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-header h2 {
   color: #ecf0f1;
-  margin: 0;
+  margin: 0 0 15px 0;
+  font-size: 24px;
+}
+
+.staff-info {
+  margin-top: 10px;
+}
+
+.welcome-message {
+  font-size: 16px;
+  color: #ecf0f1;
+  margin-bottom: 5px;
+}
+
+.staff-name {
+  font-weight: bold;
+  color: #3498db;
+}
+
+.staff-role {
+  font-size: 14px;
+  color: #bdc3c7;
+}
+
+.role-value {
+  font-weight: bold;
+  color: #e74c3c;
+}
+
+.staff-logout-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-bottom: 10px;
+}
+
+.staff-logout-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
 }
 
 .back-home-btn {
-  background: none;
-  border: 1px solid #ecf0f1;
-  color: #ecf0f1;
-  font-size: 20px;
+  width: 100%;
+  padding: 10px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 4px;
-  /* Changed from 50% to 4px for square corners */
-  transition: all 0.3s ease;
-  width: 40px;
-  /* Set a fixed width */
-  height: 40px;
-  /* Set a fixed height to match the width */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .back-home-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #2980b9;
+  transform: translateY(-2px);
 }
 
 .view-profile-btn {
@@ -822,4 +861,132 @@ h1, h2 {
 
 .back-to-dashboard-btn:hover {
   background-color: #005fa3;
+}
+
+/* Add these styles to your existing dashBoard.css file */
+
+.sidebar-header {
+  padding: 20px;
+  background-color: #1e2a3a;
+  border-bottom: 1px solid #34495e;
+  margin-bottom: 20px;
+}
+
+.staff-info {
+  margin-bottom: 15px;
+}
+
+.welcome-message {
+  font-size: 18px;
+  color: #ecf0f1;
+  margin-bottom: 5px;
+}
+
+.staff-name {
+  font-weight: bold;
+  color: #3498db;
+}
+
+.staff-role {
+  font-size: 14px;
+  color: #bdc3c7;
+}
+
+.role-value {
+  font-weight: bold;
+  color: #e74c3c;
+}
+
+.staff-logout-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-bottom: 10px;
+}
+
+.staff-logout-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+.back-home-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-home-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.sidebar-footer {
+  padding: 20px;
+  margin-top: auto;
+}
+
+.back-home-btn,
+.staff-logout-btn {
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-home-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.back-home-btn:hover {
+  background-color: #2980b9;
+}
+
+.staff-logout-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.staff-logout-btn:hover {
+  background-color: #c0392b;
+}
+
+.back-home-btn:hover,
+.staff-logout-btn:hover {
+  transform: translateY(-2px);
+}
+
+.update-end-date-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.update-end-date-btn:hover {
+  background-color: #2ecc71;
 }

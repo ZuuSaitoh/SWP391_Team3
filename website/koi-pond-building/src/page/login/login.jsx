@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { getAuth, signInWithPopup } from "firebase/auth";
-import { googleProvider } from "../../config/firebase";
+import { googleProvider } from "../../config/firebase.js";
 import { useNavigate, useLocation } from "react-router-dom";
-import AnimatedPage from "../animationpage/AnimatedPage";
+import AnimatedPage from "../animationpage/AnimatedPage.jsx";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./login.css";

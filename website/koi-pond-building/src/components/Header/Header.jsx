@@ -5,14 +5,19 @@ import "./Header.css";
 
 function Header({ isTransparent }) {
   const [currentUser, setCurrentUser] = useState(null);
+  const [currentStaff, setCurrentStaff] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+    const storedStaff = localStorage.getItem("staffUser");
     if (storedUser) {
       setCurrentUser(JSON.parse(storedUser));
+    }
+    if (storedStaff) {
+      setCurrentStaff(JSON.parse(storedStaff));
     }
 
     const handleScroll = () => {
@@ -24,21 +29,16 @@ function Header({ isTransparent }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // const handleProfileClick = () => {
-  //   navigate(`/customer-profile/${currentUser.id}`);
-  // };
-
-  // const loginClick = () => {
-  //   navigate("/login");
-  // };
-
   const logoutClick = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
+    localStorage.removeItem("staffAuthToken");
+    localStorage.removeItem("staffUser");
     setCurrentUser(null);
+    setCurrentStaff(null);
     navigate("/");
   };
-  console.log(currentUser);
+
   const navigateToSection = (sectionId) => {
     if (location.pathname === "/") {
       const section = document.getElementById(sectionId);
@@ -79,14 +79,15 @@ function Header({ isTransparent }) {
           <li>
             <a onClick={() => navigateToSection("contact")}>Contact</a>
           </li>
-          <li>
-            <a href="/designStaffPage">Staff</a>
-          </li>
+          {currentStaff && currentStaff.role === "Manager" && (
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+          )}
         </ul>
         <div className="login-container">
           {currentUser ? (
             <>
-              {/* onClick={handleProfileClick} */}
               <Link
                 to={`/customer-profile/${currentUser.id}`}
                 className="user-greeting"
@@ -97,9 +98,17 @@ function Header({ isTransparent }) {
                 Logout
               </button>
             </>
+          ) : currentStaff ? (
+            <>
+              <span className="user-greeting">
+                Welcome, {currentStaff.username}!
+              </span>
+              <button onClick={logoutClick} className="logout-button">
+                Logout
+              </button>
+            </>
           ) : (
             <a href="/login">
-              {/* onClick={loginClick} */}
               <img src={person} alt="Login" className="login-icon" />
             </a>
           )}

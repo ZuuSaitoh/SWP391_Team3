@@ -4,6 +4,7 @@ import axios from "../../config/axios"; // Make sure to use the configured axios
 import AnimatedPage from "../animationpage/AnimatedPage";
 import "./CustomerProfilePage.css";
 import { useNavigate } from "react-router-dom";
+import ViewOrderCustomer from './ViewOrderCustomer';
 
 function CustomerProfilePage() {
   const { customerId } = useParams(); // Fetch customerId from URL params
@@ -14,6 +15,7 @@ function CustomerProfilePage() {
   const [editedCustomer, setEditedCustomer] = useState(null);
   const [newProfilePicture, setNewProfilePicture] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchCustomerData = async () => {
@@ -36,13 +38,18 @@ function CustomerProfilePage() {
         setIsLoading(false); // Data fetched, no longer loading
 
         // Fetch customer orders
-        // const ordersResponse = await axios.get(
-        //   `http://localhost:8080/customers/${customerId}/orders`
-        // );
-        // setOrders(ordersResponse.data);
+        const ordersResponse = await axios.get(
+          `http://localhost:8080/orders/customer/fetchAll/${customerId}`
+        );
+        console.log("Orders response:", ordersResponse.data);
+        // Access the orders from the result property and sort them
+        const ordersList = ordersResponse.data.result || [];
+        const sortedOrders = ordersList.sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
+        setOrders(sortedOrders);
       } catch (error) {
-        console.error("Error fetching customer data:", error);
+        console.error("Error fetching data:", error);
         setIsError(true); // Set error state if fetch fails
+      } finally {
         setIsLoading(false); // Stop loading state in case of error
       }
     };
@@ -127,6 +134,14 @@ function CustomerProfilePage() {
     // Implement password change logic here
     console.log("Change password clicked");
     navigate("/change-password");
+  };
+
+  const handleViewOrder = (order) => {
+    setSelectedOrder(order);
+  };
+
+  const handleCloseOrderView = () => {
+    setSelectedOrder(null);
   };
 
   if (isLoading) {
@@ -258,27 +273,30 @@ function CustomerProfilePage() {
           </div>
           <div className="order-status">
             <h3>Recent Orders</h3>
-            <ul className="order-list">
-              {orders.map((order) => (
-                <li key={order.id} className="order-item">
-                  <div className="order-info">
-                    <span className="order-id">Order #{order.id}</span>
-                    <br />
-                    <span className="order-date">
-                      {new Date(order.orderDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <span
-                    className={`order-status-badge ${getStatusClass(
-                      order.status
-                    )}`}
-                  >
-                    {order.status}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {orders.length > 0 ? (
+              <ul className="order-list">
+                {orders.map((order) => (
+                  <li key={order.order_id} className="order-item">
+                    <div className="order-info">
+                      <span className="order-id">Order #{order.order_id}</span>
+                      <br />
+                      <span className="order-date">
+                        {new Date(order.order_date).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <button onClick={() => handleViewOrder(order)} className="view-order-button">
+                      View Order
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No orders found for this customer.</p>
+            )}
           </div>
+          {selectedOrder && (
+            <ViewOrderCustomer order={selectedOrder} onClose={handleCloseOrderView} />
+          )}
         </div>
       </div>
     </AnimatedPage>
