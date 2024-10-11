@@ -8,8 +8,9 @@ function ConsultingStaffPage() {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isAddOrderModalVisible, setIsAddOrderModalVisible] = useState(false);
   const [form] = Form.useForm();
+  const [showModal, setShowModal] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   const fetchOrders = async () => {
     try {
@@ -24,7 +25,22 @@ function ConsultingStaffPage() {
     }
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (newOrder) => {
+    try{
+      setLoading(true);
+      const response = await api.post("http://localhost:8080/orders/create",newOrder)
+      toast.success("Order created successfully");
+      fetchOrders();
+      form.resetFields();
+      setShowModal(false);
+    }catch(err){
+      console.error(err);
+      toast.error(err.response.data);
+    }finally{
+      setLoading(false);
+    } 
+
+  };
 
   const handleViewOrderDetail = async (orderId) => {
     try {
@@ -159,7 +175,7 @@ function ConsultingStaffPage() {
 
   return (
     <div>
-      <Button onClick={handleSubmit}>Add new order</Button>
+      <Button onClick={() => setShowModal(true)}>Add new order</Button>
       <Button onClick={backToHomepage} style={{ marginLeft: "10px" }}>
         Return to Homepage
       </Button>
@@ -173,6 +189,34 @@ function ConsultingStaffPage() {
       >
         {renderOrderDetails()}
       </Modal>
+
+      <Modal 
+      open={showModal} 
+      onCancel={() => setShowModal(false)}  // Changed from onClose to onCancel
+      title="Order"
+      onOk={() => form.submit()}
+      confirmLoading={loading}
+      closable={true}  // Ensures the "x" button is visible
+      >
+        <Form form={form} labelCol={{
+          span: 24,
+        }}
+        onFinish={handleSubmit} 
+        >
+          <Form.Item label="Customer ID" name="customer_id" rules={[
+            {required: true, message: "Customer ID is required"}
+          ]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="Staff ID" name="staff_id" rules={[
+            {required: true, message: "Staff ID is required"}
+          ]}>
+            <Input />
+          </Form.Item>
+        </Form>
+
+      </Modal>
+      
     </div>
   );
 }
