@@ -17,6 +17,14 @@ function CustomerProfilePage() {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const navigate = useNavigate();
+  const handleOrderUpdate = (updatedOrder) => {
+    setOrders(prevOrders => 
+      prevOrders.map(order => 
+        order.order_id === updatedOrder.order_id ? updatedOrder : order
+      )
+    );
+  };
+
   useEffect(() => {
     const fetchCustomerData = async () => {
       try {
@@ -295,7 +303,11 @@ function CustomerProfilePage() {
             )}
           </div>
           {selectedOrder && (
-            <ViewOrderCustomer order={selectedOrder} onClose={handleCloseOrderView} />
+            <ViewOrderCustomer 
+              order={selectedOrder} 
+              onClose={handleCloseOrderView} 
+              onOrderUpdate={handleOrderUpdate}
+            />
           )}
         </div>
       </div>

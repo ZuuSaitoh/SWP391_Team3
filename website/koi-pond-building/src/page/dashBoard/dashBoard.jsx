@@ -4,11 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import "./dashBoard.css";
+import ViewOrderCustomer from '../CustomerProfilePage/ViewOrderCustomer';
 
 const Dashboard = () => {
   const [customers, setCustomers] = useState([]);
   const [staffs, setStaffs] = useState([]);
-  const [orders, setOrders] = useState([]); // New state for orders
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeView, setActiveView] = useState("customers");
@@ -35,6 +36,12 @@ const Dashboard = () => {
   const [staffName, setStaffName] = useState("");
   const [staffRole, setStaffRole] = useState("");
 
+  const [showAddOrderForm, setShowAddOrderForm] = useState(false);
+  const [newOrder, setNewOrder] = useState({
+    customer_id: "",
+    staff_id: "",
+  });
+
   useEffect(() => {
     const token = localStorage.getItem("staffAuthToken");
     if (token) {
@@ -43,7 +50,7 @@ const Dashboard = () => {
       setStaffRole(decodedToken.role);
     } else {
       // Redirect to login if no token is found
-      navigate("/staff-login");
+      navigate("/login-staff");
     }
 
     const fetchData = async () => {
@@ -158,8 +165,32 @@ const Dashboard = () => {
     }
   };
 
+  const handleAddOrder = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8080/orders/create", {
+        customer_id: parseInt(newOrder.customer_id),
+        staff_id: parseInt(newOrder.staff_id),
+      });
+      if (response.data.code === 1000) {
+        toast.success("Order created successfully");
+        setOrders([...orders, response.data.result]);
+        setShowAddOrderForm(false);
+        setNewOrder({
+          customer_id: "",
+          staff_id: "",
+        });
+      } else {
+        toast.error("Failed to create order");
+      }
+    } catch (err) {
+      console.error("Error creating order:", err);
+      toast.error(`An error occurred while creating the order: ${err.message}`);
+    }
+  };
+
   const renderAddCustomerForm = () => (
-    <div className="add-customer-form">
+    <div className="add-new-customer">
       <h2>Add New Customer</h2>
       <form onSubmit={handleAddCustomer}>
         <input
@@ -198,8 +229,8 @@ const Dashboard = () => {
           }
           required
         />
-        <button type="submit">Create Customer</button>
-        <button type="button" onClick={() => setShowAddCustomerForm(false)}>
+        <button type="submit" className="create-customer-btn">Create Customer</button>
+        <button type="button" className="cancel-btn" onClick={() => setShowAddCustomerForm(false)}>
           Cancel
         </button>
       </form>
@@ -207,7 +238,7 @@ const Dashboard = () => {
   );
 
   const renderAddStaffForm = () => (
-    <div className="add-staff-form">
+    <div className="add-new-staff">
       <h2>Add New Staff</h2>
       <form onSubmit={handleAddStaff}>
         <input
@@ -255,10 +286,66 @@ const Dashboard = () => {
           <option value="Construction Staff">Construction Staff</option>
           <option value="Consulting Staff">Consulting Staff</option>
         </select>
-        <button type="submit">Create Staff</button>
-        <button type="button" onClick={() => setShowAddStaffForm(false)}>
+        <button type="submit" className="create-staff-btn">Create Staff</button>
+        <button type="button" className="cancel-btn" onClick={() => setShowAddStaffForm(false)}>
           Cancel
         </button>
+      </form>
+    </div>
+  );
+
+  const renderAddOrderForm = () => (
+    <div className="add-order-form">
+      <h2>Create New Order</h2>
+      <form onSubmit={handleAddOrder}>
+        <div className="form-group">
+          <label htmlFor="customer-select">Select Customer</label>
+          <select
+            id="customer-select"
+            value={newOrder.customer_id}
+            onChange={(e) =>
+              setNewOrder({ ...newOrder, customer_id: e.target.value })
+            }
+            required
+          >
+            <option value="">Choose a customer</option>
+            {customers.map((customer) => (
+              <option key={customer.id} value={customer.id}>
+                {customer.username} ({customer.mail})
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label htmlFor="staff-select">Select Staff</label>
+          <select
+            id="staff-select"
+            value={newOrder.staff_id}
+            onChange={(e) =>
+              setNewOrder({ ...newOrder, staff_id: e.target.value })
+            }
+            required
+          >
+            <option value="">Choose a staff member</option>
+            {staffs.map((staff) => (
+              <option key={staff.staffId} value={staff.staffId}>
+                {staff.username} ({staff.role})
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="form-actions">
+          <button type="submit" className="create-order-btn">
+            Create Order
+          </button>
+          <button
+            type="button"
+            className="cancel-btn"
+            onClick={() => setShowAddOrderForm(false)}
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );
@@ -402,6 +489,13 @@ const Dashboard = () => {
   const renderOrders = () => (
     <div className="table-container">
       {renderSearchBar()}
+      <button
+        onClick={() => setShowAddOrderForm(true)}
+        className="add-order-btn"
+      >
+        Add New Order
+      </button>
+      {showAddOrderForm && renderAddOrderForm()}
       <table className="data-table">
         <thead>
           <tr>
@@ -470,8 +564,12 @@ const Dashboard = () => {
         <div className="sidebar-header">
           <h2>Dashboard</h2>
           <div className="staff-info">
-            <p className="welcome-message">Welcome, <span className="staff-name">{staffName}</span>!</p>
-            <p className="staff-role">Role: <span className="role-value">{staffRole}</span></p>
+            <p className="welcome-message">
+              Welcome, <span className="staff-name">{staffName}</span>!
+            </p>
+            <p className="staff-role">
+              Role: <span className="role-value">{staffRole}</span>
+            </p>
           </div>
         </div>
         <div className="sidebar-content">

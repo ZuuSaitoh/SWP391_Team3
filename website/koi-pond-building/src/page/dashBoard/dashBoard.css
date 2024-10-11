@@ -201,67 +201,89 @@
   background-color: #c0392b;
 }
 
-.add-customer-btn {
-  margin-bottom: 20px;
-  padding: 10px 15px;
-  background-color: #2ecc71;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+/* Add New Customer form styles */
+.add-new-customer {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  margin-bottom: 30px;
+  max-width: 600px; /* Increased from 500px to 600px */
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.add-customer-btn:hover {
+.add-new-customer h2 {
+  margin-bottom: 25px;
+  color: #2c3e50;
+  font-size: 24px;
+  text-align: center;
+}
+
+.add-new-customer form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.add-new-customer input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px; /* Increased from 14px */
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.add-new-customer input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.add-new-customer button {
+  padding: 12px 15px;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.add-new-customer .create-customer-btn {
+  background-color: #2ecc71;
+}
+
+.add-new-customer .cancel-btn {
+  background-color: #e74c3c;
+  margin-top: 10px;
+}
+
+.add-new-customer button:hover {
+  transform: translateY(-2px);
+}
+
+.add-new-customer .create-customer-btn:hover {
   background-color: #27ae60;
 }
 
-.add-customer-form {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.add-customer-form h2 {
-  margin-bottom: 20px;
-  color: #2c3e50;
-}
-
-.add-customer-form form {
-  display: flex;
-  flex-direction: column;
-}
-
-.add-customer-form input {
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.add-customer-form button {
-  margin-top: 10px;
-  padding: 10px 15px;
-  background-color: #3498db;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.add-customer-form button[type="button"] {
-  background-color: #e74c3c;
-}
-
-.add-customer-form button:hover {
-  background-color: #2980b9;
-}
-
-.add-customer-form button[type="button"]:hover {
+.add-new-customer .cancel-btn:hover {
   background-color: #c0392b;
+}
+
+.add-new-customer button:active {
+  transform: translateY(0);
+}
+
+/* Specific styles for email input to ensure it's wide enough */
+.add-new-customer input[type="email"] {
+  width: 100%;
+  min-width: 300px; /* Ensures a minimum width for email inputs */
 }
 
 /* Add these styles at the end of the file */
@@ -674,21 +696,6 @@ body {
   background-color: #c0392b;
 }
 
-.add-staff-btn {
-  margin-bottom: 20px;
-  padding: 10px 15px;
-  background-color: #2ecc71;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.add-staff-btn:hover {
-  background-color: #27ae60;
-}
-
 .sidebar-header {
   padding: 20px;
   background-color: #1e2a3a;
@@ -821,14 +828,18 @@ body {
   gap: 20px;
 }
 
-.order-section, .customer-section, .staff-section, .design-section {
+.order-section,
+.customer-section,
+.staff-section,
+.design-section {
   background-color: #f5f5f5;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-h1, h2 {
+h1,
+h2 {
   color: #333;
   margin-bottom: 20px;
 }
@@ -989,4 +1000,285 @@ h1, h2 {
 
 .update-end-date-btn:hover {
   background-color: #2ecc71;
+}
+
+.add-order-form {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  margin-bottom: 30px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.add-order-form h2 {
+  color: #2c3e50;
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.add-order-form .form-group {
+  margin-bottom: 20px;
+}
+
+.add-order-form label {
+  display: block;
+  margin-bottom: 8px;
+  color: #34495e;
+  font-weight: bold;
+}
+
+.add-order-form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  font-size: 16px;
+  color: #2c3e50;
+  background-color: #ecf0f1;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.add-order-form select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.add-order-form .form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.add-order-form .create-order-btn,
+.add-order-form .cancel-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.add-order-form .create-order-btn {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.add-order-form .create-order-btn:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+}
+
+.add-order-form .cancel-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.add-order-form .cancel-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+.add-order-form .create-order-btn:active,
+.add-order-form .cancel-btn:active {
+  transform: translateY(0);
+}
+
+.add-order-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-order-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.add-order-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-order-btn::before {
+  content: "+";
+  margin-right: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Add New Staff form styles */
+.add-new-staff {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  margin-bottom: 30px;
+  max-width: 600px; /* Increased from 500px to 600px */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.add-new-staff h2 {
+  margin-bottom: 25px;
+  color: #2c3e50;
+  font-size: 24px;
+  text-align: center;
+}
+
+.add-new-staff form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.add-new-staff input,
+.add-new-staff select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px; /* Increased from 14px */
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.add-new-staff input:focus,
+.add-new-staff select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.add-new-staff button {
+  padding: 12px 15px;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.add-new-staff .create-staff-btn {
+  background-color: #3498db;
+}
+
+.add-new-staff .cancel-btn {
+  background-color: #e74c3c;
+}
+
+.add-new-staff button:hover {
+  transform: translateY(-2px);
+}
+
+.add-new-staff .create-staff-btn:hover {
+  background-color: #2980b9;
+}
+
+.add-new-staff .cancel-btn:hover {
+  background-color: #c0392b;
+}
+
+.add-new-staff button:active {
+  transform: translateY(0);
+}
+
+/* Specific styles for email input to ensure it's wide enough */
+.add-new-staff input[type="email"] {
+  width: 100%;
+  min-width: 300px; /* Ensures a minimum width for email inputs */
+}
+
+/* Add New Staff button style */
+.add-staff-btn {
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-staff-btn:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.add-staff-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-staff-btn::before {
+  content: "+";
+  margin-right: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Add New Customer button style */
+.add-customer-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-customer-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.add-customer-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-customer-btn::before {
+  content: "+";
+  margin-right: 8px;
+  font-size: 20px;
+  font-weight: bold;
 }
