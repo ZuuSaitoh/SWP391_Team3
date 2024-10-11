@@ -30,23 +30,38 @@
 
 .maintenance-hero-content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     max-width: 800px;
     padding: 0 2rem;
+    text-align: center;
+    color: var(--light-text-color);
 }
 
-.maintenance-hero h1 {
+.maintenance-hero-content h1 {
     font-size: 4rem;
     margin-bottom: 1rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     animation: maintenanceFadeIn 1s ease-in-out;
+    color: white; /* Ensure text is white for visibility */
 }
 
-.maintenance-hero p {
+.maintenance-hero-content p {
     font-size: 1.8rem;
     margin-bottom: 2rem;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     animation: maintenanceFadeIn 1.5s ease-in-out;
+    color: white; /* Ensure text is white for visibility */
+}
+
+@keyframes maintenanceFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .maintenance-content {
@@ -65,7 +80,7 @@
 .maintenance-content h2 {
     font-size: 2.5rem;
     margin-bottom: 3rem;
-    color: var(--primary-color);
+    color: var(--primary-color); /* Use the primary color variable */
     text-align: center;
 }
 
@@ -122,7 +137,7 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: var(--primary-color);
+    background-color: var(--primary-color); /* Use the primary color variable */
     color: var(--light-text-color);
     width: 50px;
     height: 50px;
@@ -137,7 +152,7 @@
 }
 
 .maintenance-scroll-to-top:hover {
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-color); /* Use the secondary color variable */
     transform: translateY(-5px);
 }
 
@@ -158,4 +173,37 @@
     60% {
         transform: translateY(-5px);
     }
+}
+
+.importance-item i,
+.service-item i {
+    color: var(--primary-color); /* Use the primary color variable */
+}
+
+.process-timeline::before {
+    background-color: var(--primary-color); /* Use the primary color variable */
+}
+
+.step-number {
+    background-color: var(--primary-color); /* Use the primary color variable */
+}
+
+.step-content h3 {
+    color: var(--primary-color); /* Use the primary color variable */
+}
+
+.cta-button {
+    background-color: var(--primary-color); /* Use the primary color variable */
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: var(--secondary-color); /* Use the secondary color variable */
+    transform: translateY(-3px);
 }

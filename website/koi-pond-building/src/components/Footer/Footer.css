@@ -16,6 +16,7 @@
 .footer-section {
     flex-basis: calc(33.333% - 2rem);
     margin-bottom: 2rem;
+    max-width: 400px;
 }
 
 .footer-section h3 {
@@ -23,32 +24,22 @@
     font-size: 1.4rem;
     margin-bottom: 1.5rem;
     position: relative;
+    padding-bottom: 0.5rem;
 }
 
 .footer-section h3::after {
     content: '';
     position: absolute;
-    bottom: -10px;
+    bottom: 0;
+    left: 0;
     width: 50px;
     height: 2px;
     background-color: #ffffff;
+    transition: width 0.3s ease;
 }
 
-/* Align the line for "Koi Pond Builders" to the left */
-.footer-section:first-child h3::after {
-    left: 0;
-}
-
-/* Center the line for "Get in Touch" */
-.footer-section:nth-child(2) h3::after {
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-/* Align the line for "Follow Us" to the right */
-.footer-section:last-child h3::after {
-    right: 0;
-    left: auto;
+.footer-section:hover h3::after {
+    width: 75px;
 }
 
 .footer-section p {
@@ -57,56 +48,72 @@
     line-height: 1.6;
 }
 
-.footer-logo img {
-    max-width: 150px;
+.koi-logo-small {
+    max-width: 100px;
+    height: auto;
     margin-top: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.koi-logo-small:hover {
+    transform: scale(1.05);
 }
 
 .contact-info p {
     display: flex;
     align-items: center;
     margin-bottom: 0.8rem;
+    transition: transform 0.3s ease;
 }
 
-.contact-info i {
+.contact-info p:hover {
+    transform: translateX(5px);
+}
+
+.footer-icon {
+    width: 20px;
+    height: 20px;
     margin-right: 10px;
-    color: #ffffff;
-    font-size: 1.1rem;
+    vertical-align: middle;
+    flex-shrink: 0;
+    filter: invert(1) brightness(100);
 }
 
-/* Center the content of the "Get in Touch" section */
-.footer-section:nth-child(2) {
-    text-align: center;
-}
-
-.footer-section:nth-child(2) .contact-info p {
-    justify-content: center;
+.contact-info p span {
+    padding-left: 5px;
 }
 
 .social-icons {
     display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.social-icon-link {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.social-icon-link:hover {
+    transform: translateY(-3px);
 }
 
 .social-icon {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
     width: 40px;
     height: 40px;
-    background-color: #333;
-    color: #ffffff;
-    border-radius: 50%;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    font-size: 1.1rem;
 }
 
-.social-icon:hover {
-    background-color: #ffffff;
-    color: #1a1a1a;
-    transform: translateY(-3px);
+.social-icon-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #333;
+    transition: background-color 0.3s ease;
+}
+
+.social-icon-placeholder:hover {
+    background-color: #444;
 }
 
 .footer-bottom {
@@ -127,10 +134,6 @@
     .footer-section h3::after {
         left: 50%;
         transform: translateX(-50%);
-    }
-
-    .social-icons {
-        justify-content: center;
     }
 
     .contact-info p {

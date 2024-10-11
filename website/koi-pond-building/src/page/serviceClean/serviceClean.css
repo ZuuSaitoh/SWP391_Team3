@@ -57,6 +57,33 @@
     color: var(--light-text-color);
 }
 
+.clean-hero-content h1 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: cleanFadeIn 1s ease-in-out;
+    color: white; /* Ensure text is white for visibility */
+}
+
+.clean-hero-content p {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    animation: cleanFadeIn 1.5s ease-in-out;
+    color: white; /* Ensure text is white for visibility */
+}
+
+@keyframes cleanFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Slider controls */
 .slider-controls {
     position: absolute;
@@ -112,7 +139,7 @@
 .clean-content h2 {
     font-size: 2.5rem;
     margin-bottom: 2rem;
-    color: #0056b3;
+    color: var(--primary-color); /* Use the primary color variable */
     text-align: center;
 }
 
@@ -149,7 +176,7 @@
 
 .standard-item i {
     font-size: 3rem;
-    color: #0056b3;
+    color: var(--primary-color); /* Use the primary color variable */
     margin-bottom: 1rem;
 }
 
@@ -182,7 +209,7 @@
 }
 
 .benefits-list i {
-    color: #28a745;
+    color: var(--primary-color); /* Use the primary color variable */
     margin-right: 10px;
     font-size: 1.2rem;
 }
@@ -226,7 +253,7 @@
     transform: translateX(-50%);
     width: 4px;
     height: 100%;
-    background-color: var(--primary-color);
+    background-color: var(--primary-color); /* Use the primary color variable */
     z-index: 0;
 }
 
@@ -246,7 +273,7 @@
 .step-number {
     width: 60px;
     height: 60px;
-    background-color: var(--primary-color);
+    background-color: var(--primary-color); /* Use the primary color variable */
     color: white;
     border-radius: 50%;
     display: flex;
@@ -295,7 +322,7 @@
 }
 
 .step-content h3 {
-    color: var(--primary-color);
+    color: var(--primary-color); /* Use the primary color variable */
     margin-bottom: 0.5rem;
 }
 
@@ -368,7 +395,7 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: var(--primary-color);
+    background-color: var(--primary-color); /* Use the primary color variable */
     color: var(--light-text-color);
     width: 50px;
     height: 50px;
@@ -383,7 +410,7 @@
 }
 
 .clean-scroll-to-top:hover {
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-color); /* Use the secondary color variable */
     transform: translateY(-5px);
 }
 
@@ -423,7 +450,7 @@
 
 .cta-button {
     display: inline-block;
-    background-color: var(--primary-color);
+    background-color: var(--primary-color); /* Use the primary color variable */
     color: white;
     padding: 1rem 2rem;
     border-radius: 50px;
@@ -434,6 +461,6 @@
 }
 
 .cta-button:hover {
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-color); /* Use the secondary color variable */
     transform: translateY(-3px);
 }

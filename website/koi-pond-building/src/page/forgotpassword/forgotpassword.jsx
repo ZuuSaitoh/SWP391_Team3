@@ -69,12 +69,12 @@ function ForgotPassword() {
 
   return (
     <AnimatedPage>
-      <div className="forgot-password-container">
-        <div className="forgot-password-image-container2"></div>
+      <div className="forgot-password-page-container">
+        <div className="forgot-password-image-container"></div>
         <div className="forgot-password-form-container">
           <div className="forgot-password-header">
-            <h2 className="forgot-password-text">Forgot Password</h2>
-            <div className="forgot-password-underline" />
+            <div className="forgot-password-text">Forgot Password</div>
+            <div className="forgot-password-underline"></div>
           </div>
           {!isEmailVerified ? (
             <VerifyEmail
