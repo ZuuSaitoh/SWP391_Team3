@@ -1,4 +1,4 @@
-import { Button, Table, Modal, Form, Input, Select } from "antd";
+import { Button, Table, Modal, Form, Input } from "antd";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
@@ -9,13 +9,16 @@ function ConsultingStaffPage() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [showModal, setShowModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Get the staff ID from local storage
+  const staffId = localStorage.getItem('staffId');
 
   const fetchOrders = async () => {
     try {
       const response = await api.get(
-        "http://localhost:8080/orders/staff/fetchAll/4"
+        `http://localhost:8080/orders/staff/fetchAll/${staffId}`
       );
       console.log(response);
       setOrders(response.data.result);
@@ -26,20 +29,24 @@ function ConsultingStaffPage() {
   };
 
   const handleSubmit = async (newOrder) => {
-    try{
+    try {
       setLoading(true);
-      const response = await api.post("http://localhost:8080/orders/create",newOrder)
+      // Add the staff ID to the new order
+      newOrder.staff_id = staffId;
+      const response = await api.post(
+        "http://localhost:8080/orders/create",
+        newOrder
+      );
       toast.success("Order created successfully");
       fetchOrders();
       form.resetFields();
       setShowModal(false);
-    }catch(err){
+    } catch (err) {
       console.error(err);
       toast.error(err.response.data);
-    }finally{
+    } finally {
       setLoading(false);
-    } 
-
+    }
   };
 
   const handleViewOrderDetail = async (orderId) => {
@@ -54,8 +61,13 @@ function ConsultingStaffPage() {
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    if (staffId) {
+      fetchOrders();
+    } else {
+      toast.error("Staff ID not found. Please log in again.");
+      // Redirect to login page or handle this case appropriately
+    }
+  }, [staffId]);
 
   const columns = [
     {
@@ -182,7 +194,7 @@ function ConsultingStaffPage() {
       <Table dataSource={orders} columns={columns} rowKey="order_id" />
       <Modal
         title="Order Details"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={() => setIsModalVisible(false)}
         onCancel={() => setIsModalVisible(false)}
         width={700}
@@ -190,33 +202,29 @@ function ConsultingStaffPage() {
         {renderOrderDetails()}
       </Modal>
 
-      <Modal 
-      open={showModal} 
-      onCancel={() => setShowModal(false)}  // Changed from onClose to onCancel
-      title="Order"
-      onOk={() => form.submit()}
-      confirmLoading={loading}
-      closable={true}  // Ensures the "x" button is visible
+      <Modal
+        open={showModal}
+        onCancel={() => setShowModal(false)}
+        title="Create New Order"
+        onOk={() => form.submit()}
+        confirmLoading={loading}
       >
-        <Form form={form} labelCol={{
-          span: 24,
-        }}
-        onFinish={handleSubmit} 
+        <Form
+          form={form}
+          labelCol={{
+            span: 24,
+          }}
+          onFinish={handleSubmit}
         >
-          <Form.Item label="Customer ID" name="customer_id" rules={[
-            {required: true, message: "Customer ID is required"}
-          ]}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="Staff ID" name="staff_id" rules={[
-            {required: true, message: "Staff ID is required"}
-          ]}>
+          <Form.Item
+            label="Customer ID"
+            name="customer_id"
+            rules={[{ required: true, message: "Customer ID is required" }]}
+          >
             <Input />
           </Form.Item>
         </Form>
-
       </Modal>
-      
     </div>
   );
 }

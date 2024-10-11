@@ -26,7 +26,7 @@ import OrderViewDashboard from "./page/dashBoard/orderViewDashBoard";
 import DesignStaffPage from "./page/staffPage/designStaffPage/designStaffPage.jsx";
 import LoginStaff from "./page/login staff/loginStaff.jsx";
 import ConsultingStaffPage from "./page/staffPage/consultingStaffPage/consultingStaffPage.jsx";
-import ServiceViewDashboard from './page/dashBoard/ServiceViewDashboard';
+import ServiceViewDashboard from "./page/dashBoard/ServiceViewDashboard";
 
 function App() {
   return (
@@ -50,9 +50,9 @@ function App() {
       <Route path="/change-password" element={<ChangePassword />} />
       <Route path="/customer/:Id" element={<CustomerProfileDashBoard />} />
       <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
-      <Route path="/designStaffPage" element={<DesignStaffPage />} />
+      <Route path="/designStaffPage/:staffId" element={<DesignStaffPage />} />
       <Route path="/order/:orderId" element={<OrderViewDashboard />} />
-      <Route path="/consultingStaffPage" element={<ConsultingStaffPage />} />
+      <Route path="/consultingStaffPage/:staffId" element={<ConsultingStaffPage />} />
       <Route path="/service/:serviceId" element={<ServiceViewDashboard />} />
     </Routes>
   );

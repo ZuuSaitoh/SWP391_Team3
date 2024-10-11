@@ -66,13 +66,18 @@ function LoginStaff() {
           "staffUser",
           JSON.stringify({ id: staffID, username, role })
         );
+        localStorage.setItem('staffId', staffID); // Store staffID instead of response.data.staffId
 
         toast.success("Logged in successfully");
 
         if (role === "Manager") {
           navigate("/dashboard");
+        } else if (role === "Consulting Staff") {
+          navigate("/consultingStaffPage/:staffId");
+        } else if (role === "Design Staff") {
+          navigate("/designStaffPage/:staffId");
         } else {
-          navigate("/staff-home");
+          toast.error("Invalid role.");
         }
       } else {
         toast.error("Authentication failed.");
@@ -95,7 +100,10 @@ function LoginStaff() {
     <>
       <AnimatedPage>
         <div className="staff-login-page-container">
-          <button className="staff-login-back-to-home" onClick={handleBackToHome}>
+          <button
+            className="staff-login-back-to-home"
+            onClick={handleBackToHome}
+          >
             Back to Homepage
           </button>
           <div className="staff-login-image-container"></div>
