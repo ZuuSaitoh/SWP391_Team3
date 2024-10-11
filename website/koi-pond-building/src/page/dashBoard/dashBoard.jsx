@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import "./dashBoard.css";
-import ViewOrderCustomer from '../CustomerProfilePage/ViewOrderCustomer';
 
 const Dashboard = () => {
   const [customers, setCustomers] = useState([]);
@@ -42,6 +41,15 @@ const Dashboard = () => {
     staff_id: "",
   });
 
+  const [services, setServices] = useState([]);
+  const [showAddServiceForm, setShowAddServiceForm] = useState(false);
+  const [newService, setNewService] = useState({
+    serviceName: "",
+    price: "",
+    description: "",
+    serviceType: "",
+  });
+
   useEffect(() => {
     const token = localStorage.getItem("staffAuthToken");
     if (token) {
@@ -55,11 +63,12 @@ const Dashboard = () => {
 
     const fetchData = async () => {
       try {
-        const [customersResponse, staffsResponse, ordersResponse] =
+        const [customersResponse, staffsResponse, ordersResponse, servicesResponse] =
           await Promise.all([
             axios.get("http://localhost:8080/customers/fetchAll"),
             axios.get("http://localhost:8080/staffs/fetchAll"),
             axios.get("http://localhost:8080/orders/fetchAll"),
+            axios.get("http://localhost:8080/services/fetchAll"),
           ]);
 
         if (customersResponse.data.code === 9999) {
@@ -78,6 +87,12 @@ const Dashboard = () => {
           setOrders(ordersResponse.data.result);
         } else {
           setError("Failed to fetch orders");
+        }
+
+        if (servicesResponse.data.code === 9999) {
+          setServices(servicesResponse.data.result);
+        } else {
+          setError("Failed to fetch services");
         }
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -189,6 +204,32 @@ const Dashboard = () => {
     }
   };
 
+  const handleAddService = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/services/create",
+        newService
+      );
+      if (response.data.code === 1000) {
+        toast.success("Service created successfully");
+        setServices([...services, response.data.result]);
+        setShowAddServiceForm(false);
+        setNewService({
+          serviceName: "",
+          price: "",
+          description: "",
+          serviceType: "",
+        });
+      } else {
+        toast.error("Failed to create service");
+      }
+    } catch (err) {
+      console.error("Error creating service:", err);
+      toast.error(`An error occurred while creating the service: ${err.message}`);
+    }
+  };
+
   const renderAddCustomerForm = () => (
     <div className="add-new-customer">
       <h2>Add New Customer</h2>
@@ -229,8 +270,14 @@ const Dashboard = () => {
           }
           required
         />
-        <button type="submit" className="create-customer-btn">Create Customer</button>
-        <button type="button" className="cancel-btn" onClick={() => setShowAddCustomerForm(false)}>
+        <button type="submit" className="create-customer-btn">
+          Create Customer
+        </button>
+        <button
+          type="button"
+          className="cancel-btn"
+          onClick={() => setShowAddCustomerForm(false)}
+        >
           Cancel
         </button>
       </form>
@@ -286,8 +333,14 @@ const Dashboard = () => {
           <option value="Construction Staff">Construction Staff</option>
           <option value="Consulting Staff">Consulting Staff</option>
         </select>
-        <button type="submit" className="create-staff-btn">Create Staff</button>
-        <button type="button" className="cancel-btn" onClick={() => setShowAddStaffForm(false)}>
+        <button type="submit" className="create-staff-btn">
+          Create Staff
+        </button>
+        <button
+          type="button"
+          className="cancel-btn"
+          onClick={() => setShowAddStaffForm(false)}
+        >
           Cancel
         </button>
       </form>
@@ -346,6 +399,59 @@ const Dashboard = () => {
             Cancel
           </button>
         </div>
+      </form>
+    </div>
+  );
+
+  const renderAddServiceForm = () => (
+    <div className="add-service-form">
+      <h2>Add New Service</h2>
+      <form onSubmit={handleAddService}>
+        <input
+          type="text"
+          placeholder="Service Name"
+          value={newService.serviceName}
+          onChange={(e) =>
+            setNewService({ ...newService, serviceName: e.target.value })
+          }
+          required
+        />
+        <input
+          type="number"
+          placeholder="Price"
+          value={newService.price}
+          onChange={(e) =>
+            setNewService({ ...newService, price: e.target.value })
+          }
+          required
+        />
+        <textarea
+          placeholder="Description"
+          value={newService.description}
+          onChange={(e) =>
+            setNewService({ ...newService, description: e.target.value })
+          }
+          required
+        />
+        <input
+          type="text"
+          placeholder="Service Type"
+          value={newService.serviceType}
+          onChange={(e) =>
+            setNewService({ ...newService, serviceType: e.target.value })
+          }
+          required
+        />
+        <button type="submit" className="create-service-btn">
+          Create Service
+        </button>
+        <button
+          type="button"
+          className="cancel-btn"
+          onClick={() => setShowAddServiceForm(false)}
+        >
+          Cancel
+        </button>
       </form>
     </div>
   );
@@ -543,6 +649,51 @@ const Dashboard = () => {
     </div>
   );
 
+  const renderServices = () => (
+    <div className="table-container">
+      {renderSearchBar()}
+      <button
+        onClick={() => setShowAddServiceForm(true)}
+        className="add-service-btn"
+      >
+        Add New Service
+      </button>
+      {showAddServiceForm && renderAddServiceForm()}
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>Service ID</th>
+            <th>Service Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Service Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {services
+            .filter((service) => {
+              if (!service) return false;
+              const searchLower = search.toLowerCase().trim();
+              return (
+                searchLower === "" ||
+                service.serviceName.toLowerCase().includes(searchLower) ||
+                service.serviceType.toLowerCase().includes(searchLower)
+              );
+            })
+            .map((service) => (
+              <tr key={service.serviceId}>
+                <td>{service.serviceId}</td>
+                <td>{service.serviceName}</td>
+                <td>${service.price.toFixed(2)}</td>
+                <td>{service.description}</td>
+                <td>{service.serviceType}</td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
   const handleViewOrderDetails = (orderId) => {
     navigate(`/order/${orderId}`);
   };
@@ -597,6 +748,14 @@ const Dashboard = () => {
           >
             Orders
           </button>
+          <button
+            className={`sidebar-button ${
+              activeView === "services" ? "active" : ""
+            }`}
+            onClick={() => setActiveView("services")}
+          >
+            Services
+          </button>
         </div>
         <div className="sidebar-footer">
           <button onClick={handleBackToHome} className="back-home-btn">
@@ -614,7 +773,9 @@ const Dashboard = () => {
               ? "Customer Dashboard"
               : activeView === "staffs"
               ? "Staff Dashboard"
-              : "Order Dashboard"}
+              : activeView === "orders"
+              ? "Order Dashboard"
+              : "Service Dashboard"}
           </h1>
         </div>
         <div className="table-container">
@@ -622,7 +783,9 @@ const Dashboard = () => {
             ? renderCustomers()
             : activeView === "staffs"
             ? renderStaffs()
-            : renderOrders()}
+            : activeView === "orders"
+            ? renderOrders()
+            : renderServices()}
         </div>
         {selectedCustomerId && (
           <CustomerProfileDashboard customerId={selectedCustomerId} />
