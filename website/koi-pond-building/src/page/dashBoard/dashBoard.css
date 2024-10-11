@@ -208,7 +208,8 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   padding: 30px;
   margin-bottom: 30px;
-  max-width: 600px; /* Increased from 500px to 600px */
+  max-width: 600px;
+  /* Increased from 500px to 600px */
   margin-left: auto;
   margin-right: auto;
 }
@@ -232,7 +233,8 @@
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 16px; /* Increased from 14px */
+  font-size: 16px;
+  /* Increased from 14px */
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
@@ -283,7 +285,8 @@
 /* Specific styles for email input to ensure it's wide enough */
 .add-new-customer input[type="email"] {
   width: 100%;
-  min-width: 300px; /* Ensures a minimum width for email inputs */
+  min-width: 300px;
+  /* Ensures a minimum width for email inputs */
 }
 
 /* Add these styles at the end of the file */
@@ -1132,7 +1135,8 @@ h2 {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   padding: 30px;
   margin-bottom: 30px;
-  max-width: 600px; /* Increased from 500px to 600px */
+  max-width: 600px;
+  /* Increased from 500px to 600px */
   margin-left: auto;
   margin-right: auto;
 }
@@ -1157,7 +1161,8 @@ h2 {
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 16px; /* Increased from 14px */
+  font-size: 16px;
+  /* Increased from 14px */
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
@@ -1208,7 +1213,8 @@ h2 {
 /* Specific styles for email input to ensure it's wide enough */
 .add-new-staff input[type="email"] {
   width: 100%;
-  min-width: 300px; /* Ensures a minimum width for email inputs */
+  min-width: 300px;
+  /* Ensures a minimum width for email inputs */
 }
 
 /* Add New Staff button style */
@@ -1281,4 +1287,97 @@ h2 {
   margin-right: 8px;
   font-size: 20px;
   font-weight: bold;
+}
+
+.service-view-dashboard {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.service-details {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.service-details p {
+  margin-bottom: 10px;
+}
+
+.service-details strong {
+  color: #3498db;
+}
+
+.service-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.delete-service-btn {
+  padding: 10px 15px;
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.delete-service-btn:hover {
+  background-color: #c0392b;
+}
+
+.edit-service-form {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.edit-service-form div {
+  margin-bottom: 15px;
+}
+
+.edit-service-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.edit-service-form input,
+.edit-service-form textarea,
+.edit-service-form select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.edit-service-form textarea {
+  height: 100px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.update-btn,
+.edit-service-btn {
+  padding: 10px 15px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.update-btn:hover,
+.edit-service-btn:hover {
+  background-color: #2980b9;
 }

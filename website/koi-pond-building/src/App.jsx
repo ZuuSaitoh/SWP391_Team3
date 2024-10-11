@@ -25,8 +25,13 @@ import StaffProfileDashBoard from "./page/dashBoard/staffProfileDashBoard";
 import OrderViewDashboard from "./page/dashBoard/orderViewDashBoard";
 import DesignStaffPage from "./page/staffPage/designStaffPage/designStaffPage.jsx";
 import LoginStaff from "./page/login staff/loginStaff.jsx";
+<<<<<<< Updated upstream
 import ConsultingStaffPage from "./page/staffPage/consultingStaffPage/consultingStaffPage.jsx";
 import 
+=======
+import ServiceViewDashboard from './page/dashBoard/ServiceViewDashboard';
+
+>>>>>>> Stashed changes
 function App() {
   return (
     <Routes>
@@ -51,7 +56,11 @@ function App() {
       <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
       <Route path="/designStaffPage" element={<DesignStaffPage />} />
       <Route path="/order/:orderId" element={<OrderViewDashboard />} />
+<<<<<<< Updated upstream
       <Route path="/consultingStaffPage" element={<ConsultingStaffPage />} />
+=======
+      <Route path="/service/:serviceId" element={<ServiceViewDashboard />} />
+>>>>>>> Stashed changes
     </Routes>
   );
 }

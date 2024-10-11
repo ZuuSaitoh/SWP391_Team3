@@ -9,6 +9,7 @@ const Dashboard = () => {
   const [customers, setCustomers] = useState([]);
   const [staffs, setStaffs] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [services, setServices] = useState([]); // Add this line
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeView, setActiveView] = useState("customers");
@@ -41,13 +42,12 @@ const Dashboard = () => {
     staff_id: "",
   });
 
-  const [services, setServices] = useState([]);
   const [showAddServiceForm, setShowAddServiceForm] = useState(false);
   const [newService, setNewService] = useState({
-    serviceName: "",
-    price: "",
-    description: "",
-    serviceType: "",
+    serviceName: '',
+    price: '',
+    description: '',
+    serviceType: ''
   });
 
   useEffect(() => {
@@ -57,7 +57,6 @@ const Dashboard = () => {
       setStaffName(decodedToken.sub);
       setStaffRole(decodedToken.role);
     } else {
-      // Redirect to login if no token is found
       navigate("/login-staff");
     }
 
@@ -207,26 +206,28 @@ const Dashboard = () => {
   const handleAddService = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:8080/services/create",
-        newService
-      );
+      const response = await axios.post('http://localhost:8080/services/create', {
+        service_name: newService.serviceName,
+        price: parseFloat(newService.price),
+        description: newService.description,
+        service_type: newService.serviceType
+      });
       if (response.data.code === 1000) {
-        toast.success("Service created successfully");
+        toast.success('Service created successfully');
         setServices([...services, response.data.result]);
         setShowAddServiceForm(false);
         setNewService({
-          serviceName: "",
-          price: "",
-          description: "",
-          serviceType: "",
+          serviceName: '',
+          price: '',
+          description: '',
+          serviceType: ''
         });
       } else {
-        toast.error("Failed to create service");
+        toast.error('Failed to create service');
       }
     } catch (err) {
-      console.error("Error creating service:", err);
-      toast.error(`An error occurred while creating the service: ${err.message}`);
+      console.error('Error creating service:', err);
+      toast.error('An error occurred while creating the service');
     }
   };
 
@@ -411,47 +412,33 @@ const Dashboard = () => {
           type="text"
           placeholder="Service Name"
           value={newService.serviceName}
-          onChange={(e) =>
-            setNewService({ ...newService, serviceName: e.target.value })
-          }
+          onChange={(e) => setNewService({ ...newService, serviceName: e.target.value })}
           required
         />
         <input
           type="number"
           placeholder="Price"
           value={newService.price}
-          onChange={(e) =>
-            setNewService({ ...newService, price: e.target.value })
-          }
+          onChange={(e) => setNewService({ ...newService, price: e.target.value })}
           required
         />
         <textarea
           placeholder="Description"
           value={newService.description}
-          onChange={(e) =>
-            setNewService({ ...newService, description: e.target.value })
-          }
+          onChange={(e) => setNewService({ ...newService, description: e.target.value })}
           required
         />
-        <input
-          type="text"
-          placeholder="Service Type"
+        <select
           value={newService.serviceType}
-          onChange={(e) =>
-            setNewService({ ...newService, serviceType: e.target.value })
-          }
+          onChange={(e) => setNewService({ ...newService, serviceType: e.target.value })}
           required
-        />
-        <button type="submit" className="create-service-btn">
-          Create Service
-        </button>
-        <button
-          type="button"
-          className="cancel-btn"
-          onClick={() => setShowAddServiceForm(false)}
         >
-          Cancel
-        </button>
+          <option value="">Select Service Type</option>
+          <option value="Cleaning Pond Service">Cleaning Pond Service</option>
+          <option value="Maintenance">Maintenance</option>
+        </select>
+        <button type="submit" className="create-service-btn">Create Service</button>
+        <button type="button" className="cancel-btn" onClick={() => setShowAddServiceForm(false)}>Cancel</button>
       </form>
     </div>
   );
@@ -667,6 +654,7 @@ const Dashboard = () => {
             <th>Price</th>
             <th>Description</th>
             <th>Service Type</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -676,8 +664,8 @@ const Dashboard = () => {
               const searchLower = search.toLowerCase().trim();
               return (
                 searchLower === "" ||
-                service.serviceName.toLowerCase().includes(searchLower) ||
-                service.serviceType.toLowerCase().includes(searchLower)
+                (service.serviceName && service.serviceName.toLowerCase().includes(searchLower)) ||
+                (service.serviceType && service.serviceType.toLowerCase().includes(searchLower))
               );
             })
             .map((service) => (
@@ -686,7 +674,15 @@ const Dashboard = () => {
                 <td>{service.serviceName}</td>
                 <td>${service.price.toFixed(2)}</td>
                 <td>{service.description}</td>
-                <td>{service.serviceType}</td>
+                <td>{service.serviceType || 'N/A'}</td>
+                <td>
+                  <button
+                    onClick={() => handleViewServiceDetails(service.serviceId)}
+                    className="view-profile-btn"
+                  >
+                    View
+                  </button>
+                </td>
               </tr>
             ))}
         </tbody>
@@ -707,6 +703,10 @@ const Dashboard = () => {
     localStorage.removeItem("staffUser");
     toast.success("Logged out successfully");
     navigate("/login-staff");
+  };
+
+  const handleViewServiceDetails = (serviceId) => {
+    navigate(`/service/${serviceId}`);
   };
 
   return (
