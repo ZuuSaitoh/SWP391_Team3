@@ -25,6 +25,7 @@ import StaffProfileDashBoard from "./page/dashBoard/staffProfileDashBoard";
 import OrderViewDashboard from "./page/dashBoard/orderViewDashBoard";
 import DesignStaffPage from "./page/staffPage/designStaffPage/designStaffPage.jsx";
 import LoginStaff from "./page/login staff/loginStaff.jsx";
+import ConsultingStaffPage from "./page/staffPage/consultingStaffPage/consultingStaffPage.jsx";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
       <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
       <Route path="/designStaffPage" element={<DesignStaffPage />} />
       <Route path="/order/:orderId" element={<OrderViewDashboard />} />
+      <Route path="/consultingStaffPage" element={<ConsultingStaffPage/>}/>
     </Routes>
   );
 }
