@@ -5,10 +5,9 @@
 }
 
 .maintenance-hero {
-    background-image: url('../koi_photo/homepageheader.jpg');
-    /* Change this to an appropriate maintenance image */
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -25,7 +24,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
 }
 
 .maintenance-hero-content {
@@ -35,6 +34,9 @@
     padding: 0 2rem;
     text-align: center;
     color: var(--light-text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .maintenance-hero-content h1 {
@@ -82,6 +84,14 @@
     margin-bottom: 3rem;
     color: var(--primary-color); /* Use the primary color variable */
     text-align: center;
+    position: relative;
+    display: inline-block;
+    /* Loại bỏ phần gạch dưới */
+}
+
+/* Loại bỏ phần pseudo-element tạo gạch dưới */
+.maintenance-content h2::after {
+    content: none;
 }
 
 .maintenance-content p {
@@ -207,3 +217,367 @@
     background-color: var(--secondary-color); /* Use the secondary color variable */
     transform: translateY(-3px);
 }
+
+.hero-cta {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    margin-top: 2rem;
+}
+
+.hero-cta:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-3px);
+}
+
+.maintenance-content section {
+    margin-bottom: 6rem;
+    padding: 3rem;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.maintenance-content h2 {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 2rem;
+}
+
+.maintenance-content h2::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 100%;
+    height: 3px;
+    background-color: var(--primary-color);
+}
+
+.importance-grid,
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.importance-item,
+.service-item {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.importance-item:hover,
+.service-item:hover {
+    transform: translateY(-5px);
+}
+
+.importance-item i,
+.service-item i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.maintenance-content section {
+    animation: fadeInUp 0.6s ease-out both;
+}
+
+.maintenance-content section:nth-child(1) { animation-delay: 0.2s; }
+.maintenance-content section:nth-child(2) { animation-delay: 0.4s; }
+.maintenance-content section:nth-child(3) { animation-delay: 0.6s; }
+.maintenance-content section:nth-child(4) { animation-delay: 0.8s; }
+.maintenance-content section:nth-child(5) { animation-delay: 1s; }
+
+.process-timeline {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.process-timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    background: var(--primary-color);
+    transform: translateX(-50%);
+}
+
+.process-step {
+    position: relative;
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.process-step:nth-child(even) {
+    justify-content: flex-end;
+}
+
+.step-content {
+    width: 45%;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.process-step:nth-child(odd) .step-content {
+    margin-right: 55%;
+}
+
+.process-step:nth-child(even) .step-content {
+    margin-left: 55%;
+}
+
+.step-number {
+    position: absolute;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.step-content h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.step-content p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .process-timeline::before {
+        left: 20px;
+    }
+
+    .process-step,
+    .process-step:nth-child(even) {
+        justify-content: flex-start;
+    }
+
+    .step-content {
+        width: calc(100% - 60px);
+        margin-left: 60px !important;
+    }
+
+    .step-number {
+        left: 0;
+        transform: translateX(0);
+    }
+}
+
+.plans-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.plan {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    min-width: 250px;
+    max-width: 350px;
+    transition: transform 0.3s;
+    position: relative;
+}
+
+.plan:hover {
+    transform: translateY(-10px);
+}
+
+.plan.featured {
+    border: 2px solid var(--primary-color);
+    transform: scale(1.05);
+}
+
+.featured-banner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.plan h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.plan .price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.plan ul {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+.plan li {
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.check-icon {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+.plan-cta {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.plan-cta:hover {
+    background-color: var(--secondary-color);
+}
+
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.faq-item h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+    color: var(--primary-color);
+}
+
+.maintenance-cta {
+    text-align: center;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 4rem 2rem;
+    border-radius: 10px;
+}
+
+.maintenance-cta h2 {
+    color: white;
+    margin-bottom: 1.5rem;
+}
+
+.maintenance-cta p {
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.cta-button {
+    background-color: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.cta-button:hover {
+    background-color: var(--light-text-color);
+    transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+    .plans-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .plan {
+        width: 100%;
+        max-width: none;
+    }
+
+    .plan.featured {
+        transform: none;
+        order: -1;
+    }
+}
+
+/* You can remove or comment out this CSS if you're not using it elsewhere */
+/*
+.hero-cta {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    margin-top: 2rem;
+}
+
+.hero-cta:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-3px);
+}
+*/

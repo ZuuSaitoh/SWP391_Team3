@@ -6,6 +6,8 @@ import ScrollToTop from "react-scroll-to-top";
 import slider1 from "../koi_photo/slider/slider1.jpg";
 import slider2 from "../koi_photo/slider/slider2.jpg";
 import slider3 from "../koi_photo/slider/slider3.jpg";
+import mainTainGuy from "../koi_photo/backgroundPage/MainTainGuy.jpg";
+import { FaCheckCircle } from 'react-icons/fa';
 
 function ServiceMaintenance() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -53,23 +55,10 @@ function ServiceMaintenance() {
   return (
     <div className="service-maintenance-page">
       <Header isTransparent={true} />
-      <section className="maintenance-hero">
-        <div className="hero-slider">
-          {slides.map((slide, index) => (
-            <div
-              key={index}
-              className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
-              style={{ backgroundImage: `url(${slide})` }}
-            ></div>
-          ))}
-        </div>
+      <section className="maintenance-hero" style={{ backgroundImage: `url(${mainTainGuy})` }}>
         <div className="maintenance-hero-content">
           <h1>Koi Pond Maintenance Services</h1>
           <p>Professional care for a thriving aquatic ecosystem</p>
-        </div>
-        <div className="slider-controls">
-          <button onClick={prevSlide} className="slider-control prev">&#10094;</button>
-          <button onClick={nextSlide} className="slider-control next">&#10095;</button>
         </div>
       </section>
       
@@ -84,26 +73,18 @@ function ServiceMaintenance() {
         <section className="maintenance-importance">
           <h2>The Importance of Professional Maintenance</h2>
           <div className="importance-grid">
-            <div className="importance-item">
-              <i className="fas fa-fish"></i>
-              <h3>Fish Health</h3>
-              <p>Regular maintenance ensures optimal water conditions for your Koi, promoting their health and longevity.</p>
-            </div>
-            <div className="importance-item">
-              <i className="fas fa-leaf"></i>
-              <h3>Ecosystem Balance</h3>
-              <p>Professional care maintains the delicate balance of your pond's ecosystem, supporting both fish and plant life.</p>
-            </div>
-            <div className="importance-item">
-              <i className="fas fa-tint"></i>
-              <h3>Water Quality</h3>
-              <p>Our services keep your pond water clean, clear, and properly balanced for optimal aesthetics and fish health.</p>
-            </div>
-            <div className="importance-item">
-              <i className="fas fa-cog"></i>
-              <h3>Equipment Longevity</h3>
-              <p>Regular maintenance of filters, pumps, and other equipment ensures their efficient operation and extends their lifespan.</p>
-            </div>
+            {[
+              { icon: "fas fa-fish", title: "Fish Health", description: "Regular maintenance ensures optimal water conditions for your Koi, promoting their health and longevity." },
+              { icon: "fas fa-leaf", title: "Ecosystem Balance", description: "Professional care maintains the delicate balance of your pond's ecosystem, supporting both fish and plant life." },
+              { icon: "fas fa-tint", title: "Water Quality", description: "Our services keep your pond water clean, clear, and properly balanced for optimal aesthetics and fish health." },
+              { icon: "fas fa-cog", title: "Equipment Longevity", description: "Regular maintenance of filters, pumps, and other equipment ensures their efficient operation and extends their lifespan." }
+            ].map((item, index) => (
+              <div key={index} className="importance-item">
+                <i className={item.icon}></i>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -155,11 +136,11 @@ function ServiceMaintenance() {
               { step: 6, title: "Detailed Reporting", description: "After each visit, we provide a comprehensive report of services performed and recommendations.", icon: "📊" }
             ].map((item, index) => (
               <div key={index} className="process-step">
-                <div className="step-number">{item.step}</div>
                 <div className="step-content">
                   <h3>{item.icon} {item.title}</h3>
                   <p>{item.description}</p>
                 </div>
+                <div className="step-number">{item.step}</div>
               </div>
             ))}
           </div>
@@ -168,43 +149,54 @@ function ServiceMaintenance() {
         <section className="maintenance-plans">
           <h2>Maintenance Plans</h2>
           <div className="plans-container">
-            <div className="plan">
-              <h3>Basic Plan</h3>
-              <ul>
-                <li>Monthly water quality check</li>
-                <li>Bi-weekly debris removal</li>
-                <li>Quarterly filter cleaning</li>
-                <li>Seasonal fish health check</li>
-              </ul>
-              <p className="price">Starting at $X/month</p>
-              <button className="plan-cta">Choose Plan</button>
-            </div>
-            <div className="plan featured">
-              <div className="featured-banner">Most Popular</div>
-              <h3>Standard Plan</h3>
-              <ul>
-                <li>Bi-weekly water quality check</li>
-                <li>Weekly debris removal</li>
-                <li>Monthly filter cleaning</li>
-                <li>Bi-monthly fish health check</li>
-                <li>Quarterly aquatic plant care</li>
-              </ul>
-              <p className="price">Starting at $Y/month</p>
-              <button className="plan-cta">Choose Plan</button>
-            </div>
-            <div className="plan">
-              <h3>Premium Plan</h3>
-              <ul>
-                <li>Weekly water quality check</li>
-                <li>Twice-weekly debris removal</li>
-                <li>Bi-weekly filter cleaning</li>
-                <li>Monthly fish health check</li>
-                <li>Monthly aquatic plant care</li>
-                <li>24/7 emergency support</li>
-              </ul>
-              <p className="price">Starting at $Z/month</p>
-              <button className="plan-cta">Choose Plan</button>
-            </div>
+            {[
+              {
+                title: "Basic Plan",
+                price: "$X",
+                features: [
+                  "Monthly water quality check",
+                  "Bi-weekly debris removal",
+                  "Quarterly filter cleaning",
+                  "Seasonal fish health check"
+                ]
+              },
+              {
+                title: "Standard Plan",
+                price: "$Y",
+                featured: true,
+                features: [
+                  "Bi-weekly water quality check",
+                  "Weekly debris removal",
+                  "Monthly filter cleaning",
+                  "Bi-monthly fish health check",
+                  "Quarterly aquatic plant care"
+                ]
+              },
+              {
+                title: "Premium Plan",
+                price: "$Z",
+                features: [
+                  "Weekly water quality check",
+                  "Twice-weekly debris removal",
+                  "Bi-weekly filter cleaning",
+                  "Monthly fish health check",
+                  "Monthly aquatic plant care",
+                  "24/7 emergency support"
+                ]
+              }
+            ].map((plan, index) => (
+              <div key={index} className={`plan ${plan.featured ? 'featured' : ''}`}>
+                {plan.featured && <div className="featured-banner">Most Popular</div>}
+                <h3>{plan.title}</h3>
+                <p className="price">Starting at {plan.price}/month</p>
+                <ul>
+                  {plan.features.map((feature, fIndex) => (
+                    <li key={fIndex}><FaCheckCircle className="check-icon" /> {feature}</li>
+                  ))}
+                </ul>
+                <button className="plan-cta">Choose Plan</button>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -224,12 +216,6 @@ function ServiceMaintenance() {
               <p>Each season brings unique challenges for Koi ponds. Our maintenance plans adapt to these seasonal changes, adjusting care routines for spring preparation, summer algae control, fall cleanup, and winter protection.</p>
             </div>
           </div>
-        </section>
-
-        <section className="maintenance-cta">
-          <h2>Ready to Ensure Your Koi Pond's Health and Beauty?</h2>
-          <p>Contact us today to schedule your professional Koi pond maintenance service or to learn more about our customized maintenance plans.</p>
-          <button className="cta-button">Get a Free Consultation</button>
         </section>
       </div>
       
