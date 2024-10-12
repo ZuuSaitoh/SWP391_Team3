@@ -136,16 +136,18 @@ function ServiceDesign() {
 
         <section className="service-why-choose-us">
           <h2>Why Choose Us for Your Koi Pond Design</h2>
-          <div className="why-choose-content">
-            <p>
-              With nearly a decade of experience in landscaping and garden design, specializing in Koi pond design and construction, we are confident in providing comprehensive solutions for your Koi pond needs.
-            </p>
-            <ul>
-              <li>High expertise in Koi pond design</li>
-              <li>Experienced team of professionals</li>
-              <li>Use of high-quality materials and equipment</li>
-              <li>Commitment to customer satisfaction</li>
-            </ul>
+          <div className="why-choose-us-content">
+            <div className="why-choose-us-text">
+              <p>With nearly a decade of experience in landscaping and garden design, specializing in Koi pond design and construction, we are confident in providing comprehensive solutions for your Koi pond needs.</p>
+            </div>
+            <div className="why-choose-us-list">
+              <ul>
+                <li>High expertise in Koi pond design</li>
+                <li>Experienced team of professionals</li>
+                <li>Use of high-quality materials and equipment</li>
+                <li>Commitment to customer satisfaction</li>
+              </ul>
+            </div>
           </div>
         </section>
 
