@@ -82,14 +82,14 @@
 .maintenance-content h2 {
     font-size: 2.5rem;
     margin-bottom: 3rem;
-    color: var(--primary-color); /* Use the primary color variable */
+    color: var(--primary-color);
     text-align: center;
     position: relative;
-    display: inline-block;
-    /* Loại bỏ phần gạch dưới */
+    display: block;
+    width: 100%;
 }
 
-/* Loại bỏ phần pseudo-element tạo gạch dưới */
+/* Remove the underline */
 .maintenance-content h2::after {
     content: none;
 }
@@ -244,20 +244,17 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.maintenance-content h2 {
-    position: relative;
-    display: inline-block;
-    margin-bottom: 2rem;
+/* Center the text within sections */
+.maintenance-content section {
+    text-align: center;
 }
 
-.maintenance-content h2::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -5px;
-    width: 100%;
-    height: 3px;
-    background-color: var(--primary-color);
+/* Adjust grid items to be left-aligned */
+.importance-item,
+.service-item,
+.process-step,
+.faq-item {
+    text-align: left;
 }
 
 .importance-grid,
