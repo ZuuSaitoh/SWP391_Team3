@@ -15,8 +15,11 @@ public class ContractCreationRequest {
     int orderId;
     @NotNull(message = "ENTER_ALL_FIELDS")
     int uploadStaff;
+//    @NotNull(message = "ENTER_ALL_FIELDS")
+//    MultipartFile imageData;
     @NotNull(message = "ENTER_ALL_FIELDS")
-    MultipartFile imageData;
+    String imageData;
+
     @NotNull(message = "ENTER_ALL_FIELDS")
     String description;
 
@@ -36,13 +39,21 @@ public class ContractCreationRequest {
         this.uploadStaff = uploadStaff;
     }
 
-    public MultipartFile getImageData() {
+    public String getImageData() {
         return imageData;
     }
 
-    public void setImageData(MultipartFile imageData) {
+    public void setImageData(String imageData) {
         this.imageData = imageData;
     }
+
+    //    public MultipartFile getImageData() {
+//        return imageData;
+//    }
+//
+//    public void setImageData(MultipartFile imageData) {
+//        this.imageData = imageData;
+//    }
 //    public byte[] getImageData() {
 //        return imageData;
 //    }

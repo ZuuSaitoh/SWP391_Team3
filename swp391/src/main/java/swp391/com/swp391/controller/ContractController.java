@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import swp391.com.swp391.dto.request.ContractCreationRequest;
+import swp391.com.swp391.dto.request.ContractUpdateRequest;
 import swp391.com.swp391.dto.response.ApiResponse;
 import swp391.com.swp391.entity.Contract;
 import swp391.com.swp391.entity.Order;
@@ -21,24 +22,32 @@ public class ContractController {
     ContractService contractService;
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-    @PostMapping(value = "/create", consumes = "multipart/form-data")
-    ApiResponse<Contract> createContract(@ModelAttribute ContractCreationRequest request,
-                                         @RequestParam("imageData") MultipartFile imageData){
+    @PostMapping("/create")
+    ApiResponse<Contract> createContract(@RequestBody @Valid ContractCreationRequest request){
         ApiResponse<Contract> apiResponse = new ApiResponse<>();
-        try {
-            byte[] imageBytes= request.getImageData().getBytes();
-            apiResponse.setResult(contractService.createContract(imageData, request));
-            return apiResponse;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        apiResponse.setResult(contractService.createContract(request));
+        return apiResponse;
     }
+
+//    @PostMapping(value = "/create", consumes = "multipart/form-data")
+//    ApiResponse<Contract> createContract(@ModelAttribute ContractCreationRequest request,
+//                                         @RequestParam("imageData") MultipartFile imageData){
+//        ApiResponse<Contract> apiResponse = new ApiResponse<>();
+//        try {
+//            byte[] imageBytes= request.getImageData().getBytes();
+//            apiResponse.setResult(contractService.createContract(imageData, request));
+//            return apiResponse;
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/fetchAll")
     ApiResponse<List<Contract>> getAllContract(){
         return new ApiResponse<List<Contract>>(9999, "List of order", contractService.getAllContract());
     }
+
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/test-upload")
     public ResponseEntity<String> testUpload(@RequestParam("file") MultipartFile file) {
@@ -51,5 +60,18 @@ public class ContractController {
         return contractService.getContractById(id);
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @DeleteMapping("/delete/{id}")
+    public ApiResponse<String> deleteContractById(@PathVariable int id){
+        contractService.deleteContractById(id);
+        return new ApiResponse<String>(9876, "Delete contract", "Delete successfully");
+    }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @PutMapping("/update/{id}")
+    ApiResponse<Contract> updateContractByContractId(@PathVariable int id,
+                                                  @RequestBody ContractUpdateRequest request){
+        return new ApiResponse<Contract>
+                (1234,"Update contract", contractService.updateContractByContractId(id, request));
+    }
 }

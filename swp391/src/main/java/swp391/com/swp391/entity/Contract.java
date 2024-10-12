@@ -30,9 +30,10 @@ public class Contract {
     @Column(name = "upload_date")
     LocalDateTime uploadDate;
 
-    @Lob
+//    @Lob
     @Column(name = "image_data")
-    byte[] imageData;
+    String imageData;
+//    byte[] imageData;
     @Column(name = "description")
     String description;
 
@@ -71,13 +72,20 @@ public class Contract {
         this.uploadDate = uploadDate;
     }
 
-    public byte[] getImageData() {
+    public String getImageData() {
         return imageData;
     }
 
-    public void setImageData(byte[] imageData) {
+    public void setImageData(String imageData) {
         this.imageData = imageData;
     }
+//    public byte[] getImageData() {
+//        return imageData;
+//    }
+//
+//    public void setImageData(byte[] imageData) {
+//        this.imageData = imageData;
+//    }
 
     public String getDescription() {
         return description;
