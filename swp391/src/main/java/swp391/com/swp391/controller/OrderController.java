@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import swp391.com.swp391.dto.request.OrderCreationRequest;
+import swp391.com.swp391.dto.request.OrderUpdateDesignRequest;
 import swp391.com.swp391.dto.request.OrderUpdateFeedbackRequest;
 import swp391.com.swp391.dto.response.ApiResponse;
 import swp391.com.swp391.entity.Order;
@@ -64,5 +65,12 @@ public class OrderController {
     ApiResponse<Optional<List<Order>>> getAllOrderByStaffId(@PathVariable int id){
         return new ApiResponse<Optional<List<Order>>>
                 (9996, "Customer list of order", orderService.getOrderByStaffId(id));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @PutMapping("/update-design/{id}")
+    ApiResponse<Order> updateDesign(@PathVariable int id, @RequestBody @Valid OrderUpdateDesignRequest request){
+        return new ApiResponse<Order>
+                (9997, "Update Design",orderService.updateDesignById(id, request));
     }
 }

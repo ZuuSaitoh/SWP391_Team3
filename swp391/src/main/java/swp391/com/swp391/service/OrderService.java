@@ -3,13 +3,16 @@ package swp391.com.swp391.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import swp391.com.swp391.dto.request.OrderCreationRequest;
+import swp391.com.swp391.dto.request.OrderUpdateDesignRequest;
 import swp391.com.swp391.dto.request.OrderUpdateFeedbackRequest;
 import swp391.com.swp391.entity.Customer;
+import swp391.com.swp391.entity.Design;
 import swp391.com.swp391.entity.Order;
 import swp391.com.swp391.entity.Staff;
 import swp391.com.swp391.exception.AppException;
 import swp391.com.swp391.exception.ErrorCode;
 import swp391.com.swp391.repository.CustomerRepository;
+import swp391.com.swp391.repository.DesignRepository;
 import swp391.com.swp391.repository.OrderRepository;
 import swp391.com.swp391.repository.StaffRepository;
 
@@ -25,6 +28,9 @@ public class OrderService {
     StaffRepository staffRepository;
     @Autowired
     CustomerRepository customerRepository;
+
+    @Autowired
+    DesignRepository designRepository;
 
 
     public Order createOrder(OrderCreationRequest request){
@@ -73,5 +79,13 @@ public class OrderService {
 
     public Optional<List<Order>> getOrderByStaffId(int id){
         return orderRepository.findByStaff_staffId(id);
+    }
+
+    public Order updateDesignById(int order_id, OrderUpdateDesignRequest request){
+        Order order = getOrderById(order_id);
+        Design design = designRepository.findById(request.getDesignId())
+                .orElseThrow(() -> new AppException(ErrorCode.DESIGN_NOT_EXISTED));
+        order.setDesign_id(design);
+        return orderRepository.save(order);
     }
 }
