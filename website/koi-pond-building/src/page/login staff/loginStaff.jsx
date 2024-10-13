@@ -62,11 +62,12 @@ function LoginStaff() {
         const { staffID, sub: username, role } = decodedToken;
 
         localStorage.setItem("staffAuthToken", token);
+        console.log("Token stored in localStorage:", localStorage.getItem("staffAuthToken")); // Add this line
         localStorage.setItem(
           "staffUser",
           JSON.stringify({ id: staffID, username, role })
         );
-        localStorage.setItem('staffId', staffID); // Store staffID instead of response.data.staffId
+        localStorage.setItem('staffId', staffID);
 
         toast.success("Logged in successfully");
 

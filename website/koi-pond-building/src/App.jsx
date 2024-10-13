@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   createBrowserRouter,
   Route,
@@ -27,10 +27,12 @@ import DesignStaffPage from "./page/staffPage/designStaffPage/designStaffPage.js
 import LoginStaff from "./page/login staff/loginStaff.jsx";
 import ConsultingStaffPage from "./page/staffPage/consultingStaffPage/consultingStaffPage.jsx";
 import ServiceViewDashboard from "./page/dashBoard/ServiceViewDashboard";
+import ProtectedStaffRoutes from "./utils/ProtectedStaffRoutes.jsx";
 
 function App() {
   return (
     <Routes>
+      {/* Public routes */}
       <Route path="/" element={<HomePage />} />
       <Route path="/service-design" element={<ServiceDesign />} />
       <Route path="/service-clean" element={<ServiceClean />} />
@@ -39,21 +41,29 @@ function App() {
       <Route path="/login-staff" element={<LoginStaff />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgotpassword" element={<ForgotPassword />} />
+
+      {/* Protected Customer Routes */}
       <Route element={<ProtectedRoutes />}>
         <Route
           path="/customer-profile/:customerId"
           element={<CustomerProfilePage />}
         />
+        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/customer/:Id" element={<CustomerProfileDashBoard />} />
       </Route>
-      <Route path="/dashboard" element={<DashBoard />} />
 
-      <Route path="/change-password" element={<ChangePassword />} />
-      <Route path="/customer/:Id" element={<CustomerProfileDashBoard />} />
-      <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
-      <Route path="/designStaffPage/:staffId" element={<DesignStaffPage />} />
-      <Route path="/order/:orderId" element={<OrderViewDashboard />} />
-      <Route path="/consultingStaffPage/:staffId" element={<ConsultingStaffPage />} />
-      <Route path="/service/:serviceId" element={<ServiceViewDashboard />} />
+      {/* Protected Staff Routes */}
+      <Route element={<ProtectedStaffRoutes />}>
+        <Route path="/dashboard" element={<DashBoard />} />
+        <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
+        <Route path="/designStaffPage/:staffId" element={<DesignStaffPage />} />
+        <Route path="/order/:orderId" element={<OrderViewDashboard />} />
+        <Route
+          path="/consultingStaffPage/:staffId"
+          element={<ConsultingStaffPage />}
+        />
+        <Route path="/service/:serviceId" element={<ServiceViewDashboard />} />
+      </Route>
     </Routes>
   );
 }
