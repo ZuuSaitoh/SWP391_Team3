@@ -9,7 +9,8 @@ const Dashboard = () => {
   const [customers, setCustomers] = useState([]);
   const [staffs, setStaffs] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [services, setServices] = useState([]); // Add this line
+  const [services, setServices] = useState([]);
+  const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeView, setActiveView] = useState("customers");
@@ -44,10 +45,10 @@ const Dashboard = () => {
 
   const [showAddServiceForm, setShowAddServiceForm] = useState(false);
   const [newService, setNewService] = useState({
-    serviceName: '',
-    price: '',
-    description: '',
-    serviceType: ''
+    serviceName: "",
+    price: "",
+    description: "",
+    serviceType: "",
   });
 
   useEffect(() => {
@@ -62,13 +63,19 @@ const Dashboard = () => {
 
     const fetchData = async () => {
       try {
-        const [customersResponse, staffsResponse, ordersResponse, servicesResponse] =
-          await Promise.all([
-            axios.get("http://localhost:8080/customers/fetchAll"),
-            axios.get("http://localhost:8080/staffs/fetchAll"),
-            axios.get("http://localhost:8080/orders/fetchAll"),
-            axios.get("http://localhost:8080/services/fetchAll"),
-          ]);
+        const [
+          customersResponse,
+          staffsResponse,
+          ordersResponse,
+          servicesResponse,
+          contractsResponse,
+        ] = await Promise.all([
+          axios.get("http://localhost:8080/customers/fetchAll"),
+          axios.get("http://localhost:8080/staffs/fetchAll"),
+          axios.get("http://localhost:8080/orders/fetchAll"),
+          axios.get("http://localhost:8080/services/fetchAll"),
+          axios.get("http://localhost:8080/contracts/fetchAll"),
+        ]);
 
         if (customersResponse.data.code === 9999) {
           setCustomers(customersResponse.data.result);
@@ -92,6 +99,12 @@ const Dashboard = () => {
           setServices(servicesResponse.data.result);
         } else {
           setError("Failed to fetch services");
+        }
+
+        if (contractsResponse.data.code === 9999) {
+          setContracts(contractsResponse.data.result);
+        } else {
+          setError("Failed to fetch contracts");
         }
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -206,28 +219,31 @@ const Dashboard = () => {
   const handleAddService = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8080/services/create', {
-        service_name: newService.serviceName,
-        price: parseFloat(newService.price),
-        description: newService.description,
-        service_type: newService.serviceType
-      });
+      const response = await axios.post(
+        "http://localhost:8080/services/create",
+        {
+          service_name: newService.serviceName,
+          price: parseFloat(newService.price),
+          description: newService.description,
+          service_type: newService.serviceType,
+        }
+      );
       if (response.data.code === 1000) {
-        toast.success('Service created successfully');
+        toast.success("Service created successfully");
         setServices([...services, response.data.result]);
         setShowAddServiceForm(false);
         setNewService({
-          serviceName: '',
-          price: '',
-          description: '',
-          serviceType: ''
+          serviceName: "",
+          price: "",
+          description: "",
+          serviceType: "",
         });
       } else {
-        toast.error('Failed to create service');
+        toast.error("Failed to create service");
       }
     } catch (err) {
-      console.error('Error creating service:', err);
-      toast.error('An error occurred while creating the service');
+      console.error("Error creating service:", err);
+      toast.error("An error occurred while creating the service");
     }
   };
 
@@ -405,40 +421,58 @@ const Dashboard = () => {
   );
 
   const renderAddServiceForm = () => (
-    <div className="add-service-form">
+    <div className="add-new-service">
       <h2>Add New Service</h2>
       <form onSubmit={handleAddService}>
-        <input
-          type="text"
-          placeholder="Service Name"
-          value={newService.serviceName}
-          onChange={(e) => setNewService({ ...newService, serviceName: e.target.value })}
-          required
-        />
-        <input
-          type="number"
-          placeholder="Price"
-          value={newService.price}
-          onChange={(e) => setNewService({ ...newService, price: e.target.value })}
-          required
-        />
+        <div className="input-group">
+          <input
+            type="text"
+            placeholder="Service Name"
+            value={newService.serviceName}
+            onChange={(e) =>
+              setNewService({ ...newService, serviceName: e.target.value })
+            }
+            required
+          />
+          <input
+            type="number"
+            placeholder="Price"
+            value={newService.price}
+            onChange={(e) =>
+              setNewService({ ...newService, price: e.target.value })
+            }
+            required
+          />
+        </div>
         <textarea
           placeholder="Description"
           value={newService.description}
-          onChange={(e) => setNewService({ ...newService, description: e.target.value })}
+          onChange={(e) =>
+            setNewService({ ...newService, description: e.target.value })
+          }
           required
         />
         <select
           value={newService.serviceType}
-          onChange={(e) => setNewService({ ...newService, serviceType: e.target.value })}
+          onChange={(e) =>
+            setNewService({ ...newService, serviceType: e.target.value })
+          }
           required
         >
           <option value="">Select Service Type</option>
           <option value="Cleaning Pond Service">Cleaning Pond Service</option>
           <option value="Maintenance">Maintenance</option>
         </select>
-        <button type="submit" className="create-service-btn">Create Service</button>
-        <button type="button" className="cancel-btn" onClick={() => setShowAddServiceForm(false)}>Cancel</button>
+        <button type="submit" className="create-service-btn">
+          Create Service
+        </button>
+        <button
+          type="button"
+          className="cancel-btn"
+          onClick={() => setShowAddServiceForm(false)}
+        >
+          Cancel
+        </button>
       </form>
     </div>
   );
@@ -664,8 +698,10 @@ const Dashboard = () => {
               const searchLower = search.toLowerCase().trim();
               return (
                 searchLower === "" ||
-                (service.serviceName && service.serviceName.toLowerCase().includes(searchLower)) ||
-                (service.serviceType && service.serviceType.toLowerCase().includes(searchLower))
+                (service.serviceName &&
+                  service.serviceName.toLowerCase().includes(searchLower)) ||
+                (service.serviceType &&
+                  service.serviceType.toLowerCase().includes(searchLower))
               );
             })
             .map((service) => (
@@ -674,13 +710,70 @@ const Dashboard = () => {
                 <td>{service.serviceName}</td>
                 <td>${service.price.toFixed(2)}</td>
                 <td>{service.description}</td>
-                <td>{service.serviceType || 'N/A'}</td>
+                <td>{service.serviceType || "N/A"}</td>
                 <td>
                   <button
                     onClick={() => handleViewServiceDetails(service.serviceId)}
                     className="view-profile-btn"
                   >
                     View
+                  </button>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const renderContracts = () => (
+    <div className="table-container">
+      {renderSearchBar()}
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>Contract ID</th>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Staff</th>
+            <th>Upload Date</th>
+            <th>Description</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {contracts
+            .filter((contract) => {
+              if (!contract) return false;
+              const searchLower = search.toLowerCase().trim();
+              return (
+                searchLower === "" ||
+                contract.contractId.toString().includes(searchLower) ||
+                contract.order.order_id.toString().includes(searchLower) ||
+                contract.order.customer.username
+                  .toLowerCase()
+                  .includes(searchLower) ||
+                contract.staff.username.toLowerCase().includes(searchLower) ||
+                (contract.description &&
+                  contract.description.toLowerCase().includes(searchLower))
+              );
+            })
+            .map((contract) => (
+              <tr key={contract.contractId}>
+                <td>{contract.contractId}</td>
+                <td>{contract.order.order_id}</td>
+                <td>{contract.order.customer.username}</td>
+                <td>{contract.staff.username}</td>
+                <td>{new Date(contract.uploadDate).toLocaleString()}</td>
+                <td>{contract.description}</td>
+                <td>
+                  <button
+                    onClick={() =>
+                      handleViewContractDetails(contract.contractId)
+                    }
+                    className="view-profile-btn"
+                  >
+                    View Details
                   </button>
                 </td>
               </tr>
@@ -707,6 +800,10 @@ const Dashboard = () => {
 
   const handleViewServiceDetails = (serviceId) => {
     navigate(`/service/${serviceId}`);
+  };
+
+  const handleViewContractDetails = (contractId) => {
+    navigate(`/contract/${contractId}`);
   };
 
   return (
@@ -756,6 +853,14 @@ const Dashboard = () => {
           >
             Services
           </button>
+          <button
+            className={`sidebar-button ${
+              activeView === "contracts" ? "active" : ""
+            }`}
+            onClick={() => setActiveView("contracts")}
+          >
+            Contracts
+          </button>
         </div>
         <div className="sidebar-footer">
           <button onClick={handleBackToHome} className="back-home-btn">
@@ -775,7 +880,9 @@ const Dashboard = () => {
               ? "Staff Dashboard"
               : activeView === "orders"
               ? "Order Dashboard"
-              : "Service Dashboard"}
+              : activeView === "services"
+              ? "Service Dashboard"
+              : "Contract Dashboard"}
           </h1>
         </div>
         <div className="table-container">
@@ -785,7 +892,9 @@ const Dashboard = () => {
             ? renderStaffs()
             : activeView === "orders"
             ? renderOrders()
-            : renderServices()}
+            : activeView === "services"
+            ? renderServices()
+            : renderContracts()}
         </div>
         {selectedCustomerId && (
           <CustomerProfileDashboard customerId={selectedCustomerId} />
