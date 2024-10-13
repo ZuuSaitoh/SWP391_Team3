@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import swp391.com.swp391.dto.request.CustomerCreationRequest;
+import swp391.com.swp391.dto.request.CustomerUpdateAvatarRequest;
 import swp391.com.swp391.dto.request.CustomerUpdatePasswordRequest;
 import swp391.com.swp391.dto.request.CustomerUpdateRequest;
 import swp391.com.swp391.dto.response.ApiResponse;
@@ -70,5 +71,11 @@ public class CustomerController {
     @GetMapping("/checkMail/{mail}")
     ApiResponse<Boolean> checkExistedMail(@PathVariable String mail){
         return  new ApiResponse<Boolean>(4444, "Status of emails!", customerService.checkExistedMail(mail));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @PutMapping("/update/avatar/{customer_id}")
+    Customer updateAvatarCustomer(@PathVariable int customer_id, @RequestBody @Valid CustomerUpdateAvatarRequest request){
+        return customerService.updateAvatar(customer_id, request);
     }
 }

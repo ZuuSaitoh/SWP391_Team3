@@ -28,7 +28,7 @@ public class Order {
     Staff staff;
 
     @ManyToOne
-    @JoinColumn(name = "design_id", referencedColumnName = "designId", nullable = true)
+    @JoinColumn(name = "design_id", referencedColumnName = "design_id", nullable = true)
     Design design_id;
 
     @Column(name = "order_date")

@@ -27,6 +27,8 @@ public class Customer {
     private String phone;
     @Column(name = "point", columnDefinition = "int default 0")
     private int point;
+    @Column(name = "avatar")
+    private String avatar;
 
     public Customer() {
     }
@@ -93,5 +95,13 @@ public class Customer {
 
     public void setPoint(int point) {
         this.point = point;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

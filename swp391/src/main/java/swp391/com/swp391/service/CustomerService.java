@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import swp391.com.swp391.dto.request.CustomerCreationRequest;
+import swp391.com.swp391.dto.request.CustomerUpdateAvatarRequest;
 import swp391.com.swp391.dto.request.CustomerUpdatePasswordRequest;
 import swp391.com.swp391.dto.request.CustomerUpdateRequest;
 import swp391.com.swp391.entity.Customer;
@@ -95,5 +96,11 @@ public class CustomerService {
 
     public boolean checkExistedMail(String mail){
         return customerRepository.existsByMail(mail);
+    }
+
+    public Customer updateAvatar(int id, CustomerUpdateAvatarRequest request){
+        Customer customer = getCustomerById(id);
+        customer.setAvatar(request.getAvatar());
+        return customerRepository.save(customer);
     }
 }
