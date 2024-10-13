@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  createBrowserRouter,
-  Route,
-  RouterProvider,
-  Routes,
-  useLocation,
-  useNavigationType,
-} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import "./index.css";
 import HomePage from "./page/homePage/homepage.jsx";
