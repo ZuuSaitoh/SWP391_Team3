@@ -26,7 +26,8 @@ public enum ErrorCode {
     RATING_MIN(1019, "Rating at least 1"),
     RATING_MAX(1020, "Rating at most 5"),
     SHORT_FEEDBACK(1021, "Feedback at least 5 characters!"),
-    CONTRACT_NOT_EXISTED(1022, "Contract is not existed!")
+    CONTRACT_NOT_EXISTED(1022, "Contract is not existed!"),
+    DESIGN_NOT_EXISTED(1022,"Design is not existed!")
     ;
 
     ErrorCode(int code, String message) {
