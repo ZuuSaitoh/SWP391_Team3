@@ -18,8 +18,8 @@ public class DesignCreationRequest {
     String designName;
     @NotNull(message = "ENTER_ALL_FIELDS")
     String imageData;
-    @NotNull(message = "ENTER_ALL_FIELDS")
-    LocalDateTime designDate;
+//    @NotNull(message = "ENTER_ALL_FIELDS")
+//    LocalDateTime designDate;
     @NotNull(message = "ENTER_ALL_FIELDS")
     String designVersion;
 
@@ -48,13 +48,13 @@ public class DesignCreationRequest {
         this.imageData = imageData;
     }
 
-    public @NotNull(message = "ENTER_ALL_FIELDS") LocalDateTime getDesignDate() {
-        return designDate;
-    }
-
-    public void setDesignDate(@NotNull(message = "ENTER_ALL_FIELDS") LocalDateTime designDate) {
-        this.designDate = designDate;
-    }
+//    public @NotNull(message = "ENTER_ALL_FIELDS") LocalDateTime getDesignDate() {
+//        return designDate;
+//    }
+//
+//    public void setDesignDate(@NotNull(message = "ENTER_ALL_FIELDS") LocalDateTime designDate) {
+//        this.designDate = designDate;
+//    }
 
     public @NotNull(message = "ENTER_ALL_FIELDS") String getDesignVersion() {
         return designVersion;

@@ -11,6 +11,7 @@ import swp391.com.swp391.exception.ErrorCode;
 import swp391.com.swp391.repository.DesignRepository;
 import swp391.com.swp391.repository.StaffRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,10 +26,11 @@ public class DesignService {
         Design design = new Design();
         Staff staff = staffRepository.findById(String.valueOf(request.getUploadStaff()))
                 .orElseThrow(() -> new AppException(ErrorCode.STAFF_NOT_EXISTED));
+
         design.setStaff(staff);
         design.setDesignName(request.getDesignName());
         design.setImageData(request.getImageData());
-        design.setDesignDate(request.getDesignDate());
+        design.setDesignDate(LocalDateTime.now());
         design.setDesignVersion(request.getDesignVersion());
         return designRepository.save(design);
     }
