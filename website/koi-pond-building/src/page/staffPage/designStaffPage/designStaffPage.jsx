@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Image, Input, Modal, Table, Upload } from "antd";
+import { Button, Form, Image, Input, Modal, Table, Upload, message } from "antd";
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/file";
 
 function DesignStaffPage() {
@@ -14,13 +14,18 @@ function DesignStaffPage() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
+  const [uploading, setUploading] = useState(false);
 
   const fetchData = async () => {
     try {
-      const response = await api.get("");
-      setDatas(response.data);
+      const response = await api.get("/designs/fetchAll");
+      if (response.data.code === 9999) {
+        setDatas(response.data.result);
+      } else {
+        toast.error("Failed to fetch designs: " + response.data.message);
+      }
     } catch (err) {
-      toast.error(err.response.data);
+      toast.error("Error fetching designs: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -31,26 +36,52 @@ function DesignStaffPage() {
   };
 
   const handleSubmit = async (values) => {
-    //upload anh len truoc
-    if (fileList.length > 0) {
-      const file = fileList[0];
-      console.log(file);
-      const url = await uploadFile(file.originFileObj);
-      values.image_data = url;
-    }
-
     try {
       setLoading(true);
-      const response = await api.post("", values);
-      toast.success("Succesfully add new design");
-      fetchData();
-      form.resetFields();
-      setShowModal(false);
+      console.log("Form values:", values);
+
+      // Upload image if present
+      let imageUrl = null;
+      if (fileList.length > 0) {
+        const file = fileList[0];
+        console.log("Uploading file:", file);
+        imageUrl = await uploadFile(file.originFileObj);
+        console.log("Uploaded image URL:", imageUrl);
+      }
+
+      // Prepare the design object
+      const designData = {
+        uploadStaff: parseInt(values.uploadStaff), // Convert to integer
+        designName: values.designName,
+        imageData: imageUrl,
+        designVersion: values.designVersion
+      };
+
+      console.log("Design data to be sent:", designData);
+
+      // Send POST request to create new design
+      const response = await api.post("http://localhost:8080/designs/create", designData);
+      console.log("API response:", response);
+
+      if (response.data && response.data.code === 9999) {
+        toast.success("Successfully added new design");
+        fetchData(); // Refresh the table data
+      } else {
+        throw new Error(response.data?.message || "Unknown error occurred");
+      }
     } catch (err) {
-      toast.error(err.response.data);
+      console.error("Error in handleSubmit:", err);
+      toast.error("Error adding design: " + (err.response?.data?.message || err.message));
     } finally {
       setLoading(false);
+      handleCancel(); // Always close the modal and reset the form, even if there's an error
     }
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+    form.resetFields();
+    setFileList([]);
   };
 
   useEffect(() => {
@@ -60,36 +91,42 @@ function DesignStaffPage() {
   const columns = [
     {
       title: "Design ID",
-      dataIndex: "design_id",
-      key: "design_id",
+      dataIndex: "designId",
+      key: "designId",
     },
     {
       title: "Author Id",
-      dataIndex: "author_id",
-      key: "author_id",
+      dataIndex: ["staff", "staffId"],
+      key: "authorId",
+    },
+    {
+      title: "Author Name",
+      dataIndex: ["staff", "username"],
+      key: "authorName",
     },
     {
       title: "Design Name",
-      dataIndex: "design_name",
-      key: "design_name",
+      dataIndex: "designName",
+      key: "designName",
     },
     {
       title: "Image",
-      dataIndex: "image_data",
-      key: "image_data",
-      render: (image_data) => {
-        return <Image src={image_data} alt="" width={150} />;
-      },
+      dataIndex: "imageData",
+      key: "imageData",
+      render: (imageData) => (
+        <Image src={imageData} alt="" width={150} />
+      ),
     },
     {
       title: "Date",
-      dataIndex: "design_date",
-      key: "design_date",
+      dataIndex: "designDate",
+      key: "designDate",
+      render: (date) => new Date(date).toLocaleString(),
     },
     {
       title: "Version",
-      dataIndex: "design_version",
-      key: "design_version",
+      dataIndex: "designVersion",
+      key: "designVersion",
     },
   ];
 
@@ -108,24 +145,41 @@ function DesignStaffPage() {
     setPreviewImage(file.url || file.preview);
     setPreviewOpen(true);
   };
-  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+
+  const handleChange = ({ file, fileList }) => {
+    // Update fileList state
+    setFileList(fileList);
+    
+    // Handle status changes
+    if (file.status === 'uploading') {
+      setUploading(true);
+    } else if (file.status === 'done') {
+      setUploading(false);
+      message.success(`${file.name} file uploaded successfully`);
+    } else if (file.status === 'error') {
+      setUploading(false);
+      message.error(`${file.name} file upload failed.`);
+    }
+  };
+
+  const customUpload = async ({ onError, onSuccess, file }) => {
+    setUploading(true);
+    try {
+      const url = await uploadFile(file);
+      onSuccess(null, { url });
+      setUploading(false);
+    } catch (err) {
+      onError(err);
+      setUploading(false);
+      message.error(`${file.name} file upload failed.`);
+    }
+  };
+
   const uploadButton = (
-    <button
-      style={{
-        border: 0,
-        background: "none",
-      }}
-      type="button"
-    >
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </button>
+    <div>
+      {uploading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
   );
 
   return (
@@ -138,10 +192,21 @@ function DesignStaffPage() {
 
       <Modal
         open={showModal}
-        onClose={() => setShowModal(false)}
+        onCancel={handleCancel}
         title="Design"
-        onOk={() => form.submit()}
-        confirmLoading={loading}
+        footer={[
+          <Button key="cancel" onClick={handleCancel}>
+            Cancel
+          </Button>,
+          <Button 
+            key="submit" 
+            type="primary" 
+            loading={loading} 
+            onClick={() => form.submit()}
+          >
+            Submit
+          </Button>,
+        ]}
       >
         <Form
           form={form}
@@ -151,51 +216,36 @@ function DesignStaffPage() {
           onFinish={handleSubmit}
         >
           <Form.Item
-            name="design_id"
-            label="DesignID"
-            rules={[{ required: true, message: "Please input Design ID" }]}
+            name="uploadStaff"
+            label="StaffID"
+            rules={[{ required: true, message: "Please input Staff ID" }]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item
-            name="author_id"
-            label="Author ID"
-            rules={[{ required: true, message: "Please input Author ID" }]}
-          >
-            <Input />
-          </Form.Item>
 
           <Form.Item
-            name="design_name"
-            label="Name"
+            name="designName"
+            label="Design Name"
             rules={[{ required: true, message: "Please input Design Name" }]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item name="image_data" label="Image">
+          <Form.Item name="imageData" label="Image">
             <Upload
-              action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+              customRequest={customUpload}
               listType="picture-card"
               fileList={fileList}
               onPreview={handlePreview}
               onChange={handleChange}
             >
-              {fileList.length >= 8 ? null : uploadButton}
+              {fileList.length >= 1 ? null : uploadButton}
             </Upload>
           </Form.Item>
 
           <Form.Item
-            name="design_date"
-            label="Date"
-            rules={[{ required: true, message: "Please input Design date" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            name="design_version"
+            name="designVersion"
             label="Version"
             rules={[{ required: true, message: "Please input Design version" }]}
           >
