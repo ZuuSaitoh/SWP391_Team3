@@ -4,6 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import "./dashBoard.css";
+import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+
+// Đăng ký các thành phần
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
   const [customers, setCustomers] = useState([]);
@@ -13,7 +18,7 @@ const Dashboard = () => {
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeView, setActiveView] = useState("customers");
+  const [activeView, setActiveView] = useState("overview"); // Default to overview
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   const navigate = useNavigate();
   const [showAddCustomerForm, setShowAddCustomerForm] = useState(false);
@@ -783,6 +788,37 @@ const Dashboard = () => {
     </div>
   );
 
+  const renderOverview = () => {
+    const chartData = {
+      labels: ["Customers", "Orders", "Staff"],
+      datasets: [
+        {
+          label: "Overview",
+          data: [customers.length, orders.length, staffs.length],
+          backgroundColor: ["#3498db", "#2ecc71", "#e74c3c"],
+        },
+      ],
+    };
+
+    return (
+      <div className="overview">
+        <div className="overview-card">
+          <h3>Total Customers</h3>
+          <p>{customers.length}</p>
+        </div>
+        <div className="overview-card">
+          <h3>Total Staff</h3>
+          <p>{staffs.length}</p>
+        </div>
+        <div className="overview-card">
+          <h3>Total Orders</h3>
+          <p>{orders.length}</p>
+        </div>
+        <Bar data={chartData} />
+      </div>
+    );
+  };
+
   const handleViewOrderDetails = (orderId) => {
     navigate(`/order/${orderId}`);
   };
@@ -821,6 +857,14 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="sidebar-content">
+          <button
+            className={`sidebar-button ${
+              activeView === "overview" ? "active" : ""
+            }`}
+            onClick={() => setActiveView("overview")}
+          >
+            Overview
+          </button>
           <button
             className={`sidebar-button ${
               activeView === "customers" ? "active" : ""
@@ -874,7 +918,9 @@ const Dashboard = () => {
       <div className="main-content">
         <div className="main-header">
           <h1>
-            {activeView === "customers"
+            {activeView === "overview"
+              ? "Overview"
+              : activeView === "customers"
               ? "Customer Dashboard"
               : activeView === "staffs"
               ? "Staff Dashboard"
@@ -886,7 +932,9 @@ const Dashboard = () => {
           </h1>
         </div>
         <div className="table-container">
-          {activeView === "customers"
+          {activeView === "overview"
+            ? renderOverview()
+            : activeView === "customers"
             ? renderCustomers()
             : activeView === "staffs"
             ? renderStaffs()

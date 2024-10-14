@@ -7,11 +7,29 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
   const [feedback, setFeedback] = useState(order.feedback || "");
   const [isEditing, setIsEditing] = useState(false);
   const [updatedOrder, setUpdatedOrder] = useState(order);
+  const [contracts, setContracts] = useState([]);
 
   useEffect(() => {
     setUpdatedOrder(order);
     setRating(order.rating || 0);
     setFeedback(order.feedback || "");
+
+    const fetchContracts = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/contracts/fetchAll/order/${order.orderId}`
+        );
+        if (response.data.code === 9999) {
+          setContracts(response.data.result);
+        } else {
+          console.warn("Failed to fetch contracts");
+        }
+      } catch (error) {
+        console.error("Error fetching contracts:", error);
+      }
+    };
+
+    fetchContracts();
   }, [order]);
 
   const renderStars = (count, onStarClick) => {
@@ -86,6 +104,53 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
         <p>
           <strong>Staff:</strong> {updatedOrder.staff.fullName}
         </p>
+
+        <h3>Design Information</h3>
+        {updatedOrder.design ? (
+          <>
+            <p>
+              <strong>Design ID:</strong> {updatedOrder.design.designId}
+            </p>
+            <p>
+              <strong>Design Name:</strong> {updatedOrder.design.designName}
+            </p>
+            <p>
+              <strong>Design Date:</strong>{" "}
+              {new Date(updatedOrder.design.designDate).toLocaleString()}
+            </p>
+            <p>
+              <strong>Design Version:</strong> {updatedOrder.design.designVersion}
+            </p>
+            <p>
+              <strong>Image Data:</strong> {updatedOrder.design.imageData}
+            </p>
+          </>
+        ) : (
+          <p>No design information available</p>
+        )}
+
+        <h3>Contract Information</h3>
+        {contracts.length > 0 ? (
+          contracts.map((contract) => (
+            <div key={contract.contractId}>
+              <p>
+                <strong>Contract ID:</strong> {contract.contractId}
+              </p>
+              <p>
+                <strong>Upload Date:</strong>{" "}
+                {new Date(contract.uploadDate).toLocaleString()}
+              </p>
+              <p>
+                <strong>Description:</strong> {contract.description}
+              </p>
+              <p>
+                <strong>Image Data:</strong> {contract.imageData}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p>No contract information available</p>
+        )}
 
         {isEditing ? (
           <form onSubmit={handleSubmit}>
