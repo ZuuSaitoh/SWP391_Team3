@@ -20,14 +20,14 @@ public class Status {
     int statusId;
     @ManyToOne
     @JoinColumn(name = "order_id", referencedColumnName = "order_id", nullable = false)
-    Order orderId;
+    Order order;
     @Column(name = "status_description")
     String statusDescription;
     @Column(name = "status_date")
     LocalDateTime statusDate;
     @ManyToOne
     @JoinColumn(name = "staff_id", referencedColumnName = "staff_id", nullable = false)
-    Staff staffId;
+    Staff staff;
     @Column(name = "check_date")
     LocalDateTime checkDate;
     @Column(name = "complete")
@@ -46,13 +46,6 @@ public class Status {
         this.statusId = statusId;
     }
 
-    public Order getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Order orderId) {
-        this.orderId = orderId;
-    }
 
     public String getStatusDescription() {
         return statusDescription;
@@ -78,13 +71,6 @@ public class Status {
         this.checkDate = checkDate;
     }
 
-    public Staff getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(Staff staffId) {
-        this.staffId = staffId;
-    }
 
     public byte getComplete() {
         return complete;
@@ -100,5 +86,21 @@ public class Status {
 
     public void setNumberOfUpdate(int numberOfUpdate) {
         this.numberOfUpdate = numberOfUpdate;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
     }
 }
