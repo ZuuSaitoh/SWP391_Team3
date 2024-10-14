@@ -50,16 +50,16 @@ const OrderViewDashboard = () => {
     }
   };
 
-  if (loading) return <div className="dashboard-loading">Loading order details...</div>;
-  if (error) return <div className="dashboard-error">{error}</div>;
-  if (!order) return <div className="dashboard-error">Order not found</div>;
-
   const InfoRow = ({ label, value }) => (
     <div className="info-row">
       <span className="info-label">{label}:</span>
       <span className="info-value">{value}</span>
     </div>
   );
+
+  if (loading) return <div className="dashboard-loading">Loading order details...</div>;
+  if (error) return <div className="dashboard-error">{error}</div>;
+  if (!order) return <div className="dashboard-error">Order not found</div>;
 
   return (
     <div className="order-view-dashboard">
@@ -73,7 +73,6 @@ const OrderViewDashboard = () => {
           <InfoRow label="RATING" value={order.rating || "N/A"} />
           <InfoRow label="FEEDBACK" value={order.feedback || "N/A"} />
           <InfoRow label="FEEDBACK DATE" value={order.feedback_date ? new Date(order.feedback_date).toLocaleString() : "N/A"} />
-          <button onClick={handleUpdateEndDate} className="update-end-date-btn">Update End Date</button>
         </div>
 
         <div className="info-section">
@@ -84,17 +83,13 @@ const OrderViewDashboard = () => {
           <InfoRow label="EMAIL" value={order.customer.mail} />
           <InfoRow label="ADDRESS" value={order.customer.address} />
           <InfoRow label="PHONE" value={order.customer.phone} />
-          <InfoRow label="POINTS" value={order.customer.point} />
         </div>
 
         <div className="info-section">
           <h2>Staff Information</h2>
           <InfoRow label="STAFF ID" value={order.staff.staffId} />
           <InfoRow label="USERNAME" value={order.staff.username} />
-          <InfoRow label="FULL NAME" value={order.staff.fullName} />
           <InfoRow label="EMAIL" value={order.staff.mail} />
-          <InfoRow label="ADDRESS" value={order.staff.address} />
-          <InfoRow label="PHONE" value={order.staff.phone} />
           <InfoRow label="ROLE" value={order.staff.role} />
         </div>
 
@@ -107,18 +102,16 @@ const OrderViewDashboard = () => {
               <InfoRow label="DESIGN DATE" value={new Date(order.design.designDate).toLocaleString()} />
               <InfoRow label="DESIGN VERSION" value={order.design.designVersion} />
               <InfoRow label="IMAGE DATA" value={order.design.imageData} />
-              <h3>Design Staff</h3>
-              <InfoRow label="STAFF ID" value={order.design.staff.staffId} />
-              <InfoRow label="USERNAME" value={order.design.staff.username} />
-              <InfoRow label="EMAIL" value={order.design.staff.mail} />
-              <InfoRow label="ROLE" value={order.design.staff.role} />
             </>
           ) : (
             <p>No design information available</p>
           )}
         </div>
       </div>
-      <button onClick={handleBackToDashboard} className="back-to-dashboard-btn">Back to Dashboard</button>
+      <div className="button-container">
+        <button onClick={handleBackToDashboard} className="back-to-dashboard-btn">BACK TO DASHBOARD</button>
+        <button onClick={handleUpdateEndDate} className="update-end-date-btn">UPDATE END DATE</button>
+      </div>
     </div>
   );
 };
