@@ -15,7 +15,8 @@ import {
   Legend,
 } from "chart.js";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faUsers, faClipboardList, faConciergeBell, faFileContract, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faUsers, faClipboardList, faConciergeBell, faFileContract, faSignOutAlt, faTable } from '@fortawesome/free-solid-svg-icons';
+import SheetDataViewComponent from './SheetDataView';
 
 // Đăng ký các thành phần
 ChartJS.register(
@@ -943,6 +944,15 @@ const Dashboard = () => {
           >
             <FontAwesomeIcon icon={faFileContract} /> Contracts
           </button>
+          {/* Thêm nút mới cho Sheet Data */}
+          <button
+            className={`sidebar-button ${
+              activeView === "sheetData" ? "active" : ""
+            }`}
+            onClick={() => setActiveView("sheetData")}
+          >
+            <FontAwesomeIcon icon={faTable} /> Sheet Data
+          </button>
         </div>
         <div className="sidebar-footer">
           <button onClick={handleBackToHome} className="back-home-btn">
@@ -966,7 +976,11 @@ const Dashboard = () => {
               ? "Order Dashboard"
               : activeView === "services"
               ? "Service Dashboard"
-              : "Contract Dashboard"}
+              : activeView === "contracts"
+              ? "Contract Dashboard"
+              : activeView === "sheetData"
+              ? "Sheet Data"
+              : "Dashboard"}
           </h1>
         </div>
         <div className="table-container">
@@ -980,7 +994,11 @@ const Dashboard = () => {
             ? renderOrders()
             : activeView === "services"
             ? renderServices()
-            : renderContracts()}
+            : activeView === "contracts"
+            ? renderContracts()
+            : activeView === "sheetData"
+            ? <SheetDataViewComponent />
+            : null}
         </div>
         {selectedCustomerId && (
           <CustomerProfileDashboard customerId={selectedCustomerId} />

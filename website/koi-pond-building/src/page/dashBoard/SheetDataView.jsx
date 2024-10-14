@@ -5,7 +5,7 @@ const SPREADSHEET_ID = '1xH6rs-E5hlLYisTPgNztpu52mmYDyWUgJnHhnphC5fw';
 const SHEET_NAME = 'Form Responses 2'; 
 const API_KEY = 'AIzaSyAIYS7nOlYpkttlBhA84pllh2lJtkQwyDc'; 
 
-const SheetDataView = () => {
+const SheetDataViewComponent = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -125,4 +125,4 @@ const SheetDataView = () => {
   );
 };
 
-export default SheetDataView;
+export default SheetDataViewComponent;
