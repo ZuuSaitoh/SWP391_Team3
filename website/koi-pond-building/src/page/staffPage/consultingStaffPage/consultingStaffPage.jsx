@@ -13,7 +13,7 @@ function ConsultingStaffPage() {
   const [loading, setLoading] = useState(false);
 
   // Get the staff ID from local storage
-  const staffId = localStorage.getItem('staffId');
+  const staffId = localStorage.getItem("staffId");
 
   const fetchOrders = async () => {
     try {
@@ -72,8 +72,8 @@ function ConsultingStaffPage() {
   const columns = [
     {
       title: "Order ID",
-      dataIndex: "order_id",
-      key: "order_id",
+      dataIndex: "orderId",
+      key: "orderId",
     },
     {
       title: "Customer",
@@ -109,7 +109,7 @@ function ConsultingStaffPage() {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <Button onClick={() => handleViewOrderDetail(record.order_id)}>
+        <Button onClick={() => handleViewOrderDetail(record.orderId)}>
           View Order Detail
         </Button>
       ),
@@ -128,7 +128,7 @@ function ConsultingStaffPage() {
     return (
       <div>
         <p>
-          <strong>Order ID:</strong> {selectedOrder.order_id}
+          <strong>Order ID:</strong> {selectedOrder.orderId}
         </p>
         <p>
           <strong>Customer:</strong> {selectedOrder.customer.username}
@@ -191,7 +191,7 @@ function ConsultingStaffPage() {
       <Button onClick={backToHomepage} style={{ marginLeft: "10px" }}>
         Return to Homepage
       </Button>
-      <Table dataSource={orders} columns={columns} rowKey="order_id" />
+      <Table dataSource={orders} columns={columns} rowKey="orderId" />
       <Modal
         title="Order Details"
         open={isModalVisible}

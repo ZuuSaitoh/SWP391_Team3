@@ -50,8 +50,7 @@ const OrderViewDashboard = () => {
     }
   };
 
-  if (loading)
-    return <div className="dashboard-loading">Loading order details...</div>;
+  if (loading) return <div className="dashboard-loading">Loading order details...</div>;
   if (error) return <div className="dashboard-error">{error}</div>;
   if (!order) return <div className="dashboard-error">Order not found</div>;
 
@@ -66,35 +65,18 @@ const OrderViewDashboard = () => {
     <div className="order-view-dashboard">
       <h1>Order Details</h1>
       <div className="order-details-grid">
-        <div className="order-section">
+        <div className="info-section">
           <h2>Order Information</h2>
-          <InfoRow label="ORDER ID" value={order.order_id} />
-          <InfoRow
-            label="ORDER DATE"
-            value={new Date(order.order_date).toLocaleString()}
-          />
-          <InfoRow
-            label="END DATE"
-            value={
-              order.end_date ? new Date(order.end_date).toLocaleString() : "N/A"
-            }
-          />
+          <InfoRow label="ORDER ID" value={order.orderId} />
+          <InfoRow label="ORDER DATE" value={new Date(order.order_date).toLocaleString()} />
+          <InfoRow label="END DATE" value={order.end_date ? new Date(order.end_date).toLocaleString() : "N/A"} />
           <InfoRow label="RATING" value={order.rating || "N/A"} />
           <InfoRow label="FEEDBACK" value={order.feedback || "N/A"} />
-          <InfoRow
-            label="FEEDBACK DATE"
-            value={
-              order.feedback_date
-                ? new Date(order.feedback_date).toLocaleString()
-                : "N/A"
-            }
-          />
-          <button onClick={handleUpdateEndDate} className="update-end-date-btn">
-            Update End Date
-          </button>
+          <InfoRow label="FEEDBACK DATE" value={order.feedback_date ? new Date(order.feedback_date).toLocaleString() : "N/A"} />
+          <button onClick={handleUpdateEndDate} className="update-end-date-btn">Update End Date</button>
         </div>
 
-        <div className="customer-section">
+        <div className="info-section">
           <h2>Customer Information</h2>
           <InfoRow label="CUSTOMER ID" value={order.customer.id} />
           <InfoRow label="USERNAME" value={order.customer.username} />
@@ -105,7 +87,7 @@ const OrderViewDashboard = () => {
           <InfoRow label="POINTS" value={order.customer.point} />
         </div>
 
-        <div className="staff-section">
+        <div className="info-section">
           <h2>Staff Information</h2>
           <InfoRow label="STAFF ID" value={order.staff.staffId} />
           <InfoRow label="USERNAME" value={order.staff.username} />
@@ -116,13 +98,27 @@ const OrderViewDashboard = () => {
           <InfoRow label="ROLE" value={order.staff.role} />
         </div>
 
-        <div className="design-section">
-          <InfoRow label="DESIGN ID" value={order.design_id || "N/A"} />
+        <div className="info-section">
+          <h2>Design Information</h2>
+          {order.design ? (
+            <>
+              <InfoRow label="DESIGN ID" value={order.design.designId} />
+              <InfoRow label="DESIGN NAME" value={order.design.designName} />
+              <InfoRow label="DESIGN DATE" value={new Date(order.design.designDate).toLocaleString()} />
+              <InfoRow label="DESIGN VERSION" value={order.design.designVersion} />
+              <InfoRow label="IMAGE DATA" value={order.design.imageData} />
+              <h3>Design Staff</h3>
+              <InfoRow label="STAFF ID" value={order.design.staff.staffId} />
+              <InfoRow label="USERNAME" value={order.design.staff.username} />
+              <InfoRow label="EMAIL" value={order.design.staff.mail} />
+              <InfoRow label="ROLE" value={order.design.staff.role} />
+            </>
+          ) : (
+            <p>No design information available</p>
+          )}
         </div>
       </div>
-      <button onClick={handleBackToDashboard} className="back-to-dashboard-btn">
-        Back to Dashboard
-      </button>
+      <button onClick={handleBackToDashboard} className="back-to-dashboard-btn">Back to Dashboard</button>
     </div>
   );
 };

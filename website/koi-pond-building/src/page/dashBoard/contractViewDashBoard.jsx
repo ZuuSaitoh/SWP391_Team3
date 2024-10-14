@@ -70,7 +70,7 @@ const ContractViewDashBoard = () => {
         `http://localhost:8080/contracts/update/${contractId}`,
         {
           imageData: editedContract.imageData,
-          description: editedContract.description
+          description: editedContract.description,
         }
       );
       if (response.data.code === 1234) {
@@ -88,12 +88,13 @@ const ContractViewDashBoard = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEditedContract(prev => ({ ...prev, [name]: value }));
+    setEditedContract((prev) => ({ ...prev, [name]: value }));
   };
 
   if (loading) return <div className="dashboard-loading">Loading...</div>;
   if (error) return <div className="dashboard-error">{error}</div>;
-  if (!contract) return <div className="dashboard-error">Contract not found</div>;
+  if (!contract)
+    return <div className="dashboard-error">Contract not found</div>;
 
   return (
     <div className="contract-view-dashboard">
@@ -119,8 +120,12 @@ const ContractViewDashBoard = () => {
             />
           </div>
           <div className="button-container">
-            <button onClick={handleSaveEdit} className="save-btn">Save Changes</button>
-            <button onClick={handleCancelEdit} className="cancel-btn">Cancel</button>
+            <button onClick={handleSaveEdit} className="save-btn">
+              Save Changes
+            </button>
+            <button onClick={handleCancelEdit} className="cancel-btn">
+              Cancel
+            </button>
           </div>
         </div>
       ) : (
@@ -152,7 +157,7 @@ const ContractViewDashBoard = () => {
               <h2>Order Information</h2>
               <div className="detail-row">
                 <span className="detail-label">ORDER ID:</span>
-                <span className="detail-value">{contract.order.order_id}</span>
+                <span className="detail-value">{contract.order.orderId}</span>
               </div>
               <div className="detail-row">
                 <span className="detail-label">ORDER DATE:</span>
@@ -186,7 +191,9 @@ const ContractViewDashBoard = () => {
               <h2>Customer Information</h2>
               <div className="detail-row">
                 <span className="detail-label">CUSTOMER ID:</span>
-                <span className="detail-value">{contract.order.customer.id}</span>
+                <span className="detail-value">
+                  {contract.order.customer.id}
+                </span>
               </div>
               <div className="detail-row">
                 <span className="detail-label">USERNAME:</span>

@@ -32,7 +32,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (feedback.length <= 5) {
       alert("Feedback must be more than 5 characters long.");
       return;
@@ -40,7 +40,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
 
     try {
       const response = await axios.put(
-        `http://localhost:8080/orders/update-rating-and-feedback/${order.order_id}`,
+        `http://localhost:8080/orders/update-rating-and-feedback/${order.orderId}`,
         { rating, feedback }
       );
       if (response.data.code === 9997) {
@@ -48,7 +48,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
           ...updatedOrder,
           rating: rating,
           feedback: feedback,
-          feedback_date: new Date().toISOString()
+          feedback_date: new Date().toISOString(),
         };
         setUpdatedOrder(newUpdatedOrder);
         setIsEditing(false);
@@ -71,7 +71,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
       <div className="view-order-modal">
         <h2>Order Details</h2>
         <p>
-          <strong>Order ID:</strong> {updatedOrder.order_id}
+          <strong>Order ID:</strong> {updatedOrder.orderId}
         </p>
         <p>
           <strong>Order Date:</strong>{" "}

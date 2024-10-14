@@ -4,7 +4,7 @@ import axios from "../../config/axios"; // Make sure to use the configured axios
 import AnimatedPage from "../animationpage/AnimatedPage";
 import "./CustomerProfilePage.css";
 import { useNavigate } from "react-router-dom";
-import ViewOrderCustomer from './ViewOrderCustomer';
+import ViewOrderCustomer from "./ViewOrderCustomer";
 
 function CustomerProfilePage() {
   const { customerId } = useParams(); // Fetch customerId from URL params
@@ -18,9 +18,9 @@ function CustomerProfilePage() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const navigate = useNavigate();
   const handleOrderUpdate = (updatedOrder) => {
-    setOrders(prevOrders => 
-      prevOrders.map(order => 
-        order.order_id === updatedOrder.order_id ? updatedOrder : order
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.orderId === updatedOrder.orderId ? updatedOrder : order
       )
     );
   };
@@ -52,7 +52,9 @@ function CustomerProfilePage() {
         console.log("Orders response:", ordersResponse.data);
         // Access the orders from the result property and sort them
         const ordersList = ordersResponse.data.result || [];
-        const sortedOrders = ordersList.sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
+        const sortedOrders = ordersList.sort(
+          (a, b) => new Date(b.order_date) - new Date(a.order_date)
+        );
         setOrders(sortedOrders);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -284,15 +286,18 @@ function CustomerProfilePage() {
             {orders.length > 0 ? (
               <ul className="order-list">
                 {orders.map((order) => (
-                  <li key={order.order_id} className="order-item">
+                  <li key={order.orderId} className="order-item">
                     <div className="order-info">
-                      <span className="order-id">Order #{order.order_id}</span>
+                      <span className="order-id">Order #{order.orderId}</span>
                       <br />
                       <span className="order-date">
                         {new Date(order.order_date).toLocaleDateString()}
                       </span>
                     </div>
-                    <button onClick={() => handleViewOrder(order)} className="view-order-button">
+                    <button
+                      onClick={() => handleViewOrder(order)}
+                      className="view-order-button"
+                    >
                       View Order
                     </button>
                   </li>
@@ -303,9 +308,9 @@ function CustomerProfilePage() {
             )}
           </div>
           {selectedOrder && (
-            <ViewOrderCustomer 
-              order={selectedOrder} 
-              onClose={handleCloseOrderView} 
+            <ViewOrderCustomer
+              order={selectedOrder}
+              onClose={handleCloseOrderView}
               onOrderUpdate={handleOrderUpdate}
             />
           )}
