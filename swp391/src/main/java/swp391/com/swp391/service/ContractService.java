@@ -17,6 +17,7 @@ import swp391.com.swp391.repository.StaffRepository;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ContractService {
@@ -64,5 +65,9 @@ public class ContractService {
         contract.setImageData(request.getImageData());
         contract.setDescription(request.getDescription());
         return contractRepository.save(contract);
+    }
+
+    public Optional<List<Contract>> getAllContractByOrderId(int orderId){
+        return contractRepository.findByOrder_orderId(orderId);
     }
 }

@@ -14,6 +14,7 @@ import swp391.com.swp391.service.ContractService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/contracts")
@@ -45,7 +46,7 @@ public class ContractController {
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/fetchAll")
     ApiResponse<List<Contract>> getAllContract(){
-        return new ApiResponse<List<Contract>>(9999, "List of order", contractService.getAllContract());
+        return new ApiResponse<List<Contract>>(9999, "List of contract", contractService.getAllContract());
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
@@ -74,4 +75,11 @@ public class ContractController {
         return new ApiResponse<Contract>
                 (1234,"Update contract", contractService.updateContractByContractId(id, request));
     }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/fetchAll/order/{id}")
+    ApiResponse<Optional<List<Contract>>> getAllContractByOrderId(@PathVariable int id){
+        return new ApiResponse<Optional<List<Contract>>>(9999, "List of contract", contractService.getAllContractByOrderId(id));
+    }
+
 }

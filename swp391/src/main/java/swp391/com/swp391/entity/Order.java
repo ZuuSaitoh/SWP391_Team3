@@ -17,7 +17,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
-    int order_id;
+    int orderId;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id", nullable = false)
@@ -29,7 +29,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "design_id", referencedColumnName = "design_id", nullable = true)
-    Design design_id;
+    Design design;
 
     @Column(name = "order_date")
     LocalDateTime order_date;
@@ -49,12 +49,12 @@ public class Order {
     public Order() {
     }
 
-    public int getOrder_id() {
-        return order_id;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setOrder_id(int order_id) {
-        this.order_id = order_id;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     public Customer getCustomer() {
@@ -73,12 +73,12 @@ public class Order {
         this.staff = staff;
     }
 
-    public Design getDesign_id() {
-        return design_id;
+    public Design getDesign() {
+        return design;
     }
 
-    public void setDesign_id(Design design_id) {
-        this.design_id = design_id;
+    public void setDesign(Design design) {
+        this.design = design;
     }
 
     public LocalDateTime getOrder_date() {

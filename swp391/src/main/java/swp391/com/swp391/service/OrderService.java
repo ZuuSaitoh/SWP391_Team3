@@ -85,7 +85,7 @@ public class OrderService {
         Order order = getOrderById(order_id);
         Design design = designRepository.findById(request.getDesignId())
                 .orElseThrow(() -> new AppException(ErrorCode.DESIGN_NOT_EXISTED));
-        order.setDesign_id(design);
+        order.setDesign(design);
         return orderRepository.save(order);
     }
 }
