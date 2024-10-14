@@ -641,7 +641,7 @@ const Dashboard = () => {
               const searchLower = search.toLowerCase().trim();
               return (
                 searchLower === "" ||
-                order.order_id.toString().includes(searchLower) ||
+                order.orderId.toString().includes(searchLower) ||
                 order.customer.username.toLowerCase().includes(searchLower) ||
                 order.customer.mail.toLowerCase().includes(searchLower) ||
                 order.staff.username.toLowerCase().includes(searchLower) ||
@@ -649,15 +649,15 @@ const Dashboard = () => {
               );
             })
             .map((order) => (
-              <tr key={order.order_id}>
-                <td>{order.order_id}</td>
+              <tr key={order.orderId}>
+                <td>{order.orderId}</td>
                 <td>{order.customer.username}</td>
                 <td>{order.customer.mail}</td>
                 <td>{order.staff.username}</td>
                 <td>{order.staff.role}</td>
                 <td>
                   <button
-                    onClick={() => handleViewOrderDetails(order.order_id)}
+                    onClick={() => handleViewOrderDetails(order.orderId)}
                     className="view-profile-btn"
                   >
                     View Details
@@ -749,7 +749,7 @@ const Dashboard = () => {
               return (
                 searchLower === "" ||
                 contract.contractId.toString().includes(searchLower) ||
-                contract.order.order_id.toString().includes(searchLower) ||
+                contract.order.orderId.toString().includes(searchLower) ||
                 contract.order.customer.username
                   .toLowerCase()
                   .includes(searchLower) ||
@@ -761,7 +761,7 @@ const Dashboard = () => {
             .map((contract) => (
               <tr key={contract.contractId}>
                 <td>{contract.contractId}</td>
-                <td>{contract.order.order_id}</td>
+                <td>{contract.order.orderId}</td>
                 <td>{contract.order.customer.username}</td>
                 <td>{contract.staff.username}</td>
                 <td>{new Date(contract.uploadDate).toLocaleString()}</td>
