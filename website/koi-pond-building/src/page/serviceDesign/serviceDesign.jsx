@@ -245,9 +245,6 @@ function ServiceDesign() {
               src="https://forms.gle/NEW5QpTiPUphsY7Q9" 
               width="100%" 
               height="1000px" 
-              frameBorder="0" 
-              marginHeight="0" 
-              marginWidth="0"
             >
               Loading...
             </iframe>

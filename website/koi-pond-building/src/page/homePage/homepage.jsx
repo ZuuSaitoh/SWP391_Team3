@@ -21,6 +21,9 @@ import member3 from "../koi_photo/member/member 3.png";
 import blog1 from "../koi_photo/pond/koi_pond.jpg";
 import blog2 from "../koi_photo/pond/koi_pond2.jpg";
 import blog3 from "../koi_photo/pond/pond3.jpg";
+import avatarDung from "../koi_photo/member/member 1.jpg";
+import avatarPhat from "../koi_photo/member/member 2.jpg";
+import avatarTuan from "../koi_photo/member/member 3.png";
 
 function HomePage() {
   const navigate = useNavigate();
@@ -330,25 +333,34 @@ function HomePage() {
           <h2>What Our Clients Say</h2>
           <div className="testimonial-container">
             <div className="testimonial-item">
+              <div className="testimonial-avatar">
+                <img src={avatarDung} alt="Dũng Senpai" />
+              </div>
               <p>
                 "Koi Pond Builders transformed our backyard into a serene oasis.
                 Their attention to detail and craftsmanship is unparalleled."
               </p>
-              <h4>- Dũng Senpai.</h4>
+              <h4>- Dũng Senpai</h4>
             </div>
             <div className="testimonial-item">
+              <div className="testimonial-avatar">
+                <img src={avatarPhat} alt="Thầy Phát" />
+              </div>
               <p>
                 "The team was professional, punctual, and a pleasure to work
                 with. Our new koi pond has become the highlight of our garden."
               </p>
-              <h4>- Thầy Phát.</h4>
+              <h4>- Thầy Phát</h4>
             </div>
             <div className="testimonial-item">
+              <div className="testimonial-avatar">
+                <img src={avatarTuan} alt="Tuấn Anh" />
+              </div>
               <p>
                 "From design to completion, the process was smooth and the
                 results exceeded our expectations. Highly recommended!"
               </p>
-              <h4>- Tuấn Anh.</h4>
+              <h4>- Tuấn Anh</h4>
             </div>
           </div>
         </section>
