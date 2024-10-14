@@ -153,7 +153,7 @@ const OrderViewDashboard = () => {
           </div>
         ))}
       </div>
-      <div className="button-container">
+      <div className="profile-actions">
         <button
           onClick={handleBackToDashboard}
           className="back-to-dashboard-btn"

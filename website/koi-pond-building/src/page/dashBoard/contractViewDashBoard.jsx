@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "./dashBoard.css"; // Using the existing dashboard.css file
 
+//view contract details
 const ContractViewDashBoard = () => {
   const [contract, setContract] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,6 +18,7 @@ const ContractViewDashBoard = () => {
     fetchContractDetails();
   }, [contractId]);
 
+  //fetch contract details
   const fetchContractDetails = async () => {
     try {
       const response = await axios.get(
@@ -36,6 +38,7 @@ const ContractViewDashBoard = () => {
     }
   };
 
+  //delete contract
   const handleDeleteContract = async () => {
     if (window.confirm("Are you sure you want to delete this contract?")) {
       try {
@@ -55,15 +58,18 @@ const ContractViewDashBoard = () => {
     }
   };
 
+  //edit contract
   const handleEditContract = () => {
     setIsEditing(true);
   };
 
+  //cancel edit
   const handleCancelEdit = () => {
     setIsEditing(false);
     setEditedContract(contract);
   };
 
+  //save edit
   const handleSaveEdit = async () => {
     try {
       const response = await axios.put(
@@ -86,13 +92,17 @@ const ContractViewDashBoard = () => {
     }
   };
 
+  //handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedContract((prev) => ({ ...prev, [name]: value }));
   };
 
+  //render loading
   if (loading) return <div className="dashboard-loading">Loading...</div>;
+  //render error
   if (error) return <div className="dashboard-error">{error}</div>;
+  //render contract not found
   if (!contract)
     return <div className="dashboard-error">Contract not found</div>;
 
@@ -247,14 +257,20 @@ const ContractViewDashBoard = () => {
               </div>
             </div>
           </div>
-          <div className="button-container">
-            <button onClick={() => navigate("/dashboard")} className="back-btn">
+          <div className="profile-actions">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="back-to-dashboard-btn"
+            >
               BACK TO DASHBOARD
             </button>
-            <button onClick={handleEditContract} className="edit-btn">
+            <button onClick={handleEditContract} className="edit-customer-btn">
               Edit Contract
             </button>
-            <button onClick={handleDeleteContract} className="delete-btn">
+            <button
+              onClick={handleDeleteContract}
+              className="delete-customer-btn"
+            >
               Delete Contract
             </button>
           </div>

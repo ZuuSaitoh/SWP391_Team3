@@ -12,6 +12,7 @@ const CustomerProfileDashboard = () => {
   const [editedCustomer, setEditedCustomer] = useState(null);
   const navigate = useNavigate();
 
+  //fetch customer data
   useEffect(() => {
     const fetchCustomerData = async () => {
       try {
@@ -29,6 +30,7 @@ const CustomerProfileDashboard = () => {
     fetchCustomerData();
   }, [Id]);
 
+  //delete customer
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this customer?')) {
       try {
@@ -42,10 +44,12 @@ const CustomerProfileDashboard = () => {
     }
   };
 
+  //edit customer
   const handleEdit = () => {
     setIsEditing(true);
   };
 
+  //save edit
   const handleSave = async () => {
     try {
       const updatedCustomerData = {
@@ -86,18 +90,23 @@ const CustomerProfileDashboard = () => {
     }
   };
 
+  //cancel edit
   const handleCancel = () => {
     setEditedCustomer(customer);
     setIsEditing(false);
   };
 
+  //handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEditedCustomer(prev => ({ ...prev, [name]: value }));
   };
 
+  //render loading
   if (loading) return <div className="dashboard-loading">Loading...</div>;
+  //render error
   if (error) return <div className="dashboard-error">{error}</div>;
+  //render no customer data found
   if (!customer) return <div className="dashboard-error">No customer data found</div>;
 
   return (

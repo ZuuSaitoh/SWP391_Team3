@@ -5,10 +5,27 @@ import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 import "./dashBoard.css";
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faUsers, faClipboardList, faConciergeBell, faFileContract, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 // Đăng ký các thành phần
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Dashboard = () => {
   const [customers, setCustomers] = useState([]);
@@ -128,10 +145,12 @@ const Dashboard = () => {
   if (loading) return <div className="dashboard-loading">Loading...</div>;
   if (error) return <div className="dashboard-error">{error}</div>;
 
+  //view profile
   const handleViewProfile = (customerId) => {
     navigate(`/customer/${customerId}`);
   };
 
+  //add customer
   const handleAddCustomer = async (e) => {
     e.preventDefault();
     if (newCustomer.password !== newCustomer.confirm_password) {
@@ -162,10 +181,12 @@ const Dashboard = () => {
     }
   };
 
+  //view staff profile
   const handleViewStaffProfile = (staffId) => {
     navigate(`/staff/${staffId}`);
   };
 
+  //add staff
   const handleAddStaff = async (e) => {
     e.preventDefault();
     if (newStaff.password !== newStaff.confirm_password) {
@@ -197,6 +218,7 @@ const Dashboard = () => {
     }
   };
 
+  //add order
   const handleAddOrder = async (e) => {
     e.preventDefault();
     try {
@@ -221,6 +243,7 @@ const Dashboard = () => {
     }
   };
 
+  //add service
   const handleAddService = async (e) => {
     e.preventDefault();
     try {
@@ -252,6 +275,7 @@ const Dashboard = () => {
     }
   };
 
+  //render add customer form
   const renderAddCustomerForm = () => (
     <div className="add-new-customer">
       <h2>Add New Customer</h2>
@@ -306,7 +330,8 @@ const Dashboard = () => {
     </div>
   );
 
-  const renderAddStaffForm = () => (
+  //render add staff form
+    const renderAddStaffForm = () => (
     <div className="add-new-staff">
       <h2>Add New Staff</h2>
       <form onSubmit={handleAddStaff}>
@@ -369,6 +394,7 @@ const Dashboard = () => {
     </div>
   );
 
+  //render add order form
   const renderAddOrderForm = () => (
     <div className="add-order-form">
       <h2>Create New Order</h2>
@@ -425,6 +451,7 @@ const Dashboard = () => {
     </div>
   );
 
+  //render add service form
   const renderAddServiceForm = () => (
     <div className="add-new-service">
       <h2>Add New Service</h2>
@@ -482,6 +509,7 @@ const Dashboard = () => {
     </div>
   );
 
+  //render search bar
   const renderSearchBar = () => (
     <div className="search-bar-container">
       <input
@@ -494,6 +522,7 @@ const Dashboard = () => {
     </div>
   );
 
+  //render customers
   const renderCustomers = () => (
     <div className="table-container">
       {renderSearchBar()}
@@ -557,6 +586,7 @@ const Dashboard = () => {
     </div>
   );
 
+  //render staffs
   const renderStaffs = () => (
     <div className="table-container">
       {renderSearchBar()}
@@ -618,6 +648,7 @@ const Dashboard = () => {
     </div>
   );
 
+  //render orders
   const renderOrders = () => (
     <div className="table-container">
       {renderSearchBar()}
@@ -675,6 +706,7 @@ const Dashboard = () => {
     </div>
   );
 
+  //render services
   const renderServices = () => (
     <div className="table-container">
       {renderSearchBar()}
@@ -731,6 +763,7 @@ const Dashboard = () => {
     </div>
   );
 
+  //render contracts
   const renderContracts = () => (
     <div className="table-container">
       {renderSearchBar()}
@@ -819,25 +852,30 @@ const Dashboard = () => {
     );
   };
 
+  //view order details
   const handleViewOrderDetails = (orderId) => {
     navigate(`/order/${orderId}`);
   };
 
+  //back to home
   const handleBackToHome = () => {
     navigate("/"); // Assuming '/' is your home page route
   };
 
+  //logout
   const handleLogout = () => {
     localStorage.removeItem("staffAuthToken");
     localStorage.removeItem("staffUser");
     toast.success("Logged out successfully");
     navigate("/login-staff");
   };
-
+  
+  //view service details
   const handleViewServiceDetails = (serviceId) => {
     navigate(`/service/${serviceId}`);
   };
 
+  //view contract details
   const handleViewContractDetails = (contractId) => {
     navigate(`/contract/${contractId}`);
   };
@@ -863,7 +901,7 @@ const Dashboard = () => {
             }`}
             onClick={() => setActiveView("overview")}
           >
-            Overview
+            <FontAwesomeIcon icon={faHome} /> Overview
           </button>
           <button
             className={`sidebar-button ${
@@ -871,7 +909,7 @@ const Dashboard = () => {
             }`}
             onClick={() => setActiveView("customers")}
           >
-            Customers
+            <FontAwesomeIcon icon={faUsers} /> Customers
           </button>
           <button
             className={`sidebar-button ${
@@ -879,7 +917,7 @@ const Dashboard = () => {
             }`}
             onClick={() => setActiveView("staffs")}
           >
-            Staffs
+            <FontAwesomeIcon icon={faUsers} /> Staffs
           </button>
           <button
             className={`sidebar-button ${
@@ -887,7 +925,7 @@ const Dashboard = () => {
             }`}
             onClick={() => setActiveView("orders")}
           >
-            Orders
+            <FontAwesomeIcon icon={faClipboardList} /> Orders
           </button>
           <button
             className={`sidebar-button ${
@@ -895,7 +933,7 @@ const Dashboard = () => {
             }`}
             onClick={() => setActiveView("services")}
           >
-            Services
+            <FontAwesomeIcon icon={faConciergeBell} /> Services
           </button>
           <button
             className={`sidebar-button ${
@@ -903,7 +941,7 @@ const Dashboard = () => {
             }`}
             onClick={() => setActiveView("contracts")}
           >
-            Contracts
+            <FontAwesomeIcon icon={faFileContract} /> Contracts
           </button>
         </div>
         <div className="sidebar-footer">
@@ -911,7 +949,7 @@ const Dashboard = () => {
             &#8592; Back to Home
           </button>
           <button onClick={handleLogout} className="staff-logout-btn">
-            Logout
+            <FontAwesomeIcon icon={faSignOutAlt} /> Logout
           </button>
         </div>
       </div>
