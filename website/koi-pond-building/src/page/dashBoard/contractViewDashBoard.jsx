@@ -45,7 +45,7 @@ const ContractViewDashBoard = () => {
         const response = await axios.delete(
           `http://localhost:8080/contracts/delete/${contractId}`
         );
-        if (response.data.code === 1000) {
+        if (response.data.code === 9876) {
           toast.success("Contract deleted successfully");
           navigate("/dashboard");
         } else {

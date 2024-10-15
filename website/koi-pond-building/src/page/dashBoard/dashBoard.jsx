@@ -14,9 +14,17 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faUsers, faClipboardList, faConciergeBell, faFileContract, faSignOutAlt, faTable } from '@fortawesome/free-solid-svg-icons';
-import SheetDataViewComponent from './SheetDataView';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faHome,
+  faUsers,
+  faClipboardList,
+  faConciergeBell,
+  faFileContract,
+  faSignOutAlt,
+  faTable,
+} from "@fortawesome/free-solid-svg-icons";
+import SheetDataViewComponent from "./SheetDataView";
 
 // Đăng ký các thành phần
 ChartJS.register(
@@ -72,6 +80,14 @@ const Dashboard = () => {
     price: "",
     description: "",
     serviceType: "",
+  });
+
+  const [showAddContractForm, setShowAddContractForm] = useState(false);
+  const [newContract, setNewContract] = useState({
+    orderId: "",
+    uploadStaff: "",
+    imageData: "",
+    description: "",
   });
 
   useEffect(() => {
@@ -276,6 +292,33 @@ const Dashboard = () => {
     }
   };
 
+  //add contract
+  const handleAddContract = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/contracts/create",
+        newContract
+      );
+      if (response.data.code === 1000) {
+        toast.success("Contract created successfully");
+        setContracts([...contracts, response.data.result]);
+        setShowAddContractForm(false);
+        setNewContract({
+          orderId: "",
+          uploadStaff: "",
+          imageData: "",
+          description: "",
+        });
+      } else {
+        toast.error("Failed to create contract");
+      }
+    } catch (err) {
+      console.error("Error creating contract:", err);
+      toast.error("An error occurred while creating the contract");
+    }
+  };
+
   //render add customer form
   const renderAddCustomerForm = () => (
     <div className="add-new-customer">
@@ -332,7 +375,7 @@ const Dashboard = () => {
   );
 
   //render add staff form
-    const renderAddStaffForm = () => (
+  const renderAddStaffForm = () => (
     <div className="add-new-staff">
       <h2>Add New Staff</h2>
       <form onSubmit={handleAddStaff}>
@@ -506,6 +549,72 @@ const Dashboard = () => {
         >
           Cancel
         </button>
+      </form>
+    </div>
+  );
+
+  //render add contract form
+  const renderAddContractForm = () => (
+    <div className="add-new-contract">
+      <h2>Add New Contract</h2>
+      <form onSubmit={handleAddContract}>
+        <div className="input-group">
+          <select
+            value={newContract.orderId}
+            onChange={(e) =>
+              setNewContract({ ...newContract, orderId: e.target.value })
+            }
+            required
+          >
+            <option value="">Select Order ID</option>
+            {orders.map((order) => (
+              <option key={order.orderId} value={order.orderId}>
+                Order #{order.orderId} - {order.customer.username}
+              </option>
+            ))}
+          </select>
+          <select
+            value={newContract.uploadStaff}
+            onChange={(e) =>
+              setNewContract({ ...newContract, uploadStaff: e.target.value })
+            }
+            required
+          >
+            <option value="">Select Staff ID</option>
+            {staffs.map((staff) => (
+              <option key={staff.staffId} value={staff.staffId}>
+                {staff.username} ({staff.role})
+              </option>
+            ))}
+          </select>
+          <input
+            type="text"
+            placeholder="Image Data"
+            value={newContract.imageData}
+            onChange={(e) =>
+              setNewContract({ ...newContract, imageData: e.target.value })
+            }
+            required
+          />
+          <textarea
+            placeholder="Description"
+            value={newContract.description}
+            onChange={(e) =>
+              setNewContract({ ...newContract, description: e.target.value })
+            }
+            required
+          />
+          <button type="submit" className="create-contract-btn">
+            Create Contract
+          </button>
+          <button
+            type="button"
+            className="cancel-btn"
+            onClick={() => setShowAddContractForm(false)}
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );
@@ -768,6 +877,13 @@ const Dashboard = () => {
   const renderContracts = () => (
     <div className="table-container">
       {renderSearchBar()}
+      <button
+        onClick={() => setShowAddContractForm(true)}
+        className="add-contract-btn"
+      >
+        Add New Contract
+      </button>
+      {showAddContractForm && renderAddContractForm()}
       <table className="data-table">
         <thead>
           <tr>
@@ -870,7 +986,7 @@ const Dashboard = () => {
     toast.success("Logged out successfully");
     navigate("/login-staff");
   };
-  
+
   //view service details
   const handleViewServiceDetails = (serviceId) => {
     navigate(`/service/${serviceId}`);
@@ -984,21 +1100,21 @@ const Dashboard = () => {
           </h1>
         </div>
         <div className="table-container">
-          {activeView === "overview"
-            ? renderOverview()
-            : activeView === "customers"
-            ? renderCustomers()
-            : activeView === "staffs"
-            ? renderStaffs()
-            : activeView === "orders"
-            ? renderOrders()
-            : activeView === "services"
-            ? renderServices()
-            : activeView === "contracts"
-            ? renderContracts()
-            : activeView === "sheetData"
-            ? <SheetDataViewComponent />
-            : null}
+          {activeView === "overview" ? (
+            renderOverview()
+          ) : activeView === "customers" ? (
+            renderCustomers()
+          ) : activeView === "staffs" ? (
+            renderStaffs()
+          ) : activeView === "orders" ? (
+            renderOrders()
+          ) : activeView === "services" ? (
+            renderServices()
+          ) : activeView === "contracts" ? (
+            renderContracts()
+          ) : activeView === "sheetData" ? (
+            <SheetDataViewComponent />
+          ) : null}
         </div>
         {selectedCustomerId && (
           <CustomerProfileDashboard customerId={selectedCustomerId} />

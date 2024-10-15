@@ -1672,6 +1672,7 @@ body {
 }
 
 /* Add New Service button style */
+.add-contract-btn,
 .add-service-btn {
   background-color: #3498db;
   color: white;
@@ -1689,17 +1690,20 @@ body {
   text-align: center;
 }
 
+.add-contract-btn:hover,
 .add-service-btn:hover {
   background-color: #2980b9;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+.add-contract-btn:active,
 .add-service-btn:active {
   transform: translateY(1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.add-contract-btn::before,
 .add-service-btn::before {
   content: "+";
   margin-right: 8px;
@@ -1737,6 +1741,7 @@ body {
   color: #0077be;
   margin: 0;
 }
+
 .dashboard-composer {
   display: flex;
   flex-direction: column;
@@ -1769,15 +1774,38 @@ body {
   padding: 20px;
   overflow-y: auto;
 }
+
 .sheet-table {
-  border-collapse: collapse;
   width: 100%;
-  border: 2px solid #333; /* Table border */
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
 }
-.sheet-table th, .sheet-table td {
-  border: 1px solid #333; /* Cell border */
-  padding: 10px;
+
+.sheet-table th,
+.sheet-table td {
+  padding: 15px;
   text-align: left;
+  border-bottom: 1px solid #ecf0f1;
+  white-space: nowrap;
+}
+
+.sheet-table th {
+  background-color: #3498db;
+  color: #fff;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.sheet-table tr:last-child td {
+  border-bottom: none;
+}
+
+.sheet-table tr:hover {
+  background-color: #f5f7fa;
 }
 
 /* Add a border to the info-box */
@@ -1835,40 +1863,32 @@ body {
 }
 
 .table-container {
-  overflow-x: auto;
+  overflow-x: hidden;
+  /* Change from auto to hidden */
 }
 
-.sheet-table {
+.data-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background-color: #fff;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
+  table-layout: auto;
+  /* Ensure table adjusts to content */
+  border-collapse: collapse;
 }
 
-.sheet-table th,
-.sheet-table td {
+.data-table th,
+.data-table td {
   padding: 15px;
   text-align: left;
   border-bottom: 1px solid #ecf0f1;
+  white-space: nowrap;
+  /* Prevent text wrapping */
 }
 
-.sheet-table th {
+.data-table th {
   background-color: #3498db;
   color: #fff;
   font-weight: bold;
   text-transform: uppercase;
   font-size: 14px;
-}
-
-.sheet-table tr:last-child td {
-  border-bottom: none;
-}
-
-.sheet-table tr:hover {
-  background-color: #f5f7fa;
 }
 
 .info-box {
@@ -1930,7 +1950,168 @@ body {
 }
 
 @keyframes loading {
-  0% { content: '.'; }
-  33% { content: '..'; }
-  66% { content: '...'; }
+  0% {
+    content: '.';
+  }
+
+  33% {
+    content: '..';
+  }
+
+  66% {
+    content: '...';
+  }
+}
+
+.add-new-contract {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  margin-bottom: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.add-new-contract h2 {
+  margin-bottom: 25px;
+  color: #2c3e50;
+  font-size: 24px;
+  text-align: center;
+}
+
+.add-new-contract form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.add-new-contract input,
+.add-new-contract textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.add-new-contract input:focus,
+.add-new-contract textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.add-new-contract textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+.add-new-contract button {
+  padding: 12px 15px;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.add-new-contract .create-contract-btn {
+  background-color: #2ecc71;
+}
+
+.add-new-contract .cancel-btn {
+  background-color: #e74c3c;
+  margin-top: 10px;
+}
+
+.add-new-contract button:hover {
+  transform: translateY(-2px);
+}
+
+.add-new-contract .create-contract-btn:hover {
+  background-color: #27ae60;
+}
+
+.add-new-contract .cancel-btn:hover {
+  background-color: #c0392b;
+}
+
+.add-new-contract button:active {
+  transform: translateY(0);
+}
+
+.add-contract-btn,
+.add-service-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.add-contract-btn:hover,
+.add-service-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.add-contract-btn:active,
+.add-service-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.add-contract-btn::before,
+.add-service-btn::before {
+  content: "+";
+  margin-right: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.add-new-contract select,
+.add-new-service select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #f8f9fa;
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%233498db" d="M2 0L0 2h4z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.add-new-contract select:focus,
+.add-new-service select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.add-new-contract .input-group select,
+.add-new-contract .input-group input,
+.add-new-contract .input-group textarea {
+  margin-bottom: 15px;
 }
