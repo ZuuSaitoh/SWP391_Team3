@@ -1055,12 +1055,16 @@ body {
 
 .add-order-form select {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #bdc3c7;
+  padding: 12px;
+  border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
-  color: #2c3e50;
-  background-color: #ecf0f1;
+  background-color: #f8f9fa;
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%233498db" d="M2 0L0 2h4z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
@@ -1076,20 +1080,17 @@ body {
   margin-top: 30px;
 }
 
-.add-order-form .create-order-btn,
-.add-order-form .cancel-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.1s;
-}
-
 .add-order-form .create-order-btn {
   background-color: #2ecc71;
   color: white;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+  font-size: 16px;
+  font-weight: bold;
+  width: 100%;
 }
 
 .add-order-form .create-order-btn:hover {
@@ -1100,6 +1101,15 @@ body {
 .add-order-form .cancel-btn {
   background-color: #e74c3c;
   color: white;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+  font-size: 16px;
+  font-weight: bold;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .add-order-form .cancel-btn:hover {

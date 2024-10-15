@@ -443,7 +443,7 @@ const Dashboard = () => {
     <div className="add-order-form">
       <h2>Create New Order</h2>
       <form onSubmit={handleAddOrder}>
-        <div className="form-group">
+        <div className="input-group">
           <label htmlFor="customer-select">Select Customer</label>
           <select
             id="customer-select"
