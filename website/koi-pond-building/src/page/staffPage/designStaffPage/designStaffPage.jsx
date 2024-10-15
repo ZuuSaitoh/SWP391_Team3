@@ -5,6 +5,7 @@ import {
   Image,
   Input,
   Modal,
+  Popconfirm,
   Table,
   Upload,
   message,
@@ -24,6 +25,9 @@ function DesignStaffPage() {
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [editingDesign, setEditingDesign] = useState(null);
+  const [editForm] = Form.useForm();
+  const [modalMode, setModalMode] = useState('create'); // New state to track modal mode
 
   const staffId = localStorage.getItem("staffId");
 
@@ -51,62 +55,122 @@ function DesignStaffPage() {
     navigate("/");
   };
 
-  const handleSubmit = async (design) => {
+  const handleSubmit = async (values) => {
     try {
       setLoading(true);
-      console.log("Form design:", design);
+      console.log("Form values:", values);
 
-      let imageUrl = null;
-      if (fileList.length > 0) {
+      let imageUrl = editingDesign ? editingDesign.imageData : null;
+      if (fileList.length > 0 && fileList[0].originFileObj) {
         const file = fileList[0];
         console.log("Uploading file:", file);
         imageUrl = await uploadFile(file.originFileObj);
         console.log("Uploaded image URL:", imageUrl);
       }
 
-      // Prepare the design object
       const designData = {
-        uploadStaff: design.staffId,
-        designName: design.designName,
+        uploadStaff: staffId,
+        designName: values.designName,
         imageData: imageUrl,
-        designVersion: design.designVersion,
+        designVersion: values.designVersion,
       };
 
       console.log("Design data to be sent:", designData);
 
-      // Send POST request to create new design
-      const response = await api.post(
-        "http://localhost:8080/designs/create",
-        designData
-      );
+      let response;
+      if (editingDesign) {
+        // Update existing design
+        response = await api.put(`http://localhost:8080/designs/update/${editingDesign.designId}`, designData);
+      } else {
+        // Create new design
+        response = await api.post("http://localhost:8080/designs/create", designData);
+      }
+
       console.log("API response:", response);
 
-      if (response.data && response.data.code === 9999) {
-        toast.success("Successfully added new design");
-        // Update the local state immediately
-        setDatas(prevData => [...prevData, response.data.result]);
-        fetchData();
-        form.resetFields();
+      if (response.data) {
+        const newOrUpdatedDesign = {
+          ...response.data.result, // Use result from the response
+          designId: editingDesign ? editingDesign.designId : response.data.result.designId,
+          staff: { 
+            staffId: staffId, 
+            username: localStorage.getItem("staffUser") 
+              ? JSON.parse(localStorage.getItem("staffUser")).username 
+              : "Unknown" 
+          },
+          designDate: new Date().toISOString(),
+          imageData: imageUrl, // Ensure the new image URL is used
+        };
+
+        setDatas(prevData => {
+          if (editingDesign) {
+            return prevData.map(design => 
+              design.designId === newOrUpdatedDesign.designId ? newOrUpdatedDesign : design
+            );
+          } else {
+            return [...prevData, newOrUpdatedDesign];
+          }
+        });
+
+        toast.success(editingDesign ? "Successfully updated design" : "Successfully added new design");
         setShowModal(false);
+        setFileList([]);
+        setEditingDesign(null);
+        form.resetFields();
       } else {
-        console.warn("Unexpected response:", response.data);
-        toast.warning("Unexpected response from server. The design may or may not have been added.");
+        toast.error(`Failed to ${editingDesign ? 'update' : 'add'} design. Please try again.`);
       }
     } catch (err) {
-      console.error("Error in handleSubmit:", err);
-      toast.error(
-        "Error adding design: " + (err.response?.data?.message || err.message)
-      );
+      console.error(`Error in handle${editingDesign ? 'Update' : 'Submit'}:`, err);
+      toast.error(`Error ${editingDesign ? 'updating' : 'adding'} design. Please try again.`);
     } finally {
       setLoading(false);
-      handleCancel();
     }
   };
 
   const handleCancel = () => {
     setShowModal(false);
+    setModalMode('create');
+    setEditingDesign(null);
+    form.resetFields();
+    editForm.resetFields();
+    setFileList([]);
+  };
+
+  const handleDelete = async (designId) => {
+    try {
+      console.log("Attempting to delete design with ID:", designId);
+      const response = await api.delete(`/designs/delete/${designId}`);
+      console.log("Delete response:", response);
+
+      if (response.data && (response.data.code === 9999 || response.data.code === 9876)) {
+        setDatas(prevDatas => prevDatas.filter(design => design.designId !== designId));
+        toast.success(response.data.result || "Design deleted successfully");
+      } else {
+        console.error("Unexpected response when deleting design:", response.data);
+        toast.error(`Failed to delete design: ${response.data?.message || 'Unknown error'}`);
+      }
+    } catch (err) {
+      console.error("Error deleting design:", err);
+      toast.error(`Failed to delete design: ${err.response?.data?.message || err.message}`);
+    }
+  };
+
+  const handleEdit = (design) => {
+    setEditingDesign(design);
+    form.setFieldsValue({
+      designName: design.designName,
+      designVersion: design.designVersion,
+    });
+    setFileList(design.imageData ? [{ url: design.imageData }] : []);
+    setShowModal(true);
+  };
+
+  const handleAddNew = () => {
+    setEditingDesign(null);
     form.resetFields();
     setFileList([]);
+    setShowModal(true);
   };
 
   useEffect(() => {
@@ -150,6 +214,27 @@ function DesignStaffPage() {
       title: "Version",
       dataIndex: "designVersion",
       key: "designVersion",
+    },
+    {
+      title: "Action",
+      dataIndex: "designId",
+      key: "designId",
+      render: (_, record) => (
+        <>
+          <Button onClick={() => handleEdit(record)} style={{ marginRight: '10px' }}>
+            Edit
+          </Button>
+          <Popconfirm 
+            title="Delete" 
+            description="Do you want to delete this design?"
+            onConfirm={() => handleDelete(record.designId)}
+          >
+            <Button type="primary" danger>
+              Delete
+            </Button>
+          </Popconfirm> 
+        </>
+      ),
     },
   ];
 
@@ -207,16 +292,21 @@ function DesignStaffPage() {
 
   return (
     <div>
-      <Button onClick={() => setShowModal(true)}>Add new design</Button>
+      <Button onClick={handleAddNew}>Add new design</Button>
       <Button onClick={backToHomepage} style={{ marginLeft: "10px" }}>
         Return to Homepage
       </Button>
-      <Table dataSource={datas} columns={columns} />
+      <Table 
+        dataSource={datas} 
+        columns={columns} 
+        rowKey="designId"
+        key={datas.length} // Force re-render when data changes
+      />
 
       <Modal
         open={showModal}
         onCancel={handleCancel}
-        title="Design"
+        title={editingDesign ? "Edit Design" : "Add New Design"}
         footer={[
           <Button key="cancel" onClick={handleCancel}>
             Cancel
@@ -227,7 +317,7 @@ function DesignStaffPage() {
             loading={loading}
             onClick={() => form.submit()}
           >
-            Submit
+            {editingDesign ? "Update" : "Submit"}
           </Button>,
         ]}
       >
@@ -237,15 +327,11 @@ function DesignStaffPage() {
             span: 24,
           }}
           onFinish={handleSubmit}
+          initialValues={{
+            designName: editingDesign?.designName,
+            designVersion: editingDesign?.designVersion,
+          }}
         >
-          <Form.Item
-            name="uploadStaff"
-            label="StaffID"
-            rules={[{ required: true, message: "Please input Staff ID" }]}
-          >
-            <Input />
-          </Form.Item>
-
           <Form.Item
             name="designName"
             label="Design Name"
