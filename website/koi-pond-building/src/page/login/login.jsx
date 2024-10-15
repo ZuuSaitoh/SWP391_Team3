@@ -112,12 +112,12 @@ function Login() {
         const decodedToken = jwtDecode(token);
         console.log("Decoded token:", decodedToken);
 
-        const { customerId, sub: username } = decodedToken;
+        const { customerId, sub: username, role } = decodedToken;
 
         localStorage.setItem("authToken", token);
         localStorage.setItem(
           "user",
-          JSON.stringify({ id: customerId, username })
+          JSON.stringify({ id: customerId, username, role })
         );
 
         navigate("/?login=success");

@@ -51,11 +51,15 @@ function App() {
         <Route path="/dashboard" element={<DashBoard />} />
         <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
         <Route path="/designStaffPage/:staffId" element={<DesignStaffPage />} />
-        <Route path="/order/:orderId" element={<OrderViewDashboard />} />
         <Route
           path="/consultingStaffPage/:staffId"
           element={<ConsultingStaffPage />}
         />
+        <Route
+          path="/constructionStaffPage/:staffId"
+          element={<ConstructionStaffPage />}
+        />
+        <Route path="/order/:orderId" element={<OrderViewDashboard />} />
         <Route path="/customer/:Id" element={<CustomerProfileDashBoard />} />
         <Route path="/service/:serviceId" element={<ServiceViewDashboard />} />
         <Route

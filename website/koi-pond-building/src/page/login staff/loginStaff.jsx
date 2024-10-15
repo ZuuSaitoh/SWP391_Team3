@@ -62,12 +62,15 @@ function LoginStaff() {
         const { staffID, sub: username, role } = decodedToken;
 
         localStorage.setItem("staffAuthToken", token);
-        console.log("Token stored in localStorage:", localStorage.getItem("staffAuthToken")); // Add this line
+        console.log(
+          "Token stored in localStorage:",
+          localStorage.getItem("staffAuthToken")
+        ); // Add this line
         localStorage.setItem(
           "staffUser",
           JSON.stringify({ id: staffID, username, role })
         );
-        localStorage.setItem('staffId', staffID);
+        localStorage.setItem("staffId", staffID);
 
         toast.success("Logged in successfully");
 
@@ -77,6 +80,8 @@ function LoginStaff() {
           navigate("/consultingStaffPage/:staffId");
         } else if (role === "Design Staff") {
           navigate("/designStaffPage/:staffId");
+        } else if (role === "Construction Staff") {
+          navigate("/constructionStaffPage/:staffId");
         } else {
           toast.error("Invalid role.");
         }
