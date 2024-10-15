@@ -22,6 +22,7 @@ import ConsultingStaffPage from "./page/staffPage/consultingStaffPage/consulting
 import ServiceViewDashboard from "./page/dashBoard/ServiceViewDashboard";
 import ProtectedStaffRoutes from "./utils/ProtectedStaffRoutes.jsx";
 import ContractViewDashBoard from "./page/dashBoard/contractViewDashBoard.jsx";
+import ConstructionStaffPage from "./page/staffPage/constructionStaffPage/constructionStaffPage.jsx";
 
 function App() {
   return (
@@ -43,7 +44,6 @@ function App() {
           element={<CustomerProfilePage />}
         />
         <Route path="/change-password" element={<ChangePassword />} />
-        
       </Route>
 
       {/* Protected Staff Routes */}
@@ -58,7 +58,10 @@ function App() {
         />
         <Route path="/customer/:Id" element={<CustomerProfileDashBoard />} />
         <Route path="/service/:serviceId" element={<ServiceViewDashboard />} />
-        <Route path="/contract/:contractId" element={<ContractViewDashBoard />} />
+        <Route
+          path="/contract/:contractId"
+          element={<ContractViewDashBoard />}
+        />
       </Route>
     </Routes>
   );

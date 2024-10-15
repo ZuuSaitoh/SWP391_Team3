@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Image, Input, Modal, Table, Upload, message } from "antd";
+import {
+  Button,
+  Form,
+  Image,
+  Input,
+  Modal,
+  Table,
+  Upload,
+  message,
+} from "antd";
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -16,16 +25,23 @@ function DesignStaffPage() {
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
 
+  const staffId = localStorage.getItem("staffId");
+
   const fetchData = async () => {
     try {
       const response = await api.get("/designs/fetchAll");
       if (response.data.code === 9999) {
         setDatas(response.data.result);
       } else {
-        toast.error("Failed to fetch designs: " + response.data.message);
+        console.warn("Unexpected response when fetching designs:", response.data);
+        toast.warning("Unexpected response when fetching designs. Data may be incomplete.");
       }
     } catch (err) {
-      toast.error("Error fetching designs: " + (err.response?.data?.message || err.message));
+      console.error("Error fetching designs:", err);
+      toast.error(
+        "Error fetching designs: " +
+          (err.response?.data?.message || err.message)
+      );
     }
   };
 
@@ -35,12 +51,11 @@ function DesignStaffPage() {
     navigate("/");
   };
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (design) => {
     try {
       setLoading(true);
-      console.log("Form values:", values);
+      console.log("Form design:", design);
 
-      // Upload image if present
       let imageUrl = null;
       if (fileList.length > 0) {
         const file = fileList[0];
@@ -51,30 +66,40 @@ function DesignStaffPage() {
 
       // Prepare the design object
       const designData = {
-        uploadStaff: parseInt(values.uploadStaff), // Convert to integer
-        designName: values.designName,
+        uploadStaff: design.staffId,
+        designName: design.designName,
         imageData: imageUrl,
-        designVersion: values.designVersion
+        designVersion: design.designVersion,
       };
 
       console.log("Design data to be sent:", designData);
 
       // Send POST request to create new design
-      const response = await api.post("http://localhost:8080/designs/create", designData);
+      const response = await api.post(
+        "http://localhost:8080/designs/create",
+        designData
+      );
       console.log("API response:", response);
 
       if (response.data && response.data.code === 9999) {
         toast.success("Successfully added new design");
-        fetchData(); // Refresh the table data
+        // Update the local state immediately
+        setDatas(prevData => [...prevData, response.data.result]);
+        fetchData();
+        form.resetFields();
+        setShowModal(false);
       } else {
-        throw new Error(response.data?.message || "Unknown error occurred");
+        console.warn("Unexpected response:", response.data);
+        toast.warning("Unexpected response from server. The design may or may not have been added.");
       }
     } catch (err) {
       console.error("Error in handleSubmit:", err);
-      toast.error("Error adding design: " + (err.response?.data?.message || err.message));
+      toast.error(
+        "Error adding design: " + (err.response?.data?.message || err.message)
+      );
     } finally {
       setLoading(false);
-      handleCancel(); // Always close the modal and reset the form, even if there's an error
+      handleCancel();
     }
   };
 
@@ -113,9 +138,7 @@ function DesignStaffPage() {
       title: "Image",
       dataIndex: "imageData",
       key: "imageData",
-      render: (imageData) => (
-        <Image src={imageData} alt="" width={150} />
-      ),
+      render: (imageData) => <Image src={imageData} alt="" width={150} />,
     },
     {
       title: "Date",
@@ -149,14 +172,14 @@ function DesignStaffPage() {
   const handleChange = ({ file, fileList }) => {
     // Update fileList state
     setFileList(fileList);
-    
+
     // Handle status changes
-    if (file.status === 'uploading') {
+    if (file.status === "uploading") {
       setUploading(true);
-    } else if (file.status === 'done') {
+    } else if (file.status === "done") {
       setUploading(false);
       message.success(`${file.name} file uploaded successfully`);
-    } else if (file.status === 'error') {
+    } else if (file.status === "error") {
       setUploading(false);
       message.error(`${file.name} file upload failed.`);
     }
@@ -198,10 +221,10 @@ function DesignStaffPage() {
           <Button key="cancel" onClick={handleCancel}>
             Cancel
           </Button>,
-          <Button 
-            key="submit" 
-            type="primary" 
-            loading={loading} 
+          <Button
+            key="submit"
+            type="primary"
+            loading={loading}
             onClick={() => form.submit()}
           >
             Submit
@@ -222,7 +245,6 @@ function DesignStaffPage() {
           >
             <Input />
           </Form.Item>
-
 
           <Form.Item
             name="designName"
