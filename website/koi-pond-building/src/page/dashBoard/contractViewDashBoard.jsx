@@ -46,7 +46,7 @@ const ContractViewDashBoard = () => {
           `http://localhost:8080/contracts/delete/${contractId}`
         );
         if (response.data.code === 9876) {
-          toast.success("Contract deleted successfully");
+          toast("Contract deleted successfully");
           navigate("/dashboard");
         } else {
           toast.error("Failed to delete contract");

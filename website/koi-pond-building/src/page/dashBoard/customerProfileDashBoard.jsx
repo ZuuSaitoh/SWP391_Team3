@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
-import './dashBoard.css';
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
+import "./dashBoard.css";
+import { toast } from "react-toastify";
 const CustomerProfileDashboard = () => {
   const { Id } = useParams();
   const [customer, setCustomer] = useState(null);
@@ -16,13 +16,15 @@ const CustomerProfileDashboard = () => {
   useEffect(() => {
     const fetchCustomerData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/customers/${Id}`);
+        const response = await axios.get(
+          `http://localhost:8080/customers/${Id}`
+        );
         setCustomer(response.data);
         setEditedCustomer(response.data);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching customer data:', err);
-        setError('An error occurred while fetching customer data');
+        console.error("Error fetching customer data:", err);
+        setError("An error occurred while fetching customer data");
         setLoading(false);
       }
     };
@@ -32,14 +34,14 @@ const CustomerProfileDashboard = () => {
 
   //delete customer
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this customer?')) {
+    if (window.confirm("Are you sure you want to delete this customer?")) {
       try {
         await axios.delete(`http://localhost:8080/customers/delete/${Id}`);
-        alert('Customer deleted successfully');
-        navigate('/dashboard');
+        toast.success("Customer deleted successfully");
+        navigate("/dashboard");
       } catch (err) {
-        console.error('Error deleting customer:', err);
-        alert('Failed to delete customer');
+        console.error("Error deleting customer:", err);
+        toast.error("Failed to delete customer");
       }
     }
   };
@@ -55,37 +57,52 @@ const CustomerProfileDashboard = () => {
       const updatedCustomerData = {
         fullName: editedCustomer.fullName,
         address: editedCustomer.address,
-        phone: editedCustomer.phone
+        phone: editedCustomer.phone,
       };
 
-      const response = await axios.put(`http://localhost:8080/customers/update/${Id}`, updatedCustomerData);
-      console.log('Update response:', response.data); // Log the response for debugging
+      const response = await axios.put(
+        `http://localhost:8080/customers/update/${Id}`,
+        updatedCustomerData
+      );
+      console.log("Update response:", response.data); // Log the response for debugging
 
       // Check if the response contains updated customer data
       if (response.data && response.data.id) {
         setCustomer(response.data);
         setIsEditing(false);
-        alert('Customer updated successfully');
+        toast.success("Customer updated successfully");
       } else if (response.data && response.data.code === 1000) {
         // If the API returns a success code but no data, fetch the updated customer data
-        const updatedCustomerResponse = await axios.get(`http://localhost:8080/customers/${Id}`);
+        const updatedCustomerResponse = await axios.get(
+          `http://localhost:8080/customers/${Id}`
+        );
         setCustomer(updatedCustomerResponse.data);
         setIsEditing(false);
-        alert('Customer updated successfully');
+        toast.success("Customer updated successfully");
       } else {
-        alert(`Failed to update customer: ${response.data.message || 'Unknown error'}`);
+        toast.error(
+          `Failed to update customer: ${
+            response.data.message || "Unknown error"
+          }`
+        );
       }
     } catch (err) {
-      console.error('Error updating customer:', err);
+      console.error("Error updating customer:", err);
       if (err.response) {
-        console.error('Error response:', err.response.data);
-        alert(`Failed to update customer: ${err.response.data.message || err.response.statusText}`);
+        console.error("Error response:", err.response.data);
+        toast.error(
+          `Failed to update customer: ${
+            err.response.data.message || err.response.statusText
+          }`
+        );
       } else if (err.request) {
-        console.error('Error request:', err.request);
-        alert('Failed to update customer: No response received from server');
+        console.error("Error request:", err.request);
+        toast.error(
+          "Failed to update customer: No response received from server"
+        );
       } else {
-        console.error('Error message:', err.message);
-        alert(`Failed to update customer: ${err.message}`);
+        console.error("Error message:", err.message);
+        toast.error(`Failed to update customer: ${err.message}`);
       }
     }
   };
@@ -99,7 +116,7 @@ const CustomerProfileDashboard = () => {
   //handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditedCustomer(prev => ({ ...prev, [name]: value }));
+    setEditedCustomer((prev) => ({ ...prev, [name]: value }));
   };
 
   //render loading
@@ -107,15 +124,22 @@ const CustomerProfileDashboard = () => {
   //render error
   if (error) return <div className="dashboard-error">{error}</div>;
   //render no customer data found
-  if (!customer) return <div className="dashboard-error">No customer data found</div>;
+  if (!customer)
+    return <div className="dashboard-error">No customer data found</div>;
 
   return (
     <div className="customer-profile">
       <h2>Customer Profile</h2>
       <div className="profile-info">
-        <p><strong>ID:</strong> {customer.id}</p>
-        <p><strong>Username:</strong> {customer.username}</p>
-        <p><strong>Email:</strong> {customer.mail}</p>
+        <p>
+          <strong>ID:</strong> {customer.id}
+        </p>
+        <p>
+          <strong>Username:</strong> {customer.username}
+        </p>
+        <p>
+          <strong>Email:</strong> {customer.mail}
+        </p>
       </div>
       {isEditing ? (
         <div className="edit-form">
@@ -138,20 +162,35 @@ const CustomerProfileDashboard = () => {
             placeholder="Phone"
           />
           <div className="edit-actions">
-            <button onClick={handleSave} className="save-btn">Save</button>
-            <button onClick={handleCancel} className="cancel-btn">Cancel</button>
+            <button onClick={handleSave} className="save-btn">
+              Save
+            </button>
+            <button onClick={handleCancel} className="cancel-btn">
+              Cancel
+            </button>
           </div>
         </div>
       ) : (
         <div className="profile-info">
-          <p><strong>Full Name:</strong> {customer.fullName}</p>
-          <p><strong>Address:</strong> {customer.address}</p>
-          <p><strong>Phone:</strong> {customer.phone}</p>
-          <p><strong>Points:</strong> {customer.point}</p>
+          <p>
+            <strong>Full Name:</strong> {customer.fullName}
+          </p>
+          <p>
+            <strong>Address:</strong> {customer.address}
+          </p>
+          <p>
+            <strong>Phone:</strong> {customer.phone}
+          </p>
+          <p>
+            <strong>Points:</strong> {customer.point}
+          </p>
         </div>
       )}
       <div className="profile-actions">
-        <button onClick={() => navigate('/dashboard')} className="back-to-dashboard-btn">
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="back-to-dashboard-btn"
+        >
           Back to Dashboard
         </button>
         {!isEditing && (

@@ -22,11 +22,11 @@ const ServiceViewDashboard = () => {
           setService(response.data);
           setEditedService(response.data);
         } else {
-          setError("Failed to fetch service details");
+          toast.error("Failed to fetch service details");
         }
       } catch (err) {
         console.error("Error fetching service:", err);
-        setError("An error occurred while fetching service details");
+        toast.error("An error occurred while fetching service details");
       } finally {
         setLoading(false);
       }

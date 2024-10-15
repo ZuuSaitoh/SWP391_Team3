@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify"; // Import ToastContainer
+import "react-toastify/dist/ReactToastify.css"; // Import CSS for toast notifications
 import { jwtDecode } from "jwt-decode";
 import "./dashBoard.css";
 import { Bar } from "react-chartjs-2";
@@ -26,7 +27,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import SheetDataViewComponent from "./SheetDataView";
 
-// Đăng ký các thành phần
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -171,7 +171,7 @@ const Dashboard = () => {
   const handleAddCustomer = async (e) => {
     e.preventDefault();
     if (newCustomer.password !== newCustomer.confirm_password) {
-      alert("Passwords don't match");
+      toast.error("Passwords don't match");
       return;
     }
     try {
@@ -180,7 +180,7 @@ const Dashboard = () => {
         newCustomer
       );
       if (response.data.code === 1000) {
-        alert("Customer created successfully");
+        toast.success("Customer created successfully");
         setCustomers([...customers, response.data.result]);
         setShowAddCustomerForm(false);
         setNewCustomer({
@@ -190,11 +190,11 @@ const Dashboard = () => {
           mail: "",
         });
       } else {
-        alert("Failed to create customer");
+        toast.error("Failed to create customer");
       }
     } catch (err) {
       console.error("Error creating customer:", err);
-      alert("An error occurred while creating the customer");
+      toast.error("An error occurred while creating the customer");
     }
   };
 
@@ -207,7 +207,7 @@ const Dashboard = () => {
   const handleAddStaff = async (e) => {
     e.preventDefault();
     if (newStaff.password !== newStaff.confirm_password) {
-      alert("Passwords don't match");
+      toast.error("Passwords don't match");
       return;
     }
     try {
@@ -216,7 +216,7 @@ const Dashboard = () => {
         newStaff
       );
       if (response.data.code === 1000) {
-        alert("Staff created successfully");
+        toast.success("Staff created successfully");
         setStaffs([...staffs, response.data.result]);
         setShowAddStaffForm(false);
         setNewStaff({
@@ -227,11 +227,11 @@ const Dashboard = () => {
           role: "",
         });
       } else {
-        alert("Failed to create staff");
+        toast.error("Failed to create staff");
       }
     } catch (err) {
       console.error("Error creating staff:", err);
-      alert("An error occurred while creating the staff");
+      toast.error("An error occurred while creating the staff");
     }
   };
 
@@ -999,6 +999,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
+      <ToastContainer /> {/* Add this line */}
       <div className="sidebar">
         <div className="sidebar-header">
           <h2>Dashboard</h2>

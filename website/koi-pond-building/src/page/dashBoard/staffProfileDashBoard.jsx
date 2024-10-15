@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import "./dashBoard.css";
+import { toast } from "react-toastify";
 
 const StaffProfileDashboard = () => {
   const { Id } = useParams();
@@ -53,15 +54,15 @@ const StaffProfileDashboard = () => {
       if (response.data && response.data.staffId) {
         setStaff(response.data);
         setIsEditing(false);
-        alert("Staff updated successfully");
+        toast.success("Staff updated successfully");
       } else {
-        alert(
+        toast.error(
           `Failed to update staff: ${response.data.message || "Unknown error"}`
         );
       }
     } catch (err) {
       console.error("Error updating staff:", err);
-      alert("An error occurred while updating the staff");
+      toast.error("An error occurred while updating the staff");
     }
   };
 
@@ -79,11 +80,11 @@ const StaffProfileDashboard = () => {
     if (window.confirm("Are you sure you want to delete this staff member?")) {
       try {
         await axios.delete(`http://localhost:8080/staffs/delete/${Id}`);
-        alert("Staff member deleted successfully");
+        toast.success("Staff member deleted successfully");
         navigate("/dashboard");
       } catch (err) {
         console.error("Error deleting staff member:", err);
-        alert("Failed to delete staff member");
+        toast.error("Failed to delete staff member");
       }
     }
   };
