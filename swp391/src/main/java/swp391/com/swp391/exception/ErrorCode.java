@@ -34,7 +34,9 @@ public enum ErrorCode {
     CONSULTING_STAFF_NOT_EXISTED(1028, "Consulting staff not existed!"),
     DESIGN_STAFF_NOT_EXISTED(1029, "Design staff not existed!"),
     CONSTRUCTION_STAFF_NOT_EXISTED(1030, "Construction staff not existed!"),
-    ACCEPTANCE_TEST_NOT_EXISTED(1031, "Acceptance test is not existed!")
+    ACCEPTANCE_TEST_NOT_EXISTED(1031, "Acceptance test is not existed!"),
+    TRANSACTION_NOT_EXISTED(1032,"Transaction is not existed!")
+
     ;
 
     ErrorCode(int code, String message) {

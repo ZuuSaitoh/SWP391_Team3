@@ -46,4 +46,11 @@ public class TransactionController {
         return new ApiResponse<Optional<List<Transaction>>>
                 (9999, "List of transaction", transactionService.getAllTransactionByOrderId(id));
     }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @DeleteMapping("/delete/{id}")
+    ApiResponse<String> deleteTransaction(@PathVariable int id){
+        transactionService.deleteTransaction(id);
+        return new ApiResponse<String>(1012,"Transaction deleted","Transaction deleted!");
+    }
 }

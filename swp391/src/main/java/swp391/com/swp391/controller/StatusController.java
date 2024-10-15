@@ -65,10 +65,9 @@ public class StatusController {
                 (999, "update complete of status", statusService.statusUpdateNumberOfUpdate(id));
     }
 
-
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @DeleteMapping("/delete/{id}")
-    ApiResponse<String> deleteStaff(@PathVariable int id){
+    ApiResponse<String> deleteStatus(@PathVariable int id){
         statusService.deleteStatus(id);
         return new ApiResponse<String>(1012,"Status deleted","Status deleted!");
     }

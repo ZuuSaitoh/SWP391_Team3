@@ -13,6 +13,7 @@ import swp391.com.swp391.repository.AcceptanceTestRepository;
 import swp391.com.swp391.repository.OrderRepository;
 import swp391.com.swp391.repository.StaffRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +50,7 @@ public class AcceptanceTestService {
 
         acceptanceTest.setImageData(request.getImageData());
         acceptanceTest.setDescription(request.getDescription());
+        acceptanceTest.setFinishDate(LocalDateTime.now());
         return acceptanceTestRepository.save(acceptanceTest);
     }
 

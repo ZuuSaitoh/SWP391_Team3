@@ -54,4 +54,11 @@ public class TransactionService {
     public Optional<List<Transaction>> getAllTransactionByOrderId(int id){
         return transactionRepository.findByOrder_OrderId(id);
     }
+
+    public void deleteTransaction(int id){
+        if (!transactionRepository.existsById(id)){
+            throw new AppException(ErrorCode.TRANSACTION_NOT_EXISTED);
+        }
+        transactionRepository.deleteById(id);
+    }
 }
