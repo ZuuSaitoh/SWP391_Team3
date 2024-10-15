@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 function ForgotPassword() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(localStorage.getItem("userMail"));
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -79,12 +79,15 @@ function ForgotPassword() {
           {!isEmailVerified ? (
             <VerifyEmail
               email={email}
-              setEmail={setEmail}
+              setEmail={setEmail} // Pass setEmail as a prop
               setIsEmailVerified={setIsEmailVerified}
               setMessage={setMessage}
             />
           ) : (
-            <form className="forgot-password-inputs" onSubmit={handleResetPassword}>
+            <form
+              className="forgot-password-inputs"
+              onSubmit={handleResetPassword}
+            >
               <div className="forgot-password-input">
                 <input
                   type="password"

@@ -20,7 +20,9 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
   const checkEmailExists = async () => {
     setIsCheckingEmail(true);
     try {
-      const response = await fetch(`http://localhost:8080/customers/checkMail/${email}`);
+      const response = await fetch(
+        `http://localhost:8080/customers/checkMail/${email}`
+      );
       const data = await response.json();
       if (response.ok && data.result === true) {
         return true;
@@ -39,7 +41,20 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
 
   const sendOtp = async (e) => {
     e.preventDefault();
-    
+
+    // Parse the user object from local storage
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const storedEmail = storedUser ? storedUser.email : "";
+
+    console.log("Entered email:", email);
+    console.log("Stored email:", storedEmail);
+
+    // Check if the entered email matches the logged-in user's email
+    if (email !== storedEmail) {
+      setMessage("Please enter the email associated with your account.");
+      return;
+    }
+
     const emailExists = await checkEmailExists();
     if (!emailExists) {
       setMessage("Email not found. Please check your email address.");
@@ -94,13 +109,17 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
             <input
               type="email"
               placeholder="Enter your email"
-              value={email}
+              value={email || ""}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
           <div className="forgot-password-submit-container">
-            <button type="submit" className="forgot-password-submit" disabled={isCheckingEmail}>
+            <button
+              type="submit"
+              className="forgot-password-submit"
+              disabled={isCheckingEmail}
+            >
               {isCheckingEmail ? "Checking..." : "Send OTP"}
             </button>
           </div>
