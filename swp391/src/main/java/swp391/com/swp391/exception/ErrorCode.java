@@ -30,7 +30,8 @@ public enum ErrorCode {
     DESIGN_NOT_EXISTED(1022,"Design is not existed!"),
     STATUS_NOT_EXISTED(1023,"Status is not existed!"),
     THREE_TIME_UPDATE(1024,"You can't update more than 3 times!"),
-    COMPLETE_TRUE(1025,"You can't change the status because this status has set to done!")
+    COMPLETE_TRUE(1025,"You can't change the status because this status has set to done!"),
+    TRANSACTION_NOT_EXISTED(1026,"Transaction is not existed!")
     ;
 
     ErrorCode(int code, String message) {
