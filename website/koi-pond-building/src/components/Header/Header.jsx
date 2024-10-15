@@ -89,6 +89,11 @@ function Header({ isTransparent }) {
               <Link to={`/consultingStaffPage/${currentStaff.id}`}>Staff</Link>
             </li>
           )}
+          {currentStaff && currentStaff.role === "Design Staff" && (
+            <li>
+              <Link to={`/designStaffPage/${currentStaff.id}`}>Staff</Link>
+            </li>
+          )}
         </ul>
         <div className="login-container">
           {currentUser ? (
