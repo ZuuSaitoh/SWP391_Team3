@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './dashBoard.css';
+import './sheetDataView.css'; // Make sure to create this separate CSS file
 
 const SPREADSHEET_ID = '1xH6rs-E5hlLYisTPgNztpu52mmYDyWUgJnHhnphC5fw';
 const SHEET_NAME = 'Form Responses 2'; 
@@ -29,15 +29,12 @@ const SheetDataViewComponent = () => {
           throw new Error('No data received from the API');
         }
 
-        const headers = result.values[0];
-        const rows = result.values.slice(1);
+        const [headers, ...rows] = result.values;
         
-        const parsedData = rows.map(row => {
-          return headers.reduce((obj, header, index) => {
-            obj[header] = row[index] || '';
-            return obj;
-          }, {});
-        });
+        const parsedData = rows.map(row => headers.reduce((obj, header, index) => {
+          obj[header] = row[index] || '';
+          return obj;
+        }, {}));
 
         setData(parsedData);
       } catch (e) {
@@ -57,23 +54,26 @@ const SheetDataViewComponent = () => {
     )
   );
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  if (loading) return <div className="loading">Loading<span className="loading-dots"></span></div>;
+  if (error) return <div className="error">Error: {error}</div>;
+  if (data.length === 0) return <div className="no-data">No data available</div>;
 
-  if (loading) return <div className="loading">Đang tải<span className="loading-dots"></span></div>;
-  if (error) return <div className="error">Lỗi: {error}</div>;
-  if (data.length === 0) return <div className="no-data">Không có dữ liệu</div>;
+  const formatStages = (stagesString) => {
+    const stages = stagesString.split(',').map(stage => stage.trim());
+    return stages.map((stage, index) => (
+      <div key={index} className="stage-item">{stage}</div>
+    ));
+  };
 
   return (
     <div className="sheet-data-container">
-      <h1 className="sheet-title">Đăng kí báo giá thiết kế hồ cá Koi</h1>
+      <h2 className="main-title">Koi Pond Quote Requests</h2>
       <div className="search-container">
         <input
           type="text"
-          placeholder="Tìm kiếm..."
+          placeholder="Search requests..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
@@ -83,30 +83,43 @@ const SheetDataViewComponent = () => {
         <table className="sheet-table">
           <thead>
             <tr>
-              <th>Thời gian</th>
+              <th>Time</th>
               <th>Email</th>
-              <th>Thông tin dự án</th>
-              <th>Thông tin khách hàng</th>
+              <th>Project Info</th>
+              <th>Customer Info</th>
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                <td className="time-cell">{row['Timestamp']}</td>
-                <td className="email-cell">{row['Email address']}</td>
-                <td className="project-info-cell">
-                  <div className="info-box">
-                    <p><strong>Vị trí:</strong> {row['Vị trí dự án']}</p>
-                    <p><strong>Diện tích:</strong> {row['Diện tích xây dựng hồ koi ở dự kiến'] || row['Diện tích xây dựng hồ koi ở dự kiến '] || 'Không có thông tin'}</p>
-                    <p><strong>Phong cách:</strong> {row['Bạn muốn thiết kế nhà theo phong cách nào?']}</p>
-                    <p><strong>Giai đoạn:</strong> {row['Giai đoạn cần thiết kế?*']}</p>
+            {currentItems.map((row, index) => (
+              <tr key={index}>
+                <td>{row['Timestamp']}</td>
+                <td>{row['Email address']}</td>
+                <td>
+                  <div className="info-group">
+                    <span className="info-label">Location:</span> {row['Project location ']}
+                  </div>
+                  <div className="info-group">
+                    <span className="info-label">Area:</span> {row['Estimated construction area for the Koi pond '] || 'N/A'}
+                  </div>
+                  <div className="info-group">
+                    <span className="info-label">Style:</span> {row['What style would you like for your house design? ']}
+                  </div>
+                  <div className="info-group">
+                    <span className="info-label">Stage:</span>
+                    <div className="stages-container">
+                      {formatStages(row['Stage that needs designing? '])}
+                    </div>
                   </div>
                 </td>
-                <td className="customer-info-cell">
-                  <div className="info-box">
-                    <p><strong>Tên:</strong> {row['Tên bạn*']}</p>
-                    <p><strong>SĐT:</strong> {row['Số điện thoại*']}</p>
-                    <p><strong>Cách liên hệ:</strong> {row['Cách liên hệ*']}</p>
+                <td>
+                  <div className="info-group">
+                    <span className="info-label">Name:</span> {row['Your name ']}
+                  </div>
+                  <div className="info-group">
+                    <span className="info-label">Phone:</span> {row['Phone number ']}
+                  </div>
+                  <div className="info-group">
+                    <span className="info-label">Contact:</span> {row['Contact method ']}
                   </div>
                 </td>
               </tr>
@@ -116,7 +129,7 @@ const SheetDataViewComponent = () => {
       </div>
       <div className="pagination">
         {Array.from({ length: Math.ceil(filteredData.length / itemsPerPage) }, (_, i) => (
-          <button key={i} onClick={() => paginate(i + 1)} className={currentPage === i + 1 ? 'active' : ''}>
+          <button key={i} onClick={() => setCurrentPage(i + 1)} className={currentPage === i + 1 ? 'active' : ''}>
             {i + 1}
           </button>
         ))}

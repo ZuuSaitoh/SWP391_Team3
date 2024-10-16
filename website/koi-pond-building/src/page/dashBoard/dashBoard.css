@@ -1733,34 +1733,48 @@ body {
 
 .overview {
   display: flex;
-  justify-content: space-around;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.overview-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
 }
 
 .overview-card {
-  background-color: #ffffff;
+  background-color: #fff;
   border-radius: 8px;
-  padding: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 30%;
 }
 
-.overview-card h3 {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 10px;
+.charts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
-.overview-card p {
-  font-size: 18px;
-  color: #0077be;
-  margin: 0;
+.chart-row {
+  display: flex;
+  gap: 2rem;
+  height: 400px;
 }
+
+.chart-wrapper {
+  flex: 1;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Add more specific styles as needed */
 
 .dashboard-composer {
   display: flex;

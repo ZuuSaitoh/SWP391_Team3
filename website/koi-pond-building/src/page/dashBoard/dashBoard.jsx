@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify"; // Import ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import CSS for toast notifications
 import { jwtDecode } from "jwt-decode";
 import "./dashBoard.css";
-import { Bar } from "react-chartjs-2";
+import { Bar, Line, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
+  PointElement,
+  LineElement,
   BarElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
+} from 'chart.js';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
@@ -30,7 +33,10 @@ import SheetDataViewComponent from "./SheetDataView";
 ChartJS.register(
   CategoryScale,
   LinearScale,
+  PointElement,
+  LineElement,
   BarElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend
@@ -89,6 +95,12 @@ const Dashboard = () => {
     imageData: "",
     description: "",
   });
+
+  const chartRefs = {
+    doughnut: useRef(null),
+    line: useRef(null),
+    bar: useRef(null),
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("staffAuthToken");
@@ -939,32 +951,116 @@ const Dashboard = () => {
   );
 
   const renderOverview = () => {
-    const chartData = {
-      labels: ["Customers", "Orders", "Staff"],
+    console.log("Rendering overview");
+    console.log("Customers:", customers);
+    console.log("Orders:", orders);
+    console.log("Staffs:", staffs);
+    console.log("Services:", services);
+
+    const doughnutData = {
+      labels: ['Customers', 'Orders', 'Staff'],
       datasets: [
         {
-          label: "Overview",
           data: [customers.length, orders.length, staffs.length],
-          backgroundColor: ["#3498db", "#2ecc71", "#e74c3c"],
+          backgroundColor: ['#3498db', '#2ecc71', '#e74c3c'],
+          borderColor: ['#2980b9', '#27ae60', '#c0392b'],
+          borderWidth: 1,
         },
       ],
     };
 
+    const lineData = {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      datasets: [
+        {
+          label: 'Orders',
+          data: [12, 19, 3, 5, 2, 3],
+          borderColor: '#3498db',
+          backgroundColor: 'rgba(52, 152, 219, 0.2)',
+          tension: 0.4,
+        },
+      ],
+    };
+
+    const barData = {
+      labels: ['Cleaning', 'Maintenance', 'Design', 'Construction'],
+      datasets: [
+        {
+          label: 'Services',
+          data: [65, 59, 80, 81],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+
+    const chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            font: { size: 14 },
+          },
+        },
+        title: {
+          display: true,
+          text: 'Data Overview',
+          font: { size: 20, weight: 'bold' },
+        },
+      },
+    };
+
     return (
       <div className="overview">
-        <div className="overview-card">
-          <h3>Total Customers</h3>
-          <p>{customers.length}</p>
+        <div className="overview-cards">
+          <div className="overview-card customers">
+            <h3>Total Customers</h3>
+            <p>{customers.length}</p>
+          </div>
+          <div className="overview-card staff">
+            <h3>Total Staff</h3>
+            <p>{staffs.length}</p>
+          </div>
+          <div className="overview-card orders">
+            <h3>Total Orders</h3>
+            <p>{orders.length}</p>
+          </div>
+          <div className="overview-card services">
+            <h3>Total Services</h3>
+            <p>{services.length}</p>
+          </div>
         </div>
-        <div className="overview-card">
-          <h3>Total Staff</h3>
-          <p>{staffs.length}</p>
+        <div className="charts-container">
+          <div className="chart-row">
+            <div className="chart-wrapper doughnut-chart">
+              <h3>Data Distribution</h3>
+              <Doughnut data={doughnutData} options={chartOptions} />
+            </div>
+            <div className="chart-wrapper line-chart">
+              <h3>Order Trends</h3>
+              <Line data={lineData} options={chartOptions} />
+            </div>
+          </div>
+          <div className="chart-row">
+            <div className="chart-wrapper bar-chart">
+              <h3>Service Distribution</h3>
+              <Bar data={barData} options={chartOptions} />
+            </div>
+          </div>
         </div>
-        <div className="overview-card">
-          <h3>Total Orders</h3>
-          <p>{orders.length}</p>
-        </div>
-        <Bar data={chartData} />
       </div>
     );
   };
