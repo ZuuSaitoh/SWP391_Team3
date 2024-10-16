@@ -2414,3 +2414,187 @@ body {
   border-color: #3498db;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
+
+/* Add these styles at the end of the file */
+
+.status-view {
+  padding: 20px;
+}
+
+.status-view h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.status-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 20px;
+}
+
+.status-item {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex: 0 0 300px;
+  max-width: 300px;
+}
+
+.status-item h3 {
+  color: #3498db;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.status-item .info-row {
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.status-item .info-label {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.status-item .info-value {
+  color: #34495e;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+}
+
+.error {
+  color: #e74c3c;
+}
+
+/* Add styles for horizontal scrolling */
+.table-container {
+  overflow-x: auto;
+}
+
+/* Update these styles at the end of the file */
+
+.status-view {
+  padding: 20px;
+}
+
+.status-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+}
+
+.status-item {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 2px solid #3498db;
+  width: 300px;
+}
+
+.status-header {
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  background-color: #3498db;
+}
+
+.status-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: white;
+}
+
+.status-icon {
+  font-size: 24px;
+}
+
+.status-icon.complete {
+  color: #ecf0f1;
+}
+
+.status-icon.incomplete {
+  color: #e74c3c; /* Red color for incomplete status */
+}
+
+.status-body {
+  padding: 15px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.info-label {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.info-value {
+  color: #34495e;
+  text-align: right;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.error {
+  color: #e74c3c;
+}
+
+.loading {
+  color: #3498db;
+}
+
+/* Ensure the table container allows horizontal scrolling for smaller screens */
+.table-container {
+  overflow-x: auto;
+}
+
+/* Add these styles at the end of the file */
+
+.status-footer {
+  padding: 10px 15px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  text-align: right;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.delete-btn .fa-trash {
+  margin-right: 5px;
+}

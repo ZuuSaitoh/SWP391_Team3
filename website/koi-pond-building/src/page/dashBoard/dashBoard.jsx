@@ -27,8 +27,10 @@ import {
   faFileContract,
   faSignOutAlt,
   faTable,
+  faListAlt, // Add this import for the status icon
 } from "@fortawesome/free-solid-svg-icons";
 import SheetDataViewComponent from "./SheetDataView";
+import StatusViewComponent from "./StatusView"; // Add this import
 
 ChartJS.register(
   CategoryScale,
@@ -1093,9 +1095,16 @@ const Dashboard = () => {
     navigate(`/contract/${contractId}`);
   };
 
+  // Add this function to render the Status view
+  const renderStatus = () => (
+    <div className="status-container">
+      <StatusViewComponent staffId={staffs.find(staff => staff.username === staffName)?.staffId} />
+    </div>
+  );
+
   return (
     <div className="dashboard">
-      <ToastContainer /> {/* Add this line */}
+      <ToastContainer />
       <div className="sidebar">
         <div className="sidebar-header">
           <h2>Dashboard</h2>
@@ -1157,7 +1166,6 @@ const Dashboard = () => {
           >
             <FontAwesomeIcon icon={faFileContract} /> Contracts
           </button>
-          {/* Thêm nút mới cho Sheet Data */}
           <button
             className={`sidebar-button ${
               activeView === "sheetData" ? "active" : ""
@@ -1165,6 +1173,12 @@ const Dashboard = () => {
             onClick={() => setActiveView("sheetData")}
           >
             <FontAwesomeIcon icon={faTable} /> Sheet Data
+          </button>
+          <button
+            className={`sidebar-button ${activeView === "status" ? "active" : ""}`}
+            onClick={() => setActiveView("status")}
+          >
+            <FontAwesomeIcon icon={faListAlt} /> Status
           </button>
         </div>
         <div className="sidebar-footer">
@@ -1193,25 +1207,29 @@ const Dashboard = () => {
               ? "Contract Dashboard"
               : activeView === "sheetData"
               ? "Sheet Data"
+              : activeView === "status"
+              ? "Status Dashboard"
               : "Dashboard"}
           </h1>
         </div>
         <div className="table-container">
-          {activeView === "overview" ? (
-            renderOverview()
-          ) : activeView === "customers" ? (
-            renderCustomers()
-          ) : activeView === "staffs" ? (
-            renderStaffs()
-          ) : activeView === "orders" ? (
-            renderOrders()
-          ) : activeView === "services" ? (
-            renderServices()
-          ) : activeView === "contracts" ? (
-            renderContracts()
-          ) : activeView === "sheetData" ? (
-            <SheetDataViewComponent />
-          ) : null}
+          {activeView === "overview"
+            ? renderOverview()
+            : activeView === "customers"
+            ? renderCustomers()
+            : activeView === "staffs"
+            ? renderStaffs()
+            : activeView === "orders"
+            ? renderOrders()
+            : activeView === "services"
+            ? renderServices()
+            : activeView === "contracts"
+            ? renderContracts()
+            : activeView === "sheetData"
+            ? <SheetDataViewComponent />
+            : activeView === "status"
+            ? renderStatus()
+            : null}
         </div>
         {selectedCustomerId && (
           <CustomerProfileDashboard customerId={selectedCustomerId} />
