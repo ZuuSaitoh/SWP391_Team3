@@ -52,7 +52,8 @@ function ForgotPassword() {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success("Password reset successfully. You can now sign in.");
+        toast.success("Password changed successfully.");
+        localStorage.removeItem("userMail");
         navigate("/");
       } else {
         toast.error(data.message || "Error resetting password");

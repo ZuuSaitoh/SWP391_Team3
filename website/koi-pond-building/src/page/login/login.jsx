@@ -38,10 +38,6 @@ function Login() {
     navigate("/register");
   };
 
-  // const pageClick = () => {
-  //   navigate("/homepage");
-  // };
-
   const forgotClick = () => {
     console.log("Forgot password clicked");
     navigate("/forgotpassword").catch((error) =>
@@ -126,19 +122,19 @@ function Login() {
     } catch (err) {
       console.error("Login error:", err);
       if (err.response) {
-        toast.error(
-          `Login failed: ${
-            err.response.data.message || "Authentication failed."
-          }`
-        );
+        // toast.error(
+        //   `Login failed: ${
+        //     err.response.data.message || "Authentication failed."
+        //   }`
+        // );
         console.error("Error data:", err.response.data);
         console.error("Error status:", err.response.status);
         console.error("Error headers:", err.response.headers);
       } else if (err.request) {
-        toast.error("No response from server. Please try again later.");
+        // toast.error("No response from server. Please try again later.");
         console.error("No response received:", err.request);
       } else {
-        toast.error(`Error: ${err.message}`);
+        // toast.error(`Error: ${err.message}`);
         console.error("Error message:", err.message);
       }
     }
@@ -152,7 +148,7 @@ function Login() {
     const queryParams = new URLSearchParams(location.search);
     const registered = queryParams.get("registered");
     if (registered === "true") {
-      toast.success("Registration successful! Please log in.");
+      // toast.success("Registration successful! Please log in.");
     }
   }, [location]);
 
