@@ -28,7 +28,7 @@ public class StatusController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/fetchAll")
-    ApiResponse<List<Status>> getAllContract(){
+    ApiResponse<List<Status>> getAllStatus(){
         return new ApiResponse<List<Status>>(9999, "List of status", statusService.getAllStatus());
     }
 
