@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
+import ScrollToTop from "./components/ScrollToTop";
 import "./index.css";
 import HomePage from "./page/homePage/homepage.jsx";
 import LoginPage from "./page/login/login.jsx";
@@ -26,48 +26,51 @@ import ConstructionStaffPage from "./page/staffPage/constructionStaffPage/constr
 
 function App() {
   return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/" element={<HomePage />} />
-      <Route path="/service-design" element={<ServiceDesign />} />
-      <Route path="/service-clean" element={<ServiceClean />} />
-      <Route path="/service-maintenance" element={<ServiceMaintenance />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/login-staff" element={<LoginStaff />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/forgotpassword" element={<ForgotPassword />} />
+    <>
+      <ScrollToTop />
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/service-design" element={<ServiceDesign />} />
+        <Route path="/service-clean" element={<ServiceClean />} />
+        <Route path="/service-maintenance" element={<ServiceMaintenance />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login-staff" element={<LoginStaff />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
 
-      {/* Protected Customer Routes */}
-      <Route element={<ProtectedRoutes />}>
-        <Route
-          path="/customer-profile/:customerId"
-          element={<CustomerProfilePage />}
-        />
-        <Route path="/change-password" element={<ChangePassword />} />
-      </Route>
+        {/* Protected Customer Routes */}
+        <Route element={<ProtectedRoutes />}>
+          <Route
+            path="/customer-profile/:customerId"
+            element={<CustomerProfilePage />}
+          />
+          <Route path="/change-password" element={<ChangePassword />} />
+        </Route>
 
-      {/* Protected Staff Routes */}
-      <Route element={<ProtectedStaffRoutes />}>
-        <Route path="/dashboard" element={<DashBoard />} />
-        <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
-        <Route path="/designStaffPage/:staffId" element={<DesignStaffPage />} />
-        <Route
-          path="/consultingStaffPage/:staffId"
-          element={<ConsultingStaffPage />}
-        />
-        <Route
-          path="/constructionStaffPage/:staffId"
-          element={<ConstructionStaffPage />}
-        />
-        <Route path="/order/:orderId" element={<OrderViewDashboard />} />
-        <Route path="/customer/:Id" element={<CustomerProfileDashBoard />} />
-        <Route path="/service/:serviceId" element={<ServiceViewDashboard />} />
-        <Route
-          path="/contract/:contractId"
-          element={<ContractViewDashBoard />}
-        />
-      </Route>
-    </Routes>
+        {/* Protected Staff Routes */}
+        <Route element={<ProtectedStaffRoutes />}>
+          <Route path="/dashboard" element={<DashBoard />} />
+          <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
+          <Route path="/designStaffPage/:staffId" element={<DesignStaffPage />} />
+          <Route
+            path="/consultingStaffPage/:staffId"
+            element={<ConsultingStaffPage />}
+          />
+          <Route
+            path="/constructionStaffPage/:staffId"
+            element={<ConstructionStaffPage />}
+          />
+          <Route path="/order/:orderId" element={<OrderViewDashboard />} />
+          <Route path="/customer/:Id" element={<CustomerProfileDashBoard />} />
+          <Route path="/service/:serviceId" element={<ServiceViewDashboard />} />
+          <Route
+            path="/contract/:contractId"
+            element={<ContractViewDashBoard />}
+          />
+        </Route>
+      </Routes>
+    </>
   );
 }
 
