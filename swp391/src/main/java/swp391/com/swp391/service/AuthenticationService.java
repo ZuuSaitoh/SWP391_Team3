@@ -17,6 +17,7 @@ import swp391.com.swp391.dto.request.AuthenticationRequest;
 import swp391.com.swp391.dto.request.IntrospectRequest;
 import swp391.com.swp391.dto.response.AuthenticationResponse;
 import swp391.com.swp391.dto.response.IntrospectResponse;
+import swp391.com.swp391.entity.Customer;
 import swp391.com.swp391.exception.AppException;
 import swp391.com.swp391.exception.ErrorCode;
 import swp391.com.swp391.repository.CustomerRepository;
@@ -25,6 +26,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -55,6 +57,7 @@ public class AuthenticationService {
 
     private String generateToken(String username){
         int customerId = customerService.getCustomerIdByUsername(username);
+        Optional<Customer> customer = customerRepository.findById(String.valueOf(customerId));
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
@@ -64,6 +67,7 @@ public class AuthenticationService {
                 .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
                 .claim("customerId", customerId)
                 .claim("role", "Customer")
+                .claim("mail", customer.get().getMail())
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 
