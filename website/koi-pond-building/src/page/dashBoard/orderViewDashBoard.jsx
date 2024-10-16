@@ -7,26 +7,47 @@ import "./dashBoard.css";
 const OrderViewDashboard = () => {
   const [order, setOrder] = useState(null);
   const [contracts, setContracts] = useState([]);
+  const [statuses, setStatuses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showCreateStatusModal, setShowCreateStatusModal] = useState(false);
+  const [staffList, setStaffList] = useState([]);
+  const [newStatus, setNewStatus] = useState({
+    statusDescription: "",
+    staffId: "",
+  });
   const { orderId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const orderResponse = await axios.get(
-          `http://localhost:8080/orders/${orderId}`
-        );
+        const [orderResponse, contractsResponse, statusesResponse, staffResponse] = await Promise.all([
+          axios.get(`http://localhost:8080/orders/${orderId}`),
+          axios.get(`http://localhost:8080/contracts/fetchAll/order/${orderId}`),
+          axios.get(`http://localhost:8080/status/fetchAll/order/${orderId}`),
+          axios.get(`http://localhost:8080/staffs/fetchAll`)
+        ]);
+
         setOrder(orderResponse.data);
 
-        const contractsResponse = await axios.get(
-          `http://localhost:8080/contracts/fetchAll/order/${orderId}`
-        );
         if (contractsResponse.data.code === 9999) {
           setContracts(contractsResponse.data.result);
         } else {
           console.warn("Failed to fetch contracts");
+        }
+
+        if (statusesResponse.data.code === 9999) {
+          setStatuses(statusesResponse.data.result);
+        } else {
+          console.warn("Failed to fetch statuses");
+        }
+
+        if (staffResponse.data.code === 9999) {
+          setStaffList(staffResponse.data.result);
+        } else {
+          console.warn("Failed to fetch staff list");
         }
 
         setLoading(false);
@@ -61,6 +82,96 @@ const OrderViewDashboard = () => {
     }
   };
 
+  const toggleStatusModal = () => {
+    setShowStatusModal(!showStatusModal);
+  };
+
+  const toggleCreateStatusModal = () => {
+    setShowCreateStatusModal(!showCreateStatusModal);
+  };
+
+  const handleCreateStatus = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8080/status/create", {
+        orderId: orderId,
+        statusDescription: newStatus.statusDescription,
+        staffId: parseInt(newStatus.staffId),
+      });
+
+      if (response.data.code === 1000) {
+        toast.success("Status created successfully");
+        setStatuses([...statuses, response.data.result]);
+        toggleCreateStatusModal();
+      } else {
+        toast.error("Failed to create status");
+      }
+    } catch (err) {
+      console.error("Error creating status:", err);
+      toast.error("An error occurred while creating the status");
+    }
+  };
+
+  const StatusModal = ({ statuses, onClose }) => (
+    <div className="status-modal-overlay" onClick={onClose}>
+      <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+        <h2>Status Information</h2>
+        {statuses.map((status, index) => (
+          <div key={status.statusId} className="status-item">
+            <h3>Status {index + 1}</h3>
+            <InfoRow label="Description" value={status.statusDescription} />
+            <InfoRow label="Date" value={new Date(status.statusDate).toLocaleString()} />
+            <InfoRow label="Staff" value={status.staff.username} />
+            <InfoRow label="Complete" value={status.complete ? "Yes" : "No"} />
+            <InfoRow label="Number of Updates" value={status.numberOfUpdate} />
+            {status.checkDate && (
+              <InfoRow label="Check Date" value={new Date(status.checkDate).toLocaleString()} />
+            )}
+          </div>
+        ))}
+        <button onClick={onClose} className="close-modal-btn">Close</button>
+      </div>
+    </div>
+  );
+
+  const CreateStatusModal = ({ onClose }) => (
+    <div className="status-modal-overlay" onClick={onClose}>
+      <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+        <h2>Create New Status</h2>
+        <form onSubmit={handleCreateStatus}>
+          <div>
+            <label htmlFor="statusDescription">Status Description:</label>
+            <input
+              type="text"
+              id="statusDescription"
+              value={newStatus.statusDescription}
+              onChange={(e) => setNewStatus({ ...newStatus, statusDescription: e.target.value })}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="staffId">Staff:</label>
+            <select
+              id="staffId"
+              value={newStatus.staffId}
+              onChange={(e) => setNewStatus({ ...newStatus, staffId: e.target.value })}
+              required
+            >
+              <option value="">Select a staff member</option>
+              {staffList.map((staff) => (
+                <option key={staff.staffId} value={staff.staffId}>
+                  {staff.username} - {staff.role}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button type="submit" className="create-status-btn">Create Status</button>
+          <button type="button" onClick={onClose} className="cancel-btn">Cancel</button>
+        </form>
+      </div>
+    </div>
+  );
+
   const InfoRow = ({ label, value }) => (
     <div className="info-row">
       <span className="info-label">{label}:</span>
@@ -68,8 +179,7 @@ const OrderViewDashboard = () => {
     </div>
   );
 
-  if (loading)
-    return <div className="dashboard-loading">Loading order details...</div>;
+  if (loading) return <div className="dashboard-loading">Loading order details...</div>;
   if (error) return <div className="dashboard-error">{error}</div>;
   if (!order) return <div className="dashboard-error">Order not found</div>;
 
@@ -141,6 +251,18 @@ const OrderViewDashboard = () => {
           )}
         </div>
 
+        <div className="info-section status-section">
+          <h2>Status Information</h2>
+          <div className="status-button-container">
+            <button onClick={toggleStatusModal} className="view-status-btn">
+              View Status
+            </button>
+            <button onClick={toggleCreateStatusModal} className="create-status-btn">
+              Create Status
+            </button>
+          </div>
+        </div>
+
         {contracts.map((contract) => (
           <div className="info-section" key={contract.contractId}>
             <h2>Contract Information (ID: {contract.contractId})</h2>
@@ -164,6 +286,12 @@ const OrderViewDashboard = () => {
           UPDATE END DATE
         </button>
       </div>
+      {showStatusModal && (
+        <StatusModal statuses={statuses} onClose={toggleStatusModal} />
+      )}
+      {showCreateStatusModal && (
+        <CreateStatusModal onClose={toggleCreateStatusModal} />
+      )}
     </div>
   );
 };
