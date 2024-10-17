@@ -125,26 +125,8 @@ const OrderViewDashboard = () => {
     }
   };
 
-  const handleDeleteStatus = async (statusId) => {
-    if (window.confirm('Are you sure you want to delete this status?')) {
-      try {
-        const response = await axios.delete(`http://localhost:8080/status/delete/${statusId}`);
-        if (response.data.code === 1012) {
-          toast.success('Status deleted successfully');
-          // Update the statuses state by removing the deleted status
-          setStatuses(statuses.filter(status => status.statusId !== statusId));
-        } else {
-          toast.error('Failed to delete status');
-        }
-      } catch (err) {
-        console.error('Error deleting status:', err);
-        toast.error('An error occurred while deleting the status');
-      }
-    }
-  };
-
   const StatusModal = ({ statuses, onClose }) => {
-    const currentStaffId = order.staff.staffId; // Get the current staff ID from the order
+    const currentStaffId = order.staff.staffId;
 
     return (
       <div className="status-modal-overlay" onClick={onClose}>
@@ -163,11 +145,7 @@ const OrderViewDashboard = () => {
               {status.checkDate && (
                 <InfoRow label="Check Date" value={new Date(status.checkDate).toLocaleString()} />
               )}
-              {currentStaffId === status.staff.staffId && (
-                <button onClick={() => handleDeleteStatus(status.statusId)} className="delete-status-btn">
-                  <FontAwesomeIcon icon={faTrash} /> Delete
-                </button>
-              )}
+              {/* Remove the delete button from here */}
             </div>
           ))}
           <button onClick={onClose} className="close-modal-btn">Close</button>
