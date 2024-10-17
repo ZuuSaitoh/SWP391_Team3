@@ -31,6 +31,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import SheetDataViewComponent from "./SheetDataView";
 import StatusViewComponent from "./StatusView"; // Add this import
+import uploadFile from "../../utils/file"; // Add this import at the top of the file
 
 ChartJS.register(
   CategoryScale,
@@ -96,6 +97,7 @@ const Dashboard = () => {
     uploadStaff: "",
     imageData: "",
     description: "",
+    file: null, // Add this line
   });
 
   const chartRefs = {
@@ -310,10 +312,21 @@ const Dashboard = () => {
   const handleAddContract = async (e) => {
     e.preventDefault();
     try {
+      let imageData = "";
+      if (newContract.file) {
+        imageData = await uploadFile(newContract.file);
+      }
+
       const response = await axios.post(
         "http://localhost:8080/contracts/create",
-        newContract
+        {
+          orderId: newContract.orderId,
+          uploadStaff: newContract.uploadStaff,
+          imageData: imageData, // This will be the uploaded file URL
+          description: newContract.description
+        }
       );
+
       if (response.data.code === 1000) {
         toast.success("Contract created successfully");
         setContracts([...contracts, response.data.result]);
@@ -323,6 +336,7 @@ const Dashboard = () => {
           uploadStaff: "",
           imageData: "",
           description: "",
+          file: null,
         });
       } else {
         toast.error("Failed to create contract");
@@ -602,11 +616,10 @@ const Dashboard = () => {
             ))}
           </select>
           <input
-            type="text"
-            placeholder="Image Data"
-            value={newContract.imageData}
+            type="file"
+            accept=".doc,.docx,.pdf"
             onChange={(e) =>
-              setNewContract({ ...newContract, imageData: e.target.value })
+              setNewContract({ ...newContract, file: e.target.files[0] })
             }
             required
           />
