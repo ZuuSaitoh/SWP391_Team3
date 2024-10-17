@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./dashBoard.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 const OrderViewDashboard = () => {
   const [order, setOrder] = useState(null);
@@ -125,14 +126,51 @@ const OrderViewDashboard = () => {
     }
   };
 
-  const StatusModal = ({ statuses, onClose }) => {
-    const currentStaffId = order.staff.staffId;
+  const handleDeleteStatus = async (statusId) => {
+    if (window.confirm('Are you sure you want to delete this status?')) {
+      try {
+        const response = await axios.delete(`http://localhost:8080/status/delete/${statusId}`);
+        if (response.data.code === 1012) {
+          toast.success('Status deleted successfully');
+          setStatuses(statuses.filter(status => status.statusId !== statusId));
+        } else {
+          toast.error('Failed to delete status');
+        }
+      } catch (err) {
+        console.error('Error deleting status:', err);
+        toast.error('An error occurred while deleting the status');
+      }
+    }
+  };
 
+  const handleUpdateStatus = async (statusId) => {
+    try {
+      const response = await axios.patch(`http://localhost:8080/status/update-number-of-update/${statusId}`, {});
+      if (response.data.code === 999) {
+        toast.success('Status updated successfully');
+        setStatuses(statuses.map(status => 
+          status.statusId === statusId ? response.data.result : status
+        ));
+      } else if (response.data.code === 1026) {
+        toast.error("You can't update more than 3 times!");
+      } else {
+        toast.error('Failed to update status');
+      }
+    } catch (err) {
+      console.error('Error updating status:', err);
+      if (err.response && err.response.data && err.response.data.message) {
+        toast.error(err.response.data.message);
+      } else {
+        toast.error('An error occurred while updating the status');
+      }
+    }
+  };
+
+  const StatusModal = ({ statuses, onClose }) => {
     return (
       <div className="status-modal-overlay" onClick={onClose}>
         <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
           <h2>Status Information</h2>
-          <p>Current Staff ID: {currentStaffId}</p>
           {statuses.map((status, index) => (
             <div key={status.statusId} className="status-item">
               <h3>Status {index + 1}</h3>
@@ -145,7 +183,14 @@ const OrderViewDashboard = () => {
               {status.checkDate && (
                 <InfoRow label="Check Date" value={new Date(status.checkDate).toLocaleString()} />
               )}
-              {/* Remove the delete button from here */}
+              <div className="status-actions">
+                <button onClick={() => handleUpdateStatus(status.statusId)} className="update-btn">
+                  <FontAwesomeIcon icon={faEdit} /> Update
+                </button>
+                <button onClick={() => handleDeleteStatus(status.statusId)} className="delete-btn">
+                  <FontAwesomeIcon icon={faTrash} /> Delete
+                </button>
+              </div>
             </div>
           ))}
           <button onClick={onClose} className="close-modal-btn">Close</button>
@@ -219,6 +264,7 @@ const OrderViewDashboard = () => {
 
   return (
     <div className="order-view-dashboard">
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       <h1>Order Details</h1>
       <div className="order-details-grid">
         <div className="info-section">

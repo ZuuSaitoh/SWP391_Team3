@@ -28,6 +28,9 @@ function DesignStaffPage() {
   const [editingDesign, setEditingDesign] = useState(null);
   const [editForm] = Form.useForm();
   const [modalMode, setModalMode] = useState('create'); // New state to track modal mode
+  const [statusModalVisible, setStatusModalVisible] = useState(false);
+  const [staffStatuses, setStaffStatuses] = useState([]);
+  const [updatingStatus, setUpdatingStatus] = useState(null);
 
   const staffId = localStorage.getItem("staffId");
 
@@ -173,6 +176,100 @@ function DesignStaffPage() {
     setShowModal(true);
   };
 
+  const fetchStatusesByStaffId = async () => {
+    try {
+      const staffId = localStorage.getItem("staffId");
+      const response = await api.get(`/status/fetchAll/staff/${staffId}`);
+      if (response.data.code === 9999) {
+        setStaffStatuses(response.data.result);
+        setStatusModalVisible(true);
+      } else {
+        console.warn("Unexpected response when fetching statuses:", response.data);
+        toast.warning("Unexpected response when fetching statuses.");
+      }
+    } catch (err) {
+      console.error("Error fetching statuses:", err);
+      toast.error(
+        "Error fetching statuses: " +
+          (err.response?.data?.message || err.message)
+      );
+    }
+  };
+
+  const handleUpdateStatus = async (statusId) => {
+    try {
+      const response = await api.patch(`http://localhost:8080/status/update-number-of-update/${statusId}`);
+      if (response.data.code === 999) {
+        // Update the local state with the new data
+        setStaffStatuses(prevStatuses =>
+          prevStatuses.map(status =>
+            status.statusId === statusId ? response.data.result : status
+          )
+        );
+        toast.success("Status updated successfully");
+      } else {
+        toast.error("Failed to update status");
+      }
+    } catch (err) {
+      console.error("Error updating status:", err);
+      toast.error("Error updating status: " + (err.response?.data?.message || err.message));
+    }
+  };
+
+  const statusColumns = [
+    {
+      title: 'Order ID',
+      dataIndex: ['order', 'orderId'],
+      key: 'orderId',
+    },
+    {
+      title: 'Customer Name',
+      dataIndex: ['order', 'customer', 'fullName'],
+      key: 'customerName',
+    },
+    {
+      title: 'Customer Email',
+      dataIndex: ['order', 'customer', 'mail'],
+      key: 'customerEmail',
+    },
+    {
+      title: 'Customer Phone',
+      dataIndex: ['order', 'customer', 'phone'],
+      key: 'customerPhone',
+    },
+    {
+      title: 'Status Description',
+      dataIndex: 'statusDescription',
+      key: 'statusDescription',
+    },
+    {
+      title: 'Status Date',
+      dataIndex: 'statusDate',
+      key: 'statusDate',
+      render: (date) => new Date(date).toLocaleString(),
+    },
+    {
+      title: 'Complete',
+      dataIndex: 'complete',
+      key: 'complete',
+      render: (complete) => complete ? 'Yes' : 'No',
+    },
+    {
+      title: 'Number of Updates',
+      dataIndex: 'numberOfUpdate',
+      key: 'numberOfUpdate',
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        <Button onClick={() => handleUpdateStatus(record.statusId)}>
+          Update
+        </Button>
+      ),
+    },
+  ];
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -292,15 +389,21 @@ function DesignStaffPage() {
 
   return (
     <div>
-      <Button onClick={handleAddNew}>Add new design</Button>
-      <Button onClick={backToHomepage} style={{ marginLeft: "10px" }}>
-        Return to Homepage
-      </Button>
+      <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '20px' }}>
+        <Button onClick={handleAddNew}>Add new design</Button>
+        <Button onClick={backToHomepage} style={{ marginLeft: "10px" }}>
+          Return to Homepage
+        </Button>
+        <Button onClick={fetchStatusesByStaffId} style={{ marginLeft: "10px" }}>
+          View My Statuses
+        </Button>
+      </div>
+      
       <Table 
         dataSource={datas} 
         columns={columns} 
         rowKey="designId"
-        key={datas.length} // Force re-render when data changes
+        key={datas.length}
       />
 
       <Modal
@@ -360,6 +463,21 @@ function DesignStaffPage() {
             <Input />
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        title="My Statuses"
+        visible={statusModalVisible}
+        onCancel={() => setStatusModalVisible(false)}
+        footer={null}
+        width={1200}
+      >
+        <Table
+          dataSource={staffStatuses}
+          columns={statusColumns}
+          rowKey="statusId"
+          scroll={{ x: true }}
+        />
       </Modal>
 
       {previewImage && (

@@ -2429,9 +2429,12 @@ body {
 .status-container {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start; /* Changed from flex-end to flex-start */
   gap: 20px;
-  overflow-x: auto;
-  padding-bottom: 20px;
+  max-width: 100%; /* Increased from 80% to 100% */
+  margin-left: auto;
+  margin-right: 0; /* Removed the right margin completely */
+  padding-right: 20px; /* Added some padding to the right side */
 }
 
 .status-item {
@@ -2482,13 +2485,18 @@ body {
 
 .status-view {
   padding: 20px;
+  display: flex;
+  justify-content: center; /* Center the content horizontally */
 }
 
 .status-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
   justify-content: flex-start;
+  gap: 20px;
+  max-width: 80%; /* Adjust this value to control how much of the width is used */
+  margin: 0 auto; /* Center the container */
+  padding-right: 0; /* Remove right padding */
 }
 
 .status-item {
@@ -2497,7 +2505,8 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   border: 2px solid #3498db;
-  width: 300px;
+  width: 300px; /* Fixed width for each status item */
+  margin-bottom: 20px; /* Add some vertical spacing between items */
 }
 
 .status-header {
@@ -2574,27 +2583,185 @@ body {
 /* Add these styles at the end of the file */
 
 .status-footer {
+  display: flex;
+  justify-content: space-between;
   padding: 10px 15px;
   background-color: #f8f9fa;
   border-top: 1px solid #e9ecef;
-  text-align: right;
+}
+
+.status-footer button {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.update-btn {
+  background-color: #3498db;
+  color: white;
+  margin-right: 5px;
+}
+
+.update-btn:hover {
+  background-color: #2980b9;
 }
 
 .delete-btn {
   background-color: #e74c3c;
   color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
+  margin-left: 5px;
 }
 
 .delete-btn:hover {
   background-color: #c0392b;
 }
 
-.delete-btn .fa-trash {
+.status-footer button:hover {
+  transform: translateY(-2px);
+}
+
+.status-footer button:active {
+  transform: translateY(0);
+}
+
+.status-footer .fa-icon {
   margin-right: 5px;
+}
+
+/* Add these styles at the end of the file */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h2 {
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.modal-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.confirm-update-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.confirm-update-btn:hover {
+  background-color: #2980b9;
+}
+
+.cancel-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Add these styles to your existing CSS file */
+
+.status-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.status-actions button {
+  flex: 1; /* This will make both buttons take up equal space */
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 5px; /* Add some horizontal spacing between buttons */
+}
+
+.status-actions .update-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.status-actions .update-btn:hover {
+  background-color: #2980b9;
+}
+
+.status-actions .delete-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.status-actions .delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.status-actions button:hover {
+  transform: translateY(-2px);
+}
+
+.status-actions button:active {
+  transform: translateY(0);
+}
+
+.status-actions .fa-icon {
+  margin-right: 5px;
+}
+
+/* Toast Notifications */
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
+.Toastify__toast {
+  font-family: 'Arial', sans-serif;
+}
+
+.Toastify__toast--success {
+  background: white;
+}
+
+.Toastify__toast--error {
+  background: white;
 }
