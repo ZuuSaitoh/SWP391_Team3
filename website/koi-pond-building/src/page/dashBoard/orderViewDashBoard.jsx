@@ -22,6 +22,7 @@ const OrderViewDashboard = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
   const [currentStaffId, setCurrentStaffId] = useState(null);
+  const [currentStaffRole, setCurrentStaffRole] = useState(null);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -34,8 +35,16 @@ const OrderViewDashboard = () => {
         ]);
 
         setOrder(orderResponse.data);
-        // Set the current staff ID from the order data
-        setCurrentStaffId(orderResponse.data.staff.staffId);
+        
+        // Set current staff information from the order data
+        if (orderResponse.data && orderResponse.data.staff) {
+          setCurrentStaffId(orderResponse.data.staff.staffId);
+          setCurrentStaffRole(orderResponse.data.staff.role);
+          console.log("Current Staff ID:", orderResponse.data.staff.staffId);
+          console.log("Current Staff Role:", orderResponse.data.staff.role);
+        } else {
+          console.warn("Staff information not found in order data");
+        }
 
         if (contractsResponse.data.code === 9999) {
           setContracts(contractsResponse.data.result);
@@ -58,7 +67,7 @@ const OrderViewDashboard = () => {
         setLoading(false);
       } catch (err) {
         console.error("Error fetching order details:", err);
-        setError("Failed to fetch order details");
+        setError("Failed to fetch order details: " + (err.response?.data?.message || err.message));
         setLoading(false);
       }
     };
@@ -95,13 +104,12 @@ const OrderViewDashboard = () => {
     setShowCreateStatusModal(!showCreateStatusModal);
   };
 
-  const handleCreateStatus = async (e) => {
-    e.preventDefault();
+  const handleCreateStatus = async (newStatusData) => {
     try {
       const response = await axios.post("http://localhost:8080/status/create", {
         orderId: orderId,
-        statusDescription: newStatus.statusDescription,
-        staffId: parseInt(newStatus.staffId),
+        statusDescription: newStatusData.statusDescription,
+        staffId: parseInt(newStatusData.staffId),
       });
 
       if (response.data.code === 1000) {
@@ -135,70 +143,91 @@ const OrderViewDashboard = () => {
     }
   };
 
-  const StatusModal = ({ statuses, onClose }) => (
-    <div className="status-modal-overlay" onClick={onClose}>
-      <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2>Status Information</h2>
-        {statuses.map((status, index) => (
-          <div key={status.statusId} className="status-item">
-            <h3>Status {index + 1}</h3>
-            <InfoRow label="Description" value={status.statusDescription} />
-            <InfoRow label="Date" value={new Date(status.statusDate).toLocaleString()} />
-            <InfoRow label="Staff" value={status.staff.username} />
-            <InfoRow label="Complete" value={status.complete ? "Yes" : "No"} />
-            <InfoRow label="Number of Updates" value={status.numberOfUpdate} />
-            {status.checkDate && (
-              <InfoRow label="Check Date" value={new Date(status.checkDate).toLocaleString()} />
-            )}
-            {currentStaffId && currentStaffId === status.staff.staffId && (
-              <button onClick={() => handleDeleteStatus(status.statusId)} className="delete-status-btn">
-                <FontAwesomeIcon icon={faTrash} /> Delete
-              </button>
-            )}
-          </div>
-        ))}
-        <button onClick={onClose} className="close-modal-btn">Close</button>
-      </div>
-    </div>
-  );
+  const StatusModal = ({ statuses, onClose }) => {
+    const currentStaffUsername = order.staff.username; // Get the current staff username
 
-  const CreateStatusModal = ({ onClose }) => (
-    <div className="status-modal-overlay" onClick={onClose}>
-      <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2>Create New Status</h2>
-        <form onSubmit={handleCreateStatus}>
-          <div>
-            <label htmlFor="statusDescription">Status Description:</label>
-            <input
-              type="text"
-              id="statusDescription"
-              value={newStatus.statusDescription}
-              onChange={(e) => setNewStatus({ ...newStatus, statusDescription: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="staffId">Staff:</label>
-            <select
-              id="staffId"
-              value={newStatus.staffId}
-              onChange={(e) => setNewStatus({ ...newStatus, staffId: e.target.value })}
-              required
-            >
-              <option value="">Select a staff member</option>
-              {staffList.map((staff) => (
-                <option key={staff.staffId} value={staff.staffId}>
-                  {staff.username} - {staff.role}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button type="submit" className="create-status-btn">Create Status</button>
-          <button type="button" onClick={onClose} className="cancel-btn">Cancel</button>
-        </form>
+    return (
+      <div className="status-modal-overlay" onClick={onClose}>
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+          <h2>Status Information</h2>
+          <p>Current Staff: {currentStaffUsername || 'Not available'}</p>
+          <p>Current Staff Role: {currentStaffRole || 'Not available'}</p>
+          {statuses.map((status, index) => (
+            <div key={status.statusId} className="status-item">
+              <h3>Status {index + 1}</h3>
+              <InfoRow label="Description" value={status.statusDescription} />
+              <InfoRow label="Date" value={new Date(status.statusDate).toLocaleString()} />
+              <InfoRow label="Staff" value={status.staff.username} />
+              <InfoRow label="Staff ID" value={status.staff.staffId} />
+              <InfoRow label="Complete" value={status.complete ? "Yes" : "No"} />
+              <InfoRow label="Number of Updates" value={status.numberOfUpdate} />
+              {status.checkDate && (
+                <InfoRow label="Check Date" value={new Date(status.checkDate).toLocaleString()} />
+              )}
+              {currentStaffUsername === status.staff.username && (
+                <button onClick={() => handleDeleteStatus(status.statusId)} className="delete-status-btn">
+                  <FontAwesomeIcon icon={faTrash} /> Delete
+                </button>
+              )}
+            </div>
+          ))}
+          <button onClick={onClose} className="close-modal-btn">Close</button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
+
+  const CreateStatusModal = ({ onClose }) => {
+    const [description, setDescription] = useState("");
+    const [selectedStaffId, setSelectedStaffId] = useState("");
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      handleCreateStatus({
+        statusDescription: description,
+        staffId: selectedStaffId
+      });
+    };
+
+    return (
+      <div className="status-modal-overlay" onClick={onClose}>
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+          <h2>Create New Status</h2>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="statusDescription">Status Description:</label>
+              <textarea
+                id="statusDescription"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                rows="3"
+                style={{ width: '100%', resize: 'vertical' }}
+              />
+            </div>
+            <div>
+              <label htmlFor="staffId">Staff:</label>
+              <select
+                id="staffId"
+                value={selectedStaffId}
+                onChange={(e) => setSelectedStaffId(e.target.value)}
+                required
+              >
+                <option value="">Select a staff member</option>
+                {staffList.map((staff) => (
+                  <option key={staff.staffId} value={staff.staffId}>
+                    {staff.username} - {staff.role}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button type="submit" className="create-status-btn">Create Status</button>
+            <button type="button" onClick={onClose} className="cancel-btn">Cancel</button>
+          </form>
+        </div>
+      </div>
+    );
+  };
 
   const InfoRow = ({ label, value }) => (
     <div className="info-row">
