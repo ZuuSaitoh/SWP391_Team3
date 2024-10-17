@@ -31,7 +31,7 @@ public class Status {
     @Column(name = "check_date")
     LocalDateTime checkDate;
     @Column(name = "complete")
-    byte complete;
+    boolean complete;
     @Column(name = "number_of_update")
     int numberOfUpdate;
 
@@ -71,14 +71,21 @@ public class Status {
         this.checkDate = checkDate;
     }
 
-
-    public byte getComplete() {
+    public boolean isComplete() {
         return complete;
     }
 
-    public void setComplete(byte complete) {
+    public void setComplete(boolean complete) {
         this.complete = complete;
     }
+
+//    public byte getComplete() {
+//        return complete;
+//    }
+//
+//    public void setComplete(byte complete) {
+//        this.complete = complete;
+//    }
 
     public int getNumberOfUpdate() {
         return numberOfUpdate;

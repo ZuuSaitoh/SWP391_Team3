@@ -11,14 +11,22 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StatusUpdateCompleteRequest {
     @NotNull(message = "ENTER_ALL_FIELDS")
-    byte complete;
+    boolean complete;
 
     @NotNull(message = "ENTER_ALL_FIELDS")
-    public byte getComplete() {
+    public boolean isComplete() {
         return complete;
     }
 
-    public void setComplete(@NotNull(message = "ENTER_ALL_FIELDS") byte complete) {
+    public void setComplete(@NotNull(message = "ENTER_ALL_FIELDS") boolean complete) {
         this.complete = complete;
     }
+//    @NotNull(message = "ENTER_ALL_FIELDS")
+//    public byte getComplete() {
+//        return complete;
+//    }
+//
+//    public void setComplete(@NotNull(message = "ENTER_ALL_FIELDS") byte complete) {
+//        this.complete = complete;
+//    }
 }

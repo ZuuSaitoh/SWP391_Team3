@@ -59,17 +59,17 @@ public class StatusService {
 
     public Status updateCompleteStatus(int id, StatusUpdateCompleteRequest request){
         Status status = getStatusByStatusId(id);
-        if (status.getComplete()==1){
+        if (status.isComplete()){
             throw new AppException(ErrorCode.COMPLETE_TRUE);
         }
-        status.setComplete(request.getComplete());
+        status.setComplete(request.isComplete());
         status.setCheckDate(LocalDateTime.now());
         return statusRepository.save(status);
     }
 
     public Status statusUpdateNumberOfUpdate(int id){
         Status status = getStatusByStatusId(id);
-        if (status.getComplete()==1){
+        if (status.isComplete()){
             throw new AppException(ErrorCode.COMPLETE_TRUE);
         }
         if (status.getNumberOfUpdate()<3){
