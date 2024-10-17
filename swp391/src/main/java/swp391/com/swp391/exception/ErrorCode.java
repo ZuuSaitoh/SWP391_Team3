@@ -35,7 +35,8 @@ public enum ErrorCode {
     DESIGN_STAFF_NOT_EXISTED(1029, "Design staff not existed!"),
     CONSTRUCTION_STAFF_NOT_EXISTED(1030, "Construction staff not existed!"),
     ACCEPTANCE_TEST_NOT_EXISTED(1031, "Acceptance test is not existed!"),
-    TRANSACTION_NOT_EXISTED(1032,"Transaction is not existed!")
+    TRANSACTION_NOT_EXISTED(1032,"Transaction is not existed!"),
+    BOOKING_SERVICE_NOT_EXISTED(1033, "Booking service is not existed!")
 
     ;
 
