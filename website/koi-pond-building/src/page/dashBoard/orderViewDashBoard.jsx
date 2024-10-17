@@ -144,14 +144,13 @@ const OrderViewDashboard = () => {
   };
 
   const StatusModal = ({ statuses, onClose }) => {
-    const currentStaffUsername = order.staff.username; // Get the current staff username
+    const currentStaffId = order.staff.staffId; // Get the current staff ID from the order
 
     return (
       <div className="status-modal-overlay" onClick={onClose}>
         <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
           <h2>Status Information</h2>
-          <p>Current Staff: {currentStaffUsername || 'Not available'}</p>
-          <p>Current Staff Role: {currentStaffRole || 'Not available'}</p>
+          <p>Current Staff ID: {currentStaffId}</p>
           {statuses.map((status, index) => (
             <div key={status.statusId} className="status-item">
               <h3>Status {index + 1}</h3>
@@ -164,7 +163,7 @@ const OrderViewDashboard = () => {
               {status.checkDate && (
                 <InfoRow label="Check Date" value={new Date(status.checkDate).toLocaleString()} />
               )}
-              {currentStaffUsername === status.staff.username && (
+              {currentStaffId === status.staff.staffId && (
                 <button onClick={() => handleDeleteStatus(status.statusId)} className="delete-status-btn">
                   <FontAwesomeIcon icon={faTrash} /> Delete
                 </button>
