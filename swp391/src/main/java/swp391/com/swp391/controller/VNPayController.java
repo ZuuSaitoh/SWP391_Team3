@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import swp391.com.swp391.dto.request.TransactionVNPayRequest;
+import swp391.com.swp391.dto.response.ApiResponse;
 import swp391.com.swp391.service.VNPayService;
 
 import java.math.BigDecimal;
@@ -34,6 +36,11 @@ public class VNPayController {
     public ResponseEntity<String> handleReturn(@RequestParam Map<String, String> params) {
         // Xử lý phản hồi thanh toán, kiểm tra thành công và xác minh mã băm tại đây
         return ResponseEntity.ok("Thanh toán đã được xử lý.");
+    }
+
+    @PostMapping("/test-payment")
+    public ApiResponse<String> createPayment(@RequestBody TransactionVNPayRequest request) throws Exception {
+        return new ApiResponse<String>(6666, "Link thanh toan", vnpPayService.createURL(request));
     }
 }
 
