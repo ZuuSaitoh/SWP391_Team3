@@ -3,6 +3,8 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./dashBoard.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const OrderViewDashboard = () => {
   const [order, setOrder] = useState(null);
@@ -19,6 +21,7 @@ const OrderViewDashboard = () => {
   });
   const { orderId } = useParams();
   const navigate = useNavigate();
+  const [currentStaffId, setCurrentStaffId] = useState(null);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -31,6 +34,8 @@ const OrderViewDashboard = () => {
         ]);
 
         setOrder(orderResponse.data);
+        // Set the current staff ID from the order data
+        setCurrentStaffId(orderResponse.data.staff.staffId);
 
         if (contractsResponse.data.code === 9999) {
           setContracts(contractsResponse.data.result);
@@ -112,6 +117,24 @@ const OrderViewDashboard = () => {
     }
   };
 
+  const handleDeleteStatus = async (statusId) => {
+    if (window.confirm('Are you sure you want to delete this status?')) {
+      try {
+        const response = await axios.delete(`http://localhost:8080/status/delete/${statusId}`);
+        if (response.data.code === 1012) {
+          toast.success('Status deleted successfully');
+          // Update the statuses state by removing the deleted status
+          setStatuses(statuses.filter(status => status.statusId !== statusId));
+        } else {
+          toast.error('Failed to delete status');
+        }
+      } catch (err) {
+        console.error('Error deleting status:', err);
+        toast.error('An error occurred while deleting the status');
+      }
+    }
+  };
+
   const StatusModal = ({ statuses, onClose }) => (
     <div className="status-modal-overlay" onClick={onClose}>
       <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
@@ -126,6 +149,11 @@ const OrderViewDashboard = () => {
             <InfoRow label="Number of Updates" value={status.numberOfUpdate} />
             {status.checkDate && (
               <InfoRow label="Check Date" value={new Date(status.checkDate).toLocaleString()} />
+            )}
+            {currentStaffId && currentStaffId === status.staff.staffId && (
+              <button onClick={() => handleDeleteStatus(status.statusId)} className="delete-status-btn">
+                <FontAwesomeIcon icon={faTrash} /> Delete
+              </button>
             )}
           </div>
         ))}

@@ -31,13 +31,14 @@ const StatusViewComponent = ({ staffId }) => {
     }
   }, [staffId]);
 
-  const handleDelete = async (statusId) => {
+  const handleDeleteStatus = async (statusId) => {
     if (window.confirm('Are you sure you want to delete this status?')) {
       try {
         const response = await axios.delete(`http://localhost:8080/status/delete/${statusId}`);
-        if (response.data.code === 9999) {
+        if (response.data.code === 1012) {
           toast.success('Status deleted successfully');
-          fetchStatuses(); // Refresh the status list
+          // Update the statuses state by removing the deleted status
+          setStatuses(statuses.filter(status => status.statusId !== statusId));
         } else {
           toast.error('Failed to delete status');
         }
@@ -94,7 +95,7 @@ const StatusViewComponent = ({ staffId }) => {
               </div>
             </div>
             <div className="status-footer">
-              <button onClick={() => handleDelete(status.statusId)} className="delete-btn">
+              <button onClick={() => handleDeleteStatus(status.statusId)} className="delete-btn">
                 <FontAwesomeIcon icon={faTrash} /> Delete
               </button>
             </div>
