@@ -11,6 +11,21 @@ function ServiceDesign() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [slider1, slider2, slider3];
 
+  // Add this new state for designs
+  const [designs, setDesigns] = useState([]);
+
+  // Add this new useEffect to fetch designs
+  useEffect(() => {
+    fetch('http://localhost:8080/designs/fetchAll')
+      .then(response => response.json())
+      .then(data => {
+        if (data.code === 9999 && Array.isArray(data.result)) {
+          setDesigns(data.result);
+        }
+      })
+      .catch(error => console.error('Error fetching designs:', error));
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.pageYOffset > 300);
@@ -212,6 +227,23 @@ function ServiceDesign() {
                   </tr>
                 </tbody>
               </table>
+            </div>
+
+            {/* Add this new design showcase */}
+            <div className="design-showcase">
+              <h3>Our Design Portfolio</h3>
+              <div className="design-gallery">
+                {designs.map((design) => (
+                  <div key={design.designId} className="design-item">
+                    <img src={design.imageData} alt={design.designName} />
+                    <div className="design-item-caption">
+                      <h4>{design.designName}</h4>
+                      <p>Version: {design.designVersion}</p>
+                      <p>Date: {new Date(design.designDate).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
