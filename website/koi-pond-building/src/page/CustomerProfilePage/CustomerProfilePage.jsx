@@ -5,6 +5,10 @@ import AnimatedPage from "../animationpage/AnimatedPage";
 import "./CustomerProfilePage.css";
 import { useNavigate } from "react-router-dom";
 import ViewOrderCustomer from "./ViewOrderCustomer";
+import { storage } from "../../config/firebase"; // Make sure this import is correct
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { toast } from 'react-toastify'; // Make sure you have this import
+import { ToastContainer } from 'react-toastify';
 
 function CustomerProfilePage() {
   const { customerId } = useParams(); // Fetch customerId from URL params
@@ -24,6 +28,7 @@ function CustomerProfilePage() {
       )
     );
   };
+  const [avatarFile, setAvatarFile] = useState(null);
 
   useEffect(() => {
     const fetchCustomerData = async () => {
@@ -35,15 +40,15 @@ function CustomerProfilePage() {
         const customerData = {
           name: response.data.fullName,
           username: response.data.username,
-          email: response.data.mail || "No email provided", // Handle null email
+          email: response.data.mail || "No email provided",
           phone: response.data.phone,
           address: response.data.address,
           loyaltyPoints: response.data.point,
-          profilePicture: "https://via.placeholder.com/150", // Placeholder as the backend doesn't provide it
+          profilePicture: response.data.avatar || "https://via.placeholder.com/150", // Use the avatar from the API response
         };
         setCustomer(customerData);
-        setEditedCustomer(customerData); // Set this so you can edit the customer
-        setIsLoading(false); // Data fetched, no longer loading
+        setEditedCustomer(customerData);
+        setIsLoading(false);
 
         // Fetch customer orders
         const ordersResponse = await axios.get(
@@ -67,6 +72,8 @@ function CustomerProfilePage() {
     fetchCustomerData();
   }, [customerId]);
 
+  console.log("Customer ID:", customerId);
+
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -79,34 +86,41 @@ function CustomerProfilePage() {
         mail: editedCustomer.email,
         phone: editedCustomer.phone,
         address: editedCustomer.address,
-        // Note: We're not updating the profile picture or loyalty points here
+        // Add any other fields that the API might require
       };
+
+      console.log("Sending update request with data:", updatedCustomer);
 
       const response = await axios.put(
         `/customers/update/${customerId}`,
         updatedCustomer
       );
 
+      console.log("Update response:", response);
+
       if (response.status === 200) {
-        setCustomer(editedCustomer);
+        setCustomer({
+          ...customer,
+          ...updatedCustomer,
+          name: updatedCustomer.fullName,
+          email: updatedCustomer.mail,
+        });
         setIsEditing(false);
-        setNewProfilePicture(null);
-        console.log("Customer data updated successfully:", response.data);
+        toast.success("Profile updated successfully");
       } else {
-        throw new Error("Failed to update customer data");
+        throw new Error(`Failed to update customer data: ${response.statusText}`);
       }
     } catch (error) {
-      console.error("Error updating customer data:", error);
-      // You might want to show an error message to the user here
+      console.error("Error updating customer data:", error.response || error);
+      toast.error(`Failed to update profile: ${error.response?.data?.message || error.message}`);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleCancel = () => {
-    setEditedCustomer(customer);
+    setEditedCustomer({...customer});
     setIsEditing(false);
-    setNewProfilePicture(null);
   };
 
   const handleChange = (e) => {
@@ -114,14 +128,37 @@ function CustomerProfilePage() {
     setEditedCustomer((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleProfilePictureChange = (e) => {
+  const handleProfilePictureChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewProfilePicture(reader.result);
-      };
-      reader.readAsDataURL(file);
+      try {
+        setIsLoading(true);
+        const storageRef = ref(storage, `avatars/${customerId}_${Date.now()}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        const avatarUrl = await getDownloadURL(snapshot.ref);
+
+        // Update avatar URL in the backend
+        const response = await axios.put(
+          `/customers/update/avatar/${customerId}`,
+          { avatar: avatarUrl }
+        );
+
+        if (response.status === 200) {
+          setCustomer(prevCustomer => ({
+            ...prevCustomer,
+            profilePicture: avatarUrl
+          }));
+          setNewProfilePicture(avatarUrl);
+          toast.success("Avatar updated successfully"); // This will show the notification immediately
+        } else {
+          throw new Error("Failed to update avatar");
+        }
+      } catch (error) {
+        console.error("Error updating avatar:", error);
+        toast.error("Failed to update avatar. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -182,27 +219,25 @@ function CustomerProfilePage() {
           <div className="customer-info">
             <div className="profile-picture-container">
               <img
-                src={newProfilePicture || customer.profilePicture}
+                src={customer.profilePicture || "https://via.placeholder.com/150"}
                 alt="Profile"
                 className="profile-picture"
               />
-              {isEditing && (
-                <div className="profile-picture-upload">
-                  <label
-                    htmlFor="profile-picture-input"
-                    className="profile-picture-label"
-                  >
-                    <i className="fas fa-camera"></i> Change Picture
-                  </label>
-                  <input
-                    id="profile-picture-input"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleProfilePictureChange}
-                    className="profile-picture-input"
-                  />
-                </div>
-              )}
+              <div className="profile-picture-upload">
+                <label
+                  htmlFor="profile-picture-input"
+                  className="profile-picture-label"
+                >
+                  <i className="fas fa-camera"></i> Change Picture
+                </label>
+                <input
+                  id="profile-picture-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleProfilePictureChange}
+                  className="profile-picture-input"
+                />
+              </div>
             </div>
             <div className="customer-details">
               {isEditing ? (
@@ -314,6 +349,7 @@ function CustomerProfilePage() {
               onOrderUpdate={handleOrderUpdate}
             />
           )}
+          <ToastContainer />
         </div>
       </div>
     </AnimatedPage>
