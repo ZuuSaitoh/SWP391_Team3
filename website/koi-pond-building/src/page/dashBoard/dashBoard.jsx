@@ -17,7 +17,7 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
+} from "chart.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
@@ -323,7 +323,7 @@ const Dashboard = () => {
           orderId: newContract.orderId,
           uploadStaff: newContract.uploadStaff,
           imageData: imageData, // This will be the uploaded file URL
-          description: newContract.description
+          description: newContract.description,
         }
       );
 
@@ -973,47 +973,47 @@ const Dashboard = () => {
     console.log("Services:", services);
 
     const doughnutData = {
-      labels: ['Customers', 'Orders', 'Staff'],
+      labels: ["Customers", "Orders", "Staff"],
       datasets: [
         {
           data: [customers.length, orders.length, staffs.length],
-          backgroundColor: ['#3498db', '#2ecc71', '#e74c3c'],
-          borderColor: ['#2980b9', '#27ae60', '#c0392b'],
+          backgroundColor: ["#3498db", "#2ecc71", "#e74c3c"],
+          borderColor: ["#2980b9", "#27ae60", "#c0392b"],
           borderWidth: 1,
         },
       ],
     };
 
     const lineData = {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
       datasets: [
         {
-          label: 'Orders',
+          label: "Orders",
           data: [12, 19, 3, 5, 2, 3],
-          borderColor: '#3498db',
-          backgroundColor: 'rgba(52, 152, 219, 0.2)',
+          borderColor: "#3498db",
+          backgroundColor: "rgba(52, 152, 219, 0.2)",
           tension: 0.4,
         },
       ],
     };
 
     const barData = {
-      labels: ['Cleaning', 'Maintenance', 'Design', 'Construction'],
+      labels: ["Cleaning", "Maintenance", "Design", "Construction"],
       datasets: [
         {
-          label: 'Services',
+          label: "Services",
           data: [65, 59, 80, 81],
           backgroundColor: [
-            'rgba(255, 99, 132, 0.6)',
-            'rgba(54, 162, 235, 0.6)',
-            'rgba(255, 206, 86, 0.6)',
-            'rgba(75, 192, 192, 0.6)',
+            "rgba(255, 99, 132, 0.6)",
+            "rgba(54, 162, 235, 0.6)",
+            "rgba(255, 206, 86, 0.6)",
+            "rgba(75, 192, 192, 0.6)",
           ],
           borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
+            "rgba(255, 99, 132, 1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(75, 192, 192, 1)",
           ],
           borderWidth: 1,
         },
@@ -1025,15 +1025,15 @@ const Dashboard = () => {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: 'bottom',
+          position: "bottom",
           labels: {
             font: { size: 14 },
           },
         },
         title: {
           display: true,
-          text: 'Data Overview',
-          font: { size: 20, weight: 'bold' },
+          text: "Data Overview",
+          font: { size: 20, weight: "bold" },
         },
       },
     };
@@ -1111,7 +1111,9 @@ const Dashboard = () => {
   // Add this function to render the Status view
   const renderStatus = () => (
     <div className="status-container">
-      <StatusViewComponent staffId={staffs.find(staff => staff.username === staffName)?.staffId} />
+      <StatusViewComponent
+        staffId={staffs.find((staff) => staff.username === staffName)?.staffId}
+      />
     </div>
   );
 
@@ -1188,7 +1190,9 @@ const Dashboard = () => {
             <FontAwesomeIcon icon={faTable} /> Sheet Data
           </button>
           <button
-            className={`sidebar-button ${activeView === "status" ? "active" : ""}`}
+            className={`sidebar-button ${
+              activeView === "status" ? "active" : ""
+            }`}
             onClick={() => setActiveView("status")}
           >
             <FontAwesomeIcon icon={faListAlt} /> Status
@@ -1226,23 +1230,23 @@ const Dashboard = () => {
           </h1>
         </div>
         <div className="table-container">
-          {activeView === "overview"
-            ? renderOverview()
-            : activeView === "customers"
-            ? renderCustomers()
-            : activeView === "staffs"
-            ? renderStaffs()
-            : activeView === "orders"
-            ? renderOrders()
-            : activeView === "services"
-            ? renderServices()
-            : activeView === "contracts"
-            ? renderContracts()
-            : activeView === "sheetData"
-            ? <SheetDataViewComponent />
-            : activeView === "status"
-            ? renderStatus()
-            : null}
+          {activeView === "overview" ? (
+            renderOverview()
+          ) : activeView === "customers" ? (
+            renderCustomers()
+          ) : activeView === "staffs" ? (
+            renderStaffs()
+          ) : activeView === "orders" ? (
+            renderOrders()
+          ) : activeView === "services" ? (
+            renderServices()
+          ) : activeView === "contracts" ? (
+            renderContracts()
+          ) : activeView === "sheetData" ? (
+            <SheetDataViewComponent />
+          ) : activeView === "status" ? (
+            renderStatus()
+          ) : null}
         </div>
         {selectedCustomerId && (
           <CustomerProfileDashboard customerId={selectedCustomerId} />
