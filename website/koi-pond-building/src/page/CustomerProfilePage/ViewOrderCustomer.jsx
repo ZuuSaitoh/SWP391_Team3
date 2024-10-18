@@ -15,6 +15,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
   const [rejectReason, setRejectReason] = useState("");
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
     console.log("Statuses state updated:", statuses);
@@ -47,14 +48,15 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
     setRating(order.rating || 0);
     setFeedback(order.feedback || "");
 
-    const fetchContractsAndStatuses = async () => {
+    const fetchContractsAndStatusesAndTransactions = async () => {
       try {
-        console.log("Fetching contracts and statuses");
+        console.log("Fetching contracts, statuses, and transactions");
         const [contractsResponse] = await Promise.all([
           axios.get(
             `http://localhost:8080/contracts/fetchAll/order/${order.orderId}`
           ),
           fetchStatuses(),
+          fetchTransactions(), // Add this line to fetch transactions
         ]);
 
         console.log("Contracts response:", contractsResponse.data);
@@ -64,12 +66,86 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
           console.warn("Failed to fetch contracts");
         }
       } catch (error) {
-        console.error("Error fetching contracts and statuses:", error);
+        console.error("Error fetching contracts, statuses, and transactions:", error);
       }
     };
 
-    fetchContractsAndStatuses();
+    fetchContractsAndStatusesAndTransactions();
   }, [order, fetchStatuses]);
+
+  const fetchTransactions = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/transaction/fetchAll/order/${order.orderId}`);
+      if (response.data.code === 9999) {
+        const updatedTransactions = response.data.result.map(transaction => {
+          if (transaction.depositMethod === 'vnpay' || transaction.depositMethod === 'cash') {
+            handleTransactionDone(transaction);
+          }
+          return transaction;
+        });
+        setTransactions(updatedTransactions);
+      } else {
+        console.warn("Failed to fetch transactions");
+      }
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    }
+  };
+
+  const handleTransactionDone = async (transaction) => {
+    try {
+      const response = await axios.put(`http://localhost:8080/transaction/update/${transaction.transactionId}`, {
+        ...transaction,
+        status: 'COMPLETED'
+      });
+      if (response.data.code === 1034) { // TRANSACTION_DONE
+        toast.success(`Transaction ${transaction.transactionId} completed successfully!`);
+        // You might want to update the local state or refetch transactions here
+        await fetchTransactions();
+      }
+    } catch (error) {
+      console.error("Error updating transaction status:", error);
+      toast.error(`Failed to update transaction ${transaction.transactionId} status`);
+    }
+  };
+
+  const handlePaymentMethodChange = async (transactionId, newMethod) => {
+    try {
+      let response;
+      if (newMethod === 'cash') {
+        response = await axios.get(`http://localhost:8080/transaction/update/payment/cash/${transactionId}`);
+      } else if (newMethod === 'vnpay') {
+        // Keep the existing VNPay logic
+        response = await axios.post('http://localhost:8080/api/vnpay/test-payment', {
+          transactionId,
+          deposit: transactions.find(t => t.transactionId === transactionId)?.deposit
+        });
+        if (response.data.code === 6666) {
+          window.open(response.data.result, '_blank');
+          return; // Exit the function as we don't need to update the UI immediately for VNPay
+        }
+      } else {
+        throw new Error('Unsupported payment method');
+      }
+
+      if (response.data.code === 7777 || response.data.code === 9999) {
+        toast.success(`Payment method updated to ${newMethod}`);
+        // Update the local state
+        setTransactions(prevTransactions => 
+          prevTransactions.map(transaction => 
+            transaction.transactionId === transactionId
+              ? { ...transaction, ...response.data.result }
+              : transaction
+          )
+        );
+      } else {
+        toast.error("Failed to update payment method");
+      }
+    } catch (error) {
+      console.error("Error updating payment method:", error);
+      toast.error("An error occurred while updating the payment method");
+    }
+  };
 
   const renderStars = (count, onStarClick) => {
     const stars = [];
@@ -210,6 +286,46 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
     setSelectedStatus(null);
   };
 
+  const handleVNPayment = async (transactionId, deposit) => {
+    try {
+      const response = await axios.post('http://localhost:8080/api/vnpay/test-payment', {
+        transactionId,
+        deposit
+      });
+
+      if (response.data.code === 6666) {
+        // Open the payment URL in a new window
+        const paymentWindow = window.open(response.data.result, '_blank');
+        
+        // Check the transaction status periodically
+        const checkTransactionStatus = setInterval(async () => {
+          try {
+            const statusResponse = await axios.get(`http://localhost:8080/transaction/status/${transactionId}`);
+            if (statusResponse.data.code === 1034) { // TRANSACTION_DONE
+              clearInterval(checkTransactionStatus);
+              paymentWindow.close();
+              toast.success("Payment completed successfully!");
+              // Refresh the transactions
+              await fetchTransactions();
+            }
+          } catch (error) {
+            console.error("Error checking transaction status:", error);
+          }
+        }, 5000); // Check every 5 seconds
+
+        // Stop checking after 5 minutes (adjust as needed)
+        setTimeout(() => {
+          clearInterval(checkTransactionStatus);
+        }, 300000);
+      } else {
+        toast.error("Failed to generate payment link");
+      }
+    } catch (error) {
+      console.error("Error generating VNPay link:", error);
+      toast.error("An error occurred while generating the payment link");
+    }
+  };
+
   return (
     <div className="view-order-overlay">
       <div className="view-order-modal">
@@ -333,6 +449,41 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
           </div>
         ) : (
           <p>No status information available</p>
+        )}
+
+        <h3>Transaction Information</h3>
+        {transactions.length > 0 ? (
+          <div className="transaction-container">
+            {transactions.map((transaction) => (
+              <div key={transaction.transactionId} className="transaction-item">
+                <p><strong>Transaction ID:</strong> {transaction.transactionId}</p>
+                <p><strong>Deposit Amount:</strong> ${transaction.deposit}</p>
+                <p><strong>Description:</strong> {transaction.depositDescription}</p>
+                <p><strong>Method:</strong> {transaction.depositMethod || 'Not specified'}</p>
+                <p><strong>Date:</strong> {transaction.depositDate ? new Date(transaction.depositDate).toLocaleString() : 'N/A'}</p>
+                <p><strong>Deposited By:</strong> {transaction.depositPerson.fullName}</p>
+                <p><strong>Transaction Number:</strong> {transaction.transactionNumber || 'N/A'}</p>
+                {!transaction.depositMethod && (
+                  <div>
+                    <button 
+                      onClick={() => handlePaymentMethodChange(transaction.transactionId, 'vnpay')}
+                      className="payment-method-btn vnpay-btn"
+                    >
+                      Pay with VNPay
+                    </button>
+                    <button 
+                      onClick={() => handlePaymentMethodChange(transaction.transactionId, 'cash')}
+                      className="payment-method-btn cash-btn"
+                    >
+                      Pay with Cash
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No transaction information available</p>
         )}
 
         {isEditing ? (

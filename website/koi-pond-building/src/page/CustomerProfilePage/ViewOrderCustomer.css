@@ -322,3 +322,79 @@ button {
   background-color: #2980b9;
   transform: translateY(-2px);
 }
+
+/* Add these styles at the end of the file */
+
+.transaction-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.transaction-item {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 0.9em;
+}
+
+.transaction-item p {
+  margin: 5px 0;
+}
+
+.transaction-item strong {
+  color: #495057;
+}
+
+.vnpay-button {
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.2s;
+  margin-top: 10px;
+}
+
+.vnpay-button:hover {
+  background-color: #0052a3;
+  transform: translateY(-2px);
+}
+
+.vnpay-button:active {
+  transform: translateY(0);
+}
+
+.payment-method-btn {
+  padding: 6px 10px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.vnpay-btn {
+  background-color: #0066cc;
+  color: white;
+}
+
+.vnpay-btn:hover {
+  background-color: #0052a3;
+}
+
+.cash-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.cash-btn:hover {
+  background-color: #218838;
+}

@@ -24,15 +24,25 @@ const OrderViewDashboard = () => {
   const navigate = useNavigate();
   const [currentStaffId, setCurrentStaffId] = useState(null);
   const [currentStaffRole, setCurrentStaffRole] = useState(null);
+  const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [transactionData, setTransactionData] = useState({
+    deposit: "",
+    depositDescription: "",
+    depositMethod: "",
+  });
+  const [transactions, setTransactions] = useState([]);
+  const [showCreateTransactionModal, setShowCreateTransactionModal] = useState(false);
+  const [activeTab, setActiveTab] = useState('status');
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const [orderResponse, contractsResponse, statusesResponse, staffResponse] = await Promise.all([
+        const [orderResponse, contractsResponse, statusesResponse, staffResponse, transactionsResponse] = await Promise.all([
           axios.get(`http://localhost:8080/orders/${orderId}`),
           axios.get(`http://localhost:8080/contracts/fetchAll/order/${orderId}`),
           axios.get(`http://localhost:8080/status/fetchAll/order/${orderId}`),
-          axios.get(`http://localhost:8080/staffs/fetchAll`)
+          axios.get(`http://localhost:8080/staffs/fetchAll`),
+          axios.get(`http://localhost:8080/transaction/fetchAll/order/${orderId}`)
         ]);
 
         setOrder(orderResponse.data);
@@ -63,6 +73,12 @@ const OrderViewDashboard = () => {
           setStaffList(staffResponse.data.result);
         } else {
           console.warn("Failed to fetch staff list");
+        }
+
+        if (transactionsResponse.data.code === 9999) {
+          setTransactions(transactionsResponse.data.result);
+        } else {
+          console.warn("Failed to fetch transactions");
         }
 
         setLoading(false);
@@ -164,6 +180,182 @@ const OrderViewDashboard = () => {
         toast.error('An error occurred while updating the status');
       }
     }
+  };
+
+  const handleCreateTransaction = async (localTransactionData) => {
+    try {
+      const response = await axios.post("http://localhost:8080/transaction/create", {
+        orderId: orderId,
+        deposit: localTransactionData.deposit,
+        depositDescription: localTransactionData.depositDescription,
+        depositMethod: localTransactionData.depositMethod,
+        depositPersonId: order.customer.id,
+        transactionNumber: orderId.toString(), // Convert to string if needed
+      });
+
+      if (response.data.code === 1000) {
+        toast.success("Transaction created successfully");
+        setShowCreateTransactionModal(false);
+        // Update the transactions list
+        setTransactions([...transactions, response.data.result]);
+        // Reset the form
+        setTransactionData({
+          deposit: "",
+          depositDescription: "",
+          depositMethod: "",
+        });
+      } else {
+        toast.error("Failed to create transaction");
+      }
+    } catch (err) {
+      console.error("Error creating transaction:", err);
+      toast.error("An error occurred while creating the transaction");
+    }
+  };
+
+  const handleDeleteTransaction = async (transactionId) => {
+    if (window.confirm('Are you sure you want to delete this transaction?')) {
+      try {
+        const response = await axios.delete(`http://localhost:8080/transaction/delete/${transactionId}`);
+        if (response.data.code === 1012) {
+          toast.success('Transaction deleted successfully');
+          setTransactions(transactions.filter(transaction => transaction.transactionId !== transactionId));
+        } else {
+          toast.error('Failed to delete transaction');
+        }
+      } catch (err) {
+        console.error('Error deleting transaction:', err);
+        toast.error('An error occurred while deleting the transaction');
+      }
+    }
+  };
+
+  const TransactionModal = ({ transactions, onClose, onDelete }) => {
+    return (
+      <div className="status-modal-overlay" onClick={onClose}>
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+          <h2>Transaction Information</h2>
+          {transactions.map((transaction, index) => (
+            <div key={transaction.transactionId} className="status-item">
+              <h3>Transaction {index + 1}</h3>
+              <InfoRow label="Transaction ID" value={transaction.transactionId} />
+              <InfoRow label="Deposit" value={`${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(transaction.deposit)}`} />
+              <InfoRow label="Description" value={transaction.depositDescription || "Not provided"} />
+              <InfoRow label="Method" value={transaction.depositMethod || "Not specified"} />
+              <InfoRow label="Date" value={transaction.depositDate ? new Date(transaction.depositDate).toLocaleString() : "Not recorded"} />
+              <InfoRow label="Deposit Person" value={transaction.depositPerson ? transaction.depositPerson.username : "Unknown"} />
+              <InfoRow label="Transaction Number" value={transaction.transactionNumber || "Not assigned"} />
+              <div className="status-actions">
+                <button onClick={() => onDelete(transaction.transactionId)} className="delete-btn">
+                  <FontAwesomeIcon icon={faTrash} /> Delete
+                </button>
+              </div>
+            </div>
+          ))}
+          <button onClick={onClose} className="close-modal-btn">Close</button>
+        </div>
+      </div>
+    );
+  };
+
+  const CreateTransactionModal = ({ onClose }) => {
+    const [localTransactionData, setLocalTransactionData] = useState({
+      deposit: "",
+      depositDescription: "",
+      depositMethod: "",
+    });
+
+    const handleInputChange = (e) => {
+      const { id, value } = e.target;
+      if (id === 'deposit') {
+        // Remove non-digit characters and convert to number
+        const numericValue = value.replace(/[^0-9]/g, '');
+        // Format as VND
+        const formattedValue = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(numericValue);
+        setLocalTransactionData(prevData => ({
+          ...prevData,
+          [id]: formattedValue
+        }));
+      } else {
+        setLocalTransactionData(prevData => ({
+          ...prevData,
+          [id]: value
+        }));
+      }
+    };
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      // Convert the formatted VND string back to a number for submission
+      const depositValue = parseFloat(localTransactionData.deposit.replace(/[^0-9]/g, ''));
+      handleCreateTransaction({
+        ...localTransactionData,
+        deposit: depositValue
+      });
+    };
+
+    return (
+      <div className="status-modal-overlay" onClick={onClose}>
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+          <h2>Create Transaction</h2>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="deposit">Deposit Amount (VND):</label>
+              <input
+                type="text"
+                id="deposit"
+                value={localTransactionData.deposit}
+                onChange={handleInputChange}
+                placeholder="0 ₫"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="depositDescription">Description:</label>
+              <textarea
+                id="depositDescription"
+                value={localTransactionData.depositDescription}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="depositMethod">Deposit Method:</label>
+              <select
+                id="depositMethod"
+                value={localTransactionData.depositMethod}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select a method</option>
+                <option value="VNPay">VNPay</option>
+                <option value="Cash">Cash</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="depositPersonId">Deposit Person ID (Customer ID):</label>
+              <input
+                type="number"
+                id="depositPersonId"
+                value={order.customer.id}
+                readOnly
+              />
+            </div>
+            <div>
+              <label htmlFor="transactionNumber">Transaction Number (Order ID):</label>
+              <input
+                type="text"
+                id="transactionNumber"
+                value={orderId}
+                readOnly
+              />
+            </div>
+            <button type="submit" className="create-status-btn">Create Transaction</button>
+            <button type="button" onClick={onClose} className="cancel-btn">Cancel</button>
+          </form>
+        </div>
+      </div>
+    );
   };
 
   const StatusModal = ({ statuses, onClose }) => {
@@ -332,15 +524,46 @@ const OrderViewDashboard = () => {
         </div>
 
         <div className="info-section status-section">
-          <h2>Status Information</h2>
-          <div className="status-button-container">
-            <button onClick={toggleStatusModal} className="view-status-btn">
-              View Status
+          <div className="tab-buttons">
+            <button 
+              className={`tab-button ${activeTab === 'status' ? 'active' : ''}`}
+              onClick={() => setActiveTab('status')}
+            >
+              Status
             </button>
-            <button onClick={toggleCreateStatusModal} className="create-status-btn">
-              Create Status
+            <button 
+              className={`tab-button ${activeTab === 'transaction' ? 'active' : ''}`}
+              onClick={() => setActiveTab('transaction')}
+            >
+              Transaction
             </button>
           </div>
+          {activeTab === 'status' && (
+            <>
+              <h2>Status Information</h2>
+              <div className="status-button-container">
+                <button onClick={toggleStatusModal} className="view-status-btn">
+                  View Status
+                </button>
+                <button onClick={toggleCreateStatusModal} className="create-status-btn">
+                  Create Status
+                </button>
+              </div>
+            </>
+          )}
+          {activeTab === 'transaction' && (
+            <>
+              <h2>Transaction Information</h2>
+              <div className="status-button-container">
+                <button onClick={() => setShowTransactionModal(true)} className="view-status-btn">
+                  View Transactions
+                </button>
+                <button onClick={() => setShowCreateTransactionModal(true)} className="create-status-btn">
+                  Create Transaction
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         {contracts.map((contract) => (
@@ -371,6 +594,16 @@ const OrderViewDashboard = () => {
       )}
       {showCreateStatusModal && (
         <CreateStatusModal onClose={toggleCreateStatusModal} />
+      )}
+      {showTransactionModal && (
+        <TransactionModal 
+          transactions={transactions} 
+          onClose={() => setShowTransactionModal(false)} 
+          onDelete={handleDeleteTransaction}
+        />
+      )}
+      {showCreateTransactionModal && (
+        <CreateTransactionModal onClose={() => setShowCreateTransactionModal(false)} />
       )}
     </div>
   );

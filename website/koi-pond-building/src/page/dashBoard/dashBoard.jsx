@@ -30,6 +30,9 @@ import {
   faListAlt,
   faLock,
   faLockOpen,
+  faExchangeAlt,
+  faEye,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import SheetDataViewComponent from "./SheetDataView";
 import StatusViewComponent from "./StatusView";
@@ -110,6 +113,10 @@ const Dashboard = () => {
 
   const [sidebarLocked, setSidebarLocked] = useState(true);
   const [sidebarClosed, setSidebarClosed] = useState(false);
+
+  const [transactions, setTransactions] = useState([]);
+  const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [showCreateTransactionModal, setShowCreateTransactionModal] = useState(false);
 
   const toggleLock = () => {
     setSidebarLocked(!sidebarLocked);
@@ -193,7 +200,21 @@ const Dashboard = () => {
       }
     };
 
+    const fetchTransactions = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/transaction/fetchAll");
+        if (response.data.code === 9999) {
+          setTransactions(response.data.result);
+        } else {
+          console.warn("Failed to fetch transactions");
+        }
+      } catch (err) {
+        console.error("Error fetching transactions:", err);
+      }
+    };
+
     fetchData();
+    fetchTransactions();
   }, [navigate]);
 
   console.log("Rendering dashboard. Customers:", customers);
@@ -989,6 +1010,62 @@ const Dashboard = () => {
     </div>
   );
 
+  const InfoRow = ({ label, value }) => (
+    <div className="info-row">
+      <span className="info-label">{label}:</span>
+      <span className="info-value">{value}</span>
+    </div>
+  );
+
+  const renderTransactions = () => (
+    <div className="status-view transactions-view">
+      <div className="status-container transactions-container">
+        {transactions.map((transaction, index) => (
+          <div key={transaction.transactionId} className="status-item transaction-item">
+            <div className="status-header">
+              <h3>Transaction {index + 1}</h3>
+              <span className="status-icon">
+                <FontAwesomeIcon icon={faExchangeAlt} />
+              </span>
+            </div>
+            <div className="status-body">
+              <InfoRow label="Transaction ID" value={transaction.transactionId} />
+              <InfoRow label="Order ID" value={transaction.order.orderId} />
+              <InfoRow label="Deposit" value={new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(transaction.deposit)} />
+              <InfoRow label="Description" value={transaction.depositDescription || "N/A"} />
+              <InfoRow label="Method" value={transaction.depositMethod || "N/A"} />
+              <InfoRow label="Date" value={transaction.depositDate ? new Date(transaction.depositDate).toLocaleString() : "N/A"} />
+              <InfoRow label="Deposit Person" value={transaction.depositPerson ? transaction.depositPerson.username : "N/A"} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const handleDeleteTransaction = async (transactionId) => {
+    if (window.confirm('Are you sure you want to delete this transaction?')) {
+      try {
+        const response = await axios.delete(`http://localhost:8080/transaction/delete/${transactionId}`);
+        if (response.data.code === 1012) {
+          toast.success('Transaction deleted successfully');
+          setTransactions(transactions.filter(transaction => transaction.transactionId !== transactionId));
+        } else {
+          toast.error('Failed to delete transaction');
+        }
+      } catch (err) {
+        console.error('Error deleting transaction:', err);
+        toast.error('An error occurred while deleting the transaction');
+      }
+    }
+  };
+
+  const handleViewTransactionDetails = (transactionId) => {
+    // Implement view transaction details functionality
+    console.log("View transaction details for ID:", transactionId);
+    // You might want to navigate to a detailed view or open a modal here
+  };
+
   const renderOverview = () => {
     console.log("Rendering overview");
     console.log("Customers:", customers);
@@ -1177,6 +1254,7 @@ const Dashboard = () => {
           {renderSidebarButton("contracts", faFileContract, "Contracts")}
           {renderSidebarButton("sheetData", faTable, "Sheet Data")}
           {renderSidebarButton("status", faListAlt, "Status")}
+          {renderSidebarButton("transactions", faExchangeAlt, "Transactions")}
         </div>
         <div className="sidebar-footer">
           <button onClick={handleBackToHome} className="footer-btn back-home-btn">
@@ -1208,6 +1286,8 @@ const Dashboard = () => {
               ? "Sheet Data"
               : activeView === "status"
               ? "Status Dashboard"
+              : activeView === "transactions"
+              ? "Transaction Dashboard"
               : "Dashboard"}
           </h1>
         </div>
@@ -1228,6 +1308,8 @@ const Dashboard = () => {
             <SheetDataViewComponent />
           ) : activeView === "status" ? (
             renderStatus()
+          ) : activeView === "transactions" ? (
+            renderTransactions()
           ) : null}
         </div>
         {selectedCustomerId && (
