@@ -44,7 +44,7 @@ public class BookingServiceService {
         swp391.com.swp391.entity.Service service = serviceRepository.findById(String.valueOf(request.getServiceId()))
                 .orElseThrow(()-> new AppException(ErrorCode.SERVICE_NOT_EXISTED));
         bookingService.setService(service);
-
+        bookingService.setBookingDate(LocalDateTime.now());
         bookingService.setPrice(request.getPrice());
         bookingService.setUsingPoint(request.getUsingPoint());
 
@@ -71,7 +71,7 @@ public class BookingServiceService {
             throw new AppException(ErrorCode.COMPLETE_TRUE);
         }
         bookingService.setStatus(request.isStatus());
-        bookingService.setBookingDate(LocalDateTime.now());
+        bookingService.setFinishDate(LocalDateTime.now());
         return bookingServiceRepository.save(bookingService);
     }
 
@@ -79,6 +79,7 @@ public class BookingServiceService {
         BookingService bookingService = bookingServiceRepository.findById(id)
                 .orElseThrow(()-> new AppException(ErrorCode.BOOKING_SERVICE_NOT_EXISTED));
         bookingService.setFeedback(request.getFeedback());
+        bookingService.setFeedbackDate(LocalDateTime.now());
         return bookingServiceRepository.save(bookingService);
     }
 }
