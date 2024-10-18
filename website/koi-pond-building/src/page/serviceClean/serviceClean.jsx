@@ -12,6 +12,7 @@ function ServiceClean() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [slider1, slider2, slider3];
+  const [cleaningServices, setCleaningServices] = useState([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,6 +35,26 @@ function ServiceClean() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    // Fetch all services from the API
+    fetch('http://localhost:8080/services/fetchAll')
+      .then(response => response.json())
+      .then(data => {
+        console.log("Fetched services:", data);
+        if (data.code === 9999 && Array.isArray(data.result)) {
+          // Filter services to only include cleaning services
+          const cleaningServicesData = data.result.filter(service => 
+            service.serviceType === "Cleaning Pond Service"
+          );
+          console.log("Filtered cleaning services:", cleaningServicesData);
+          setCleaningServices(cleaningServicesData);
+        } else {
+          console.error("Unexpected API response format");
+        }
+      })
+      .catch(error => console.error('Error fetching services:', error));
   }, []);
 
   const scrollToTop = () => {
@@ -166,12 +187,21 @@ function ServiceClean() {
           </div>
         </section>
 
-        <section className="clean-cta">
-          <h2>Ready for a Pristine Koi Pond?</h2>
-          <p>Contact us today to schedule your professional Koi pond cleaning service!</p>
-          <div className="cta-button-container">
-            <a href="#contact" className="cta-button">Get a Free Quote</a>
-          </div>
+        <section className="cleaning-services">
+          <h2>Our Cleaning Services</h2>
+          {cleaningServices.length > 0 ? (
+            <div className="services-grid">
+              {cleaningServices.map(service => (
+                <div key={service.serviceId} className="service-item">
+                  <h3>{service.serviceName}</h3>
+                  <p>{service.description}</p>
+                  <p className="service-price">Price: ${service.price}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>Loading cleaning services...</p>
+          )}
         </section>
       </div>
       {showScrollTop && (

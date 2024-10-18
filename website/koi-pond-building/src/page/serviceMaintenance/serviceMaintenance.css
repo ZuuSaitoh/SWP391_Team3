@@ -578,3 +578,48 @@
     transform: translateY(-3px);
 }
 */
+
+/* Add these styles to your existing CSS file */
+
+.maintenance-services-list {
+  margin-bottom: 6rem;
+  padding: 3rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.service-item {
+  background-color: #f8f9fa;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: left;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.service-item h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.service-item p {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.service-price {
+  font-weight: bold;
+  color: var(--primary-color);
+}

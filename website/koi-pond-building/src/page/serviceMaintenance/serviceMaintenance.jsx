@@ -13,6 +13,7 @@ function ServiceMaintenance() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [slider1, slider2, slider3];
+  const [maintenanceServices, setMaintenanceServices] = useState([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,6 +36,26 @@ function ServiceMaintenance() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    // Fetch all services from the API
+    fetch('http://localhost:8080/services/fetchAll')
+      .then(response => response.json())
+      .then(data => {
+        console.log("Fetched services:", data);
+        if (data.code === 9999 && Array.isArray(data.result)) {
+          // Filter services to only include maintenance services
+          const maintenanceServicesData = data.result.filter(service => 
+            service.serviceType === "Maintenance"
+          );
+          console.log("Filtered maintenance services:", maintenanceServicesData);
+          setMaintenanceServices(maintenanceServicesData);
+        } else {
+          console.error("Unexpected API response format");
+        }
+      })
+      .catch(error => console.error('Error fetching services:', error));
   }, []);
 
   const scrollToTop = () => {
@@ -146,60 +167,6 @@ function ServiceMaintenance() {
           </div>
         </section>
 
-        <section className="maintenance-plans">
-          <h2>Maintenance Plans</h2>
-          <div className="plans-container">
-            {[
-              {
-                title: "Basic Plan",
-                price: "$X",
-                features: [
-                  "Monthly water quality check",
-                  "Bi-weekly debris removal",
-                  "Quarterly filter cleaning",
-                  "Seasonal fish health check"
-                ]
-              },
-              {
-                title: "Standard Plan",
-                price: "$Y",
-                featured: true,
-                features: [
-                  "Bi-weekly water quality check",
-                  "Weekly debris removal",
-                  "Monthly filter cleaning",
-                  "Bi-monthly fish health check",
-                  "Quarterly aquatic plant care"
-                ]
-              },
-              {
-                title: "Premium Plan",
-                price: "$Z",
-                features: [
-                  "Weekly water quality check",
-                  "Twice-weekly debris removal",
-                  "Bi-weekly filter cleaning",
-                  "Monthly fish health check",
-                  "Monthly aquatic plant care",
-                  "24/7 emergency support"
-                ]
-              }
-            ].map((plan, index) => (
-              <div key={index} className={`plan ${plan.featured ? 'featured' : ''}`}>
-                {plan.featured && <div className="featured-banner">Most Popular</div>}
-                <h3>{plan.title}</h3>
-                <p className="price">Starting at {plan.price}/month</p>
-                <ul>
-                  {plan.features.map((feature, fIndex) => (
-                    <li key={fIndex}><FaCheckCircle className="check-icon" /> {feature}</li>
-                  ))}
-                </ul>
-                <button className="plan-cta">Choose Plan</button>
-              </div>
-            ))}
-          </div>
-        </section>
-
         <section className="maintenance-faq">
           <h2>Frequently Asked Questions</h2>
           <div className="faq-container">
@@ -216,6 +183,24 @@ function ServiceMaintenance() {
               <p>Each season brings unique challenges for Koi ponds. Our maintenance plans adapt to these seasonal changes, adjusting care routines for spring preparation, summer algae control, fall cleanup, and winter protection.</p>
             </div>
           </div>
+        </section>
+
+        {/* Add this new section for displaying maintenance services */}
+        <section className="maintenance-services-list">
+          <h2>Our Maintenance Services</h2>
+          {maintenanceServices.length > 0 ? (
+            <div className="services-grid">
+              {maintenanceServices.map(service => (
+                <div key={service.serviceId} className="service-item">
+                  <h3>{service.serviceName}</h3>
+                  <p>{service.description}</p>
+                  <p className="service-price">Price: ${service.price}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>Loading maintenance services...</p>
+          )}
         </section>
       </div>
       
