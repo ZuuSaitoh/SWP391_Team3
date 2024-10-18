@@ -23,6 +23,7 @@ import ServiceViewDashboard from "./page/dashBoard/ServiceViewDashboard";
 import ProtectedStaffRoutes from "./utils/ProtectedStaffRoutes.jsx";
 import ContractViewDashBoard from "./page/dashBoard/contractViewDashBoard.jsx";
 import ConstructionStaffPage from "./page/staffPage/constructionStaffPage/constructionStaffPage.jsx";
+import PaymentPage from "./page/Payment/payment.jsx";
 
 function App() {
   return (
@@ -46,13 +47,17 @@ function App() {
             element={<CustomerProfilePage />}
           />
           <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/payment" element={<PaymentPage />} />
         </Route>
 
         {/* Protected Staff Routes */}
         <Route element={<ProtectedStaffRoutes />}>
           <Route path="/dashboard" element={<DashBoard />} />
           <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
-          <Route path="/designStaffPage/:staffId" element={<DesignStaffPage />} />
+          <Route
+            path="/designStaffPage/:staffId"
+            element={<DesignStaffPage />}
+          />
           <Route
             path="/consultingStaffPage/:staffId"
             element={<ConsultingStaffPage />}
@@ -63,7 +68,10 @@ function App() {
           />
           <Route path="/order/:orderId" element={<OrderViewDashboard />} />
           <Route path="/customer/:Id" element={<CustomerProfileDashBoard />} />
-          <Route path="/service/:serviceId" element={<ServiceViewDashboard />} />
+          <Route
+            path="/service/:serviceId"
+            element={<ServiceViewDashboard />}
+          />
           <Route
             path="/contract/:contractId"
             element={<ContractViewDashBoard />}

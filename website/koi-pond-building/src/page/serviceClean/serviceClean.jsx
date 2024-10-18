@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import "./serviceClean.css";
@@ -9,6 +10,7 @@ import slider3 from "../koi_photo/slider/slider3.jpg";
 import cleanpic from "../koi_photo/clean/clean1.jpg";
 
 function ServiceClean() {
+  const navigate = useNavigate();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [slider1, slider2, slider3];
@@ -39,14 +41,14 @@ function ServiceClean() {
 
   useEffect(() => {
     // Fetch all services from the API
-    fetch('http://localhost:8080/services/fetchAll')
-      .then(response => response.json())
-      .then(data => {
+    fetch("http://localhost:8080/services/fetchAll")
+      .then((response) => response.json())
+      .then((data) => {
         console.log("Fetched services:", data);
         if (data.code === 9999 && Array.isArray(data.result)) {
           // Filter services to only include cleaning services
-          const cleaningServicesData = data.result.filter(service => 
-            service.serviceType === "Cleaning Pond Service"
+          const cleaningServicesData = data.result.filter(
+            (service) => service.serviceType === "Cleaning Pond Service"
           );
           console.log("Filtered cleaning services:", cleaningServicesData);
           setCleaningServices(cleaningServicesData);
@@ -54,7 +56,7 @@ function ServiceClean() {
           console.error("Unexpected API response format");
         }
       })
-      .catch(error => console.error('Error fetching services:', error));
+      .catch((error) => console.error("Error fetching services:", error));
   }, []);
 
   const scrollToTop = () => {
@@ -69,7 +71,15 @@ function ServiceClean() {
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
+    setCurrentSlide(
+      (prevSlide) => (prevSlide - 1 + slides.length) % slides.length
+    );
+  };
+
+  const handleChooseService = (service) => {
+    console.log("Service being stored:", service);
+    localStorage.setItem("selectedService", JSON.stringify(service));
+    navigate("/payment");
   };
 
   return (
@@ -80,7 +90,7 @@ function ServiceClean() {
           {slides.map((slide, index) => (
             <div
               key={index}
-              className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
+              className={`hero-slide ${index === currentSlide ? "active" : ""}`}
               style={{ backgroundImage: `url(${slide})` }}
             ></div>
           ))}
@@ -90,8 +100,12 @@ function ServiceClean() {
           <p>Professional cleaning for a pristine aquatic environment</p>
         </div>
         <div className="slider-controls">
-          <button onClick={prevSlide} className="slider-control prev">&#10094;</button>
-          <button onClick={nextSlide} className="slider-control next">&#10095;</button>
+          <button onClick={prevSlide} className="slider-control prev">
+            &#10094;
+          </button>
+          <button onClick={nextSlide} className="slider-control next">
+            &#10095;
+          </button>
         </div>
       </section>
       <div className="clean-content">
@@ -111,27 +125,42 @@ function ServiceClean() {
             <div className="standard-item">
               <i className="fas fa-leaf"></i>
               <h3>Thorough Debris Removal</h3>
-              <p>Comprehensive removal of leaves, twigs, and other organic matter from the pond surface and bottom.</p>
+              <p>
+                Comprehensive removal of leaves, twigs, and other organic matter
+                from the pond surface and bottom.
+              </p>
             </div>
             <div className="standard-item">
               <i className="fas fa-water"></i>
               <h3>Sludge and Sediment Extraction</h3>
-              <p>Careful vacuuming of accumulated sludge and sediment to prevent water quality issues.</p>
+              <p>
+                Careful vacuuming of accumulated sludge and sediment to prevent
+                water quality issues.
+              </p>
             </div>
             <div className="standard-item">
               <i className="fas fa-filter"></i>
               <h3>Filter and Pump Cleaning</h3>
-              <p>Thorough cleaning and maintenance of filtration systems and pumps to ensure optimal performance.</p>
+              <p>
+                Thorough cleaning and maintenance of filtration systems and
+                pumps to ensure optimal performance.
+              </p>
             </div>
             <div className="standard-item">
               <i className="fas fa-vial"></i>
               <h3>Water Quality Testing</h3>
-              <p>Comprehensive water quality analysis to identify and address any imbalances or issues.</p>
+              <p>
+                Comprehensive water quality analysis to identify and address any
+                imbalances or issues.
+              </p>
             </div>
             <div className="standard-item">
               <i className="fas fa-seedling"></i>
               <h3>Algae Control</h3>
-              <p>Effective removal of excess algae and implementation of preventive measures.</p>
+              <p>
+                Effective removal of excess algae and implementation of
+                preventive measures.
+              </p>
             </div>
           </div>
         </section>
@@ -139,11 +168,25 @@ function ServiceClean() {
         <section className="clean-benefits">
           <h2>Benefits of Professional Koi Pond Cleaning</h2>
           <ul className="benefits-list">
-            <li><i className="fas fa-check"></i> Improved water clarity and aesthetics</li>
-            <li><i className="fas fa-check"></i> Enhanced fish health and vitality</li>
-            <li><i className="fas fa-check"></i> Reduced risk of pond-related issues</li>
-            <li><i className="fas fa-check"></i> Increased longevity of pond equipment</li>
-            <li><i className="fas fa-check"></i> More enjoyable pond viewing experience</li>
+            <li>
+              <i className="fas fa-check"></i> Improved water clarity and
+              aesthetics
+            </li>
+            <li>
+              <i className="fas fa-check"></i> Enhanced fish health and vitality
+            </li>
+            <li>
+              <i className="fas fa-check"></i> Reduced risk of pond-related
+              issues
+            </li>
+            <li>
+              <i className="fas fa-check"></i> Increased longevity of pond
+              equipment
+            </li>
+            <li>
+              <i className="fas fa-check"></i> More enjoyable pond viewing
+              experience
+            </li>
           </ul>
         </section>
 
@@ -152,9 +195,9 @@ function ServiceClean() {
           <div className="why-choose-content">
             <div className="why-choose-text">
               <p>
-                Our team of skilled technicians specializes in Koi pond cleaning,
-                bringing years of experience and a deep understanding of pond
-                ecosystems. We use eco-friendly cleaning methods and
+                Our team of skilled technicians specializes in Koi pond
+                cleaning, bringing years of experience and a deep understanding
+                of pond ecosystems. We use eco-friendly cleaning methods and
                 state-of-the-art equipment to ensure a thorough clean without
                 compromising the delicate balance of your pond.
               </p>
@@ -169,17 +212,55 @@ function ServiceClean() {
           <h2>Our Cleaning Process</h2>
           <div className="process-timeline">
             {[
-              { step: 1, title: "Initial Pond Assessment", description: "We evaluate the current state of your pond and identify specific cleaning needs.", icon: "🔍" },
-              { step: 2, title: "Fish and Plant Safeguarding", description: "We take measures to protect your Koi and aquatic plants during the cleaning process.", icon: "🐠" },
-              { step: 3, title: "Debris Removal and Vacuuming", description: "We thoroughly clean the pond, removing debris and vacuuming sediment.", icon: "🧹" },
-              { step: 4, title: "Filtration System Cleaning", description: "We clean and maintain your pond's filtration system for optimal performance.", icon: "🔧" },
-              { step: 5, title: "Water Quality Testing and Adjustment", description: "We test and adjust water parameters to ensure a healthy environment for your Koi.", icon: "🧪" },
-              { step: 6, title: "Final Inspection and Recommendations", description: "We perform a final check and provide maintenance recommendations for your pond.", icon: "✅" }
+              {
+                step: 1,
+                title: "Initial Pond Assessment",
+                description:
+                  "We evaluate the current state of your pond and identify specific cleaning needs.",
+                icon: "🔍",
+              },
+              {
+                step: 2,
+                title: "Fish and Plant Safeguarding",
+                description:
+                  "We take measures to protect your Koi and aquatic plants during the cleaning process.",
+                icon: "🐠",
+              },
+              {
+                step: 3,
+                title: "Debris Removal and Vacuuming",
+                description:
+                  "We thoroughly clean the pond, removing debris and vacuuming sediment.",
+                icon: "🧹",
+              },
+              {
+                step: 4,
+                title: "Filtration System Cleaning",
+                description:
+                  "We clean and maintain your pond's filtration system for optimal performance.",
+                icon: "🔧",
+              },
+              {
+                step: 5,
+                title: "Water Quality Testing and Adjustment",
+                description:
+                  "We test and adjust water parameters to ensure a healthy environment for your Koi.",
+                icon: "🧪",
+              },
+              {
+                step: 6,
+                title: "Final Inspection and Recommendations",
+                description:
+                  "We perform a final check and provide maintenance recommendations for your pond.",
+                icon: "✅",
+              },
             ].map((item, index) => (
               <div key={index} className="process-step">
                 <div className="step-number">{item.step}</div>
                 <div className="step-content">
-                  <h3>{item.icon} {item.title}</h3>
+                  <h3>
+                    {item.icon} {item.title}
+                  </h3>
                   <p>{item.description}</p>
                 </div>
               </div>
@@ -191,11 +272,17 @@ function ServiceClean() {
           <h2>Our Cleaning Services</h2>
           {cleaningServices.length > 0 ? (
             <div className="services-grid">
-              {cleaningServices.map(service => (
+              {cleaningServices.map((service) => (
                 <div key={service.serviceId} className="service-item">
                   <h3>{service.serviceName}</h3>
                   <p>{service.description}</p>
                   <p className="service-price">Price: ${service.price}</p>
+                  <button
+                    className="choose-service-btn"
+                    onClick={() => handleChooseService(service)}
+                  >
+                    Choose Service
+                  </button>
                 </div>
               ))}
             </div>
