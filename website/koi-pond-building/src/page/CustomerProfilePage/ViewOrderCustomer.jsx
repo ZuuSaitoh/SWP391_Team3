@@ -135,7 +135,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
       console.log("Sending accept request for status ID:", statusId);
       const response = await axios.put(
         `http://localhost:8080/status/update-complete/${statusId}`,
-        { complete: 1 },
+        { complete: true },
         {
           headers: {
             "Content-Type": "application/json",

@@ -25,23 +25,172 @@
 }
 
 .sidebar {
-  height: 100vh;
-
-  overflow-y: auto;
-
-  -ms-overflow-style: none;
-
-  scrollbar-width: none;
-  width: 250px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 280px; /* Increased from 250px to 280px */
   background-color: #2c3e50;
   color: #ecf0f1;
   display: flex;
   flex-direction: column;
+  transition: width 0.3s ease;
+  overflow-x: hidden;
 }
 
-.sidebar::-webkit-scrollbar {
+.sidebar.hoverable {
+  width: 280px;
+}
+
+.sidebar.hoverable.closed {
+  width: 60px;
+}
+
+.sidebar.hoverable.closed .sidebar-button span,
+.sidebar.hoverable.closed .sidebar-header h2,
+.sidebar.hoverable.closed .sidebar-footer span,
+.sidebar.hoverable.closed .lock-icon {
   display: none;
-  /* Chrome, Safari, and Opera */
+}
+
+.sidebar.hoverable.closed .sidebar-button,
+.sidebar.hoverable.closed .back-home-btn,
+.sidebar.hoverable.closed .staff-logout-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  
+}
+
+.sidebar.hoverable.closed .sidebar-button svg,
+.sidebar.hoverable.closed .back-home-btn svg,
+.sidebar.hoverable.closed .staff-logout-btn svg {
+  margin-right: 0;
+}
+
+.lock-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #ecf0f1;
+}
+
+.main-content {
+  margin-left: 280px; /* Adjusted to match the new sidebar width */
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar.hoverable.closed + .main-content {
+  margin-left: 60px;
+}
+
+.logo_items {
+  gap: 8px;
+}
+
+.logo_name {
+  font-size: 22px;
+  color: #333;
+  font-weight: 500px;
+  transition: all 0.3s ease;
+}
+
+.sidebar.close .logo_name,
+.sidebar.close .lock-icon,
+.sidebar.close .sidebar-close {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lock-icon,
+.sidebar-close {
+  padding: 10px;
+  color: #4070f4;
+  font-size: 25px;
+  cursor: pointer;
+  margin-left: -4px;
+  transition: all 0.3s ease;
+}
+
+.sidebar-close {
+  display: none;
+  color: #333;
+}
+
+.menu_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 40px;
+  overflow-y: auto;
+  height: calc(100% - 82px);
+}
+
+.menu_items {
+  padding-top: 15px;
+  margin-top: 15px;
+  border-top: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.sidebar .sidebar-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sidebar .sidebar-button:hover {
+  background-color: #4070f4;
+  color: #fff;
+}
+
+.sidebar .sidebar-button.active {
+  background-color: #4070f4;
+  color: #fff;
+}
+
+.sidebar .sidebar-button .icon {
+  margin-right: 10px;
+}
+
+.sidebar_profile {
+  padding-top: 15px;
+  margin-top: 15px;
+  gap: 15px;
+  border-top: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.sidebar_profile .name {
+  font-size: 18px;
+  color: #333;
+}
+
+.sidebar_profile .email {
+  font-size: 15px;
+  color: #333;
+}
+
+@media screen and (max-width: 800px) {
+  .sidebar {
+    left: 0;
+    z-index: 1000;
+  }
+  .sidebar.close {
+    left: -100%;
+  }
+  .sidebar-close {
+    display: block;
+  }
+  .lock-icon {
+    display: none;
+  }
 }
 
 .sidebar-button {
@@ -985,44 +1134,60 @@ body {
 }
 
 .sidebar-footer {
-  padding: 20px;
   margin-top: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.back-home-btn,
-.staff-logout-btn {
+.footer-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  padding: 10px 15px;
-  margin-bottom: 10px;
+  padding: 10px;
   border: none;
   border-radius: 5px;
-  font-size: 14px;
-  font-weight: 600;
+  color: #ecf0f1;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.footer-btn svg {
+  margin-right: 10px;
+  font-size: 18px;
 }
 
 .back-home-btn {
   background-color: #3498db;
-  color: white;
 }
 
 .back-home-btn:hover {
   background-color: #2980b9;
 }
 
-.staff-logout-btn {
+.logout-btn {
   background-color: #e74c3c;
-  color: white;
 }
 
-.staff-logout-btn:hover {
+.logout-btn:hover {
   background-color: #c0392b;
 }
 
-.back-home-btn:hover,
-.staff-logout-btn:hover {
-  transform: translateY(-2px);
+.sidebar.hoverable.closed .footer-btn {
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.sidebar.hoverable.closed .footer-btn svg {
+  margin-right: 0;
+}
+
+.sidebar.hoverable.closed .footer-btn span {
+  display: none;
 }
 
 .update-end-date-btn {
@@ -2390,11 +2555,6 @@ body {
   transition: background-color 0.3s;
 }
 
-.status-modal-content .create-status-btn {
-  background-color: #2ecc71;
-  color: white;
-}
-
 .status-modal-content .create-status-btn:hover {
   background-color: #27ae60;
 }
@@ -2424,77 +2584,6 @@ body {
 }
 
 /* Add these styles at the end of the file */
-
-.status-view {
-  padding: 20px;
-}
-
-.status-view h2 {
-  color: #2c3e50;
-  margin-bottom: 20px;
-}
-
-.status-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  /* Changed from flex-end to flex-start */
-  gap: 20px;
-  max-width: 100%;
-  /* Increased from 80% to 100% */
-  margin-left: auto;
-  margin-right: 0;
-  /* Removed the right margin completely */
-  padding-right: 20px;
-  /* Added some padding to the right side */
-}
-
-.status-item {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex: 0 0 300px;
-  max-width: 300px;
-}
-
-.status-item h3 {
-  color: #3498db;
-  margin-bottom: 10px;
-  font-size: 16px;
-}
-
-.status-item .info-row {
-  margin-bottom: 5px;
-  font-size: 14px;
-}
-
-.status-item .info-label {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-.status-item .info-value {
-  color: #34495e;
-}
-
-.loading,
-.error {
-  text-align: center;
-  padding: 20px;
-  font-size: 18px;
-}
-
-.error {
-  color: #e74c3c;
-}
-
-/* Add styles for horizontal scrolling */
-.table-container {
-  overflow-x: auto;
-}
-
-/* Update these styles at the end of the file */
 
 .status-view {
   padding: 20px;

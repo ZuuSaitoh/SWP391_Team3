@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify"; // Import ToastContainer
-import "react-toastify/dist/ReactToastify.css"; // Import CSS for toast notifications
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { jwtDecode } from "jwt-decode";
 import "./dashBoard.css";
 import { Bar, Line, Doughnut } from "react-chartjs-2";
@@ -27,11 +27,13 @@ import {
   faFileContract,
   faSignOutAlt,
   faTable,
-  faListAlt, // Add this import for the status icon
+  faListAlt,
+  faLock,
+  faLockOpen,
 } from "@fortawesome/free-solid-svg-icons";
 import SheetDataViewComponent from "./SheetDataView";
-import StatusViewComponent from "./StatusView"; // Add this import
-import uploadFile from "../../utils/file"; // Add this import at the top of the file
+import StatusViewComponent from "./StatusView";
+import uploadFile from "../../utils/file";
 
 ChartJS.register(
   CategoryScale,
@@ -53,7 +55,7 @@ const Dashboard = () => {
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeView, setActiveView] = useState("overview"); // Default to overview
+  const [activeView, setActiveView] = useState("overview");
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   const navigate = useNavigate();
   const [showAddCustomerForm, setShowAddCustomerForm] = useState(false);
@@ -97,13 +99,35 @@ const Dashboard = () => {
     uploadStaff: "",
     imageData: "",
     description: "",
-    file: null, // Add this line
+    file: null,
   });
 
   const chartRefs = {
     doughnut: useRef(null),
     line: useRef(null),
     bar: useRef(null),
+  };
+
+  const [sidebarLocked, setSidebarLocked] = useState(true);
+  const [sidebarClosed, setSidebarClosed] = useState(false);
+
+  const toggleLock = () => {
+    setSidebarLocked(!sidebarLocked);
+    if (sidebarLocked) {
+      setSidebarClosed(false);
+    }
+  };
+
+  const handleSidebarMouseEnter = () => {
+    if (!sidebarLocked) {
+      setSidebarClosed(false);
+    }
+  };
+
+  const handleSidebarMouseLeave = () => {
+    if (!sidebarLocked) {
+      setSidebarClosed(true);
+    }
   };
 
   useEffect(() => {
@@ -322,7 +346,7 @@ const Dashboard = () => {
         {
           orderId: newContract.orderId,
           uploadStaff: newContract.uploadStaff,
-          imageData: imageData, // This will be the uploaded file URL
+          imageData: imageData,
           description: newContract.description,
         }
       );
@@ -1117,93 +1141,51 @@ const Dashboard = () => {
     </div>
   );
 
+  const renderSidebarButton = (view, icon, text) => (
+    <button
+      className={`sidebar-button ${activeView === view ? "active" : ""}`}
+      onClick={() => setActiveView(view)}
+    >
+      <FontAwesomeIcon icon={icon} />
+      <span>{text}</span>
+    </button>
+  );
+
   return (
     <div className="dashboard">
       <ToastContainer />
-      <div className="sidebar">
+      <div 
+        className={`sidebar ${sidebarLocked ? 'locked' : 'hoverable'} ${sidebarClosed ? 'closed' : ''}`}
+        onMouseEnter={handleSidebarMouseEnter}
+        onMouseLeave={handleSidebarMouseLeave}
+      >
         <div className="sidebar-header">
           <h2>Dashboard</h2>
-          <div className="staff-info">
-            <p className="welcome-message">
-              Welcome, <span className="staff-name">{staffName}</span>!
-            </p>
-            <p className="staff-role">
-              Role: <span className="role-value">{staffRole}</span>
-            </p>
-          </div>
+          <FontAwesomeIcon
+            icon={sidebarLocked ? faLock : faLockOpen}
+            className="lock-icon"
+            onClick={toggleLock}
+            title={sidebarLocked ? "Unlock Sidebar" : "Lock Sidebar"}
+          />
         </div>
         <div className="sidebar-content">
-          <button
-            className={`sidebar-button ${
-              activeView === "overview" ? "active" : ""
-            }`}
-            onClick={() => setActiveView("overview")}
-          >
-            <FontAwesomeIcon icon={faHome} /> Overview
-          </button>
-          <button
-            className={`sidebar-button ${
-              activeView === "customers" ? "active" : ""
-            }`}
-            onClick={() => setActiveView("customers")}
-          >
-            <FontAwesomeIcon icon={faUsers} /> Customers
-          </button>
-          <button
-            className={`sidebar-button ${
-              activeView === "staffs" ? "active" : ""
-            }`}
-            onClick={() => setActiveView("staffs")}
-          >
-            <FontAwesomeIcon icon={faUsers} /> Staffs
-          </button>
-          <button
-            className={`sidebar-button ${
-              activeView === "orders" ? "active" : ""
-            }`}
-            onClick={() => setActiveView("orders")}
-          >
-            <FontAwesomeIcon icon={faClipboardList} /> Orders
-          </button>
-          <button
-            className={`sidebar-button ${
-              activeView === "services" ? "active" : ""
-            }`}
-            onClick={() => setActiveView("services")}
-          >
-            <FontAwesomeIcon icon={faConciergeBell} /> Services
-          </button>
-          <button
-            className={`sidebar-button ${
-              activeView === "contracts" ? "active" : ""
-            }`}
-            onClick={() => setActiveView("contracts")}
-          >
-            <FontAwesomeIcon icon={faFileContract} /> Contracts
-          </button>
-          <button
-            className={`sidebar-button ${
-              activeView === "sheetData" ? "active" : ""
-            }`}
-            onClick={() => setActiveView("sheetData")}
-          >
-            <FontAwesomeIcon icon={faTable} /> Sheet Data
-          </button>
-          <button
-            className={`sidebar-button ${
-              activeView === "status" ? "active" : ""
-            }`}
-            onClick={() => setActiveView("status")}
-          >
-            <FontAwesomeIcon icon={faListAlt} /> Status
-          </button>
+          {renderSidebarButton("overview", faHome, "Overview")}
+          {renderSidebarButton("customers", faUsers, "Customers")}
+          {renderSidebarButton("staffs", faUsers, "Staffs")}
+          {renderSidebarButton("orders", faClipboardList, "Orders")}
+          {renderSidebarButton("services", faConciergeBell, "Services")}
+          {renderSidebarButton("contracts", faFileContract, "Contracts")}
+          {renderSidebarButton("sheetData", faTable, "Sheet Data")}
+          {renderSidebarButton("status", faListAlt, "Status")}
         </div>
         <div className="sidebar-footer">
-          <button onClick={handleBackToHome} className="back-home-btn">
-            &#8592; Back to Home
+          <button onClick={handleBackToHome} className="footer-btn back-home-btn">
+            <FontAwesomeIcon icon={faHome} />
+            <span>Home</span>
           </button>
-          <button onClick={handleLogout} className="staff-logout-btn">
-            <FontAwesomeIcon icon={faSignOutAlt} /> Logout
+          <button onClick={handleLogout} className="footer-btn logout-btn">
+            <FontAwesomeIcon icon={faSignOutAlt} />
+            <span>Logout</span>
           </button>
         </div>
       </div>
