@@ -49,7 +49,7 @@ public class VNPayService {
         LocalDateTime createDate = LocalDateTime.now();
         String formattedCreateDate = createDate.format(formatter);
 
-        float money = (float) (request.getDeposit() *100);
+        float money = (float) (request.getDeposit() * 100);
         String amount = String.valueOf((int)money);
 
 

@@ -31,11 +31,13 @@ public class VNPayController {
     @Autowired
     TransactionService transactionService;
 
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/test-payment")
     public ApiResponse<String> createPayment(@RequestBody TransactionVNPayRequest request) throws Exception {
         return new ApiResponse<String>(6666, "Link thanh toan", vnpPayService.createURL(request));
     }
 
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/vnpay/callback")
     public ApiResponse<String> handlePaymentCallback(@RequestParam Map<String, String> params, HttpServletResponse response) throws Exception {
         String secretKey = "EHFO9MXOQYSJ2QV73STA5SY55QP123LU";  // Secret Key của bạn
