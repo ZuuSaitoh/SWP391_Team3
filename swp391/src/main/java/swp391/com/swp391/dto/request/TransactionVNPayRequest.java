@@ -4,21 +4,9 @@ import jakarta.validation.constraints.NotNull;
 
 public class TransactionVNPayRequest {
     @NotNull(message = "ENTER_ALL_FIELDS")
-    int orderId;
+    int transactionId;
     @NotNull(message = "ENTER_ALL_FIELDS")
     double deposit;
-    @NotNull(message = "ENTER_ALL_FIELDS")
-    String depositDescription;
-    @NotNull(message = "ENTER_ALL_FIELDS")
-    int depositPersonId;
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(@NotNull(message = "ENTER_ALL_FIELDS") int orderId) {
-        this.orderId = orderId;
-    }
 
     @NotNull(message = "ENTER_ALL_FIELDS")
     public double getDeposit() {
@@ -29,20 +17,12 @@ public class TransactionVNPayRequest {
         this.deposit = deposit;
     }
 
-    public @NotNull(message = "ENTER_ALL_FIELDS") String getDepositDescription() {
-        return depositDescription;
-    }
-
-    public void setDepositDescription(@NotNull(message = "ENTER_ALL_FIELDS") String depositDescription) {
-        this.depositDescription = depositDescription;
-    }
-
     @NotNull(message = "ENTER_ALL_FIELDS")
-    public int getDepositPersonId() {
-        return depositPersonId;
+    public int getTransactionId() {
+        return transactionId;
     }
 
-    public void setDepositPersonId(@NotNull(message = "ENTER_ALL_FIELDS") int depositPersonId) {
-        this.depositPersonId = depositPersonId;
+    public void setTransactionId(@NotNull(message = "ENTER_ALL_FIELDS") int transactionId) {
+        this.transactionId = transactionId;
     }
 }

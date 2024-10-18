@@ -17,10 +17,7 @@ public class TransactionCreationRequest {
     @NotNull(message = "ENTER_ALL_FIELDS")
     String depositDescription;
     @NotNull(message = "ENTER_ALL_FIELDS")
-    String depositMethod;
-    @NotNull(message = "ENTER_ALL_FIELDS")
     int depositPersonId;
-    String transactionNumber;
 
     @NotNull(message = "ENTER_ALL_FIELDS")
     public int getOrderId() {
@@ -48,13 +45,6 @@ public class TransactionCreationRequest {
         this.depositDescription = depositDescription;
     }
 
-    public @NotNull(message = "ENTER_ALL_FIELDS") String getDepositMethod() {
-        return depositMethod;
-    }
-
-    public void setDepositMethod(@NotNull(message = "ENTER_ALL_FIELDS") String depositMethod) {
-        this.depositMethod = depositMethod;
-    }
 
     @NotNull(message = "ENTER_ALL_FIELDS")
     public int getDepositPersonId() {
@@ -65,11 +55,4 @@ public class TransactionCreationRequest {
         this.depositPersonId = depositPersonId;
     }
 
-    public String getTransactionNumber() {
-        return transactionNumber;
-    }
-
-    public void setTransactionNumber(String transactionNumber) {
-        this.transactionNumber = transactionNumber;
-    }
 }

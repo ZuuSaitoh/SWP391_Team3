@@ -36,8 +36,8 @@ public enum ErrorCode {
     CONSTRUCTION_STAFF_NOT_EXISTED(1030, "Construction staff not existed!"),
     ACCEPTANCE_TEST_NOT_EXISTED(1031, "Acceptance test is not existed!"),
     TRANSACTION_NOT_EXISTED(1032,"Transaction is not existed!"),
-    BOOKING_SERVICE_NOT_EXISTED(1033, "Booking service is not existed!")
-
+    BOOKING_SERVICE_NOT_EXISTED(1033, "Booking service is not existed!"),
+    TRANSACTION_DONE(1034,"Transaction has been pay!"),
     ;
 
     ErrorCode(int code, String message) {
