@@ -53,4 +53,11 @@ public class TransactionController {
         transactionService.deleteTransaction(id);
         return new ApiResponse<String>(1012,"Transaction deleted","Transaction deleted!");
     }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @PatchMapping("/update/payment/cash/{id}")
+    ApiResponse<Transaction> updateTransactionCashById(@PathVariable int id){
+        return new ApiResponse<Transaction>
+                (7777, "Pay by cash", transactionService.updateTransactionCashById(id));
+    }
 }

@@ -34,12 +34,7 @@ public class TransactionService {
         transaction.setOrder(order);
         transaction.setDeposit(request.getDeposit());
         transaction.setDepositDescription(request.getDepositDescription());
-        transaction.setDepositMethod(request.getDepositMethod());
-        transaction.setDepositDate(LocalDateTime.now());
         transaction.setDepositPerson(customer);
-        if (request.getTransactionNumber()!=null && !request.getTransactionNumber().isEmpty()){
-            transaction.setTransactionNumber(request.getTransactionNumber());
-        }
         return transactionRepository.save(transaction);
     }
 
@@ -53,6 +48,25 @@ public class TransactionService {
     }
     public Optional<List<Transaction>> getAllTransactionByOrderId(int id){
         return transactionRepository.findByOrder_OrderId(id);
+    }
+
+    public Transaction updateTransactionCashById(int id){
+        Transaction transaction = getTransactionByTransactionId(id);
+        if (transaction.getDepositMethod()!=null )
+            throw new AppException(ErrorCode.TRANSACTION_DONE);
+        transaction.setDepositMethod("Cash");
+        transaction.setDepositDate(LocalDateTime.now());
+        return transactionRepository.save(transaction);
+    }
+
+    public Transaction updateTransactionVNPayById(int id, String transactionNumber){
+        Transaction transaction = getTransactionByTransactionId(id);
+        if (transaction.getDepositMethod()!=null )
+            throw new AppException(ErrorCode.TRANSACTION_DONE);
+        transaction.setDepositMethod("VNPAY");
+        transaction.setDepositDate(LocalDateTime.now());
+        transaction.setTransactionNumber(transactionNumber);
+        return transactionRepository.save(transaction);
     }
 
     public void deleteTransaction(int id){
