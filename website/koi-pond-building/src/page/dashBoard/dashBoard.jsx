@@ -833,7 +833,7 @@ const Dashboard = () => {
                     onClick={() => handleViewOrderDetails(order.orderId)}
                     className="view-profile-btn"
                   >
-                    View Details
+                    View Order
                   </button>
                 </td>
               </tr>
@@ -890,7 +890,7 @@ const Dashboard = () => {
                     onClick={() => handleViewServiceDetails(service.serviceId)}
                     className="view-profile-btn"
                   >
-                    View
+                    View Service
                   </button>
                 </td>
               </tr>
@@ -955,7 +955,7 @@ const Dashboard = () => {
                     }
                     className="view-profile-btn"
                   >
-                    View Details
+                    View Order
                   </button>
                 </td>
               </tr>
