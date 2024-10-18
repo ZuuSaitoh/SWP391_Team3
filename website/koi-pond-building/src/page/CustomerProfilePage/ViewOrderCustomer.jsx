@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import emailjs from 'emailjs-com';
+import emailjs from "emailjs-com";
 import "./ViewOrderCustomer.css";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
   const [rating, setRating] = useState(order.rating || 0);
@@ -24,7 +24,9 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
     setIsLoading(true);
     try {
       console.log("Fetching statuses for order:", order.orderId);
-      const response = await axios.get(`http://localhost:8080/status/fetchAll/order/${order.orderId}`);
+      const response = await axios.get(
+        `http://localhost:8080/status/fetchAll/order/${order.orderId}`
+      );
       console.log("Full statuses response:", response);
       if (response.data.code === 9999) {
         console.log("Statuses fetched successfully:", response.data.result);
@@ -49,8 +51,10 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
       try {
         console.log("Fetching contracts and statuses");
         const [contractsResponse] = await Promise.all([
-          axios.get(`http://localhost:8080/contracts/fetchAll/order/${order.orderId}`),
-          fetchStatuses()
+          axios.get(
+            `http://localhost:8080/contracts/fetchAll/order/${order.orderId}`
+          ),
+          fetchStatuses(),
         ]);
 
         console.log("Contracts response:", contractsResponse.data);
@@ -131,11 +135,11 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
       console.log("Sending accept request for status ID:", statusId);
       const response = await axios.put(
         `http://localhost:8080/status/update-complete/${statusId}`,
-        {complete: 1},
+        { complete: 1 },
         {
           headers: {
-            'Content-Type': 'application/json',
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -144,10 +148,10 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
       if (response.data && response.data.code === 999) {
         console.log("Status updated successfully in backend");
         // Update the local state immediately
-        setStatuses(prevStatuses => {
-          const updatedStatuses = prevStatuses.map(status => 
-            status.statusId === statusId 
-              ? { ...status, complete: 1, checkDate: new Date().toISOString() } 
+        setStatuses((prevStatuses) => {
+          const updatedStatuses = prevStatuses.map((status) =>
+            status.statusId === statusId
+              ? { ...status, complete: 1, checkDate: new Date().toISOString() }
               : status
           );
           console.log("Updated statuses:", updatedStatuses);
@@ -162,7 +166,11 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
       }
     } catch (error) {
       console.error("Error updating status:", error.response || error);
-      toast.error(`An error occurred while updating the status: ${error.response?.data?.message || error.message}`);
+      toast.error(
+        `An error occurred while updating the status: ${
+          error.response?.data?.message || error.message
+        }`
+      );
     } finally {
       setIsLoading(false);
     }
@@ -176,18 +184,18 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
   const sendRejectEmail = async () => {
     try {
       await emailjs.send(
-        'service_q4h45rc',
-        'template_awodo8g',
+        "service_q4h45rc",
+        "template_awodo8g",
         {
           to_email: selectedStatus.staff.mail,
           status_description: selectedStatus.statusDescription,
           reject_reason: rejectReason,
         },
-        'gmuh_u6yoFuhyEb4c'
+        "gmuh_u6yoFuhyEb4c"
       );
-      console.log('Rejection email sent successfully');
+      console.log("Rejection email sent successfully");
     } catch (error) {
-      console.error('Error sending rejection email:', error);
+      console.error("Error sending rejection email:", error);
     }
   };
 
@@ -238,7 +246,8 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
               {new Date(updatedOrder.design.designDate).toLocaleString()}
             </p>
             <p>
-              <strong>Design Version:</strong> {updatedOrder.design.designVersion}
+              <strong>Design Version:</strong>{" "}
+              {updatedOrder.design.designVersion}
             </p>
             <p>
               <strong>Image Data:</strong> {updatedOrder.design.imageData}
@@ -280,18 +289,43 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
             {statuses.map((status, index) => (
               <div key={status.statusId} className="status-item">
                 <h4>Status {index + 1}</h4>
-                <p><strong>Description:</strong> {status.statusDescription}</p>
-                <p><strong>Date:</strong> {new Date(status.statusDate).toLocaleString()}</p>
-                <p><strong>Staff:</strong> {status.staff.username} ({status.staff.role})</p>
-                <p><strong>Complete:</strong> {status.complete ? "Yes" : "No"}</p>
-                <p><strong>Updates:</strong> {status.numberOfUpdate}</p>
+                <p>
+                  <strong>Description:</strong> {status.statusDescription}
+                </p>
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {new Date(status.statusDate).toLocaleString()}
+                </p>
+                <p>
+                  <strong>Staff:</strong> {status.staff.username} (
+                  {status.staff.role})
+                </p>
+                <p>
+                  <strong>Complete:</strong> {status.complete ? "Yes" : "No"}
+                </p>
+                <p>
+                  <strong>Updates:</strong> {status.numberOfUpdate}
+                </p>
                 {status.checkDate && (
-                  <p><strong>Check Date:</strong> {new Date(status.checkDate).toLocaleString()}</p>
+                  <p>
+                    <strong>Check Date:</strong>{" "}
+                    {new Date(status.checkDate).toLocaleString()}
+                  </p>
                 )}
                 {!status.complete && (
                   <div className="status-actions">
-                    <button onClick={() => handleAccept(status.statusId)} className="accept-btn">Accept</button>
-                    <button onClick={() => handleReject(status)} className="reject-btn">Reject</button>
+                    <button
+                      onClick={() => handleAccept(status.statusId)}
+                      className="accept-btn"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => handleReject(status)}
+                      className="reject-btn"
+                    >
+                      Reject
+                    </button>
                   </div>
                 )}
               </div>
@@ -311,7 +345,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
               onChange={(e) => setFeedback(e.target.value)}
               placeholder="Enter your feedback"
             />
-            <button type="submit" className="submit-btn">
+            <button type="submit" className="submit-detail-btn">
               Submit
             </button>
             <button
@@ -357,8 +391,18 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
                 placeholder="Enter reason for rejection"
               />
               <div className="reject-modal-actions">
-                <button onClick={handleRejectSubmit} className="submit-reject-btn">Submit</button>
-                <button onClick={() => setShowRejectModal(false)} className="cancel-reject-btn">Cancel</button>
+                <button
+                  onClick={handleRejectSubmit}
+                  className="submit-detail-btn"
+                >
+                  Submit
+                </button>
+                <button
+                  onClick={() => setShowRejectModal(false)}
+                  className="cancel-reject-btn"
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
