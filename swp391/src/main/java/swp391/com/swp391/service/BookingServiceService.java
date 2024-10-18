@@ -2,6 +2,7 @@ package swp391.com.swp391.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import swp391.com.swp391.dto.request.BookingServiceAddStaffCreationRequest;
 import swp391.com.swp391.dto.request.BookingServiceCreationRequest;
 import swp391.com.swp391.dto.request.BookingServiceUpdateFeedbackRequest;
 import swp391.com.swp391.dto.request.BookingServiceUpdateStatusRequest;
@@ -18,6 +19,7 @@ import swp391.com.swp391.repository.StaffRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookingServiceService {
@@ -33,9 +35,9 @@ public class BookingServiceService {
     public BookingService createBookingService(BookingServiceCreationRequest request){
         BookingService bookingService = new BookingService();
 
-        Staff staff = staffRepository.findById(String.valueOf(request.getStaffId()))
-                .orElseThrow(()-> new AppException(ErrorCode.STAFF_NOT_EXISTED));
-        bookingService.setStaff(staff);
+//       Staff staff = staffRepository.findById(String.valueOf(request.getStaffId()))
+//                .orElseThrow(()-> new AppException(ErrorCode.STAFF_NOT_EXISTED));
+//       bookingService.setStaff(staff);
 
         Customer customer = customerRepository.findById(String.valueOf(request.getCustomerId()))
                 .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -48,6 +50,15 @@ public class BookingServiceService {
         bookingService.setPrice(request.getPrice());
         bookingService.setUsingPoint(request.getUsingPoint());
 
+        return bookingServiceRepository.save(bookingService);
+    }
+
+    //Hàm dùng để cho Manager chọn ConstructionStaff làm 1 Order nào đó
+    public BookingService createStaffToDoAnOrder(int bookingServiceId, BookingServiceAddStaffCreationRequest request){
+        BookingService bookingService = getBookingServiceById(bookingServiceId);
+        Staff staff = staffRepository.findById(String.valueOf(request.getStaffId()))
+                .orElseThrow(()-> new AppException(ErrorCode.STAFF_NOT_EXISTED));
+        bookingService.setStaff(staff);
         return bookingServiceRepository.save(bookingService);
     }
 
@@ -81,5 +92,17 @@ public class BookingServiceService {
         bookingService.setFeedback(request.getFeedback());
         bookingService.setFeedbackDate(LocalDateTime.now());
         return bookingServiceRepository.save(bookingService);
+    }
+
+    public Optional<List<BookingService>> getAllBookingServiceByStaffId(int staffId){
+        return bookingServiceRepository.findByStaff_staffId(staffId);
+    }
+
+    public Optional<List<BookingService>> getAllBookingServiceByCustomerId(int customerId){
+        return bookingServiceRepository.findByCustomer_Id(customerId);
+    }
+
+    public Optional<List<BookingService>> getAllBookingServiceByServiceId(int serviceId){
+        return bookingServiceRepository.findByService_serviceId(serviceId);
     }
 }

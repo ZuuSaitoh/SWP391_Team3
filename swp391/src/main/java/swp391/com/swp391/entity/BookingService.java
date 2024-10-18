@@ -20,7 +20,7 @@ public class BookingService {
     int bookingServiceId;
 
     @ManyToOne
-    @JoinColumn(name = "staff_id", referencedColumnName = "staff_id", nullable = false)
+    @JoinColumn(name = "staff_id", referencedColumnName = "staff_id", nullable = true)
     Staff staff;
 
     @ManyToOne

@@ -10,8 +10,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingServiceCreationRequest {
-    @NotNull(message = "ENTER_ALL_FIELDS")
-    int staffId;
+//    //@NotNull(message = "ENTER_ALL_FIELDS")
+//    int staffId;
     @NotNull(message = "ENTER_ALL_FIELDS")
     int customerId;
     @NotNull(message = "ENTER_ALL_FIELDS")
@@ -21,14 +21,14 @@ public class BookingServiceCreationRequest {
     @NotNull(message = "ENTER_ALL_FIELDS")
     int usingPoint;
 
-    @NotNull(message = "ENTER_ALL_FIELDS")
-    public int getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(@NotNull(message = "ENTER_ALL_FIELDS") int staffId) {
-        this.staffId = staffId;
-    }
+//    @NotNull(message = "ENTER_ALL_FIELDS")
+//    public int getStaffId() {
+//        return staffId;
+//    }
+//
+//    public void setStaffId(@NotNull(message = "ENTER_ALL_FIELDS") int staffId) {
+//        this.staffId = staffId;
+//    }
 
     @NotNull(message = "ENTER_ALL_FIELDS")
     public int getCustomerId() {

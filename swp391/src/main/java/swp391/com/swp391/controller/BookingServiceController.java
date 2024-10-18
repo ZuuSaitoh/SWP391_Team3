@@ -3,6 +3,7 @@ package swp391.com.swp391.controller;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import swp391.com.swp391.dto.request.BookingServiceAddStaffCreationRequest;
 import swp391.com.swp391.dto.request.BookingServiceCreationRequest;
 import swp391.com.swp391.dto.request.BookingServiceUpdateFeedbackRequest;
 import swp391.com.swp391.dto.request.BookingServiceUpdateStatusRequest;
@@ -11,6 +12,7 @@ import swp391.com.swp391.entity.BookingService;
 import swp391.com.swp391.service.BookingServiceService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/bookingservices")
@@ -23,6 +25,14 @@ public class BookingServiceController {
     ApiResponse<BookingService> createBookingService (@RequestBody @Valid BookingServiceCreationRequest request){
         ApiResponse<BookingService> apiResponse = new ApiResponse<>();
         apiResponse.setResult(bookingServiceService.createBookingService(request));
+        return apiResponse;
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @PutMapping("/update/staff/{id}")
+    ApiResponse<BookingService> createStaffToDoAnOrder (@PathVariable int id,@RequestBody @Valid BookingServiceAddStaffCreationRequest request){
+        ApiResponse<BookingService> apiResponse = new ApiResponse<>();
+        apiResponse.setResult(bookingServiceService.createStaffToDoAnOrder(id, request));
         return apiResponse;
     }
 
@@ -61,5 +71,23 @@ public class BookingServiceController {
         BookingService updatedBookingService = bookingServiceService.updateBookingServiceFeedback(id, request);
         apiResponse.setResult(updatedBookingService);
         return apiResponse;
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/fetchAll/staff/{id}")
+    ApiResponse<Optional<List<BookingService>>> getAllBookingServiceByStaffId(@PathVariable int id){
+        return new ApiResponse<Optional<List<BookingService>>>(9999, "List of Booking Service by Staff id", bookingServiceService.getAllBookingServiceByStaffId(id));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/fetchAll/customer/{id}")
+    ApiResponse<Optional<List<BookingService>>> getAllBookingServiceByCustomerId(@PathVariable int id){
+        return new ApiResponse<Optional<List<BookingService>>>(9999, "List of Booking Service by Customer id", bookingServiceService.getAllBookingServiceByCustomerId(id));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/fetchAll/service/{id}")
+    ApiResponse<Optional<List<BookingService>>> getAllBookingServiceByServiceId(@PathVariable int id){
+        return new ApiResponse<Optional<List<BookingService>>>(9999, "List of Booking Service by Service id", bookingServiceService.getAllBookingServiceByServiceId(id));
     }
 }
