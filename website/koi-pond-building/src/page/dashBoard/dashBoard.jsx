@@ -34,10 +34,13 @@ import {
   faEye,
   faTrash,
   faCalendarCheck,
+  faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import SheetDataViewComponent from "./SheetDataView";
 import StatusViewComponent from "./StatusView";
 import uploadFile from "../../utils/file";
+import { Upload, Modal, Form, Input, Select, Button } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 
 ChartJS.register(
   CategoryScale,
@@ -121,6 +124,11 @@ const Dashboard = () => {
     useState(false);
 
   const [bookings, setBookings] = useState([]);
+
+  const [acceptanceTests, setAcceptanceTests] = useState([]);
+  const [showAcceptanceModal, setShowAcceptanceModal] = useState(false);
+  const [editingAcceptance, setEditingAcceptance] = useState(null);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
   const toggleLock = () => {
     setSidebarLocked(!sidebarLocked);
@@ -234,9 +242,23 @@ const Dashboard = () => {
       }
     };
 
+    const fetchAcceptanceTests = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/acceptancetests/fetchAll");
+        if (response.data.code === 9999) {
+          setAcceptanceTests(response.data.result);
+        } else {
+          console.warn("Failed to fetch acceptance tests");
+        }
+      } catch (err) {
+        console.error("Error fetching acceptance tests:", err);
+      }
+    };
+
     fetchData();
     fetchTransactions();
     fetchBookings();
+    fetchAcceptanceTests();
   }, [navigate]);
 
   console.log("Rendering dashboard. Customers:", customers);
@@ -1344,6 +1366,142 @@ const Dashboard = () => {
     </button>
   );
 
+  const handleSubmitAcceptance = async (values) => {
+    try {
+      setLoading(true);
+      let imageUrl = "";
+
+      if (values.imageData && values.imageData.length > 0 && values.imageData[0].originFileObj) {
+        imageUrl = await uploadFile(values.imageData[0].originFileObj);
+      }
+
+      const acceptanceData = {
+        orderId: parseInt(values.orderId),
+        consultingStaff: parseInt(values.consultingStaff),
+        designStaff: parseInt(values.designStaff),
+        constructionStaff: parseInt(values.constructionStaff),
+        imageData: imageUrl,
+        description: values.description,
+      };
+
+      const response = await axios.post("http://localhost:8080/acceptancetests/create", acceptanceData);
+
+        toast.success("Acceptance test created successfully");
+        setAcceptanceTests([...acceptanceTests, response.data.result]);
+        setShowAcceptanceModal(false);
+    } catch (err) {
+      console.error("Error creating acceptance test:", err);
+      toast.error("An error occurred while creating the acceptance test");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditAcceptance = (record) => {
+    setEditingAcceptance({
+      ...record,
+      imageData: record.imageData ? [{ url: record.imageData }] : []
+    });
+    setIsEditModalVisible(true);
+  };
+
+  const handleEditSubmit = async (values) => {
+    try {
+      setLoading(true);
+      let imageUrl = editingAcceptance.imageData?.[0]?.url || "";
+
+      if (values.imageData && values.imageData.length > 0 && values.imageData[0].originFileObj) {
+        imageUrl = await uploadFile(values.imageData[0].originFileObj);
+      }
+
+      const updatedData = {
+        imageData: imageUrl,
+        description: values.description,
+      };
+
+      const response = await axios.put(
+        `http://localhost:8080/acceptancetests/update/${editingAcceptance.acceptanceTestId}`,
+        updatedData
+      );
+      
+        toast.success("Acceptance test updated successfully");
+        setAcceptanceTests(acceptanceTests.map(test => 
+          test.acceptanceTestId === editingAcceptance.acceptanceTestId ? {...test, ...updatedData} : test
+        ));
+        setIsEditModalVisible(false);
+    } catch (err) {
+      console.error("Error updating acceptance test:", err);
+      toast.error("An error occurred while updating the acceptance test");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderAcceptanceTests = () => (
+    <div className="table-container">
+      {renderSearchBar()}
+      <div className="add-button-container">
+        <button
+          onClick={() => setShowAcceptanceModal(true)}
+          className="add-button"
+        >
+          + Add New Acceptance
+        </button>
+      </div>
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>Acceptance Test ID</th>
+            <th>Order ID</th>
+            <th>Consulting Staff</th>
+            <th>Design Staff</th>
+            <th>Construction Staff</th>
+            <th>Finish Date</th>
+            <th>File</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {acceptanceTests
+            .filter((test) => {
+              if (!test) return false;
+              const searchLower = search.toLowerCase().trim();
+              return (
+                searchLower === "" ||
+                test.acceptanceTestId.toString().includes(searchLower) ||
+                test.order.orderId.toString().includes(searchLower) ||
+                (test.consultingStaff?.fullName || "").toLowerCase().includes(searchLower) ||
+                (test.designStaff?.fullName || "").toLowerCase().includes(searchLower) ||
+                (test.constructionStaff?.fullName || "").toLowerCase().includes(searchLower)
+              );
+            })
+            .map((test) => (
+              <tr key={test.acceptanceTestId}>
+                <td>{test.acceptanceTestId}</td>
+                <td>{test.order.orderId}</td>
+                <td>{test.consultingStaff?.fullName || "Not assigned"}</td>
+                <td>{test.designStaff?.fullName || "Not assigned"}</td>
+                <td>{test.constructionStaff?.fullName || "Not assigned"}</td>
+                <td>{test.finishDate ? new Date(test.finishDate).toLocaleString() : "Not set"}</td>
+                <td>
+                  {test.imageData ? (
+                    <a href={test.imageData} target="_blank" rel="noopener noreferrer">View File</a>
+                  ) : "No file"}
+                </td>
+                <td>{test.description}</td>
+                <td>
+                  <button onClick={() => handleEditAcceptance(test)} className="edit-btn">
+                    Edit
+                  </button>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
   return (
     <div className="dashboard">
       <ToastContainer />
@@ -1374,6 +1532,7 @@ const Dashboard = () => {
           {renderSidebarButton("status", faListAlt, "Status")}
           {renderSidebarButton("transactions", faExchangeAlt, "Transactions")}
           {renderSidebarButton("bookings", faCalendarCheck, "Bookings")}
+          {renderSidebarButton("acceptanceTests", faCheckCircle, "Acceptance")}
         </div>
         <div className="sidebar-footer">
           <button
@@ -1412,6 +1571,8 @@ const Dashboard = () => {
               ? "Transaction Dashboard"
               : activeView === "bookings"
               ? "Booking Dashboard"
+              : activeView === "acceptance"
+              ? "Acceptance Dashboard"
               : "Dashboard"}
           </h1>
         </div>
@@ -1436,12 +1597,124 @@ const Dashboard = () => {
             renderTransactions()
           ) : activeView === "bookings" ? (
             renderBookings()
+          ) : activeView === "acceptanceTests" ? (
+            renderAcceptanceTests()
           ) : null}
         </div>
         {selectedCustomerId && (
           <CustomerProfileDashboard customerId={selectedCustomerId} />
         )}
       </div>
+
+      {/* Add New Acceptance Test Modal */}
+      <Modal
+        title="Create New Acceptance Test"
+        open={showAcceptanceModal}
+        onCancel={() => setShowAcceptanceModal(false)}
+        footer={null}
+      >
+        <Form onFinish={handleSubmitAcceptance} layout="vertical">
+          <Form.Item
+            name="orderId"
+            label="Order ID"
+            rules={[{ required: true, message: "Please select an order" }]}
+          >
+            <Select
+              placeholder="Select an order"
+              options={orders.map((order) => ({
+                value: order.orderId,
+                label: `Order ${order.orderId}`,
+              }))}
+            />
+          </Form.Item>
+          <Form.Item
+            name="consultingStaff"
+            label="Consulting Staff ID"
+            rules={[{ required: true, message: "Please enter the consulting staff ID" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="designStaff"
+            label="Design Staff ID"
+            rules={[{ required: true, message: "Please enter the design staff ID" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="constructionStaff"
+            label="Construction Staff ID"
+            rules={[{ required: true, message: "Please enter the construction staff ID" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="imageData"
+            label="Upload File"
+            valuePropName="fileList"
+            getValueFromEvent={(e) => {
+              if (Array.isArray(e)) {
+                return e;
+              }
+              return e && e.fileList;
+            }}
+          >
+            <Upload beforeUpload={() => false} maxCount={1}>
+              <Button icon={<UploadOutlined />}>Click to upload file</Button>
+            </Upload>
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[{ required: true, message: "Please enter a description" }]}
+          >
+            <Input.TextArea rows={4} />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              Create Acceptance
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Edit Acceptance Test Modal */}
+      <Modal
+        title="Edit Acceptance Test"
+        open={isEditModalVisible}
+        onCancel={() => setIsEditModalVisible(false)}
+        footer={null}
+      >
+        <Form onFinish={handleEditSubmit} layout="vertical" initialValues={editingAcceptance}>
+          <Form.Item
+            name="imageData"
+            label="Upload New File"
+            valuePropName="fileList"
+            getValueFromEvent={(e) => {
+              if (Array.isArray(e)) {
+                return e;
+              }
+              return e && e.fileList;
+            }}
+          >
+            <Upload beforeUpload={() => false} maxCount={1}>
+              <Button icon={<UploadOutlined />}>Click to upload new file</Button>
+            </Upload>
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[{ required: true, message: "Please enter a description" }]}
+          >
+            <Input.TextArea rows={4} />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              Update Acceptance
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

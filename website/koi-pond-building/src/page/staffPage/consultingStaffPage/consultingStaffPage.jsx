@@ -1,7 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table, Modal, Form, Input, Layout, Menu, theme, Breadcrumb, Upload, message, Select, DatePicker } from "antd";
-import { FileOutlined, CheckCircleOutlined, UploadOutlined, HomeOutlined } from '@ant-design/icons';
-import { toast } from "react-toastify";
+import {
+  Button,
+  Table,
+  Modal,
+  Form,
+  Input,
+  Layout,
+  Menu,
+  theme,
+  Breadcrumb,
+  Upload,
+  Select,
+} from "antd";
+import {
+  FileOutlined,
+  CheckCircleOutlined,
+  UploadOutlined,
+  HomeOutlined,
+} from "@ant-design/icons";
+import { toast, ToastContainer } from "react-toastify";
 import api from "../../../config/axios";
 import { useNavigate } from "react-router-dom";
 import uploadFile from "../../../utils/file";
@@ -17,7 +34,7 @@ function ConsultingStaffPage() {
   const [loading, setLoading] = useState(false);
   const [statusModalVisible, setStatusModalVisible] = useState(false);
   const [staffStatuses, setStaffStatuses] = useState([]);
-  const [activeTab, setActiveTab] = useState('orders');
+  const [activeTab, setActiveTab] = useState("orders");
   const [acceptanceTests, setAcceptanceTests] = useState([]);
   const [showAcceptanceModal, setShowAcceptanceModal] = useState(false);
   const [acceptanceForm] = Form.useForm();
@@ -33,7 +50,9 @@ function ConsultingStaffPage() {
 
   const fetchOrders = async () => {
     try {
-      const response = await api.get(`http://localhost:8080/orders/staff/fetchAll/${staffId}`);
+      const response = await api.get(
+        `http://localhost:8080/orders/staff/fetchAll/${staffId}`
+      );
       setOrders(response.data.result);
     } catch (err) {
       console.error(err);
@@ -45,7 +64,10 @@ function ConsultingStaffPage() {
     try {
       setLoading(true);
       newOrder.staff_id = staffId;
-      const response = await api.post("http://localhost:8080/orders/create", newOrder);
+      const response = await api.post(
+        "http://localhost:8080/orders/create",
+        newOrder
+      );
       toast.success("Order created successfully");
       fetchOrders();
       form.resetFields();
@@ -76,12 +98,18 @@ function ConsultingStaffPage() {
         setStaffStatuses(response.data.result);
         setStatusModalVisible(true);
       } else {
-        console.warn("Unexpected response when fetching statuses:", response.data);
+        console.warn(
+          "Unexpected response when fetching statuses:",
+          response.data
+        );
         toast.warning("Unexpected response when fetching statuses.");
       }
     } catch (err) {
       console.error("Error fetching statuses:", err);
-      toast.error("Error fetching statuses: " + (err.response?.data?.message || err.message));
+      toast.error(
+        "Error fetching statuses: " +
+          (err.response?.data?.message || err.message)
+      );
     }
   };
 
@@ -89,11 +117,14 @@ function ConsultingStaffPage() {
     try {
       const response = await api.get(`/acceptancetests/fetchAll`);
       console.log("Fetched acceptance tests:", response.data);
-      
-        setAcceptanceTests(response.data.result);
+
+      setAcceptanceTests(response.data.result);
     } catch (err) {
       console.error("Error fetching acceptance tests:", err);
-      toast.error("Error fetching acceptance tests: " + (err.response?.data?.message || err.message));
+      toast.error(
+        "Error fetching acceptance tests: " +
+          (err.response?.data?.message || err.message)
+      );
     }
   };
 
@@ -103,7 +134,7 @@ function ConsultingStaffPage() {
       navigate("/login");
     } else {
       fetchOrders();
-      fetchAcceptanceTests(); 
+      fetchAcceptanceTests();
     }
   }, [staffId, navigate]);
 
@@ -128,7 +159,8 @@ function ConsultingStaffPage() {
       title: "End Date",
       dataIndex: "end_date",
       key: "end_date",
-      render: (date) => (date ? new Date(date).toLocaleString() : "Not completed"),
+      render: (date) =>
+        date ? new Date(date).toLocaleString() : "Not completed",
     },
     {
       title: "Rating",
@@ -146,7 +178,12 @@ function ConsultingStaffPage() {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <Button onClick={() => handleViewOrderDetail(record.orderId)} type="primary">View Order Detail</Button>
+        <Button
+          onClick={() => handleViewOrderDetail(record.orderId)}
+          type="primary"
+        >
+          View Order Detail
+        </Button>
       ),
     },
   ];
@@ -216,7 +253,8 @@ function ConsultingStaffPage() {
       title: "Consulting Staff",
       dataIndex: ["consultingStaff", "fullName"],
       key: "consultingStaff",
-      render: (text, record) => record.consultingStaff?.fullName || "Not assigned",
+      render: (text, record) =>
+        record.consultingStaff?.fullName || "Not assigned",
     },
     {
       title: "Design Staff",
@@ -228,13 +266,14 @@ function ConsultingStaffPage() {
       title: "Construction Staff",
       dataIndex: ["constructionStaff", "fullName"],
       key: "constructionStaff",
-      render: (text, record) => record.constructionStaff?.fullName || "Not assigned",
+      render: (text, record) =>
+        record.constructionStaff?.fullName || "Not assigned",
     },
     {
       title: "Finish Date",
       dataIndex: "finishDate",
       key: "finishDate",
-      render: (date) => date ? new Date(date).toLocaleString() : "Not set",
+      render: (date) => (date ? new Date(date).toLocaleString() : "Not set"),
     },
     {
       title: "File",
@@ -243,14 +282,15 @@ function ConsultingStaffPage() {
       render: (imageData, record) => {
         if (imageData) {
           // Extract file name from the URL
-          const fileName = imageData.split('/').pop() || `file_${record.acceptanceTestId}`;
+          const fileName =
+            imageData.split("/").pop() || `file_${record.acceptanceTestId}`;
           return (
             <a
               href={imageData}
               download={fileName}
               onClick={(e) => {
                 e.preventDefault();
-                window.open(imageData, '_blank');
+                window.open(imageData, "_blank");
               }}
             >
               Download File
@@ -286,39 +326,76 @@ function ConsultingStaffPage() {
     return (
       <div>
         <h2>Order Details</h2>
-        <p><strong>Order ID:</strong> {selectedOrder.orderId}</p>
-        <p><strong>Customer:</strong> {selectedOrder.customer.username}</p>
-        <p><strong>Staff:</strong> {selectedOrder.staff.username}</p>
-        <p><strong>Order Date:</strong> {new Date(selectedOrder.order_date).toLocaleString()}</p>
-        <p><strong>End Date:</strong> {selectedOrder.end_date ? new Date(selectedOrder.end_date).toLocaleString() : "Not completed"}</p>
-        <p><strong>Rating:</strong> {selectedOrder.rating || "Not rated"}</p>
-        <p><strong>Feedback:</strong> {selectedOrder.feedback || "No feedback"}</p>
-        <p><strong>Feedback Date:</strong> {selectedOrder.feedback_date ? new Date(selectedOrder.feedback_date).toLocaleString() : "N/A"}</p>
-        
+        <p>
+          <strong>Order ID:</strong> {selectedOrder.orderId}
+        </p>
+        <p>
+          <strong>Customer:</strong> {selectedOrder.customer.username}
+        </p>
+        <p>
+          <strong>Staff:</strong> {selectedOrder.staff.username}
+        </p>
+        <p>
+          <strong>Order Date:</strong>{" "}
+          {new Date(selectedOrder.order_date).toLocaleString()}
+        </p>
+        <p>
+          <strong>End Date:</strong>{" "}
+          {selectedOrder.end_date
+            ? new Date(selectedOrder.end_date).toLocaleString()
+            : "Not completed"}
+        </p>
+        <p>
+          <strong>Rating:</strong> {selectedOrder.rating || "Not rated"}
+        </p>
+        <p>
+          <strong>Feedback:</strong> {selectedOrder.feedback || "No feedback"}
+        </p>
+        <p>
+          <strong>Feedback Date:</strong>{" "}
+          {selectedOrder.feedback_date
+            ? new Date(selectedOrder.feedback_date).toLocaleString()
+            : "N/A"}
+        </p>
+
         <h3>Customer Details</h3>
-        <p><strong>Name:</strong> {selectedOrder.customer.fullName}</p>
-        <p><strong>Email:</strong> {selectedOrder.customer.mail}</p>
-        <p><strong>Address:</strong> {selectedOrder.customer.address}</p>
-        <p><strong>Phone:</strong> {selectedOrder.customer.phone}</p>
-        
+        <p>
+          <strong>Name:</strong> {selectedOrder.customer.fullName}
+        </p>
+        <p>
+          <strong>Email:</strong> {selectedOrder.customer.mail}
+        </p>
+        <p>
+          <strong>Address:</strong> {selectedOrder.customer.address}
+        </p>
+        <p>
+          <strong>Phone:</strong> {selectedOrder.customer.phone}
+        </p>
+
         <h3>Staff Details</h3>
-        <p><strong>Name:</strong> {selectedOrder.staff.fullName}</p>
-        <p><strong>Email:</strong> {selectedOrder.staff.mail}</p>
-        <p><strong>Role:</strong> {selectedOrder.staff.role}</p>
+        <p>
+          <strong>Name:</strong> {selectedOrder.staff.fullName}
+        </p>
+        <p>
+          <strong>Email:</strong> {selectedOrder.staff.mail}
+        </p>
+        <p>
+          <strong>Role:</strong> {selectedOrder.staff.role}
+        </p>
       </div>
     );
   };
 
   const menuItems = [
     {
-      key: 'orders',
+      key: "orders",
       icon: <FileOutlined />,
-      label: 'Orders',
+      label: "Orders",
     },
     {
-      key: 'acceptance',
+      key: "acceptance",
       icon: <CheckCircleOutlined />,
-      label: 'Acceptance',
+      label: "Acceptance",
     },
   ];
 
@@ -327,7 +404,11 @@ function ConsultingStaffPage() {
       setLoading(true);
       let imageUrl = "";
 
-      if (values.imageData && values.imageData.length > 0 && values.imageData[0].originFileObj) {
+      if (
+        values.imageData &&
+        values.imageData.length > 0 &&
+        values.imageData[0].originFileObj
+      ) {
         try {
           imageUrl = await uploadFile(values.imageData[0].originFileObj);
           console.log("File uploaded successfully, URL:", imageUrl);
@@ -345,32 +426,42 @@ function ConsultingStaffPage() {
         designStaff: parseInt(values.designStaff),
         constructionStaff: parseInt(values.constructionStaff),
         imageData: imageUrl,
-        description: values.description
+        description: values.description,
       };
 
       console.log("Sending acceptance data:", acceptanceData);
 
-      const response = await api.post("/acceptancetests/create", acceptanceData);
+      const response = await api.post(
+        "/acceptancetests/create",
+        acceptanceData
+      );
 
       console.log("Full API response:", response);
 
       if (response.status === 200) {
-          toast.success("Acceptance test created successfully");
-          fetchAcceptanceTests();
-          setShowAcceptanceModal(false);
-          acceptanceForm.resetFields();
+        toast.success("Acceptance test created successfully");
+        fetchAcceptanceTests();
+        setShowAcceptanceModal(false);
+        acceptanceForm.resetFields();
       } else {
         console.error("Unexpected status code:", response.status);
-        toast.error(`Failed to create acceptance test: Unexpected status code ${response.status}`);
+        toast.error(
+          `Failed to create acceptance test: Unexpected status code ${response.status}`
+        );
       }
     } catch (err) {
       console.error("Error creating acceptance test:", err);
       if (err.response) {
         console.error("Error response:", err.response.data);
-        toast.error("Error creating acceptance test: " + (err.response.data.message || JSON.stringify(err.response.data)));
+        toast.error(
+          "Error creating acceptance test: " +
+            (err.response.data.message || JSON.stringify(err.response.data))
+        );
       } else if (err.request) {
         console.error("No response received:", err.request);
-        toast.error("No response from server. Please check your connection and try again.");
+        toast.error(
+          "No response from server. Please check your connection and try again."
+        );
       } else {
         console.error("Error details:", err.message);
         toast.error("An unexpected error occurred. Please try again.");
@@ -393,7 +484,11 @@ function ConsultingStaffPage() {
       setLoading(true);
       let imageUrl = editingAcceptance.imageData;
 
-      if (values.imageData && values.imageData.length > 0 && values.imageData[0].originFileObj) {
+      if (
+        values.imageData &&
+        values.imageData.length > 0 &&
+        values.imageData[0].originFileObj
+      ) {
         try {
           imageUrl = await uploadFile(values.imageData[0].originFileObj);
         } catch (uploadError) {
@@ -409,7 +504,10 @@ function ConsultingStaffPage() {
         description: values.description,
       };
 
-      const response = await api.put(`/acceptancetests/update/${editingAcceptance.acceptanceTestId}`, updatedData);
+      const response = await api.put(
+        `/acceptancetests/update/${editingAcceptance.acceptanceTestId}`,
+        updatedData
+      );
 
       if (response.status === 200) {
         toast.success("Acceptance test updated successfully");
@@ -429,27 +527,38 @@ function ConsultingStaffPage() {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'orders':
+      case "orders":
         return (
           <>
             <div style={{ marginBottom: 16 }}>
-              <Button onClick={() => setShowModal(true)} style={{ marginRight: 8 }} type="primary">Add new order</Button>
-              <Button onClick={fetchStatusesByStaffId} type="primary" >View My Statuses</Button>
+              <Button
+                onClick={() => setShowModal(true)}
+                style={{ marginRight: 8 }}
+                type="primary"
+              >
+                Add new order
+              </Button>
+              <Button onClick={fetchStatusesByStaffId} type="primary">
+                View My Statuses
+              </Button>
             </div>
             <Table dataSource={orders} columns={columns} rowKey="orderId" />
           </>
         );
-      case 'acceptance':
+      case "acceptance":
         return (
           <>
             <div style={{ marginBottom: 16 }}>
-              <Button onClick={() => setShowAcceptanceModal(true)} type="primary">
+              <Button
+                onClick={() => setShowAcceptanceModal(true)}
+                type="primary"
+              >
                 Add New Acceptance
               </Button>
             </div>
-            <Table 
-              dataSource={acceptanceTests} 
-              columns={acceptanceColumns} 
+            <Table
+              dataSource={acceptanceTests}
+              columns={acceptanceColumns}
               rowKey="acceptanceTestId"
               scroll={{ x: true }}
             />
@@ -461,36 +570,36 @@ function ConsultingStaffPage() {
   };
 
   const handleReturnHome = () => {
-    navigate('/'); 
+    navigate("/");
   };
 
   return (
     <Layout>
       <Header
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between', 
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <div className="demo-logo" />
           <Menu
             theme="dark"
             mode="horizontal"
-            defaultSelectedKeys={['2']}
-            items={[{ key: '1', label: 'Consulting Staff Dashboard' }]}
+            defaultSelectedKeys={["2"]}
+            items={[{ key: "1", label: "Consulting Staff Dashboard" }]}
             style={{
               flex: 1,
               minWidth: 0,
             }}
           />
         </div>
-        <Button 
-          type="primary" 
-          icon={<HomeOutlined />} 
+        <Button
+          type="primary"
+          icon={<HomeOutlined />}
           onClick={handleReturnHome}
-          style={{ marginLeft: '16px' }}
+          style={{ marginLeft: "16px" }}
         >
           Return to Homepage
         </Button>
@@ -506,7 +615,7 @@ function ConsultingStaffPage() {
             mode="inline"
             selectedKeys={[activeTab]}
             style={{
-              height: '100%',
+              height: "100%",
               borderRight: 0,
             }}
             items={menuItems}
@@ -515,17 +624,17 @@ function ConsultingStaffPage() {
         </Sider>
         <Layout
           style={{
-            padding: '0 24px 24px',
+            padding: "0 24px 24px",
           }}
         >
           <Breadcrumb
             items={[
-              { title: 'Home' },
-              { title: 'Consulting Staff' },
-              { title: activeTab === 'orders' ? 'Orders' : 'Acceptance' },
+              { title: "Home" },
+              { title: "Consulting Staff" },
+              { title: activeTab === "orders" ? "Orders" : "Acceptance" },
             ]}
             style={{
-              margin: '16px 0',
+              margin: "16px 0",
             }}
           />
           <Content
@@ -600,7 +709,10 @@ function ConsultingStaffPage() {
         <Form
           form={acceptanceForm}
           onFinish={handleSubmitAcceptance}
-          layout="vertical"
+          // layout="horizontal"
+          labelCol={{
+            span: 24,
+          }}
         >
           <Form.Item
             name="orderId"
@@ -609,20 +721,30 @@ function ConsultingStaffPage() {
           >
             <Select
               placeholder="Select an order"
-              options={orders.map(order => ({ value: order.orderId, label: `Order ${order.orderId}` }))}
+              options={orders.map((order) => ({
+                value: order.orderId,
+                label: `Order ${order.orderId}`,
+              }))}
             />
           </Form.Item>
           <Form.Item
             name="designStaff"
             label="Design Staff ID"
-            rules={[{ required: true, message: "Please enter the design staff ID" }]}
+            rules={[
+              { required: true, message: "Please enter the design staff ID" },
+            ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="constructionStaff"
             label="Construction Staff ID"
-            rules={[{ required: true, message: "Please enter the construction staff ID" }]}
+            rules={[
+              {
+                required: true,
+                message: "Please enter the construction staff ID",
+              },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -637,10 +759,7 @@ function ConsultingStaffPage() {
               return e && e.fileList;
             }}
           >
-            <Upload
-              beforeUpload={() => false} 
-              maxCount={1}
-            >
+            <Upload beforeUpload={() => false} maxCount={1}>
               <Button icon={<UploadOutlined />}>Click to upload file</Button>
             </Upload>
           </Form.Item>
@@ -665,11 +784,7 @@ function ConsultingStaffPage() {
         onCancel={() => setIsEditModalVisible(false)}
         footer={null}
       >
-        <Form
-          form={editForm}
-          onFinish={handleEditSubmit}
-          layout="vertical"
-        >
+        <Form form={editForm} onFinish={handleEditSubmit} layout="vertical">
           <Form.Item
             name="imageData"
             label="Upload New File"
@@ -681,11 +796,10 @@ function ConsultingStaffPage() {
               return e && e.fileList;
             }}
           >
-            <Upload
-              beforeUpload={() => false}
-              maxCount={1}
-            >
-              <Button icon={<UploadOutlined />}>Click to upload new file</Button>
+            <Upload beforeUpload={() => false} maxCount={1}>
+              <Button icon={<UploadOutlined />}>
+                Click to upload new file
+              </Button>
             </Upload>
           </Form.Item>
           <Form.Item
@@ -697,11 +811,12 @@ function ConsultingStaffPage() {
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={loading}>
-              Update Acceptance Test
+              Update Acceptance
             </Button>
           </Form.Item>
         </Form>
       </Modal>
+      <ToastContainer />
     </Layout>
   );
 }
