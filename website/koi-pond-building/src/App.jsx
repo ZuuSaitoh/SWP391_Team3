@@ -24,6 +24,7 @@ import ProtectedStaffRoutes from "./utils/ProtectedStaffRoutes.jsx";
 import ContractViewDashBoard from "./page/dashBoard/contractViewDashBoard.jsx";
 import ConstructionStaffPage from "./page/staffPage/constructionStaffPage/constructionStaffPage.jsx";
 import PaymentPage from "./page/Payment/payment.jsx";
+import ViewBookingDashboard from "./page/dashBoard/viewBookingDashboard";
 
 function App() {
   return (
@@ -75,6 +76,10 @@ function App() {
           <Route
             path="/contract/:contractId"
             element={<ContractViewDashBoard />}
+          />
+          <Route
+            path="/booking/:bookingId"
+            element={<ViewBookingDashboard />}
           />
         </Route>
       </Routes>

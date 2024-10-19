@@ -75,7 +75,7 @@ const Payment = () => {
     try {
       const orderData = {
         customerId: customer.id,
-        serviceId: selectedService.serviceId, // Make sure this matches the property name from the API
+        serviceId: selectedService.serviceId,
         price: selectedService.price,
         usingPoint: usingPoint,
         paymentMethod: paymentMethod,
@@ -95,6 +95,7 @@ const Payment = () => {
       if (response.data && response.data.code === 1000) {
         toast.success("Order placed successfully!");
         localStorage.removeItem("selectedService");
+        navigate("/");
       } else {
         toast.error("Failed to place order. Please try again.");
       }

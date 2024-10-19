@@ -33,6 +33,7 @@ import {
   faExchangeAlt,
   faEye,
   faTrash,
+  faCalendarCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import SheetDataViewComponent from "./SheetDataView";
 import StatusViewComponent from "./StatusView";
@@ -116,7 +117,10 @@ const Dashboard = () => {
 
   const [transactions, setTransactions] = useState([]);
   const [showTransactionModal, setShowTransactionModal] = useState(false);
-  const [showCreateTransactionModal, setShowCreateTransactionModal] = useState(false);
+  const [showCreateTransactionModal, setShowCreateTransactionModal] =
+    useState(false);
+
+  const [bookings, setBookings] = useState([]);
 
   const toggleLock = () => {
     setSidebarLocked(!sidebarLocked);
@@ -202,7 +206,9 @@ const Dashboard = () => {
 
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/transaction/fetchAll");
+        const response = await axios.get(
+          "http://localhost:8080/transaction/fetchAll"
+        );
         if (response.data.code === 9999) {
           setTransactions(response.data.result);
         } else {
@@ -213,8 +219,24 @@ const Dashboard = () => {
       }
     };
 
+    const fetchBookings = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/bookingservices/fetchAll"
+        );
+        if (response.data.code === 9999) {
+          setBookings(response.data.result);
+        } else {
+          console.warn("Failed to fetch bookings");
+        }
+      } catch (err) {
+        console.error("Error fetching bookings:", err);
+      }
+    };
+
     fetchData();
     fetchTransactions();
+    fetchBookings();
   }, [navigate]);
 
   console.log("Rendering dashboard. Customers:", customers);
@@ -1021,7 +1043,10 @@ const Dashboard = () => {
     <div className="status-view transactions-view">
       <div className="status-container transactions-container">
         {transactions.map((transaction, index) => (
-          <div key={transaction.transactionId} className="status-item transaction-item">
+          <div
+            key={transaction.transactionId}
+            className="status-item transaction-item"
+          >
             <div className="status-header">
               <h3>Transaction {index + 1}</h3>
               <span className="status-icon">
@@ -1029,13 +1054,42 @@ const Dashboard = () => {
               </span>
             </div>
             <div className="status-body">
-              <InfoRow label="Transaction ID" value={transaction.transactionId} />
+              <InfoRow
+                label="Transaction ID"
+                value={transaction.transactionId}
+              />
               <InfoRow label="Order ID" value={transaction.order.orderId} />
-              <InfoRow label="Deposit" value={new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(transaction.deposit)} />
-              <InfoRow label="Description" value={transaction.depositDescription || "N/A"} />
-              <InfoRow label="Method" value={transaction.depositMethod || "N/A"} />
-              <InfoRow label="Date" value={transaction.depositDate ? new Date(transaction.depositDate).toLocaleString() : "N/A"} />
-              <InfoRow label="Deposit Person" value={transaction.depositPerson ? transaction.depositPerson.username : "N/A"} />
+              <InfoRow
+                label="Deposit"
+                value={new Intl.NumberFormat("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                }).format(transaction.deposit)}
+              />
+              <InfoRow
+                label="Description"
+                value={transaction.depositDescription || "N/A"}
+              />
+              <InfoRow
+                label="Method"
+                value={transaction.depositMethod || "N/A"}
+              />
+              <InfoRow
+                label="Date"
+                value={
+                  transaction.depositDate
+                    ? new Date(transaction.depositDate).toLocaleString()
+                    : "N/A"
+                }
+              />
+              <InfoRow
+                label="Deposit Person"
+                value={
+                  transaction.depositPerson
+                    ? transaction.depositPerson.username
+                    : "N/A"
+                }
+              />
             </div>
           </div>
         ))}
@@ -1044,18 +1098,24 @@ const Dashboard = () => {
   );
 
   const handleDeleteTransaction = async (transactionId) => {
-    if (window.confirm('Are you sure you want to delete this transaction?')) {
+    if (window.confirm("Are you sure you want to delete this transaction?")) {
       try {
-        const response = await axios.delete(`http://localhost:8080/transaction/delete/${transactionId}`);
+        const response = await axios.delete(
+          `http://localhost:8080/transaction/delete/${transactionId}`
+        );
         if (response.data.code === 1012) {
-          toast.success('Transaction deleted successfully');
-          setTransactions(transactions.filter(transaction => transaction.transactionId !== transactionId));
+          toast.success("Transaction deleted successfully");
+          setTransactions(
+            transactions.filter(
+              (transaction) => transaction.transactionId !== transactionId
+            )
+          );
         } else {
-          toast.error('Failed to delete transaction');
+          toast.error("Failed to delete transaction");
         }
       } catch (err) {
-        console.error('Error deleting transaction:', err);
-        toast.error('An error occurred while deleting the transaction');
+        console.error("Error deleting transaction:", err);
+        toast.error("An error occurred while deleting the transaction");
       }
     }
   };
@@ -1218,6 +1278,62 @@ const Dashboard = () => {
     </div>
   );
 
+  const renderBookings = () => (
+    <div className="table-container">
+      {renderSearchBar()}
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>Booking ID</th>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>Price</th>
+            <th>Booking Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {bookings
+            .filter((booking) => {
+              if (!booking) return false;
+              const searchLower = search.toLowerCase().trim();
+              return (
+                searchLower === "" ||
+                booking.bookingServiceId.toString().includes(searchLower) ||
+                booking.customer.username.toLowerCase().includes(searchLower) ||
+                booking.service.serviceName.toLowerCase().includes(searchLower)
+              );
+            })
+            .map((booking) => (
+              <tr key={booking.bookingServiceId}>
+                <td>{booking.bookingServiceId}</td>
+                <td>{booking.customer.username}</td>
+                <td>{booking.service.serviceName}</td>
+                <td>${booking.price.toFixed(2)}</td>
+                <td>{new Date(booking.bookingDate).toLocaleString()}</td>
+                <td>{booking.status ? "Completed" : "Pending"}</td>
+                <td>
+                  <button
+                    onClick={() =>
+                      handleViewBookingDetails(booking.bookingServiceId)
+                    }
+                    className="view-profile-btn"
+                  >
+                    View Details
+                  </button>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const handleViewBookingDetails = (bookingId) => {
+    navigate(`/booking/${bookingId}`);
+  };
+
   const renderSidebarButton = (view, icon, text) => (
     <button
       className={`sidebar-button ${activeView === view ? "active" : ""}`}
@@ -1231,8 +1347,10 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <ToastContainer />
-      <div 
-        className={`sidebar ${sidebarLocked ? 'locked' : 'hoverable'} ${sidebarClosed ? 'closed' : ''}`}
+      <div
+        className={`sidebar ${sidebarLocked ? "locked" : "hoverable"} ${
+          sidebarClosed ? "closed" : ""
+        }`}
         onMouseEnter={handleSidebarMouseEnter}
         onMouseLeave={handleSidebarMouseLeave}
       >
@@ -1255,9 +1373,13 @@ const Dashboard = () => {
           {renderSidebarButton("sheetData", faTable, "Sheet Data")}
           {renderSidebarButton("status", faListAlt, "Status")}
           {renderSidebarButton("transactions", faExchangeAlt, "Transactions")}
+          {renderSidebarButton("bookings", faCalendarCheck, "Bookings")}
         </div>
         <div className="sidebar-footer">
-          <button onClick={handleBackToHome} className="footer-btn back-home-btn">
+          <button
+            onClick={handleBackToHome}
+            className="footer-btn back-home-btn"
+          >
             <FontAwesomeIcon icon={faHome} />
             <span>Home</span>
           </button>
@@ -1288,6 +1410,8 @@ const Dashboard = () => {
               ? "Status Dashboard"
               : activeView === "transactions"
               ? "Transaction Dashboard"
+              : activeView === "bookings"
+              ? "Booking Dashboard"
               : "Dashboard"}
           </h1>
         </div>
@@ -1310,6 +1434,8 @@ const Dashboard = () => {
             renderStatus()
           ) : activeView === "transactions" ? (
             renderTransactions()
+          ) : activeView === "bookings" ? (
+            renderBookings()
           ) : null}
         </div>
         {selectedCustomerId && (

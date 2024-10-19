@@ -24,7 +24,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
+    background: rgba(0, 0, 0, 0.5);
+    /* Adjust the opacity as needed */
 }
 
 .maintenance-hero-content {
@@ -44,7 +45,8 @@
     margin-bottom: 1rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     animation: maintenanceFadeIn 1s ease-in-out;
-    color: white; /* Ensure text is white for visibility */
+    color: white;
+    /* Ensure text is white for visibility */
 }
 
 .maintenance-hero-content p {
@@ -52,7 +54,8 @@
     margin-bottom: 2rem;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     animation: maintenanceFadeIn 1.5s ease-in-out;
-    color: white; /* Ensure text is white for visibility */
+    color: white;
+    /* Ensure text is white for visibility */
 }
 
 @keyframes maintenanceFadeIn {
@@ -60,6 +63,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     100% {
         opacity: 1;
         transform: translateY(0);
@@ -147,7 +151,8 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: var(--primary-color); /* Use the primary color variable */
+    background-color: var(--primary-color);
+    /* Use the primary color variable */
     color: var(--light-text-color);
     width: 50px;
     height: 50px;
@@ -162,7 +167,8 @@
 }
 
 .maintenance-scroll-to-top:hover {
-    background-color: var(--secondary-color); /* Use the secondary color variable */
+    background-color: var(--secondary-color);
+    /* Use the secondary color variable */
     transform: translateY(-5px);
 }
 
@@ -187,23 +193,28 @@
 
 .importance-item i,
 .service-item i {
-    color: var(--primary-color); /* Use the primary color variable */
+    color: var(--primary-color);
+    /* Use the primary color variable */
 }
 
 .process-timeline::before {
-    background-color: var(--primary-color); /* Use the primary color variable */
+    background-color: var(--primary-color);
+    /* Use the primary color variable */
 }
 
 .step-number {
-    background-color: var(--primary-color); /* Use the primary color variable */
+    background-color: var(--primary-color);
+    /* Use the primary color variable */
 }
 
 .step-content h3 {
-    color: var(--primary-color); /* Use the primary color variable */
+    color: var(--primary-color);
+    /* Use the primary color variable */
 }
 
 .cta-button {
-    background-color: var(--primary-color); /* Use the primary color variable */
+    background-color: var(--primary-color);
+    /* Use the primary color variable */
     color: white;
     padding: 1rem 2rem;
     border-radius: 50px;
@@ -214,7 +225,8 @@
 }
 
 .cta-button:hover {
-    background-color: var(--secondary-color); /* Use the secondary color variable */
+    background-color: var(--secondary-color);
+    /* Use the secondary color variable */
     transform: translateY(-3px);
 }
 
@@ -290,6 +302,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -300,11 +313,25 @@
     animation: fadeInUp 0.6s ease-out both;
 }
 
-.maintenance-content section:nth-child(1) { animation-delay: 0.2s; }
-.maintenance-content section:nth-child(2) { animation-delay: 0.4s; }
-.maintenance-content section:nth-child(3) { animation-delay: 0.6s; }
-.maintenance-content section:nth-child(4) { animation-delay: 0.8s; }
-.maintenance-content section:nth-child(5) { animation-delay: 1s; }
+.maintenance-content section:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.maintenance-content section:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.maintenance-content section:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.maintenance-content section:nth-child(4) {
+    animation-delay: 0.8s;
+}
+
+.maintenance-content section:nth-child(5) {
+    animation-delay: 1s;
+}
 
 .process-timeline {
     position: relative;
@@ -341,7 +368,7 @@
     padding: 20px;
     background: white;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .process-step:nth-child(odd) .step-content {
@@ -582,44 +609,65 @@
 /* Add these styles to your existing CSS file */
 
 .maintenance-services-list {
-  margin-bottom: 6rem;
-  padding: 3rem;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 6rem;
+    padding: 3rem;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
 }
 
 .service-item {
-  background-color: #f8f9fa;
-  padding: 2rem;
-  border-radius: 8px;
-  text-align: left;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #f8f9fa;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .service-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .service-item h3 {
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
-  color: var(--primary-color);
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
 }
 
 .service-item p {
-  margin-bottom: 1rem;
-  color: #333;
+    margin-bottom: 1rem;
+    color: #333;
 }
 
 .service-price {
-  font-weight: bold;
-  color: var(--primary-color);
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.choose-service-btn {
+    background-color: #007bff;
+    /* Changed from #4CAF50 to a blue color */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.choose-service-btn:hover {
+    background-color: #0056b3;
+    /* Darker blue for hover state */
 }

@@ -39,7 +39,7 @@ function HomePage() {
     years: 0,
     projects: 0,
     satisfaction: 0,
-    awards: 0
+    awards: 0,
   });
   const animationTriggered = useRef(false);
 
@@ -62,7 +62,7 @@ function HomePage() {
       console.log("Scroll position:", scrollTop);
       console.log("Show scroll top:", scrollTop > 300);
 
-      const aboutSection = document.getElementById('about');
+      const aboutSection = document.getElementById("about");
       if (aboutSection && !animationTriggered.current) {
         const rect = aboutSection.getBoundingClientRect();
         if (rect.top <= window.innerHeight && rect.bottom >= 0) {
@@ -83,17 +83,15 @@ function HomePage() {
     const loginSuccess = queryParams.get("login");
 
     if (loginSuccess === "success") {
-      // Delay the toast notification slightly to ensure the component is mounted
-      setTimeout(() => {
-        toast.success("Login successful! Welcome back!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      }, 100);
+      // Use toast.success directly
+      toast.success("Login successful! Welcome back!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
 
       // Remove the query parameter after showing the toast
       navigate(location.pathname, { replace: true });
@@ -129,11 +127,11 @@ function HomePage() {
       behavior: "smooth",
     });
   };
-//set time to change slide
+  //set time to change slide
   useEffect(() => {
     const slideInterval = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
-    }, 6000); 
+    }, 6000);
 
     return () => {
       clearInterval(slideInterval);
@@ -145,7 +143,9 @@ function HomePage() {
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
+    setCurrentSlide(
+      (prevSlide) => (prevSlide - 1 + slides.length) % slides.length
+    );
   };
 
   const animateStats = () => {
@@ -161,7 +161,7 @@ function HomePage() {
         years: Math.floor(easeOutQuad(progress) * 15),
         projects: Math.floor(easeOutQuad(progress) * 500),
         satisfaction: Math.floor(easeOutQuad(progress) * 100),
-        awards: Math.floor(easeOutQuad(progress) * 50)
+        awards: Math.floor(easeOutQuad(progress) * 50),
       });
 
       if (frame === totalFrames) {
@@ -184,7 +184,9 @@ function HomePage() {
               {slides.map((slide, index) => (
                 <div
                   key={index}
-                  className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
+                  className={`hero-slide ${
+                    index === currentSlide ? "active" : ""
+                  }`}
                   style={{ backgroundImage: `url(${slide})` }}
                 ></div>
               ))}
@@ -195,8 +197,12 @@ function HomePage() {
               {/* The "Get a Free Quote" button has been removed */}
             </div>
             <div className="slider-controls">
-              <button onClick={prevSlide} className="slider-control prev">&#10094;</button>
-              <button onClick={nextSlide} className="slider-control next">&#10095;</button>
+              <button onClick={prevSlide} className="slider-control prev">
+                &#10094;
+              </button>
+              <button onClick={nextSlide} className="slider-control next">
+                &#10095;
+              </button>
             </div>
           </section>
 
@@ -241,11 +247,15 @@ function HomePage() {
             <div className="gallery-container">
               <div className="gallery-item">
                 <img src={pond1} alt="Koi Pond 1" />
-                <div className="gallery-item-caption">Serene Backyard Oasis</div>
+                <div className="gallery-item-caption">
+                  Serene Backyard Oasis
+                </div>
               </div>
               <div className="gallery-item">
                 <img src={pond2} alt="Koi Pond 2" />
-                <div className="gallery-item-caption">Natural Stone Waterfall</div>
+                <div className="gallery-item-caption">
+                  Natural Stone Waterfall
+                </div>
               </div>
               <div className="gallery-item">
                 <img src={pond3} alt="Koi Pond 3" />
@@ -267,28 +277,58 @@ function HomePage() {
             <div className="about-content">
               <div className="about-text">
                 <p>
-                  At Koi Pond Builders, we are passionate about creating beautiful koi ponds that bring tranquility and elegance to your outdoor spaces. Founded in 2008, our company has grown from a small team of enthusiasts to a leading name in custom koi pond design and construction.
+                  At Koi Pond Builders, we are passionate about creating
+                  beautiful koi ponds that bring tranquility and elegance to
+                  your outdoor spaces. Founded in 2008, our company has grown
+                  from a small team of enthusiasts to a leading name in custom
+                  koi pond design and construction.
                 </p>
                 <p>
-                  Our journey began with a simple love for the serene beauty of koi ponds and a desire to share that beauty with others. Over the years, we've honed our skills, embraced innovative techniques, and assembled a team of experts dedicated to turning your aquatic dreams into reality.
+                  Our journey began with a simple love for the serene beauty of
+                  koi ponds and a desire to share that beauty with others. Over
+                  the years, we've honed our skills, embraced innovative
+                  techniques, and assembled a team of experts dedicated to
+                  turning your aquatic dreams into reality.
                 </p>
                 <p>
-                  What sets us apart is our holistic approach to pond building. We don't just construct ponds; we create entire ecosystems. Our designs seamlessly blend water, stone, and plant life to create a harmonious environment that's as healthy for its inhabitants as it is beautiful for its owners.
+                  What sets us apart is our holistic approach to pond building.
+                  We don't just construct ponds; we create entire ecosystems.
+                  Our designs seamlessly blend water, stone, and plant life to
+                  create a harmonious environment that's as healthy for its
+                  inhabitants as it is beautiful for its owners.
                 </p>
                 <p>
-                  We pride ourselves on our attention to detail, from the initial consultation to the final touches. Our team of skilled designers, engineers, and horticulturists work collaboratively to ensure that each project is tailored to our clients' unique visions and the specific requirements of their space.
+                  We pride ourselves on our attention to detail, from the
+                  initial consultation to the final touches. Our team of skilled
+                  designers, engineers, and horticulturists work collaboratively
+                  to ensure that each project is tailored to our clients' unique
+                  visions and the specific requirements of their space.
                 </p>
                 <p>
-                  Sustainability is at the heart of our philosophy. We utilize eco-friendly materials and energy-efficient systems in our designs, ensuring that your koi pond is not only a beautiful addition to your property but also an environmentally responsible one.
+                  Sustainability is at the heart of our philosophy. We utilize
+                  eco-friendly materials and energy-efficient systems in our
+                  designs, ensuring that your koi pond is not only a beautiful
+                  addition to your property but also an environmentally
+                  responsible one.
                 </p>
                 <p>
-                  Education is also a key part of our mission. We believe that informed clients make the best pond owners, which is why we offer comprehensive guidance on pond maintenance and koi care. Our relationship with our clients doesn't end at installation; we're here to support you throughout your koi pond journey.
+                  Education is also a key part of our mission. We believe that
+                  informed clients make the best pond owners, which is why we
+                  offer comprehensive guidance on pond maintenance and koi care.
+                  Our relationship with our clients doesn't end at installation;
+                  we're here to support you throughout your koi pond journey.
                 </p>
                 <p>
-                  As we look to the future, we're excited to continue pushing the boundaries of what's possible in koi pond design. Whether you're dreaming of a small meditation pond or an expansive koi paradise, we have the passion, expertise, and creativity to bring your vision to life.
+                  As we look to the future, we're excited to continue pushing
+                  the boundaries of what's possible in koi pond design. Whether
+                  you're dreaming of a small meditation pond or an expansive koi
+                  paradise, we have the passion, expertise, and creativity to
+                  bring your vision to life.
                 </p>
                 <p>
-                  Thank you for considering Koi Pond Builders for your project. We look forward to helping you create your own slice of aquatic paradise.
+                  Thank you for considering Koi Pond Builders for your project.
+                  We look forward to helping you create your own slice of
+                  aquatic paradise.
                 </p>
               </div>
               <div className="about-stats">
@@ -347,8 +387,9 @@ function HomePage() {
                   <img src={avatarDung} alt="Dũng Senpai" />
                 </div>
                 <p>
-                  "Koi Pond Builders transformed our backyard into a serene oasis.
-                  Their attention to detail and craftsmanship is unparalleled."
+                  "Koi Pond Builders transformed our backyard into a serene
+                  oasis. Their attention to detail and craftsmanship is
+                  unparalleled."
                 </p>
                 <h4>- Dũng Senpai</h4>
               </div>
@@ -358,7 +399,8 @@ function HomePage() {
                 </div>
                 <p>
                   "The team was professional, punctual, and a pleasure to work
-                  with. Our new koi pond has become the highlight of our garden."
+                  with. Our new koi pond has become the highlight of our
+                  garden."
                 </p>
                 <h4>- Thầy Phát</h4>
               </div>
@@ -384,8 +426,13 @@ function HomePage() {
                 </div>
                 <div className="blog-content">
                   <h3>The Benefits of Koi Ponds for Mental Health</h3>
-                  <p>Discover how a koi pond can improve your well-being and create a peaceful atmosphere in your backyard.</p>
-                  <a href="#" className="read-more">Read More <i className="fas fa-arrow-right"></i></a>
+                  <p>
+                    Discover how a koi pond can improve your well-being and
+                    create a peaceful atmosphere in your backyard.
+                  </p>
+                  <a href="#" className="read-more">
+                    Read More <i className="fas fa-arrow-right"></i>
+                  </a>
                 </div>
               </div>
               <div className="blog-post">
@@ -394,8 +441,13 @@ function HomePage() {
                 </div>
                 <div className="blog-content">
                   <h3>Top 5 Koi Varieties for Beginners</h3>
-                  <p>Learn about the best koi varieties for those just starting their journey into the world of koi keeping.</p>
-                  <a href="#" className="read-more">Read More <i className="fas fa-arrow-right"></i></a>
+                  <p>
+                    Learn about the best koi varieties for those just starting
+                    their journey into the world of koi keeping.
+                  </p>
+                  <a href="#" className="read-more">
+                    Read More <i className="fas fa-arrow-right"></i>
+                  </a>
                 </div>
               </div>
               <div className="blog-post">
@@ -404,8 +456,13 @@ function HomePage() {
                 </div>
                 <div className="blog-content">
                   <h3>Seasonal Maintenance Tips for Your Koi Pond</h3>
-                  <p>Essential maintenance tasks to keep your koi pond healthy and beautiful throughout the year.</p>
-                  <a href="#" className="read-more">Read More <i className="fas fa-arrow-right"></i></a>
+                  <p>
+                    Essential maintenance tasks to keep your koi pond healthy
+                    and beautiful throughout the year.
+                  </p>
+                  <a href="#" className="read-more">
+                    Read More <i className="fas fa-arrow-right"></i>
+                  </a>
                 </div>
               </div>
             </div>

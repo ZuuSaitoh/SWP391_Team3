@@ -77,8 +77,10 @@ function ServiceClean() {
   };
 
   const handleChooseService = (service) => {
-    // Navigate to the payment page with the selected service details
-    navigate("/payment", { state: { selectedService: service } });
+    // Store the selected service in localStorage
+    localStorage.setItem("selectedService", JSON.stringify(service));
+    // Navigate to the payment page
+    navigate("/payment");
   };
 
   return (

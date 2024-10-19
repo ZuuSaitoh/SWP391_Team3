@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 import ViewOrderCustomer from "./ViewOrderCustomer";
 import { storage } from "../../config/firebase"; // Make sure this import is correct
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { toast } from 'react-toastify'; // Make sure you have this import
-import { ToastContainer } from 'react-toastify';
+import { toast } from "react-toastify"; // Make sure you have this import
+import { ToastContainer } from "react-toastify";
 
 function CustomerProfilePage() {
   const { customerId } = useParams(); // Fetch customerId from URL params
@@ -29,6 +29,9 @@ function CustomerProfilePage() {
     );
   };
   const [avatarFile, setAvatarFile] = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [feedbackBookingId, setFeedbackBookingId] = useState(null);
+  const [feedbackText, setFeedbackText] = useState("");
 
   useEffect(() => {
     const fetchCustomerData = async () => {
@@ -44,7 +47,8 @@ function CustomerProfilePage() {
           phone: response.data.phone,
           address: response.data.address,
           loyaltyPoints: response.data.point,
-          profilePicture: response.data.avatar || "https://via.placeholder.com/150", // Use the avatar from the API response
+          profilePicture:
+            response.data.avatar || "https://via.placeholder.com/150", // Use the avatar from the API response
         };
         setCustomer(customerData);
         setEditedCustomer(customerData);
@@ -61,6 +65,17 @@ function CustomerProfilePage() {
           (a, b) => new Date(b.order_date) - new Date(a.order_date)
         );
         setOrders(sortedOrders);
+
+        // Fetch customer bookings
+        const bookingsResponse = await axios.get(
+          `http://localhost:8080/bookingservices/fetchAll/customer/${customerId}`
+        );
+        console.log("Bookings response:", bookingsResponse.data);
+        if (bookingsResponse.data.code === 9999) {
+          setBookings(bookingsResponse.data.result);
+        } else {
+          console.warn("Failed to fetch bookings");
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
         setIsError(true); // Set error state if fetch fails
@@ -108,18 +123,24 @@ function CustomerProfilePage() {
         setIsEditing(false);
         toast.success("Profile updated successfully");
       } else {
-        throw new Error(`Failed to update customer data: ${response.statusText}`);
+        throw new Error(
+          `Failed to update customer data: ${response.statusText}`
+        );
       }
     } catch (error) {
       console.error("Error updating customer data:", error.response || error);
-      toast.error(`Failed to update profile: ${error.response?.data?.message || error.message}`);
+      toast.error(
+        `Failed to update profile: ${
+          error.response?.data?.message || error.message
+        }`
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleCancel = () => {
-    setEditedCustomer({...customer});
+    setEditedCustomer({ ...customer });
     setIsEditing(false);
   };
 
@@ -144,9 +165,9 @@ function CustomerProfilePage() {
         );
 
         if (response.status === 200) {
-          setCustomer(prevCustomer => ({
+          setCustomer((prevCustomer) => ({
             ...prevCustomer,
-            profilePicture: avatarUrl
+            profilePicture: avatarUrl,
           }));
           setNewProfilePicture(avatarUrl);
           toast.success("Avatar updated successfully"); // This will show the notification immediately
@@ -191,6 +212,106 @@ function CustomerProfilePage() {
     setSelectedOrder(null);
   };
 
+  const handleFeedbackSubmit = async (bookingId) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/bookingservices/updateFeedback/${bookingId}`,
+        { feedback: feedbackText }
+      );
+      if (response.data.code === 1000) {
+        toast.success("Feedback submitted successfully");
+        setBookings(
+          bookings.map((booking) =>
+            booking.bookingServiceId === bookingId
+              ? response.data.result
+              : booking
+          )
+        );
+        setFeedbackBookingId(null);
+        setFeedbackText("");
+      } else {
+        toast.error("Failed to submit feedback");
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      toast.error("An error occurred while submitting feedback");
+    }
+  };
+
+  const renderBookings = () => (
+    <div className="customer-bookings">
+      <h3>Bookings</h3>
+      {bookings.length > 0 ? (
+        <ul className="booking-list">
+          {bookings.map((booking) => (
+            <li key={booking.bookingServiceId} className="booking-item">
+              <div className="booking-info">
+                <div className="booking-main-info">
+                  <div className="booking-details">
+                    <span className="booking-id">
+                      Booking #{booking.bookingServiceId}
+                    </span>
+                    <span className="booking-service">
+                      {booking.service.serviceName}
+                    </span>
+                    <span className="booking-date">
+                      {new Date(booking.bookingDate).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <span className="booking-price">
+                    ${booking.price.toFixed(2)}
+                  </span>
+                </div>
+                <span
+                  className={`booking-status ${
+                    booking.status ? "completed" : "pending"
+                  }`}
+                >
+                  {booking.status ? "Completed" : "Pending"}
+                </span>
+                {booking.feedback && (
+                  <div className="booking-feedback">
+                    <strong>Feedback:</strong> {booking.feedback}
+                  </div>
+                )}
+              </div>
+              <div className="booking-actions">
+                {booking.status && !booking.feedback && (
+                  <button
+                    className="feedback-btn"
+                    onClick={() =>
+                      setFeedbackBookingId(booking.bookingServiceId)
+                    }
+                  >
+                    Leave Feedback
+                  </button>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No bookings found for this customer.</p>
+      )}
+      {feedbackBookingId && (
+        <div className="feedback-modal">
+          <h4>Leave Feedback</h4>
+          <textarea
+            value={feedbackText}
+            onChange={(e) => setFeedbackText(e.target.value)}
+            placeholder="Enter your feedback here..."
+          />
+          <div className="feedback-actions">
+            <button onClick={() => handleFeedbackSubmit(feedbackBookingId)}>
+              Submit
+            </button>
+            <button onClick={() => setFeedbackBookingId(null)}>Cancel</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   if (isLoading) {
     return (
       <div className="loading">
@@ -219,7 +340,9 @@ function CustomerProfilePage() {
           <div className="customer-info">
             <div className="profile-picture-container">
               <img
-                src={customer.profilePicture || "https://via.placeholder.com/150"}
+                src={
+                  customer.profilePicture || "https://via.placeholder.com/150"
+                }
                 alt="Profile"
                 className="profile-picture"
               />
@@ -316,6 +439,8 @@ function CustomerProfilePage() {
               {/* Add more stat items here if needed */}
             </div>
           </div>
+          {renderBookings()}
+
           <div className="order-status">
             <h3>Recent Orders</h3>
             {orders.length > 0 ? (
