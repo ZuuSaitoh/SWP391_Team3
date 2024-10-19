@@ -48,15 +48,10 @@ const Payment = () => {
 
     const fetchSelectedService = () => {
       const serviceData = localStorage.getItem("selectedService");
-      console.log("Raw service data from localStorage:", serviceData);
       if (serviceData) {
-        try {
-          const parsedService = JSON.parse(serviceData);
-          console.log("Parsed service data:", parsedService);
-          setSelectedService(parsedService);
-        } catch (error) {
-          console.error("Error parsing service data:", error);
-        }
+        const parsedService = JSON.parse(serviceData);
+        console.log("Fetched service data:", parsedService);
+        setSelectedService(parsedService);
       } else {
         console.log("No service data found in localStorage");
       }
