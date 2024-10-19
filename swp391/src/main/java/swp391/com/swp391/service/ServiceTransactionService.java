@@ -15,6 +15,7 @@ import swp391.com.swp391.repository.BookingServiceRepository;
 import swp391.com.swp391.repository.ServiceTransactionRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +31,31 @@ public class ServiceTransactionService {
         ServiceTransaction serviceTransaction = new ServiceTransaction();
         BookingService bookingService = bookingServiceRepository.findById(request.getBookingServiceId())
                 .orElseThrow(() -> new AppException(ErrorCode.BOOKING_SERVICE_NOT_EXISTED));
+        if (serviceTransactionRepository.existsByBookingService_bookingServiceId(request.getBookingServiceId())){
+            throw new AppException(ErrorCode.SERVICE_TRANSACTION_DONE);
+        }
         serviceTransaction.setBookingService(bookingService);
         serviceTransaction.setDepositPerson(bookingService.getCustomer());
         serviceTransaction.setDepositDate(LocalDateTime.now());
+        serviceTransaction.setDepositMethod("Cash");
         return (ServiceTransaction) serviceTransactionRepository.save(serviceTransaction);
+    }
+
+    public List<ServiceTransaction> getAllTransaction(){
+        return serviceTransactionRepository.findAll();
+    }
+
+    public ServiceTransaction getTransactionById(int id){
+        return serviceTransactionRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.TRANSACTION_NOT_EXISTED));
+    }
+    public void deleteTransaction(int id){
+        if (!serviceTransactionRepository.existsById(id)){
+            throw new AppException(ErrorCode.TRANSACTION_NOT_EXISTED);
+        }
+        serviceTransactionRepository.deleteById(id);
+    }
+    public void deleteAllTransaction(){
+        serviceTransactionRepository.deleteAll();
     }
 }
