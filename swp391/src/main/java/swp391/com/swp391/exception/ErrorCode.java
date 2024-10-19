@@ -39,6 +39,7 @@ public enum ErrorCode {
     BOOKING_SERVICE_NOT_EXISTED(1033, "Booking service is not existed!"),
     TRANSACTION_DONE(1034,"Transaction has been pay!"),
     SERVICE_TRANSACTION_DONE(1035,"Transaction has been pay!"),
+    SERVICE_TRANSACTION_NOT_EXISTED(1036,"Transaction not existed!"),
     ;
 
     ErrorCode(int code, String message) {

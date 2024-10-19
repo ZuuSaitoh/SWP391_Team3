@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface ServiceTransactionRepository extends JpaRepository<ServiceTransaction, Integer> {
     Boolean existsByBookingService_bookingServiceId(int bookingServiceId);
+    Optional<ServiceTransaction> findByBookingService_bookingServiceId(int bookingServiceId);
 }

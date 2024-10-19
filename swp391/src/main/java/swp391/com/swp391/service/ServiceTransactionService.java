@@ -16,6 +16,7 @@ import swp391.com.swp391.repository.ServiceTransactionRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +42,28 @@ public class ServiceTransactionService {
         return (ServiceTransaction) serviceTransactionRepository.save(serviceTransaction);
     }
 
+    public ServiceTransaction createTransactionByVNPay(int id, String transactionNumber){
+        ServiceTransaction serviceTransaction = new ServiceTransaction();
+        BookingService bookingService = bookingServiceRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.BOOKING_SERVICE_NOT_EXISTED));
+        if (serviceTransactionRepository.existsByBookingService_bookingServiceId(id)){
+            throw new AppException(ErrorCode.SERVICE_TRANSACTION_DONE);
+        }
+        serviceTransaction.setBookingService(bookingService);
+        serviceTransaction.setDepositPerson(bookingService.getCustomer());
+        serviceTransaction.setDepositDate(LocalDateTime.now());
+        serviceTransaction.setDepositMethod("VNPAY");
+        serviceTransaction.setTransactionNumber(transactionNumber);
+        return (ServiceTransaction) serviceTransactionRepository.save(serviceTransaction);
+    }
+
+    public Optional<ServiceTransaction> getTransactionByBookingServiceId(int id){
+        if (!serviceTransactionRepository.existsByBookingService_bookingServiceId(id)){
+            throw new AppException(ErrorCode.SERVICE_TRANSACTION_NOT_EXISTED);
+        }
+        return serviceTransactionRepository.findByBookingService_bookingServiceId(id);
+    }
+
     public List<ServiceTransaction> getAllTransaction(){
         return serviceTransactionRepository.findAll();
     }
@@ -49,12 +72,14 @@ public class ServiceTransactionService {
         return serviceTransactionRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.TRANSACTION_NOT_EXISTED));
     }
+
     public void deleteTransaction(int id){
         if (!serviceTransactionRepository.existsById(id)){
             throw new AppException(ErrorCode.TRANSACTION_NOT_EXISTED);
         }
         serviceTransactionRepository.deleteById(id);
     }
+
     public void deleteAllTransaction(){
         serviceTransactionRepository.deleteAll();
     }

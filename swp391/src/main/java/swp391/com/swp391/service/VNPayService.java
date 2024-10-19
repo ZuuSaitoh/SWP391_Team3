@@ -3,11 +3,15 @@ package swp391.com.swp391.service;
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import swp391.com.swp391.dto.request.ServiceTransactionVNPayRequest;
 import swp391.com.swp391.dto.request.TransactionVNPayRequest;
+import swp391.com.swp391.entity.BookingService;
 import swp391.com.swp391.entity.Transaction;
 import swp391.com.swp391.exception.AppException;
 import swp391.com.swp391.exception.ErrorCode;
+import swp391.com.swp391.repository.BookingServiceRepository;
 import swp391.com.swp391.repository.OrderRepository;
+import swp391.com.swp391.repository.ServiceTransactionRepository;
 import swp391.com.swp391.repository.TransactionRepository;
 
 import javax.crypto.Mac;
@@ -32,6 +36,14 @@ public class VNPayService {
     TransactionRepository transactionRepository;
     @Autowired
     TransactionService transactionService;
+    @Autowired
+    ServiceTransactionService serviceTransactionService;
+    @Autowired
+    ServiceTransactionRepository serviceTransactionRepository;
+    @Autowired
+    BookingServiceService bookingServiceService;
+    @Autowired
+    BookingServiceRepository bookingServiceRepository;
 
     private String getRandomNumber() {
         return String.valueOf((int) ((Math.random() * 899999) + 100000));
@@ -70,6 +82,66 @@ public class VNPayService {
         vnp_Params.put("vnp_CurrCode", currCode);
         vnp_Params.put("vnp_TxnRef", getRandomNumber());
         vnp_Params.put("vnp_OrderInfo", String.valueOf(request.getTransactionId()));
+        vnp_Params.put("vnp_OrderType", "other");
+        vnp_Params.put("vnp_Amount", amount);
+
+        vnp_Params.put("vnp_ReturnUrl",returnUrl);
+        vnp_Params.put("vnp_CreateDate", formattedCreateDate);
+        vnp_Params.put("vnp_IpAddr", "14.225.204.58");
+        StringBuilder signDataBuilder = new StringBuilder();
+        for (Map. Entry<String, String> entry: vnp_Params.entrySet()) {
+            signDataBuilder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.toString()));
+            signDataBuilder.append("=");
+            signDataBuilder.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.toString()));
+            signDataBuilder.append("&");
+        }
+        signDataBuilder.deleteCharAt(signDataBuilder.length() - 1);
+        String signData = signDataBuilder.toString();
+        String signed = generateHMAC(secretKey, signData);
+        vnp_Params.put("vnp_SecureHash", signed);
+
+        StringBuilder urlBuilder = new StringBuilder (vnpUrl);
+        urlBuilder.append("?");
+        for (Map. Entry<String, String> entry: vnp_Params.entrySet()) {
+            urlBuilder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.toString()));
+            urlBuilder.append("=");
+            urlBuilder.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.toString()));
+            urlBuilder.append("&");
+        }
+        urlBuilder.deleteCharAt(urlBuilder.length()-1);
+        return urlBuilder.toString();
+    }
+
+    public String createServiceBookingURL(ServiceTransactionVNPayRequest request) throws Exception{
+        if (serviceTransactionRepository.existsByBookingService_bookingServiceId(request.getBookingServiceId())){
+            throw new AppException(ErrorCode.SERVICE_TRANSACTION_DONE);
+        }
+        BookingService bookingService = bookingServiceService.getBookingServiceById(request.getBookingServiceId());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        LocalDateTime createDate = LocalDateTime.now();
+        String formattedCreateDate = createDate.format(formatter);
+
+        float money = (float) (bookingService.getPrice() * 100);
+        String amount = String.valueOf((int)money);
+
+
+        String tmnCode = "B4EZDSFD";
+        String secretKey = "EHFO9MXOQYSJ2QV73STA5SY55QP123LU";
+        String vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+        String returnUrl = "http://localhost:8080/serviceTransaction/vnpay/callback";
+//        String returnUrl = "https://www.hoyolab.com/";
+        //"https://www.hoyolab.com/"
+//        String returnUrl = "https://www.behance.net/search/projects?orderID=" + request.getOrderId();
+        String currCode = "VND";
+
+        Map<String, String> vnp_Params = new TreeMap<>();
+        vnp_Params.put("vnp_Version", "2.1.0");
+        vnp_Params.put("vnp_Command", "pay");
+        vnp_Params.put("vnp_TmnCode", tmnCode);
+        vnp_Params.put("vnp_Locale", "vn");
+        vnp_Params.put("vnp_CurrCode", currCode);
+        vnp_Params.put("vnp_TxnRef", getRandomNumber());
+        vnp_Params.put("vnp_OrderInfo", String.valueOf(request.getBookingServiceId()));
         vnp_Params.put("vnp_OrderType", "other");
         vnp_Params.put("vnp_Amount", amount);
 
