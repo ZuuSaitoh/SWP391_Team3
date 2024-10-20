@@ -15,15 +15,20 @@ public class Discount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "discount_id")
-    private int discountId;
-    @Column(name = "discount_author_id")
-    private int discountAuthorId;
+    int discountId;
+
+    @ManyToOne
+    @JoinColumn(name = "discount_author_id", referencedColumnName = "staff_id", nullable = false)
+    Staff staff;
+
     @Column(name = "discount_name")
-    private String discountName;
+    String discountName;
+
     @Column(name = "discount_percent")
-    private float discountPercent;
+    float discountPercent;
+
     @Column(name = "status")
-    private boolean status;
+    boolean status;
 
     public Discount() {
     }
@@ -36,12 +41,12 @@ public class Discount {
         this.discountId = discountId;
     }
 
-    public int getDiscountAuthorId() {
-        return discountAuthorId;
+    public Staff getStaff() {
+        return staff;
     }
 
-    public void setDiscountAuthorId(int discountAuthorId) {
-        this.discountAuthorId = discountAuthorId;
+    public void setStaff(Staff staff) {
+        this.staff = staff;
     }
 
     public String getDiscountName() {
