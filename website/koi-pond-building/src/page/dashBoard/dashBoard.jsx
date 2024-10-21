@@ -129,6 +129,7 @@ const Dashboard = () => {
   const [showAcceptanceModal, setShowAcceptanceModal] = useState(false);
   const [editingAcceptance, setEditingAcceptance] = useState(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [availableStaff, setAvailableStaff] = useState([]);
 
   const toggleLock = () => {
     setSidebarLocked(!sidebarLocked);
@@ -257,10 +258,29 @@ const Dashboard = () => {
       }
     };
 
+    const fetchAvailableStaff = async () => {
+      try {
+        console.log("Fetching available staff...");
+        const response = await axios.get("http://localhost:8080/staffs/fetchAll");
+        console.log("Staff API response:", response.data);
+        if (response.data && response.data.result) {
+          setAvailableStaff(response.data.result);
+          console.log("Available staff set:", response.data.result);
+        } else {
+          console.warn("Unexpected response when fetching staff:", response.data);
+          toast.warning("Unexpected response when fetching staff.");
+        }
+      } catch (err) {
+        console.error("Error fetching staff:", err);
+        toast.error("Error fetching staff: " + (err.response?.data?.message || err.message));
+      }
+    };
+
     fetchData();
     fetchTransactions();
     fetchBookings();
     fetchAcceptanceTests();
+    fetchAvailableStaff();
   }, [navigate]);
 
   console.log("Rendering dashboard. Customers:", customers);
@@ -1561,7 +1581,10 @@ const Dashboard = () => {
         onMouseLeave={handleSidebarMouseLeave}
       >
         <div className="sidebar-header">
-          <h2>Dashboard <br/><span className="staff-name">{staffName}</span></h2>           
+          <h2>
+            Dashboard <br />
+            <span className="staff-name">{staffName}</span>
+          </h2>
           <FontAwesomeIcon
             icon={sidebarLocked ? faLock : faLockOpen}
             className="lock-icon"
@@ -1623,7 +1646,9 @@ const Dashboard = () => {
               ? "Acceptance Dashboard"
               : "Dashboard"}
           </h1>
-          <p className="welcome-message">Welcome, {staffName} ({staffRole})</p>
+          <p className="welcome-message">
+            Welcome, {staffName} ({staffRole})
+          </p>
         </div>
         <div className="table-container">
           {activeView === "overview" ? (
@@ -1679,35 +1704,47 @@ const Dashboard = () => {
           <Form.Item
             name="consultingStaff"
             label="Consulting Staff ID"
-            rules={[
-              {
-                required: true,
-                message: "Please enter the consulting staff ID",
-              },
-            ]}
+            rules={[{ required: true, message: "Please enter the consulting staff ID" }]}
           >
-            <Input />
+            <Select
+              placeholder="Select consulting staff"
+              options={(availableStaff || [])
+                .filter(staff => staff.role === "Consulting Staff")
+                .map((staff) => ({
+                  value: staff.staffId,
+                  label: `${staff.fullName} (ID: ${staff.staffId})`,
+          }))}
+            />
           </Form.Item>
           <Form.Item
             name="designStaff"
-            label="Design Staff ID"
-            rules={[
-              { required: true, message: "Please enter the design staff ID" },
-            ]}
+            label="Design Staff"
+            rules={[{ required: true, message: "Please select a design staff" }]}
           >
-            <Input />
+            <Select
+              placeholder="Select design staff"
+              options={(availableStaff || [])
+              .filter(staff => staff.role === "Design Staff")
+              .map((staff) => ({
+              value: staff.staffId,
+                label: `${staff.fullName} (ID: ${staff.staffId})`,
+              }))}
+            />
           </Form.Item>
           <Form.Item
             name="constructionStaff"
-            label="Construction Staff ID"
-            rules={[
-              {
-                required: true,
-                message: "Please enter the construction staff ID",
-              },
-            ]}
+            label="Construction Staff"
+            rules={[{ required: true, message: "Please select a construction staff" }]}
           >
-            <Input />
+            <Select
+              placeholder="Select construction staff"
+              options={(availableStaff || [])
+                .filter(staff => staff.role === "Construction Staff")
+                .map((staff) => ({
+                  value: staff.staffId,
+                  label: `${staff.fullName} (ID: ${staff.staffId})`,
+                }))}
+            />
           </Form.Item>
           <Form.Item
             name="imageData"
