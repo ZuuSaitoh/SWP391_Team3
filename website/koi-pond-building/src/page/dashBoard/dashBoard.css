@@ -1548,8 +1548,6 @@ body {
   transition: background-color 0.3s;
 }
 
-
-
 .delete-service-btn:hover {
   background-color: #c0392b;
 }

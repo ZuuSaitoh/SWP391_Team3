@@ -5,7 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./dashBoard.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faEdit, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
 
 const OrderViewDashboard = () => {
   const [order, setOrder] = useState(null);
@@ -230,6 +230,24 @@ const OrderViewDashboard = () => {
     }
   };
 
+  const handlePayByCash = async (transactionId) => {
+    try {
+      const response = await axios.patch(`http://localhost:8080/transaction/update/payment/cash/${transactionId}`);
+      if (response.data.code === 7777) {
+        toast.success("Payment by cash successful");
+        // Update the transaction in the state
+        setTransactions(transactions.map(transaction => 
+          transaction.transactionId === transactionId ? {...response.data.result, isPaid: true} : transaction
+        ));
+      } else {
+        toast.error("Failed to process cash payment");
+      }
+    } catch (err) {
+      console.error("Error processing cash payment:", err);
+      toast.error("An error occurred while processing the cash payment");
+    }
+  };
+
   const TransactionModal = ({ transactions, onClose, onDelete }) => {
     return (
       <div className="status-modal-overlay" onClick={onClose}>
@@ -246,6 +264,11 @@ const OrderViewDashboard = () => {
               <InfoRow label="Deposit Person" value={transaction.depositPerson ? transaction.depositPerson.username : "Unknown"} />
               <InfoRow label="Transaction Number" value={transaction.transactionNumber || "Not assigned"} />
               <div className="status-actions">
+                {transaction.depositMethod !== 'Cash' && transaction.depositMethod !== 'VNPay' && (
+                  <button onClick={() => handlePayByCash(transaction.transactionId)} className="pay-cash-btn">
+                    <FontAwesomeIcon icon={faMoneyBillWave} /> Pay by Cash
+                  </button>
+                )}
                 <button onClick={() => onDelete(transaction.transactionId)} className="delete-btn">
                   <FontAwesomeIcon icon={faTrash} /> Delete
                 </button>

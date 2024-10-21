@@ -1575,6 +1575,7 @@ const Dashboard = () => {
               ? "Acceptance Dashboard"
               : "Dashboard"}
           </h1>
+          <p className="welcome-message">Welcome, {staffName} ({staffRole})</p>
         </div>
         <div className="table-container">
           {activeView === "overview" ? (
