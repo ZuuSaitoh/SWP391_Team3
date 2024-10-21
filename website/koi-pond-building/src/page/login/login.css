@@ -66,7 +66,7 @@ body {
 .login-text {
   font-size: 32px;
   font-weight: 700;
-  color: #d35400;
+  color: #d35400; /* Keep this orange color for "Sign In" */
   text-align: center;
 }
 
@@ -111,7 +111,7 @@ body {
   outline: none;
   background-color: transparent;
   font-size: 16px;
-  color: #333;
+  color: #000000;
 }
 
 .login-input input::placeholder {
@@ -124,7 +124,7 @@ body {
   text-align: center;
   /* Adjust the text alignment */
   margin-top: 20px;
-  color: #797979;
+  color: #000000;
   font-size: 16px;
 }
 
@@ -431,44 +431,27 @@ body {
 
 /* Toast notification styles */
 .Toastify__toast-container {
-  width: 320px;
+  z-index: 9999;
 }
 
 .Toastify__toast {
   font-family: 'Poppins', sans-serif;
-  border-radius: 8px;
-  background-color: white;
-  color: #333;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.Toastify__toast--success {
-  border-left: 4px solid #4caf50;
+  border-radius: 4px;
+  background-color: #ffffff;
+  border: 1px solid #d35400;
 }
 
 .Toastify__toast--error {
-  border-left: 4px solid #f44336;
+  border-color: #ff0000;
+}
+
+.Toastify__toast--success {
+  border-color: #51cf66;
 }
 
 .Toastify__toast-body {
-  font-size: 14px;
-  padding: 16px;
-}
-
-.Toastify__progress-bar {
-  height: 4px;
-}
-
-.Toastify__progress-bar--success {
-  background-color: #4caf50;
-}
-
-.Toastify__progress-bar--error {
-  background-color: #f44336;
-}
-
-.Toastify__close-button {
-  color: #888;
+  color: #ff0000; /* Change notification text color to red */
+  font-weight: 500;
 }
 
 /* You can remove the following styles if they're no longer needed */

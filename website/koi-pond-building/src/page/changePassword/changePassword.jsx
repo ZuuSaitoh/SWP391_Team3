@@ -56,10 +56,31 @@ function ForgotPassword() {
         localStorage.removeItem("userMail");
         navigate("/");
       } else {
-        toast.error(data.message || "Error resetting password");
+        switch (data.errorCode) {
+          case 1005:
+            toast.error("User not found. Please check your email address.");
+            break;
+          case 1004:
+            toast.error("Password must be at least 8 characters.");
+            break;
+          case 1006:
+            toast.error("Authentication failed. Please try again.");
+            break;
+          case 1007:
+            toast.error("Invalid email address. Please check and try again.");
+            break;
+          case 1013:
+            toast.error("Email doesn't exist. Please check your email address.");
+            break;
+          case 1014:
+            toast.error("Can't change the password because you've logged in with Google.");
+            break;
+          default:
+            toast.error(data.message || "Error resetting password. Please try again.");
+        }
       }
     } catch (error) {
-      toast.error("Error resetting password");
+      toast.error("Error resetting password. Please try again later.");
       console.error(error);
     }
   }
@@ -80,7 +101,7 @@ function ForgotPassword() {
           {!isEmailVerified ? (
             <VerifyEmail
               email={email}
-              setEmail={setEmail} // Pass setEmail as a prop
+              setEmail={setEmail}
               setIsEmailVerified={setIsEmailVerified}
               setMessage={setMessage}
             />
