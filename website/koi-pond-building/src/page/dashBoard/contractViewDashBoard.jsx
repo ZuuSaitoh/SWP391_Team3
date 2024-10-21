@@ -98,6 +98,15 @@ const ContractViewDashBoard = () => {
     setEditedContract((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleImageDownload = (imageUrl, fileName) => {
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   //render loading
   if (loading) return <div className="dashboard-loading">Loading...</div>;
   //render error
@@ -158,8 +167,19 @@ const ContractViewDashBoard = () => {
                 <span className="detail-value">{contract.description}</span>
               </div>
               <div className="detail-row">
-                <span className="detail-label">IMAGE DATA:</span>
-                <span className="detail-value">{contract.imageData}</span>
+                <span className="detail-label">CONTRACT FILE:</span>
+                <span className="detail-value">
+                  <a
+                    href={contract.imageData}
+                    download={`contract_${contract.contractId}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleImageDownload(contract.imageData, `contract_${contract.contractId}`);
+                    }}
+                  >
+                    View File
+                  </a>
+                </span>
               </div>
             </div>
 

@@ -340,6 +340,16 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
     }
   };
 
+  const handleImageDownload = (imageUrl, fileName) => {
+    // Create a temporary anchor element
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="view-order-overlay">
       <div className="view-order-modal">
@@ -380,7 +390,17 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
               {updatedOrder.design.designVersion}
             </p>
             <p>
-              <strong>Image Data:</strong> {updatedOrder.design.imageData}
+              <strong>Image Data:</strong>{" "}
+              <a
+                href={updatedOrder.design.imageData}
+                download={`design_${updatedOrder.design.designId}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleImageDownload(updatedOrder.design.imageData, `design_${updatedOrder.design.designId}`);
+                }}
+              >
+                View file
+              </a>
             </p>
           </>
         ) : (
@@ -402,7 +422,17 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
                 <strong>Description:</strong> {contract.description}
               </p>
               <p>
-                <strong>Image Data:</strong> {contract.imageData}
+                <strong>Image Data:</strong>{" "}
+                <a
+                  href={contract.imageData}
+                  download={`contract_${contract.contractId}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleImageDownload(contract.imageData, `contract_${contract.contractId}`);
+                  }}
+                >
+                  View file
+                </a>
               </p>
             </div>
           ))
