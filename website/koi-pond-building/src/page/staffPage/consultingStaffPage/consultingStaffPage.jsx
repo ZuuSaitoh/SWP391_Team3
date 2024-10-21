@@ -41,6 +41,7 @@ function ConsultingStaffPage() {
   const [editingAcceptance, setEditingAcceptance] = useState(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [editForm] = Form.useForm();
+  const [availableStaff, setAvailableStaff] = useState([]);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -128,6 +129,21 @@ function ConsultingStaffPage() {
     }
   };
 
+  const fetchAvailableStaff = async () => {
+    try {
+      const response = await api.get("/staffs/fetchAll");
+      if (response.data.code === 0) {
+        setAvailableStaff(response.data.result);
+      } else {
+        console.warn("Unexpected response when fetching staff:", response.data);
+        toast.warning("Unexpected response when fetching staff.");
+      }
+    } catch (err) {
+      console.error("Error fetching staff:", err);
+      toast.error("Error fetching staff: " + (err.response?.data?.message || err.message));
+    }
+  };
+
   useEffect(() => {
     if (!staffId) {
       toast.error("Staff ID not found. Please log in again.");
@@ -135,6 +151,7 @@ function ConsultingStaffPage() {
     } else {
       fetchOrders();
       fetchAcceptanceTests();
+      fetchAvailableStaff();
     }
   }, [staffId, navigate]);
 
@@ -316,9 +333,6 @@ function ConsultingStaffPage() {
     },
   ];
 
-  const backToHomepage = () => {
-    navigate("/");
-  };
 
   const renderOrderDetails = () => {
     if (!selectedOrder) return null;
@@ -729,24 +743,33 @@ function ConsultingStaffPage() {
           </Form.Item>
           <Form.Item
             name="designStaff"
-            label="Design Staff ID"
-            rules={[
-              { required: true, message: "Please enter the design staff ID" },
-            ]}
+            label="Design Staff"
+            rules={[{ required: true, message: "Please select a design staff" }]}
           >
-            <Input />
+            <Select
+              placeholder="Select design staff"
+              options={availableStaff
+                .filter(staff => staff.role === "Design Staff")
+                .map((staff) => ({
+                  value: staff.staffId,
+                  label: `${staff.fullName} (ID: ${staff.staffId})`,
+                }))}
+            />
           </Form.Item>
           <Form.Item
             name="constructionStaff"
-            label="Construction Staff ID"
-            rules={[
-              {
-                required: true,
-                message: "Please enter the construction staff ID",
-              },
-            ]}
+            label="Construction Staff"
+            rules={[{ required: true, message: "Please select a construction staff" }]}
           >
-            <Input />
+            <Select
+              placeholder="Select construction staff"
+              options={availableStaff
+                .filter(staff => staff.role === "Construction Staff")
+                .map((staff) => ({
+                  value: staff.staffId,
+                  label: `${staff.fullName} (ID: ${staff.staffId})`,
+                }))}
+            />
           </Form.Item>
           <Form.Item
             name="imageData"
