@@ -23,6 +23,7 @@
   overflow-x: hidden;
   font-size: 13px;
   /* Slightly reduce the overall font size */
+  padding-left: 25px; /* Increase left padding to compensate for the shift */
 }
 
 h2 {
@@ -103,28 +104,90 @@ button {
   /* Thêm margin bottom để tránh các nút dính nhau khi wrap */
 }
 
-.status-container {
+.status-container,
+.transaction-container {
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
-  gap: 6px;
-  padding-bottom: 6px;
-  margin-bottom: 8px;
+  gap: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
   width: 100%;
 }
 
-.status-item {
+.status-item,
+.transaction-item {
   background-color: #f8f9fa;
-  border-radius: 6px;
-  /* Slightly reduced border radius */
-  padding: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  min-width: 160px;
-  /* Further reduce minimum width */
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 10px;
+  min-width: 200px;
   flex: 0 0 auto;
 }
+.transaction-container{
+  margin-left: 80px;
+}
+.transaction-item{
+  margin-left: 20px;
+}
 
-/* Add styles for better scrollbar appearance */
+
+
+.status-item h4,
+.transaction-item h4 {
+  color: #3498db;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.status-item p,
+.transaction-item p {
+  margin: 3px 0;
+  font-size: 12px;
+}
+
+.status-item strong,
+.transaction-item strong {
+  color: #495057;
+}
+
+.status-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.status-btn {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.2s;
+  flex: 1;
+  margin: 0 5px;
+}
+
+.accept-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.accept-btn:hover {
+  background-color: #45a049;
+}
+
+.reject-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.reject-btn:hover {
+  background-color: #da190b;
+}
+
+/* Scrollbar styles for status container */
 .status-container::-webkit-scrollbar {
   height: 6px;
 }
@@ -138,51 +201,11 @@ button {
   background-color: #f1f1f1;
 }
 
-.status-item h4 {
-  color: #3498db;
-  margin-bottom: 3px;
-  font-size: 12px;
-}
-
-.status-item p {
-  margin-bottom: 1px;
-  font-size: 10px;
-  font-style: italic;
-}
-
-.status-item strong {
-  color: #2c3e50;
-}
-
-.status-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 5px;
-}
-
-.accept-btn,
-.reject-btn {
-  padding: 2px 6px;
-  font-size: 11px;
-  border-radius: 3px;
-}
-
-.accept-btn {
-  background-color: #2ecc71;
-  color: white;
-}
-
-.accept-btn:hover {
-  background-color: #27ae60;
-}
-
-.reject-btn {
-  background-color: #e74c3c;
-  color: white;
-}
-
-.reject-btn:hover {
-  background-color: #c0392b;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .status-item {
+    min-width: 200px;
+  }
 }
 
 .reject-modal-overlay {
@@ -325,76 +348,160 @@ button {
 
 /* Add these styles at the end of the file */
 
-.transaction-container {
+.info-container {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 15px;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.info-item {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  min-width: 250px;
+  flex: 0 0 auto;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.info-item h4 {
+  color: #2196F3;
+  margin-bottom: 10px;
+  font-size: 16px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 5px;
+}
+
+.info-item p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.info-item strong {
+  color: #333;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
   margin-top: 10px;
 }
 
-.transaction-item {
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  padding: 10px;
-  font-size: 0.9em;
-}
-
-.transaction-item p {
-  margin: 5px 0;
-}
-
-.transaction-item strong {
-  color: #495057;
-}
-
-.vnpay-button {
-  background-color: #0066cc;
-  color: white;
+.action-btn {
+  padding: 8px 15px;
   border: none;
-  padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
   transition: background-color 0.3s, transform 0.2s;
-  margin-top: 10px;
+  flex: 1;
+  margin: 0 5px;
 }
 
-.vnpay-button:hover {
-  background-color: #0052a3;
-  transform: translateY(-2px);
+.accept-btn {
+  background-color: #4CAF50;
+  color: white;
 }
 
-.vnpay-button:active {
-  transform: translateY(0);
+.accept-btn:hover {
+  background-color: #45a049;
 }
 
-.payment-method-btn {
-  padding: 6px 10px;
-  margin-right: 5px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: bold;
-  transition: background-color 0.3s, transform 0.2s;
+.reject-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.reject-btn:hover {
+  background-color: #da190b;
 }
 
 .vnpay-btn {
-  background-color: #0066cc;
+  background-color: #2196F3;
   color: white;
 }
 
 .vnpay-btn:hover {
-  background-color: #0052a3;
+  background-color: #0b7dda;
 }
 
-.cash-btn {
-  background-color: #28a745;
-  color: white;
+/* Scrollbar styles */
+.info-container::-webkit-scrollbar {
+  height: 8px;
 }
 
-.cash-btn:hover {
-  background-color: #218838;
+.info-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+.info-container::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .info-item {
+    min-width: 200px;
+  }
+}
+
+/* Common scrollbar styles for both containers */
+.status-container::-webkit-scrollbar,
+.transaction-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.status-container::-webkit-scrollbar-thumb,
+.transaction-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+.status-container::-webkit-scrollbar-track,
+.transaction-container::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .status-item,
+  .transaction-item {
+    min-width: 200px;
+  }
+}
+
+/* Adjust the status container */
+.status-container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  width: 100%;
+  padding-left: 0; 
+  margin-left: -10px; /* Move items to the left */
+}
+
+/* Adjust the status items */
+.status-item {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 10px;
+  min-width: 200px;
+  flex: 0 0 auto;
+  margin-left: 10px;
+}
+
+/* Adjust the view-order-modal to compensate */
+.view-order-modal {
+  /* ... existing styles ... */
+  padding-left: 25px; /* Increase left padding */
 }

@@ -257,33 +257,47 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
     setShowRejectModal(true);
   };
 
-  const sendRejectEmail = async () => {
-    try {
-      await emailjs.send(
-        "service_q4h45rc",
-        "template_awodo8g",
-        {
-          to_email: selectedStatus.staff.mail,
-          status_description: selectedStatus.statusDescription,
-          reject_reason: rejectReason,
-        },
-        "gmuh_u6yoFuhyEb4c"
-      );
-      console.log("Rejection email sent successfully");
-    } catch (error) {
-      console.error("Error sending rejection email:", error);
-    }
+  const sendRejectEmail = () => {
+    return emailjs.send(
+      "service_q4h45rc",
+      "template_awodo8g",
+      {
+        to_email: selectedStatus.staff.mail,
+        status_description: selectedStatus.statusDescription,
+        reject_reason: rejectReason,
+      },
+      "gmuh_u6yoFuhyEb4c"
+    );
   };
 
   const handleRejectSubmit = async () => {
     if (rejectReason.trim() === "") {
-      alert("Please provide a reason for rejection.");
+      toast.error("Please provide a reason for rejection.");
       return;
     }
-    await sendRejectEmail();
-    setShowRejectModal(false);
-    setRejectReason("");
-    setSelectedStatus(null);
+    try {
+      await sendRejectEmail();
+      toast.success("Rejection email sent successfully");
+      setShowRejectModal(false);
+      setRejectReason("");
+      setSelectedStatus(null);
+      
+      // Update the status in the local state
+      setStatuses(prevStatuses => 
+        prevStatuses.map(status => 
+          status.statusId === selectedStatus.statusId
+            ? { ...status, complete: false, checkDate: new Date().toISOString() }
+            : status
+        )
+      );
+      
+      // Optionally, you might want to update the backend here as well
+      // await updateStatusInBackend(selectedStatus.statusId, false);
+
+    } catch (error) {
+      console.error("Error sending rejection email:", error);
+      toast.error("Failed to send rejection email. Please try again.");
+    }
   };
 
   const handleVNPayment = async (transactionId, deposit) => {
@@ -397,49 +411,24 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
         )}
 
         <h3>Status Information</h3>
-        {console.log("Rendering statuses:", statuses)}
         {isLoading ? (
           <p>Loading statuses...</p>
         ) : statuses.length > 0 ? (
-          <div className="status-container">
+          <div className="info-container status-container">
             {statuses.map((status, index) => (
-              <div key={status.statusId} className="status-item">
+              <div key={status.statusId} className="info-item status-item">
                 <h4>Status {index + 1}</h4>
-                <p>
-                  <strong>Description:</strong> {status.statusDescription}
-                </p>
-                <p>
-                  <strong>Date:</strong>{" "}
-                  {new Date(status.statusDate).toLocaleString()}
-                </p>
-                <p>
-                  <strong>Staff:</strong> {status.staff.username} (
-                  {status.staff.role})
-                </p>
-                <p>
-                  <strong>Complete:</strong> {status.complete ? "Yes" : "No"}
-                </p>
-                <p>
-                  <strong>Updates:</strong> {status.numberOfUpdate}
-                </p>
-                {status.checkDate && (
-                  <p>
-                    <strong>Check Date:</strong>{" "}
-                    {new Date(status.checkDate).toLocaleString()}
-                  </p>
-                )}
+                <p><strong>Description:</strong> {status.statusDescription}</p>
+                <p><strong>Date:</strong> {new Date(status.statusDate).toLocaleString()}</p>
+                <p><strong>Staff:</strong> {status.staff.username} ({status.staff.role})</p>
+                <p><strong>Complete:</strong> {status.complete ? "Yes" : "No"}</p>
+                <p><strong>Updates:</strong> {status.numberOfUpdate}</p>
                 {!status.complete && (
-                  <div className="status-actions">
-                    <button
-                      onClick={() => handleAccept(status.statusId)}
-                      className="accept-btn"
-                    >
+                  <div className="action-buttons">
+                    <button onClick={() => handleAccept(status.statusId)} className="action-btn accept-btn">
                       Accept
                     </button>
-                    <button
-                      onClick={() => handleReject(status)}
-                      className="reject-btn"
-                    >
+                    <button onClick={() => handleReject(status)} className="action-btn reject-btn">
                       Reject
                     </button>
                   </div>
@@ -453,29 +442,23 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
 
         <h3>Transaction Information</h3>
         {transactions.length > 0 ? (
-          <div className="transaction-container">
+          <div className="info-container transaction-container">
             {transactions.map((transaction) => (
-              <div key={transaction.transactionId} className="transaction-item">
-                <p><strong>Transaction ID:</strong> {transaction.transactionId}</p>
-                <p><strong>Deposit Amount:</strong> ${transaction.deposit}</p>
+              <div key={transaction.transactionId} className="info-item transaction-item">
+                <h4>Transaction {transaction.transactionId}</h4>
+                <p><strong>Amount:</strong> {transaction.deposit.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                 <p><strong>Description:</strong> {transaction.depositDescription}</p>
                 <p><strong>Method:</strong> {transaction.depositMethod || 'Not specified'}</p>
                 <p><strong>Date:</strong> {transaction.depositDate ? new Date(transaction.depositDate).toLocaleString() : 'N/A'}</p>
-                <p><strong>Deposited By:</strong> {transaction.depositPerson.fullName}</p>
+                <p><strong>By:</strong> {transaction.depositPerson.fullName}</p>
                 <p><strong>Transaction Number:</strong> {transaction.transactionNumber || 'N/A'}</p>
                 {!transaction.depositMethod && (
-                  <div>
+                  <div className="action-buttons">
                     <button 
                       onClick={() => handlePaymentMethodChange(transaction.transactionId, 'vnpay')}
-                      className="payment-method-btn vnpay-btn"
+                      className="action-btn vnpay-btn"
                     >
                       Pay with VNPay
-                    </button>
-                    <button 
-                      onClick={() => handlePaymentMethodChange(transaction.transactionId, 'cash')}
-                      className="payment-method-btn cash-btn"
-                    >
-                      Pay with Cash
                     </button>
                   </div>
                 )}

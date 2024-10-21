@@ -9,6 +9,7 @@ import {
   Table,
   Upload,
   message,
+  Select,
 } from "antd";
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
@@ -31,6 +32,11 @@ function DesignStaffPage() {
   const [statusModalVisible, setStatusModalVisible] = useState(false);
   const [staffStatuses, setStaffStatuses] = useState([]);
   const [updatingStatus, setUpdatingStatus] = useState(null);
+  const [designs, setDesigns] = useState([]);
+  const [updatingDesign, setUpdatingDesign] = useState(null);
+  const [updateDesignModalVisible, setUpdateDesignModalVisible] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [selectedDesignId, setSelectedDesignId] = useState(null);
 
   const staffId = localStorage.getItem("staffId");
 
@@ -216,6 +222,54 @@ function DesignStaffPage() {
     }
   };
 
+  const fetchAllDesigns = async () => {
+    try {
+      const response = await api.get("/designs/fetchAll");
+      if (response.data.code === 9999) {
+        setDesigns(response.data.result);
+      } else {
+        console.warn("Unexpected response when fetching designs:", response.data);
+        toast.warning("Unexpected response when fetching designs.");
+      }
+    } catch (err) {
+      console.error("Error fetching designs:", err);
+      toast.error("Error fetching designs: " + (err.response?.data?.message || err.message));
+    }
+  };
+
+  const handleUpdateDesign = async () => {
+    if (!selectedOrderId || !selectedDesignId) {
+      toast.error("Please select a design");
+      return;
+    }
+    try {
+      setUpdatingDesign(selectedOrderId);
+      const response = await api.put(`/orders/update-design/${selectedOrderId}`, { designId: selectedDesignId });
+      if (response.data.code === 9997) {
+        setStaffStatuses(prevStatuses =>
+          prevStatuses.map(status =>
+            status.order.orderId === selectedOrderId ? { ...status, order: { ...status.order, design: response.data.result.design } } : status
+          )
+        );
+        toast.success("Design updated successfully");
+        setUpdateDesignModalVisible(false);
+      } else {
+        toast.error("Failed to update design");
+      }
+    } catch (err) {
+      console.error("Error updating design:", err);
+      toast.error("Error updating design: " + (err.response?.data?.message || err.message));
+    } finally {
+      setUpdatingDesign(null);
+    }
+  };
+
+  const openUpdateDesignModal = (orderId) => {
+    setSelectedOrderId(orderId);
+    setSelectedDesignId(null);
+    setUpdateDesignModalVisible(true);
+  };
+
   const statusColumns = [
     {
       title: 'Order ID',
@@ -268,10 +322,20 @@ function DesignStaffPage() {
         </Button>
       ),
     },
+    {
+      title: 'Update Design',
+      key: 'updateDesign',
+      render: (_, record) => (
+        <Button onClick={() => openUpdateDesignModal(record.order.orderId)}>
+          Update Design
+        </Button>
+      ),
+    },
   ];
 
   useEffect(() => {
     fetchData();
+    fetchAllDesigns();
   }, []);
 
   const columns = [
@@ -478,6 +542,33 @@ function DesignStaffPage() {
           rowKey="statusId"
           scroll={{ x: true }}
         />
+      </Modal>
+
+      <Modal
+        title="Update Design"
+        visible={updateDesignModalVisible}
+        onCancel={() => setUpdateDesignModalVisible(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setUpdateDesignModalVisible(false)}>
+            Cancel
+          </Button>,
+          <Button key="update" type="primary" onClick={handleUpdateDesign} loading={updatingDesign === selectedOrderId}>
+            Update
+          </Button>
+        ]}
+      >
+        <Select
+          style={{ width: '100%' }}
+          placeholder="Select a design"
+          value={selectedDesignId}
+          onChange={(value) => setSelectedDesignId(value)}
+        >
+          {designs.map(design => (
+            <Select.Option key={design.designId} value={design.designId}>
+              {design.designName}
+            </Select.Option>
+          ))}
+        </Select>
       </Modal>
 
       {previewImage && (

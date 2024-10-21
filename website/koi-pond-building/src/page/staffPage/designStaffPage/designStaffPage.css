@@ -99,3 +99,24 @@
 .ant-table-cell-ellipsis {
   text-align: center;
 }
+
+/* Add these styles at the end of the file */
+
+/* Style for the Select component in the Update Design column */
+.ant-select-selector {
+  border-radius: 4px !important;
+}
+
+.ant-select-selection-item {
+  font-size: 14px;
+}
+
+/* Adjust the width of the last column (Update Design) */
+.ant-table-cell:last-child {
+  min-width: 220px;
+}
+
+/* Style for the loading state of the Select component */
+.ant-select-loading .ant-select-arrow {
+  color: #1890ff;
+}
