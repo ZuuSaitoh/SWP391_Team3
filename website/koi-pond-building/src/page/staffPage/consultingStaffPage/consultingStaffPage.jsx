@@ -17,6 +17,7 @@ import {
   CheckCircleOutlined,
   UploadOutlined,
   HomeOutlined,
+  FileAddOutlined,
 } from "@ant-design/icons";
 import { toast, ToastContainer } from "react-toastify";
 import api from "../../../config/axios";
@@ -42,6 +43,8 @@ function ConsultingStaffPage() {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [editForm] = Form.useForm();
   const [availableStaff, setAvailableStaff] = useState([]);
+  const [showContractModal, setShowContractModal] = useState(false);
+  const [contractForm] = Form.useForm();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -132,18 +135,12 @@ function ConsultingStaffPage() {
   const fetchAvailableStaff = async () => {
     try {
       const response = await api.get("/staffs/fetchAll");
-      if (response.data.code === 0) {
         setAvailableStaff(response.data.result);
-      } else {
-        console.warn("Unexpected response when fetching staff:", response.data);
-        toast.warning("Unexpected response when fetching staff.");
-      }
     } catch (err) {
       console.error("Error fetching staff:", err);
       toast.error("Error fetching staff: " + (err.response?.data?.message || err.message));
     }
   };
-
   useEffect(() => {
     if (!staffId) {
       toast.error("Staff ID not found. Please log in again.");
@@ -539,6 +536,39 @@ function ConsultingStaffPage() {
     }
   };
 
+  const handleAddContract = () => {
+    setShowContractModal(true);
+  };
+
+  const handleSubmitContract = async (values) => {
+    try {
+      setLoading(true);
+      let imageUrl = "";
+
+      if (values.imageData && values.imageData.length > 0 && values.imageData[0].originFileObj) {
+        imageUrl = await uploadFile(values.imageData[0].originFileObj);
+      }
+
+      const contractData = {
+        orderId: values.orderId,
+        uploadStaff: staffId,
+        imageData: imageUrl,
+        description: values.description,
+      };
+
+      const response = await api.post("/contracts/create", contractData);
+      toast.success("Contract created successfully");
+      setShowContractModal(false);
+      contractForm.resetFields();
+      // Optionally, you can fetch updated data here if needed
+    } catch (err) {
+      console.error("Error creating contract:", err);
+      toast.error("An error occurred while creating the contract");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case "orders":
@@ -552,8 +582,11 @@ function ConsultingStaffPage() {
               >
                 Add new order
               </Button>
-              <Button onClick={fetchStatusesByStaffId} type="primary">
+              <Button onClick={fetchStatusesByStaffId} type="primary" style={{ marginRight: 8 }}>
                 View My Statuses
+              </Button>
+              <Button onClick={handleAddContract} type="primary" icon={<FileAddOutlined />}>
+                Add New Contract
               </Button>
             </div>
             <Table dataSource={orders} columns={columns} rowKey="orderId" />
@@ -839,6 +872,58 @@ function ConsultingStaffPage() {
           </Form.Item>
         </Form>
       </Modal>
+
+      {/* Add New Contract Modal */}
+      <Modal
+        title="Create New Contract"
+        open={showContractModal}
+        onCancel={() => setShowContractModal(false)}
+        footer={null}
+      >
+        <Form form={contractForm} onFinish={handleSubmitContract} layout="vertical">
+          <Form.Item
+            name="orderId"
+            label="Order ID"
+            rules={[{ required: true, message: "Please select an order" }]}
+          >
+            <Select
+              placeholder="Select an order"
+              options={orders.map((order) => ({
+                value: order.orderId,
+                label: `Order ${order.orderId}`,
+              }))}
+            />
+          </Form.Item>
+          <Form.Item
+            name="imageData"
+            label="Upload File"
+            valuePropName="fileList"
+            getValueFromEvent={(e) => {
+              if (Array.isArray(e)) {
+                return e;
+              }
+              return e && e.fileList;
+            }}
+          >
+            <Upload beforeUpload={() => false} maxCount={1}>
+              <Button icon={<UploadOutlined />}>Click to upload file</Button>
+            </Upload>
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+            rules={[{ required: true, message: "Please enter a description" }]}
+          >
+            <Input.TextArea rows={4} />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              Create Contract
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
       <ToastContainer />
     </Layout>
   );
