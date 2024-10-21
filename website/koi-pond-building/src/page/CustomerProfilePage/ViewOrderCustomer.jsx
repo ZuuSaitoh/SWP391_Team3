@@ -444,27 +444,31 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
         {isLoading ? (
           <p>Loading statuses...</p>
         ) : statuses.length > 0 ? (
-          <div className="info-container status-container">
-            {statuses.map((status, index) => (
-              <div key={status.statusId} className="info-item status-item">
-                <h4>Status {index + 1}</h4>
-                <p><strong>Description:</strong> {status.statusDescription}</p>
-                <p><strong>Date:</strong> {new Date(status.statusDate).toLocaleString()}</p>
-                <p><strong>Staff:</strong> {status.staff.username} ({status.staff.role})</p>
-                <p><strong>Complete:</strong> {status.complete ? "Yes" : "No"}</p>
-                <p><strong>Updates:</strong> {status.numberOfUpdate}</p>
-                {!status.complete && (
-                  <div className="action-buttons">
-                    <button onClick={() => handleAccept(status.statusId)} className="action-btn accept-btn">
-                      Accept
-                    </button>
-                    <button onClick={() => handleReject(status)} className="action-btn reject-btn">
-                      Reject
-                    </button>
+          <div className="horizontal-scroll-container">
+            <div className="horizontal-scroll-content">
+              <div className="status-container">
+                {statuses.map((status, index) => (
+                  <div key={status.statusId} className="info-item status-item">
+                    <h4>Status {index + 1}</h4>
+                    <p><strong>Description:</strong> {status.statusDescription}</p>
+                    <p><strong>Date:</strong> {new Date(status.statusDate).toLocaleString()}</p>
+                    <p><strong>Staff:</strong> {status.staff.username} ({status.staff.role})</p>
+                    <p><strong>Complete:</strong> {status.complete ? "Yes" : "No"}</p>
+                    <p><strong>Updates:</strong> {status.numberOfUpdate}</p>
+                    {!status.complete && (
+                      <div className="action-buttons">
+                        <button onClick={() => handleAccept(status.statusId)} className="action-btn accept-btn">
+                          Accept
+                        </button>
+                        <button onClick={() => handleReject(status)} className="action-btn reject-btn">
+                          Reject
+                        </button>
+                      </div>
+                    )}
                   </div>
-                )}
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         ) : (
           <p>No status information available</p>
@@ -472,28 +476,30 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
 
         <h3>Transaction Information</h3>
         {transactions.length > 0 ? (
-          <div className="info-container transaction-container">
-            {transactions.map((transaction) => (
-              <div key={transaction.transactionId} className="info-item transaction-item">
-                <h4>Transaction {transaction.transactionId}</h4>
-                <p><strong>Amount:</strong> {transaction.deposit.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
-                <p><strong>Description:</strong> {transaction.depositDescription}</p>
-                <p><strong>Method:</strong> {transaction.depositMethod || 'Not specified'}</p>
-                <p><strong>Date:</strong> {transaction.depositDate ? new Date(transaction.depositDate).toLocaleString() : 'N/A'}</p>
-                <p><strong>By:</strong> {transaction.depositPerson.fullName}</p>
-                <p><strong>Transaction Number:</strong> {transaction.transactionNumber || 'N/A'}</p>
-                {!transaction.depositMethod && (
-                  <div className="action-buttons">
-                    <button 
-                      onClick={() => handlePaymentMethodChange(transaction.transactionId, 'vnpay')}
-                      className="action-btn vnpay-btn"
-                    >
-                      Pay with VNPay
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
+          <div className="horizontal-scroll-container">
+            <div className="horizontal-scroll-content transaction-container">
+              {transactions.map((transaction) => (
+                <div key={transaction.transactionId} className="info-item transaction-item">
+                  <h4>Transaction {transaction.transactionId}</h4>
+                  <p><strong>Amount:</strong> {transaction.deposit.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
+                  <p><strong>Description:</strong> {transaction.depositDescription}</p>
+                  <p><strong>Method:</strong> {transaction.depositMethod || 'Not specified'}</p>
+                  <p><strong>Date:</strong> {transaction.depositDate ? new Date(transaction.depositDate).toLocaleString() : 'N/A'}</p>
+                  <p><strong>By:</strong> {transaction.depositPerson.fullName}</p>
+                  <p><strong>Transaction Number:</strong> {transaction.transactionNumber || 'N/A'}</p>
+                  {!transaction.depositMethod && (
+                    <div className="action-buttons">
+                      <button 
+                        onClick={() => handlePaymentMethodChange(transaction.transactionId, 'vnpay')}
+                        className="action-btn vnpay-btn"
+                      >
+                        Pay with VNPay
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           <p>No transaction information available</p>
