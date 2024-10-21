@@ -95,7 +95,33 @@ const Payment = () => {
       if (response.data && response.data.code === 1000) {
         toast.success("Order placed successfully!");
         localStorage.removeItem("selectedService");
-        navigate("/");
+
+        const bookingServiceId = response.data.result.bookingServiceId;
+        if (!bookingServiceId) {
+          oun;
+          toast.error("Booking service ID not found.");
+          return;
+        }
+
+        if (paymentMethod === "VNPay") {
+          try {
+            const vnpayResponse = await axios.post(
+              "http://localhost:8080/serviceTransaction/test-payment",
+              { bookingServiceId: response.data.result.bookingServiceId }
+            );
+
+            if (vnpayResponse.data && vnpayResponse.data.code === 6666) {
+              window.location.href = vnpayResponse.data.result;
+            } else {
+              toast.error("Failed to initiate VNPay payment.");
+            }
+          } catch (error) {
+            console.error("Error initiating VNPay payment:", error);
+            toast.error("An error occurred while processing VNPay payment.");
+          }
+        } else {
+          navigate("/");
+        }
       } else {
         toast.error("Failed to place order. Please try again.");
       }
@@ -119,6 +145,11 @@ const Payment = () => {
         toast.error("An unexpected error occurred. Please try again.");
       }
     }
+  };
+
+  // Add this function to format numbers with thousand separators
+  const formatNumber = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 
   return (
@@ -197,7 +228,9 @@ const Payment = () => {
                 <h4>{selectedService.serviceName}</h4>
                 <p>{selectedService.description}</p>
                 <p>Service Type: {selectedService.serviceType}</p>
-                <p className="service-price">Price: ${selectedService.price}</p>
+                <p className="service-price">
+                  Price: {formatNumber(selectedService.price)} VND
+                </p>
               </div>
             ) : (
               <p>No service selected</p>
@@ -213,19 +246,23 @@ const Payment = () => {
             </div>
             <div className="payment-total">
               <p>Subtotal</p>
-              <p>${selectedService ? selectedService.price : 0}</p>
+              <p>
+                {selectedService ? formatNumber(selectedService.price) : 0} VND
+              </p>
             </div>
             <div className="payment-shipping">
               <p>Points used</p>
-              <p>-${usingPoint}</p>
+              <p>-{formatNumber(usingPoint)} VND</p>
             </div>
             <div className="payment-grand-total">
               <p>Total</p>
               <p>
-                $
                 {selectedService
-                  ? Math.max(selectedService.price - usingPoint, 0)
-                  : 0}
+                  ? formatNumber(
+                      Math.max(selectedService.price - usingPoint, 0)
+                    )
+                  : 0}{" "}
+                VND
               </p>
             </div>
           </div>

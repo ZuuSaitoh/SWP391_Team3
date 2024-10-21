@@ -39,8 +39,8 @@ import {
 import SheetDataViewComponent from "./SheetDataView";
 import StatusViewComponent from "./StatusView";
 import uploadFile from "../../utils/file";
-import { Upload, Modal, Form, Input, Select, Button } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { Upload, Modal, Form, Input, Select, Button } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 
 ChartJS.register(
   CategoryScale,
@@ -244,7 +244,9 @@ const Dashboard = () => {
 
     const fetchAcceptanceTests = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/acceptancetests/fetchAll");
+        const response = await axios.get(
+          "http://localhost:8080/acceptancetests/fetchAll"
+        );
         if (response.data.code === 9999) {
           setAcceptanceTests(response.data.result);
         } else {
@@ -971,7 +973,12 @@ const Dashboard = () => {
               <tr key={service.serviceId}>
                 <td>{service.serviceId}</td>
                 <td>{service.serviceName}</td>
-                <td>${service.price.toFixed(2)}</td>
+                <td>
+                  {service.price.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </td>
                 <td>{service.description}</td>
                 <td>{service.serviceType || "N/A"}</td>
                 <td>
@@ -1332,7 +1339,12 @@ const Dashboard = () => {
                 <td>{booking.bookingServiceId}</td>
                 <td>{booking.customer.username}</td>
                 <td>{booking.service.serviceName}</td>
-                <td>${booking.price.toFixed(2)}</td>
+                <td>
+                  {booking.price.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </td>
                 <td>{new Date(booking.bookingDate).toLocaleString()}</td>
                 <td>{booking.status ? "Completed" : "Pending"}</td>
                 <td>
@@ -1371,7 +1383,11 @@ const Dashboard = () => {
       setLoading(true);
       let imageUrl = "";
 
-      if (values.imageData && values.imageData.length > 0 && values.imageData[0].originFileObj) {
+      if (
+        values.imageData &&
+        values.imageData.length > 0 &&
+        values.imageData[0].originFileObj
+      ) {
         imageUrl = await uploadFile(values.imageData[0].originFileObj);
       }
 
@@ -1384,11 +1400,14 @@ const Dashboard = () => {
         description: values.description,
       };
 
-      const response = await axios.post("http://localhost:8080/acceptancetests/create", acceptanceData);
+      const response = await axios.post(
+        "http://localhost:8080/acceptancetests/create",
+        acceptanceData
+      );
 
-        toast.success("Acceptance test created successfully");
-        setAcceptanceTests([...acceptanceTests, response.data.result]);
-        setShowAcceptanceModal(false);
+      toast.success("Acceptance test created successfully");
+      setAcceptanceTests([...acceptanceTests, response.data.result]);
+      setShowAcceptanceModal(false);
     } catch (err) {
       console.error("Error creating acceptance test:", err);
       toast.error("An error occurred while creating the acceptance test");
@@ -1400,7 +1419,7 @@ const Dashboard = () => {
   const handleEditAcceptance = (record) => {
     setEditingAcceptance({
       ...record,
-      imageData: record.imageData ? [{ url: record.imageData }] : []
+      imageData: record.imageData ? [{ url: record.imageData }] : [],
     });
     setIsEditModalVisible(true);
   };
@@ -1410,7 +1429,11 @@ const Dashboard = () => {
       setLoading(true);
       let imageUrl = editingAcceptance.imageData?.[0]?.url || "";
 
-      if (values.imageData && values.imageData.length > 0 && values.imageData[0].originFileObj) {
+      if (
+        values.imageData &&
+        values.imageData.length > 0 &&
+        values.imageData[0].originFileObj
+      ) {
         imageUrl = await uploadFile(values.imageData[0].originFileObj);
       }
 
@@ -1423,12 +1446,16 @@ const Dashboard = () => {
         `http://localhost:8080/acceptancetests/update/${editingAcceptance.acceptanceTestId}`,
         updatedData
       );
-      
-        toast.success("Acceptance test updated successfully");
-        setAcceptanceTests(acceptanceTests.map(test => 
-          test.acceptanceTestId === editingAcceptance.acceptanceTestId ? {...test, ...updatedData} : test
-        ));
-        setIsEditModalVisible(false);
+
+      toast.success("Acceptance test updated successfully");
+      setAcceptanceTests(
+        acceptanceTests.map((test) =>
+          test.acceptanceTestId === editingAcceptance.acceptanceTestId
+            ? { ...test, ...updatedData }
+            : test
+        )
+      );
+      setIsEditModalVisible(false);
     } catch (err) {
       console.error("Error updating acceptance test:", err);
       toast.error("An error occurred while updating the acceptance test");
@@ -1471,9 +1498,15 @@ const Dashboard = () => {
                 searchLower === "" ||
                 test.acceptanceTestId.toString().includes(searchLower) ||
                 test.order.orderId.toString().includes(searchLower) ||
-                (test.consultingStaff?.fullName || "").toLowerCase().includes(searchLower) ||
-                (test.designStaff?.fullName || "").toLowerCase().includes(searchLower) ||
-                (test.constructionStaff?.fullName || "").toLowerCase().includes(searchLower)
+                (test.consultingStaff?.fullName || "")
+                  .toLowerCase()
+                  .includes(searchLower) ||
+                (test.designStaff?.fullName || "")
+                  .toLowerCase()
+                  .includes(searchLower) ||
+                (test.constructionStaff?.fullName || "")
+                  .toLowerCase()
+                  .includes(searchLower)
               );
             })
             .map((test) => (
@@ -1483,15 +1516,30 @@ const Dashboard = () => {
                 <td>{test.consultingStaff?.fullName || "Not assigned"}</td>
                 <td>{test.designStaff?.fullName || "Not assigned"}</td>
                 <td>{test.constructionStaff?.fullName || "Not assigned"}</td>
-                <td>{test.finishDate ? new Date(test.finishDate).toLocaleString() : "Not set"}</td>
+                <td>
+                  {test.finishDate
+                    ? new Date(test.finishDate).toLocaleString()
+                    : "Not set"}
+                </td>
                 <td>
                   {test.imageData ? (
-                    <a href={test.imageData} target="_blank" rel="noopener noreferrer">View File</a>
-                  ) : "No file"}
+                    <a
+                      href={test.imageData}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View File
+                    </a>
+                  ) : (
+                    "No file"
+                  )}
                 </td>
                 <td>{test.description}</td>
                 <td>
-                  <button onClick={() => handleEditAcceptance(test)} className="edit-btn">
+                  <button
+                    onClick={() => handleEditAcceptance(test)}
+                    className="edit-btn"
+                  >
                     Edit
                   </button>
                 </td>
@@ -1631,21 +1679,33 @@ const Dashboard = () => {
           <Form.Item
             name="consultingStaff"
             label="Consulting Staff ID"
-            rules={[{ required: true, message: "Please enter the consulting staff ID" }]}
+            rules={[
+              {
+                required: true,
+                message: "Please enter the consulting staff ID",
+              },
+            ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="designStaff"
             label="Design Staff ID"
-            rules={[{ required: true, message: "Please enter the design staff ID" }]}
+            rules={[
+              { required: true, message: "Please enter the design staff ID" },
+            ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="constructionStaff"
             label="Construction Staff ID"
-            rules={[{ required: true, message: "Please enter the construction staff ID" }]}
+            rules={[
+              {
+                required: true,
+                message: "Please enter the construction staff ID",
+              },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -1686,7 +1746,11 @@ const Dashboard = () => {
         onCancel={() => setIsEditModalVisible(false)}
         footer={null}
       >
-        <Form onFinish={handleEditSubmit} layout="vertical" initialValues={editingAcceptance}>
+        <Form
+          onFinish={handleEditSubmit}
+          layout="vertical"
+          initialValues={editingAcceptance}
+        >
           <Form.Item
             name="imageData"
             label="Upload New File"
@@ -1699,7 +1763,9 @@ const Dashboard = () => {
             }}
           >
             <Upload beforeUpload={() => false} maxCount={1}>
-              <Button icon={<UploadOutlined />}>Click to upload new file</Button>
+              <Button icon={<UploadOutlined />}>
+                Click to upload new file
+              </Button>
             </Upload>
           </Form.Item>
           <Form.Item

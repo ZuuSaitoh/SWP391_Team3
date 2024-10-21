@@ -277,7 +277,9 @@ function ServiceClean() {
                 <div key={service.serviceId} className="service-item">
                   <h3>{service.serviceName}</h3>
                   <p>{service.description}</p>
-                  <p className="service-price">Price: ${service.price}</p>
+                  <p className="service-price">
+                    Price: {service.price.toLocaleString()} VND
+                  </p>
                   <button
                     className="choose-service-btn"
                     onClick={() => handleChooseService(service)}

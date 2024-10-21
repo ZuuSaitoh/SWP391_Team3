@@ -238,6 +238,10 @@ function CustomerProfilePage() {
     }
   };
 
+  const formatCurrency = (amount) => {
+    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
   const renderBookings = () => (
     <div className="customer-bookings">
       <h3>Bookings</h3>
@@ -259,7 +263,7 @@ function CustomerProfilePage() {
                     </span>
                   </div>
                   <span className="booking-price">
-                    ${booking.price.toFixed(2)}
+                    {formatCurrency(booking.price)} VND
                   </span>
                 </div>
                 <span

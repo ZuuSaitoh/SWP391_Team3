@@ -16,14 +16,14 @@ function ServiceDesign() {
 
   // Add this new useEffect to fetch designs
   useEffect(() => {
-    fetch('http://localhost:8080/designs/fetchAll')
-      .then(response => response.json())
-      .then(data => {
+    fetch("http://localhost:8080/designs/fetchAll")
+      .then((response) => response.json())
+      .then((data) => {
         if (data.code === 9999 && Array.isArray(data.result)) {
           setDesigns(data.result);
         }
       })
-      .catch(error => console.error('Error fetching designs:', error));
+      .catch((error) => console.error("Error fetching designs:", error));
   }, []);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ function ServiceDesign() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-//set time to change slide 
+  //set time to change slide
   useEffect(() => {
     const slideInterval = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
@@ -50,7 +50,9 @@ function ServiceDesign() {
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
+    setCurrentSlide(
+      (prevSlide) => (prevSlide - 1 + slides.length) % slides.length
+    );
   };
 
   const scrollToTop = () => {
@@ -63,26 +65,26 @@ function ServiceDesign() {
   useEffect(() => {
     const observerOptions = {
       root: null,
-      rootMargin: '0px',
-      threshold: 0.1
+      rootMargin: "0px",
+      threshold: 0.1,
     };
 
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('animate');
+          entry.target.classList.add("animate");
           observer.unobserve(entry.target);
         }
       });
     }, observerOptions);
 
-    const sections = document.querySelectorAll('.service-content section');
-    sections.forEach(section => {
+    const sections = document.querySelectorAll(".service-content section");
+    sections.forEach((section) => {
       observer.observe(section);
     });
 
     return () => {
-      sections.forEach(section => {
+      sections.forEach((section) => {
         observer.unobserve(section);
       });
     };
@@ -100,7 +102,7 @@ function ServiceDesign() {
           {slides.map((slide, index) => (
             <div
               key={index}
-              className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
+              className={`hero-slide ${index === currentSlide ? "active" : ""}`}
               style={{ backgroundImage: `url(${slide})` }}
             ></div>
           ))}
@@ -110,16 +112,23 @@ function ServiceDesign() {
           <p>Expert design and construction for serene water gardens</p>
         </div>
         <div className="slider-controls">
-          <button onClick={prevSlide} className="slider-control prev">&#10094;</button>
-          <button onClick={nextSlide} className="slider-control next">&#10095;</button>
+          <button onClick={prevSlide} className="slider-control prev">
+            &#10094;
+          </button>
+          <button onClick={nextSlide} className="slider-control next">
+            &#10095;
+          </button>
         </div>
       </section>
       <div className="service-content">
         <section className="service-intro">
           <h2>Introduction to Koi Pond Design Services</h2>
           <p>
-            With the elegance, longevity, and beautiful colors of Koi fish, it's easy to see why Japanese-style gardens often feature Koi ponds. 
-            <strong>Designing a beautiful Koi pond in your garden</strong> not only brings tranquility, luck, and prosperity but also adds a unique aesthetic to your living space.
+            With the elegance, longevity, and beautiful colors of Koi fish, it's
+            easy to see why Japanese-style gardens often feature Koi ponds.
+            <strong>Designing a beautiful Koi pond in your garden</strong> not
+            only brings tranquility, luck, and prosperity but also adds a unique
+            aesthetic to your living space.
           </p>
         </section>
 
@@ -128,23 +137,38 @@ function ServiceDesign() {
           <div className="standards-grid">
             <div className="standard-item">
               <h3>Pond Shape</h3>
-              <p>The shape of the pond will depend on your personal preferences and the overall area of your garden.</p>
+              <p>
+                The shape of the pond will depend on your personal preferences
+                and the overall area of your garden.
+              </p>
             </div>
             <div className="standard-item">
               <h3>Pond Location</h3>
-              <p>Koi ponds can be placed in various locations such as outdoors, indoors, on balconies, or rooftops.</p>
+              <p>
+                Koi ponds can be placed in various locations such as outdoors,
+                indoors, on balconies, or rooftops.
+              </p>
             </div>
             <div className="standard-item">
               <h3>Pond Size</h3>
-              <p>The size of your Koi pond should be appropriate for the number of fish and the available space in your garden.</p>
+              <p>
+                The size of your Koi pond should be appropriate for the number
+                of fish and the available space in your garden.
+              </p>
             </div>
             <div className="standard-item">
               <h3>Water Depth</h3>
-              <p>Proper water depth is crucial for the health and well-being of your Koi fish.</p>
+              <p>
+                Proper water depth is crucial for the health and well-being of
+                your Koi fish.
+              </p>
             </div>
             <div className="standard-item">
               <h3>Filtration System</h3>
-              <p>A high-quality filtration system is essential for maintaining clean and healthy water for your Koi.</p>
+              <p>
+                A high-quality filtration system is essential for maintaining
+                clean and healthy water for your Koi.
+              </p>
             </div>
           </div>
         </section>
@@ -153,7 +177,12 @@ function ServiceDesign() {
           <h2>Why Choose Us for Your Koi Pond Design</h2>
           <div className="why-choose-us-content">
             <div className="why-choose-us-text">
-              <p>With nearly a decade of experience in landscaping and garden design, specializing in Koi pond design and construction, we are confident in providing comprehensive solutions for your Koi pond needs.</p>
+              <p>
+                With nearly a decade of experience in landscaping and garden
+                design, specializing in Koi pond design and construction, we are
+                confident in providing comprehensive solutions for your Koi pond
+                needs.
+              </p>
             </div>
             <div className="why-choose-us-list">
               <ul>
@@ -175,7 +204,7 @@ function ServiceDesign() {
                 <thead>
                   <tr>
                     <th>Design Style</th>
-                    <th>Price (m²)</th>
+                    <th>Price (VND/m²)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -198,14 +227,14 @@ function ServiceDesign() {
                 </tbody>
               </table>
             </div>
-            
+
             <div className="pricing-table">
               <h3>Koi Pond Construction Pricing</h3>
               <table>
                 <thead>
                   <tr>
                     <th>Area</th>
-                    <th>Price</th>
+                    <th>Price (VND)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -239,7 +268,9 @@ function ServiceDesign() {
                     <div className="design-item-caption">
                       <h4>{design.designName}</h4>
                       <p>Version: {design.designVersion}</p>
-                      <p>Date: {new Date(design.designDate).toLocaleDateString()}</p>
+                      <p>
+                        Date: {new Date(design.designDate).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -251,18 +282,53 @@ function ServiceDesign() {
         <section className="service-process">
           <h2>Our Service Process</h2>
           <div className="process-timeline">
-            {[ 
-              { number: 1, title: "Initial Consultation", description: "We listen to your ideas and desires.", icon: "🤝" },
-              { number: 2, title: "Site Survey and Analysis", description: "Thorough assessment of the intended pond area.", icon: "📏" },
-              { number: 3, title: "Design Concept Development", description: "Creation of initial sketches and design ideas.", icon: "✏️" },
-              { number: 4, title: "Detailed Design and Planning", description: "Finalization of technical drawings and construction plans.", icon: "📐" },
-              { number: 5, title: "Construction and Installation", description: "Building the Koi pond according to the approved design.", icon: "🏗️" },
-              { number: 6, title: "Final Inspection and Handover", description: "Ensuring everything is perfect before handing over to the client.", icon: "🔍" },
+            {[
+              {
+                number: 1,
+                title: "Initial Consultation",
+                description: "We listen to your ideas and desires.",
+                icon: "🤝",
+              },
+              {
+                number: 2,
+                title: "Site Survey and Analysis",
+                description: "Thorough assessment of the intended pond area.",
+                icon: "📏",
+              },
+              {
+                number: 3,
+                title: "Design Concept Development",
+                description: "Creation of initial sketches and design ideas.",
+                icon: "✏️",
+              },
+              {
+                number: 4,
+                title: "Detailed Design and Planning",
+                description:
+                  "Finalization of technical drawings and construction plans.",
+                icon: "📐",
+              },
+              {
+                number: 5,
+                title: "Construction and Installation",
+                description:
+                  "Building the Koi pond according to the approved design.",
+                icon: "🏗️",
+              },
+              {
+                number: 6,
+                title: "Final Inspection and Handover",
+                description:
+                  "Ensuring everything is perfect before handing over to the client.",
+                icon: "🔍",
+              },
             ].map((step, index) => (
               <div key={index} className="process-step">
                 <div className="step-number">{step.number}</div>
                 <div className="step-content">
-                  <h3>{step.icon} {step.title}</h3>
+                  <h3>
+                    {step.icon} {step.title}
+                  </h3>
                   <p>{step.description}</p>
                 </div>
               </div>
@@ -273,10 +339,10 @@ function ServiceDesign() {
         <section className="service-quote-form">
           <h2>Request a Quote</h2>
           <div className="form-container">
-            <iframe 
-              src="https://docs.google.com/forms/d/e/1FAIpQLSfP-12Cc2RIe2J899Rh5XHnFOUtv04TTGr9fntgq6BKbuj7Fw/viewform?usp=sf_link" 
-              width="100%" 
-              height="1000px" 
+            <iframe
+              src="https://docs.google.com/forms/d/e/1FAIpQLSfP-12Cc2RIe2J899Rh5XHnFOUtv04TTGr9fntgq6BKbuj7Fw/viewform?usp=sf_link"
+              width="100%"
+              height="1000px"
             >
               Loading...
             </iframe>

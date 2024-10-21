@@ -25,6 +25,7 @@ import ContractViewDashBoard from "./page/dashBoard/contractViewDashBoard.jsx";
 import ConstructionStaffPage from "./page/staffPage/constructionStaffPage/constructionStaffPage.jsx";
 import PaymentPage from "./page/Payment/payment.jsx";
 import ViewBookingDashboard from "./page/dashBoard/viewBookingDashboard";
+import PaymentSuccess from "./page/Payment/success/paymentSuccess";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
           />
           <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
         </Route>
 
         {/* Protected Staff Routes */}
