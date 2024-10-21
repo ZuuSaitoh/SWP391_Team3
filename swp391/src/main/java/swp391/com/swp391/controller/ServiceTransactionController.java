@@ -85,7 +85,7 @@ public class ServiceTransactionController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/vnpay/callback")
-    public ApiResponse<String> handlePaymentCallback(@RequestParam Map<String, String> params, HttpServletResponse response) throws Exception {
+    public void handlePaymentCallback(@RequestParam Map<String, String> params, HttpServletResponse response) throws Exception {
         String secretKey = "EHFO9MXOQYSJ2QV73STA5SY55QP123LU";  // Secret Key của bạn
 
         // Lấy chữ ký từ VNPay
@@ -104,19 +104,15 @@ public class ServiceTransactionController {
                 serviceTransactionService.createTransactionByVNPay
                         (Integer.parseInt(params.get("vnp_OrderInfo")), params.get("vnp_TransactionNo"));
                 // Redirect tới trang thành công
-//                String successUrl = buildSuccessUrl(params);
-//                response.sendRedirect(successUrl);
-                return new ApiResponse<String>
-                        (7777, "Transaction successfully!","Transaction successfully!");
+                String successUrl = buildSuccessUrl(params);
+                response.sendRedirect(successUrl);
             } else {
                 // Giao dịch thất bại, redirect tới trang lỗi
-//                response.sendRedirect("https://www.youtube.com/");
-                return new ApiResponse<String>(1999, "Transaction fail!","Transaction fail!");
+                response.sendRedirect("http://localhost:5173/payment-failed");
             }
         } else {
             // Chữ ký không hợp lệ
-            return new ApiResponse<String>(1998, "Signed key invalid!","Signed key invalid!");
-//            response.sendRedirect("https://giaoduc.net.vn/");
+            response.sendRedirect("http://localhost:5173/payment-invalid-key");
         }
     }
 
@@ -144,7 +140,7 @@ public class ServiceTransactionController {
     }
 
     private String buildSuccessUrl(Map<String, String> params) {
-        StringBuilder urlBuilder = new StringBuilder("https://www.hoyolab.com/home?");
+        StringBuilder urlBuilder = new StringBuilder("http://localhost:5173/payment-success?");
         for (Map.Entry<String, String> entry : params.entrySet()) {
             urlBuilder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
             urlBuilder.append("=");

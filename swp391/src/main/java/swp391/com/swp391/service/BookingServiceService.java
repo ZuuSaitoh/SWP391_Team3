@@ -31,6 +31,8 @@ public class BookingServiceService {
     CustomerRepository customerRepository;
     @Autowired
     ServiceRepository serviceRepository;
+    @Autowired
+    ServiceTransactionService serviceTransactionService;
 
     public BookingService createBookingService(BookingServiceCreationRequest request){
         BookingService bookingService = new BookingService();
