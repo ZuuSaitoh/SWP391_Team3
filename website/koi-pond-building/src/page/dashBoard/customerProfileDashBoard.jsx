@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import "./dashBoard.css";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const CustomerProfileDashboard = () => {
   const { Id } = useParams();
   const [customer, setCustomer] = useState(null);
@@ -130,6 +132,7 @@ const CustomerProfileDashboard = () => {
   return (
     <div className="customer-profile">
       <h2>Customer Profile</h2>
+      <ToastContainer /> {/* Add ToastContainer here */}
       <div className="profile-info">
         <p>
           <strong>ID:</strong> {customer.id}

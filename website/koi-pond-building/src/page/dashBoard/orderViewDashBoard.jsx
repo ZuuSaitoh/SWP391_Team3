@@ -4,8 +4,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./dashBoard.css";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTrash,
+  faEdit,
+  faMoneyBillWave,
+} from "@fortawesome/free-solid-svg-icons";
 
 const OrderViewDashboard = () => {
   const [order, setOrder] = useState(null);
@@ -31,22 +35,33 @@ const OrderViewDashboard = () => {
     depositMethod: "",
   });
   const [transactions, setTransactions] = useState([]);
-  const [showCreateTransactionModal, setShowCreateTransactionModal] = useState(false);
-  const [activeTab, setActiveTab] = useState('status');
+  const [showCreateTransactionModal, setShowCreateTransactionModal] =
+    useState(false);
+  const [activeTab, setActiveTab] = useState("status");
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const [orderResponse, contractsResponse, statusesResponse, staffResponse, transactionsResponse] = await Promise.all([
+        const [
+          orderResponse,
+          contractsResponse,
+          statusesResponse,
+          staffResponse,
+          transactionsResponse,
+        ] = await Promise.all([
           axios.get(`http://localhost:8080/orders/${orderId}`),
-          axios.get(`http://localhost:8080/contracts/fetchAll/order/${orderId}`),
+          axios.get(
+            `http://localhost:8080/contracts/fetchAll/order/${orderId}`
+          ),
           axios.get(`http://localhost:8080/status/fetchAll/order/${orderId}`),
           axios.get(`http://localhost:8080/staffs/fetchAll`),
-          axios.get(`http://localhost:8080/transaction/fetchAll/order/${orderId}`)
+          axios.get(
+            `http://localhost:8080/transaction/fetchAll/order/${orderId}`
+          ),
         ]);
 
         setOrder(orderResponse.data);
-        
+
         // Set current staff information from the order data
         if (orderResponse.data && orderResponse.data.staff) {
           setCurrentStaffId(orderResponse.data.staff.staffId);
@@ -84,7 +99,10 @@ const OrderViewDashboard = () => {
         setLoading(false);
       } catch (err) {
         console.error("Error fetching order details:", err);
-        setError("Failed to fetch order details: " + (err.response?.data?.message || err.message));
+        setError(
+          "Failed to fetch order details: " +
+            (err.response?.data?.message || err.message)
+        );
         setLoading(false);
       }
     };
@@ -143,55 +161,67 @@ const OrderViewDashboard = () => {
   };
 
   const handleDeleteStatus = async (statusId) => {
-    if (window.confirm('Are you sure you want to delete this status?')) {
+    if (window.confirm("Are you sure you want to delete this status?")) {
       try {
-        const response = await axios.delete(`http://localhost:8080/status/delete/${statusId}`);
+        const response = await axios.delete(
+          `http://localhost:8080/status/delete/${statusId}`
+        );
         if (response.data.code === 1012) {
-          toast.success('Status deleted successfully');
-          setStatuses(statuses.filter(status => status.statusId !== statusId));
+          toast.success("Status deleted successfully");
+          setStatuses(
+            statuses.filter((status) => status.statusId !== statusId)
+          );
         } else {
-          toast.error('Failed to delete status');
+          toast.error("Failed to delete status");
         }
       } catch (err) {
-        console.error('Error deleting status:', err);
-        toast.error('An error occurred while deleting the status');
+        console.error("Error deleting status:", err);
+        toast.error("An error occurred while deleting the status");
       }
     }
   };
 
   const handleUpdateStatus = async (statusId) => {
     try {
-      const response = await axios.patch(`http://localhost:8080/status/update-number-of-update/${statusId}`, {});
+      const response = await axios.patch(
+        `http://localhost:8080/status/update-number-of-update/${statusId}`,
+        {}
+      );
       if (response.data.code === 999) {
-        toast.success('Status updated successfully');
-        setStatuses(statuses.map(status => 
-          status.statusId === statusId ? response.data.result : status
-        ));
+        toast.success("Status updated successfully");
+        setStatuses(
+          statuses.map((status) =>
+            status.statusId === statusId ? response.data.result : status
+          )
+        );
       } else if (response.data.code === 1026) {
         toast.error("You can't update more than 3 times!");
       } else {
-        toast.error('Failed to update status');
+        toast.error("Failed to update status");
       }
     } catch (err) {
-      console.error('Error updating status:', err);
+      console.error("Error updating status:", err);
       if (err.response && err.response.data && err.response.data.message) {
         toast.error(err.response.data.message);
       } else {
-        toast.error('An error occurred while updating the status');
+        toast.error("An error occurred while updating the status");
       }
     }
   };
 
   const handleCreateTransaction = async (localTransactionData) => {
     try {
-      const response = await axios.post("http://localhost:8080/transaction/create", {
-        orderId: orderId,
-        deposit: localTransactionData.deposit,
-        depositDescription: localTransactionData.depositDescription,
-        depositMethod: localTransactionData.depositMethod,
-        depositPersonId: order.customer.id,
-        transactionNumber: orderId.toString(), // Convert to string if needed
-      });
+      const response = await axios.post(
+        "http://localhost:8080/transaction/create",
+        {
+          orderId: orderId,
+          deposit: localTransactionData.deposit,
+          depositDescription: localTransactionData.depositDescription,
+          depositMethod: localTransactionData.depositMethod,
+          depositPersonId: order.customer.id,
+          transactionNumber: orderId.toString(), // Convert to string if needed
+        }
+      );
 
       if (response.data.code === 1000) {
         toast.success("Transaction created successfully");
@@ -214,31 +244,43 @@ const OrderViewDashboard = () => {
   };
 
   const handleDeleteTransaction = async (transactionId) => {
-    if (window.confirm('Are you sure you want to delete this transaction?')) {
+    if (window.confirm("Are you sure you want to delete this transaction?")) {
       try {
-        const response = await axios.delete(`http://localhost:8080/transaction/delete/${transactionId}`);
+        const response = await axios.delete(
+          `http://localhost:8080/transaction/delete/${transactionId}`
+        );
         if (response.data.code === 1012) {
-          toast.success('Transaction deleted successfully');
-          setTransactions(transactions.filter(transaction => transaction.transactionId !== transactionId));
+          toast.success("Transaction deleted successfully");
+          setTransactions(
+            transactions.filter(
+              (transaction) => transaction.transactionId !== transactionId
+            )
+          );
         } else {
-          toast.error('Failed to delete transaction');
+          toast.error("Failed to delete transaction");
         }
       } catch (err) {
-        console.error('Error deleting transaction:', err);
-        toast.error('An error occurred while deleting the transaction');
+        console.error("Error deleting transaction:", err);
+        toast.error("An error occurred while deleting the transaction");
       }
     }
   };
 
   const handlePayByCash = async (transactionId) => {
     try {
-      const response = await axios.patch(`http://localhost:8080/transaction/update/payment/cash/${transactionId}`);
+      const response = await axios.patch(
+        `http://localhost:8080/transaction/update/payment/cash/${transactionId}`
+      );
       if (response.data.code === 7777) {
         toast.success("Payment by cash successful");
         // Update the transaction in the state
-        setTransactions(transactions.map(transaction => 
-          transaction.transactionId === transactionId ? {...response.data.result, isPaid: true} : transaction
-        ));
+        setTransactions(
+          transactions.map((transaction) =>
+            transaction.transactionId === transactionId
+              ? { ...response.data.result, isPaid: true }
+              : transaction
+          )
+        );
       } else {
         toast.error("Failed to process cash payment");
       }
@@ -251,31 +293,75 @@ const OrderViewDashboard = () => {
   const TransactionModal = ({ transactions, onClose, onDelete }) => {
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="status-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
           <h2>Transaction Information</h2>
           {transactions.map((transaction, index) => (
             <div key={transaction.transactionId} className="status-item">
               <h3>Transaction {index + 1}</h3>
-              <InfoRow label="Transaction ID" value={transaction.transactionId} />
-              <InfoRow label="Deposit" value={`${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(transaction.deposit)}`} />
-              <InfoRow label="Description" value={transaction.depositDescription || "Not provided"} />
-              <InfoRow label="Method" value={transaction.depositMethod || "Not specified"} />
-              <InfoRow label="Date" value={transaction.depositDate ? new Date(transaction.depositDate).toLocaleString() : "Not recorded"} />
-              <InfoRow label="Deposit Person" value={transaction.depositPerson ? transaction.depositPerson.username : "Unknown"} />
-              <InfoRow label="Transaction Number" value={transaction.transactionNumber || "Not assigned"} />
+              <InfoRow
+                label="Transaction ID"
+                value={transaction.transactionId}
+              />
+              <InfoRow
+                label="Deposit"
+                value={`${new Intl.NumberFormat("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                }).format(transaction.deposit)}`}
+              />
+              <InfoRow
+                label="Description"
+                value={transaction.depositDescription || "Not provided"}
+              />
+              <InfoRow
+                label="Method"
+                value={transaction.depositMethod || "Not specified"}
+              />
+              <InfoRow
+                label="Date"
+                value={
+                  transaction.depositDate
+                    ? new Date(transaction.depositDate).toLocaleString()
+                    : "Not recorded"
+                }
+              />
+              <InfoRow
+                label="Deposit Person"
+                value={
+                  transaction.depositPerson
+                    ? transaction.depositPerson.username
+                    : "Unknown"
+                }
+              />
+              <InfoRow
+                label="Transaction Number"
+                value={transaction.transactionNumber || "Not assigned"}
+              />
               <div className="status-actions">
-                {transaction.depositMethod !== 'Cash' && transaction.depositMethod !== 'VNPay' && (
-                  <button onClick={() => handlePayByCash(transaction.transactionId)} className="pay-cash-btn">
-                    <FontAwesomeIcon icon={faMoneyBillWave} /> Pay by Cash
-                  </button>
-                )}
-                <button onClick={() => onDelete(transaction.transactionId)} className="delete-btn">
+                {transaction.depositMethod !== "Cash" &&
+                  transaction.depositMethod !== "VNPay" && (
+                    <button
+                      onClick={() => handlePayByCash(transaction.transactionId)}
+                      className="pay-cash-btn"
+                    >
+                      <FontAwesomeIcon icon={faMoneyBillWave} /> Pay by Cash
+                    </button>
+                  )}
+                <button
+                  onClick={() => onDelete(transaction.transactionId)}
+                  className="delete-btn"
+                >
                   <FontAwesomeIcon icon={faTrash} /> Delete
                 </button>
               </div>
             </div>
           ))}
-          <button onClick={onClose} className="close-modal-btn">Close</button>
+          <button onClick={onClose} className="close-modal-btn">
+            Close
+          </button>
         </div>
       </div>
     );
@@ -290,19 +376,22 @@ const OrderViewDashboard = () => {
 
     const handleInputChange = (e) => {
       const { id, value } = e.target;
-      if (id === 'deposit') {
+      if (id === "deposit") {
         // Remove non-digit characters and convert to number
-        const numericValue = value.replace(/[^0-9]/g, '');
+        const numericValue = value.replace(/[^0-9]/g, "");
         // Format as VND
-        const formattedValue = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(numericValue);
-        setLocalTransactionData(prevData => ({
+        const formattedValue = new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(numericValue);
+        setLocalTransactionData((prevData) => ({
           ...prevData,
-          [id]: formattedValue
+          [id]: formattedValue,
         }));
       } else {
-        setLocalTransactionData(prevData => ({
+        setLocalTransactionData((prevData) => ({
           ...prevData,
-          [id]: value
+          [id]: value,
         }));
       }
     };
@@ -310,16 +399,21 @@ const OrderViewDashboard = () => {
     const handleSubmit = (e) => {
       e.preventDefault();
       // Convert the formatted VND string back to a number for submission
-      const depositValue = parseFloat(localTransactionData.deposit.replace(/[^0-9]/g, ''));
+      const depositValue = parseFloat(
+        localTransactionData.deposit.replace(/[^0-9]/g, "")
+      );
       handleCreateTransaction({
         ...localTransactionData,
-        deposit: depositValue
+        deposit: depositValue,
       });
     };
 
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="status-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
           <h2>Create Transaction</h2>
           <form onSubmit={handleSubmit}>
             <div>
@@ -356,7 +450,9 @@ const OrderViewDashboard = () => {
               </select>
             </div>
             <div>
-              <label htmlFor="depositPersonId">Deposit Person ID (Customer ID):</label>
+              <label htmlFor="depositPersonId">
+                Deposit Person ID (Customer ID):
+              </label>
               <input
                 type="number"
                 id="depositPersonId"
@@ -365,7 +461,9 @@ const OrderViewDashboard = () => {
               />
             </div>
             <div>
-              <label htmlFor="transactionNumber">Transaction Number (Order ID):</label>
+              <label htmlFor="transactionNumber">
+                Transaction Number (Order ID):
+              </label>
               <input
                 type="text"
                 id="transactionNumber"
@@ -373,8 +471,12 @@ const OrderViewDashboard = () => {
                 readOnly
               />
             </div>
-            <button type="submit" className="create-status-btn">Create Transaction</button>
-            <button type="button" onClick={onClose} className="cancel-btn">Cancel</button>
+            <button type="submit" className="create-status-btn">
+              Create Transaction
+            </button>
+            <button type="button" onClick={onClose} className="cancel-btn">
+              Cancel
+            </button>
           </form>
         </div>
       </div>
@@ -384,31 +486,54 @@ const OrderViewDashboard = () => {
   const StatusModal = ({ statuses, onClose }) => {
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="status-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
           <h2>Status Information</h2>
           {statuses.map((status, index) => (
             <div key={status.statusId} className="status-item">
               <h3>Status {index + 1}</h3>
               <InfoRow label="Description" value={status.statusDescription} />
-              <InfoRow label="Date" value={new Date(status.statusDate).toLocaleString()} />
+              <InfoRow
+                label="Date"
+                value={new Date(status.statusDate).toLocaleString()}
+              />
               <InfoRow label="Staff" value={status.staff.username} />
               <InfoRow label="Staff ID" value={status.staff.staffId} />
-              <InfoRow label="Complete" value={status.complete ? "Yes" : "No"} />
-              <InfoRow label="Number of Updates" value={status.numberOfUpdate} />
+              <InfoRow
+                label="Complete"
+                value={status.complete ? "Yes" : "No"}
+              />
+              <InfoRow
+                label="Number of Updates"
+                value={status.numberOfUpdate}
+              />
               {status.checkDate && (
-                <InfoRow label="Check Date" value={new Date(status.checkDate).toLocaleString()} />
+                <InfoRow
+                  label="Check Date"
+                  value={new Date(status.checkDate).toLocaleString()}
+                />
               )}
               <div className="status-actions">
-                <button onClick={() => handleUpdateStatus(status.statusId)} className="update-btn">
+                <button
+                  onClick={() => handleUpdateStatus(status.statusId)}
+                  className="update-btn"
+                >
                   <FontAwesomeIcon icon={faEdit} /> Update
                 </button>
-                <button onClick={() => handleDeleteStatus(status.statusId)} className="delete-btn">
+                <button
+                  onClick={() => handleDeleteStatus(status.statusId)}
+                  className="delete-btn"
+                >
                   <FontAwesomeIcon icon={faTrash} /> Delete
                 </button>
               </div>
             </div>
           ))}
-          <button onClick={onClose} className="close-modal-btn">Close</button>
+          <button onClick={onClose} className="close-modal-btn">
+            Close
+          </button>
         </div>
       </div>
     );
@@ -422,13 +547,16 @@ const OrderViewDashboard = () => {
       e.preventDefault();
       handleCreateStatus({
         statusDescription: description,
-        staffId: selectedStaffId
+        staffId: selectedStaffId,
       });
     };
 
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="status-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
           <h2>Create New Status</h2>
           <form onSubmit={handleSubmit}>
             <div>
@@ -439,7 +567,7 @@ const OrderViewDashboard = () => {
                 onChange={(e) => setDescription(e.target.value)}
                 required
                 rows="3"
-                style={{ width: '100%', resize: 'vertical' }}
+                style={{ width: "100%", resize: "vertical" }}
               />
             </div>
             <div>
@@ -458,8 +586,12 @@ const OrderViewDashboard = () => {
                 ))}
               </select>
             </div>
-            <button type="submit" className="create-status-btn">Create Status</button>
-            <button type="button" onClick={onClose} className="cancel-btn">Cancel</button>
+            <button type="submit" className="create-status-btn">
+              Create Status
+            </button>
+            <button type="button" onClick={onClose} className="cancel-btn">
+              Cancel
+            </button>
           </form>
         </div>
       </div>
@@ -473,13 +605,24 @@ const OrderViewDashboard = () => {
     </div>
   );
 
-  if (loading) return <div className="dashboard-loading">Loading order details...</div>;
+  if (loading)
+    return <div className="dashboard-loading">Loading order details...</div>;
   if (error) return <div className="dashboard-error">{error}</div>;
   if (!order) return <div className="dashboard-error">Order not found</div>;
 
   return (
     <div className="order-view-dashboard">
-      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <h1>Order Details</h1>
       <div className="order-details-grid">
         <div className="info-section">
@@ -548,40 +691,51 @@ const OrderViewDashboard = () => {
 
         <div className="info-section status-section">
           <div className="tab-buttons">
-            <button 
-              className={`tab-button ${activeTab === 'status' ? 'active' : ''}`}
-              onClick={() => setActiveTab('status')}
+            <button
+              className={`tab-button ${activeTab === "status" ? "active" : ""}`}
+              onClick={() => setActiveTab("status")}
             >
               Status
             </button>
-            <button 
-              className={`tab-button ${activeTab === 'transaction' ? 'active' : ''}`}
-              onClick={() => setActiveTab('transaction')}
+            <button
+              className={`tab-button ${
+                activeTab === "transaction" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("transaction")}
             >
               Transaction
             </button>
           </div>
-          {activeTab === 'status' && (
+          {activeTab === "status" && (
             <>
               <h2>Status Information</h2>
               <div className="status-button-container">
                 <button onClick={toggleStatusModal} className="view-status-btn">
                   View Status
                 </button>
-                <button onClick={toggleCreateStatusModal} className="create-status-btn">
+                <button
+                  onClick={toggleCreateStatusModal}
+                  className="create-status-btn"
+                >
                   Create Status
                 </button>
               </div>
             </>
           )}
-          {activeTab === 'transaction' && (
+          {activeTab === "transaction" && (
             <>
               <h2>Transaction Information</h2>
               <div className="status-button-container">
-                <button onClick={() => setShowTransactionModal(true)} className="view-status-btn">
+                <button
+                  onClick={() => setShowTransactionModal(true)}
+                  className="view-status-btn"
+                >
                   View Transactions
                 </button>
-                <button onClick={() => setShowCreateTransactionModal(true)} className="create-status-btn">
+                <button
+                  onClick={() => setShowCreateTransactionModal(true)}
+                  className="create-status-btn"
+                >
                   Create Transaction
                 </button>
               </div>
@@ -619,14 +773,16 @@ const OrderViewDashboard = () => {
         <CreateStatusModal onClose={toggleCreateStatusModal} />
       )}
       {showTransactionModal && (
-        <TransactionModal 
-          transactions={transactions} 
-          onClose={() => setShowTransactionModal(false)} 
+        <TransactionModal
+          transactions={transactions}
+          onClose={() => setShowTransactionModal(false)}
           onDelete={handleDeleteTransaction}
         />
       )}
       {showCreateTransactionModal && (
-        <CreateTransactionModal onClose={() => setShowCreateTransactionModal(false)} />
+        <CreateTransactionModal
+          onClose={() => setShowCreateTransactionModal(false)}
+        />
       )}
     </div>
   );

@@ -2,9 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "./dashBoard.css";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMoneyBillWave, faExchangeAlt, faArrowLeft, faUserPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faMoneyBillWave,
+  faExchangeAlt,
+  faArrowLeft,
+  faUserPlus,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 
 const ViewBookingDashboard = () => {
   const [booking, setBooking] = useState(null);
@@ -138,7 +145,7 @@ const ViewBookingDashboard = () => {
         { bookingServiceId: bookingId },
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
@@ -151,7 +158,11 @@ const ViewBookingDashboard = () => {
         setTransactionCreated(true);
       } else {
         console.error("Unexpected response:", response.data);
-        toast.error(`Failed to create transaction: ${response.data.message || 'Unknown error'}`);
+        toast.error(
+          `Failed to create transaction: ${
+            response.data.message || "Unknown error"
+          }`
+        );
       }
     } catch (err) {
       console.error("Error creating transaction:", err);
@@ -163,7 +174,9 @@ const ViewBookingDashboard = () => {
           toast.warning("Transaction has already been paid");
           setTransactionCreated(true);
         } else {
-          toast.error(`Error: ${err.response.data.message || err.response.statusText}`);
+          toast.error(
+            `Error: ${err.response.data.message || err.response.statusText}`
+          );
         }
       } else if (err.request) {
         console.error("Request:", err.request);
@@ -177,7 +190,9 @@ const ViewBookingDashboard = () => {
 
   const handleViewTransaction = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/serviceTransaction/${bookingId}`);
+      const response = await axios.get(
+        `http://localhost:8080/serviceTransaction/${bookingId}`
+      );
       if (response.data.code === 9999) {
         setTransaction(response.data.result);
         setShowTransactionModal(true);
@@ -195,18 +210,38 @@ const ViewBookingDashboard = () => {
 
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="status-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
           <h2>Transaction Information</h2>
           <div className="status-item">
             <InfoRow label="Transaction ID" value={transaction.transactionId} />
             <InfoRow label="Deposit Method" value={transaction.depositMethod} />
-            <InfoRow label="Deposit Date" value={new Date(transaction.depositDate).toLocaleString()} />
-            <InfoRow label="Deposit Person" value={transaction.depositPerson.username} />
-            <InfoRow label="Booking ID" value={transaction.bookingService.bookingServiceId} />
-            <InfoRow label="Service" value={transaction.bookingService.service.serviceName} />
-            <InfoRow label="Price" value={`$${transaction.bookingService.price.toFixed(2)}`} />
+            <InfoRow
+              label="Deposit Date"
+              value={new Date(transaction.depositDate).toLocaleString()}
+            />
+            <InfoRow
+              label="Deposit Person"
+              value={transaction.depositPerson.username}
+            />
+            <InfoRow
+              label="Booking ID"
+              value={transaction.bookingService.bookingServiceId}
+            />
+            <InfoRow
+              label="Service"
+              value={transaction.bookingService.service.serviceName}
+            />
+            <InfoRow
+              label="Price"
+              value={`$${transaction.bookingService.price.toFixed(2)}`}
+            />
           </div>
-          <button onClick={onClose} className="close-modal-btn">Close</button>
+          <button onClick={onClose} className="close-modal-btn">
+            Close
+          </button>
         </div>
       </div>
     );
@@ -218,6 +253,7 @@ const ViewBookingDashboard = () => {
 
   return (
     <div className="staff-profile">
+      <ToastContainer />
       <h2>Booking Details</h2>
       <div className="profile-info">
         <p>
@@ -285,7 +321,10 @@ const ViewBookingDashboard = () => {
                 </option>
               ))}
             </select>
-            <button onClick={handleAssignStaff} className="action-btn assign-btn">
+            <button
+              onClick={handleAssignStaff}
+              className="action-btn assign-btn"
+            >
               <FontAwesomeIcon icon={faUserPlus} /> Assign Staff
             </button>
           </div>
@@ -293,22 +332,27 @@ const ViewBookingDashboard = () => {
         <button onClick={handleDeleteBooking} className="action-btn delete-btn">
           <FontAwesomeIcon icon={faTrash} /> Delete Booking
         </button>
-        <button 
-          onClick={handleCreateCashTransaction} 
+        <button
+          onClick={handleCreateCashTransaction}
           className="action-btn create-transaction-btn"
           disabled={transactionCreated}
         >
-          <FontAwesomeIcon icon={faMoneyBillWave} /> 
-          {transactionCreated ? "Transaction Created" : "Create Cash Transaction"}
+          <FontAwesomeIcon icon={faMoneyBillWave} />
+          {transactionCreated
+            ? "Transaction Created"
+            : "Create Cash Transaction"}
         </button>
-        <button onClick={handleViewTransaction} className="action-btn view-transaction-btn">
+        <button
+          onClick={handleViewTransaction}
+          className="action-btn view-transaction-btn"
+        >
           <FontAwesomeIcon icon={faExchangeAlt} /> View Transaction
         </button>
       </div>
       {showTransactionModal && (
-        <TransactionModal 
-          transaction={transaction} 
-          onClose={() => setShowTransactionModal(false)} 
+        <TransactionModal
+          transaction={transaction}
+          onClose={() => setShowTransactionModal(false)}
         />
       )}
     </div>

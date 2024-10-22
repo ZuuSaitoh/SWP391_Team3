@@ -95,7 +95,8 @@
 }
 
 .stage-item {
-  background-color: #34495e; /* Changed from #e74c3c to a blue-gray color */
+  background-color: #34495e;
+  /* Changed from #e74c3c to a blue-gray color */
   color: #ffffff;
   padding: 3px 8px;
   border-radius: 12px;
@@ -125,4 +126,10 @@
 
 .pagination button.active {
   background-color: #2c3e50;
+}
+
+.status-container {
+  overflow-x: auto;
+  /* Enables horizontal scrolling */
+  /* Add any other styles you need */
 }

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import emailjs from "emailjs-com";
 import "./register.css";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
+function VerifyEmail({ email, setEmail, setIsEmailVerified }) {
   const [otp, setOtp] = useState("");
   const [generatedOtp, setGeneratedOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -24,7 +25,7 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
 
     const emailData = {
       to_email: email,
-      to_name: email, 
+      to_name: email,
       from_name: "KoiPond Design",
       email: email,
       message: `Your OTP is: ${newOtp}`,
@@ -40,29 +41,38 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
       console.log(result.text);
       setOtpSent(true);
       setCountdown(60);
-      setMessage("OTP sent to your email. Please check your inbox.");
+      toast.success("OTP sent to your email. Please check your inbox.");
     } catch (error) {
       console.error("Error sending OTP:", error);
-      setMessage("Error sending OTP. Please try again.");
+      toast.error("Error sending OTP. Please try again.");
     }
   };
 
   const verifyOtp = (e) => {
     e.preventDefault();
+    console.log(
+      "Verifying OTP:",
+      otp,
+      "Generated OTP:",
+      generatedOtp,
+      "Countdown:",
+      countdown
+    );
     if (otp === generatedOtp && countdown > 0) {
       setIsEmailVerified(true);
-      setMessage(
+      toast.success(
         "Email verified successfully. You can now complete your registration."
       );
     } else if (countdown === 0) {
-      setMessage("OTP has expired. Please request a new one.");
+      toast.error("OTP has expired. Please request a new one.");
     } else {
-      setMessage("Invalid OTP. Please try again.");
+      toast.error("Invalid OTP. Please try again.");
     }
   };
 
   return (
     <div className="register-inputs">
+      <ToastContainer />
       {!otpSent ? (
         <form onSubmit={sendOtp}>
           <div className="register-input">

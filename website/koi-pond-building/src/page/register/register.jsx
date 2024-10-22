@@ -101,7 +101,17 @@ const RegisterPage = () => {
   return (
     <AnimatedPage>
       <div className="register-page-container">
-        <ToastContainer />{" "}
+        <ToastContainer
+          position="top-right" // You can change the position
+          autoClose={5000} // Auto close after 5 seconds
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         {/* This is needed to show the toast notifications */}
         <div className="register-image-container"></div>
         <div className="register-form-container">
@@ -129,7 +139,11 @@ const RegisterPage = () => {
                 />
               </div>
               <div className="register-submit-container">
-                <button type="button" className="register-submit change-email" onClick={handleChangeEmail}>
+                <button
+                  type="button"
+                  className="register-submit change-email"
+                  onClick={handleChangeEmail}
+                >
                   Change Email
                 </button>
               </div>

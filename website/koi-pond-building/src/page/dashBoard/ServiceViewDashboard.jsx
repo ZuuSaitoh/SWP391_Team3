@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+
+// Utility function to format price
+const formatPrice = (price) => {
+  return price.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};
 
 const ServiceViewDashboard = () => {
   const [service, setService] = useState(null);
@@ -99,6 +104,7 @@ const ServiceViewDashboard = () => {
 
   return (
     <div className="service-view-dashboard">
+      <ToastContainer />
       <h1>Service Details</h1>
       {isEditing ? (
         <form onSubmit={handleUpdate} className="edit-service-form">
@@ -167,7 +173,8 @@ const ServiceViewDashboard = () => {
             <strong>Service Name:</strong> {service.serviceName}
           </p>
           <p>
-            <strong>Price:</strong> ${service.price.toFixed(2)}
+            <strong>Price:</strong> {formatPrice(service.price)} VND{" "}
+            {/* Use formatPrice function */}
           </p>
           <p>
             <strong>Description:</strong> {service.description}

@@ -99,7 +99,7 @@ const ContractViewDashBoard = () => {
   };
 
   const handleImageDownload = (imageUrl, fileName) => {
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = imageUrl;
     link.download = fileName;
     document.body.appendChild(link);
@@ -174,7 +174,10 @@ const ContractViewDashBoard = () => {
                     download={`contract_${contract.contractId}`}
                     onClick={(e) => {
                       e.preventDefault();
-                      handleImageDownload(contract.imageData, `contract_${contract.contractId}`);
+                      handleImageDownload(
+                        contract.imageData,
+                        `contract_${contract.contractId}`
+                      );
                     }}
                   >
                     View File
