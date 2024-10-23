@@ -46,6 +46,10 @@ public class Order {
     @Column(name = "feedback_date")
     LocalDateTime feedback_date;
 
+    @ManyToOne
+    @JoinColumn(name = "form_id", referencedColumnName = "form_id", nullable = true)
+    Form form;
+
     public Order() {
     }
 
@@ -119,5 +123,13 @@ public class Order {
 
     public void setFeedback_date(LocalDateTime feedback_date) {
         this.feedback_date = feedback_date;
+    }
+
+    public Form getForm() {
+        return form;
+    }
+
+    public void setForm(Form form) {
+        this.form = form;
     }
 }

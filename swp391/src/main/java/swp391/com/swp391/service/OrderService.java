@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import swp391.com.swp391.dto.request.OrderCreationRequest;
 import swp391.com.swp391.dto.request.OrderUpdateDesignRequest;
 import swp391.com.swp391.dto.request.OrderUpdateFeedbackRequest;
-import swp391.com.swp391.entity.Customer;
-import swp391.com.swp391.entity.Design;
-import swp391.com.swp391.entity.Order;
-import swp391.com.swp391.entity.Staff;
+import swp391.com.swp391.entity.*;
 import swp391.com.swp391.exception.AppException;
 import swp391.com.swp391.exception.ErrorCode;
 import swp391.com.swp391.repository.CustomerRepository;
@@ -32,6 +29,9 @@ public class OrderService {
     @Autowired
     DesignRepository designRepository;
 
+    @Autowired
+    FormService formService;
+
 
     public Order createOrder(OrderCreationRequest request){
         Order order = new Order();
@@ -45,6 +45,9 @@ public class OrderService {
                 .orElseThrow(()->new AppException(ErrorCode.STAFF_NOT_EXISTED));
 
         order.setStaff(staff);
+        Form form = formService.findById(request.getForm_id());
+        order.setForm(form);
+
 //        order.setDesign_id(request.getDesign_id());
         order.setOrder_date(LocalDateTime.now());
         return orderRepository.save(order);

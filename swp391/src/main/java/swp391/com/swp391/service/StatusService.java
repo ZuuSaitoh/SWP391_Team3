@@ -63,6 +63,11 @@ public class StatusService {
             throw new AppException(ErrorCode.COMPLETE_TRUE);
         }
         status.setComplete(request.isComplete());
+        if(!request.isComplete()){
+            status.setRejectReason(request.getRejectReason());
+        } else{
+            status.setRejectReason("");
+        }
         status.setCheckDate(LocalDateTime.now());
         return statusRepository.save(status);
     }
@@ -74,6 +79,7 @@ public class StatusService {
         }
         if (status.getNumberOfUpdate()<3){
             status.setNumberOfUpdate(status.getNumberOfUpdate()+1);
+            status.setRejectReason("");
         } else{
             throw new AppException(ErrorCode.THREE_TIME_UPDATE);
         }

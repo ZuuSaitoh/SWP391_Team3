@@ -34,6 +34,8 @@ public class Status {
     boolean complete;
     @Column(name = "number_of_update")
     int numberOfUpdate;
+    @Column(name = "reject_reason")
+    String rejectReason;
 
     public Status() {
     }
@@ -109,5 +111,13 @@ public class Status {
 
     public void setStaff(Staff staff) {
         this.staff = staff;
+    }
+
+    public String getRejectReason() {
+        return rejectReason;
+    }
+
+    public void setRejectReason(String rejectReason) {
+        this.rejectReason = rejectReason;
     }
 }

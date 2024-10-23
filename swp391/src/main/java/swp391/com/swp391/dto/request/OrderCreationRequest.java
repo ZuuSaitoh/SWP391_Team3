@@ -16,6 +16,8 @@ public class OrderCreationRequest {
     int customer_id;
     @NotNull(message = "ENTER_ALL_FIELDS")
     int staff_id;
+    @NotNull(message = "ENTER_ALL_FIELDS")
+    int form_id;
 //    @NotNull(message = "ENTER_ALL_FIELDS")
     int design_id;
 
@@ -35,6 +37,15 @@ public class OrderCreationRequest {
         this.staff_id = staff_id;
     }
 
+    @NotNull(message = "ENTER_ALL_FIELDS")
+    public int getForm_id() {
+        return form_id;
+    }
+
+    public void setForm_id(@NotNull(message = "ENTER_ALL_FIELDS") int form_id) {
+        this.form_id = form_id;
+    }
+
     public int getDesign_id() {
         return design_id;
     }
@@ -42,4 +53,6 @@ public class OrderCreationRequest {
     public void setDesign_id(int design_id) {
         this.design_id = design_id;
     }
+
+
 }
