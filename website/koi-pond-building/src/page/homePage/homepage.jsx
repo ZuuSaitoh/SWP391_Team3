@@ -42,6 +42,14 @@ function HomePage() {
     awards: 0,
   });
   const animationTriggered = useRef(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [formData, setFormData] = useState({
+    location: "",
+    area: "",
+    style: "",
+    stage: "",
+    contactMethod: ""
+  });
 
   console.log("da vao home");
   useEffect(() => {
@@ -173,6 +181,37 @@ function HomePage() {
   // Easing function for smoother animation
   const easeOutQuad = (t) => t * (2 - t);
 
+  const handleGetRequest = () => {
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+    setFormData({
+      location: "",
+      area: "",
+      style: "",
+      stage: "",
+      contactMethod: ""
+    });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Here you would typically send the form data to your backend
+    console.log("Form submitted:", formData);
+    toast.success("Request submitted successfully!");
+    handleClosePopup();
+  };
+
   return (
     <div className="home-page">
       <Header />
@@ -194,7 +233,7 @@ function HomePage() {
             <div className="hero-content">
               <h1>Create Your Dream Koi Pond</h1>
               <p>Expert design and construction for serene water gardens</p>
-              {/* The "Get a Free Quote" button has been removed */}
+              <button className="cta-button" onClick={handleGetRequest}>Get Request Now</button>
             </div>
             <div className="slider-controls">
               <button onClick={prevSlide} className="slider-control prev">
@@ -469,6 +508,65 @@ function HomePage() {
           </section>
         </div>
       </main>
+
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <h2>Request a Koi Pond Design</h2>
+            <form onSubmit={handleSubmit}>
+              <input
+                type="text"
+                name="location"
+                value={formData.location}
+                onChange={handleInputChange}
+                placeholder="Project location"
+                required
+              />
+              <input
+                type="text"
+                name="area"
+                value={formData.area}
+                onChange={handleInputChange}
+                placeholder="Estimated construction area (sqm)"
+                required
+              />
+              <input
+                type="text"
+                name="style"
+                value={formData.style}
+                onChange={handleInputChange}
+                placeholder="Preferred style"
+                required
+              />
+              <select
+                name="stage"
+                value={formData.stage}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select design stage</option>
+                <option value="stage1">Stage 1</option>
+                <option value="stage2">Stage 2</option>
+                <option value="stage3">Stage 3</option>
+                <option value="stage4">Stage 4</option>
+              </select>
+              <select
+                name="contactMethod"
+                value={formData.contactMethod}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select contact method</option>
+                <option value="zalo">Zalo</option>
+                <option value="phone">Phone</option>
+                <option value="message">Message</option>
+              </select>
+              <button type="submit">Submit Request</button>
+            </form>
+            <button className="close-popup" onClick={handleClosePopup}>×</button>
+          </div>
+        </div>
+      )}
 
       <Footer />
       <ToastContainer />
