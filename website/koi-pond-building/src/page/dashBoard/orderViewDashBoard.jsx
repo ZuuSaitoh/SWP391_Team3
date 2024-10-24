@@ -39,6 +39,12 @@ const OrderViewDashboard = () => {
     useState(false);
   const [activeTab, setActiveTab] = useState("status");
   const [formData, setFormData] = useState(null);
+  const [showCreateContractModal, setShowCreateContractModal] = useState(false);
+  const [newContract, setNewContract] = useState({
+    imageData: "",
+    description: "",
+  });
+  const [showViewContractsModal, setShowViewContractsModal] = useState(false);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -607,6 +613,137 @@ const OrderViewDashboard = () => {
     </div>
   );
 
+  const handleCreateContract = async (contractData) => {
+    try {
+      const response = await axios.post("http://localhost:8080/contracts/create", {
+        orderId: parseInt(orderId),
+        uploadStaff: currentStaffId,
+        imageData: contractData.imageData,
+        description: contractData.description,
+      });
+
+      if (response.data.code === 1000) {
+        toast.success("Contract created successfully");
+        setContracts([...contracts, response.data.result]);
+        setShowCreateContractModal(false);
+        setNewContract({ imageData: "", description: "" });
+      } else {
+        toast.error("Failed to create contract");
+      }
+    } catch (err) {
+      console.error("Error creating contract:", err);
+      toast.error("An error occurred while creating the contract");
+    }
+  };
+
+  const ViewContractsModal = ({ contracts, onClose, onDelete }) => {
+    return (
+      <div className="status-modal-overlay" onClick={onClose}>
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+          <h2>Contract Information</h2>
+          {contracts.map((contract, index) => (
+            <div key={contract.contractId} className="status-item">
+              <h3>Contract {index + 1}</h3>
+              <InfoRow label="Contract ID" value={contract.contractId} />
+              <InfoRow
+                label="Upload Date"
+                value={new Date(contract.uploadDate).toLocaleString()}
+              />
+              <InfoRow label="Description" value={contract.description} />
+              <InfoRow label="Image Data" value={contract.imageData} />
+              <InfoRow label="Upload Staff" value={contract.staff.username} />
+              <div className="status-actions">
+                <button
+                  onClick={() => onDelete(contract.contractId)}
+                  className="delete-btn"
+                >
+                  <FontAwesomeIcon icon={faTrash} /> Delete
+                </button>
+              </div>
+            </div>
+          ))}
+          <button onClick={onClose} className="close-modal-btn">
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const CreateContractModal = ({ onClose }) => {
+    const [localContract, setLocalContract] = useState({
+      imageData: "",
+      description: "",
+    });
+
+    const handleInputChange = (e) => {
+      const { id, value } = e.target;
+      setLocalContract(prev => ({
+        ...prev,
+        [id]: value
+      }));
+    };
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      handleCreateContract(localContract);
+    };
+
+    return (
+      <div className="status-modal-overlay" onClick={onClose}>
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+          <h2>Create New Contract</h2>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="imageData">Image Data:</label>
+              <input
+                type="text"
+                id="imageData"
+                value={localContract.imageData}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="description">Description:</label>
+              <textarea
+                id="description"
+                value={localContract.description}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="modal-actions">
+              <button type="submit" className="create-status-btn">
+                Create Contract
+              </button>
+              <button type="button" onClick={onClose} className="cancel-btn">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  };
+
+  const handleDeleteContract = async (contractId) => {
+    if (window.confirm("Are you sure you want to delete this contract?")) {
+      try {
+        const response = await axios.delete(`http://localhost:8080/contracts/delete/${contractId}`);
+        if (response.data.code === 9876) {
+          toast.success("Contract deleted successfully");
+          setContracts(contracts.filter(contract => contract.contractId !== contractId));
+        } else {
+          toast.error("Failed to delete contract");
+        }
+      } catch (err) {
+        console.error("Error deleting contract:", err);
+        toast.error("An error occurred while deleting the contract");
+      }
+    }
+  };
+
   if (loading)
     return <div className="dashboard-loading">Loading order details...</div>;
   if (error) return <div className="dashboard-error">{error}</div>;
@@ -700,12 +837,16 @@ const OrderViewDashboard = () => {
               Status
             </button>
             <button
-              className={`tab-button ${
-                activeTab === "transaction" ? "active" : ""
-              }`}
+              className={`tab-button ${activeTab === "transaction" ? "active" : ""}`}
               onClick={() => setActiveTab("transaction")}
             >
               Transaction
+            </button>
+            <button
+              className={`tab-button ${activeTab === "contract" ? "active" : ""}`}
+              onClick={() => setActiveTab("contract")}
+            >
+              Contract
             </button>
           </div>
           {activeTab === "status" && (
@@ -743,19 +884,26 @@ const OrderViewDashboard = () => {
               </div>
             </>
           )}
+          {activeTab === "contract" && (
+            <>
+              <h2>Contract Information</h2>
+              <div className="status-button-container">
+                <button
+                  onClick={() => setShowCreateContractModal(true)}
+                  className="create-status-btn"
+                >
+                  Create Contract
+                </button>
+                <button
+                  onClick={() => setShowViewContractsModal(true)}
+                  className="view-status-btn"
+                >
+                  View Contracts
+                </button>
+              </div>
+            </>
+          )}
         </div>
-
-        {contracts.map((contract) => (
-          <div className="info-section" key={contract.contractId}>
-            <h2>Contract Information (ID: {contract.contractId})</h2>
-            <InfoRow
-              label="UPLOAD DATE"
-              value={new Date(contract.uploadDate).toLocaleString()}
-            />
-            <InfoRow label="DESCRIPTION" value={contract.description} />
-            <InfoRow label="IMAGE DATA" value={contract.imageData} />
-          </div>
-        ))}
 
         {/* Add this new section for form data */}
         {formData && (
@@ -798,6 +946,16 @@ const OrderViewDashboard = () => {
       {showCreateTransactionModal && (
         <CreateTransactionModal
           onClose={() => setShowCreateTransactionModal(false)}
+        />
+      )}
+      {showCreateContractModal && (
+        <CreateContractModal onClose={() => setShowCreateContractModal(false)} />
+      )}
+      {showViewContractsModal && (
+        <ViewContractsModal
+          contracts={contracts}
+          onClose={() => setShowViewContractsModal(false)}
+          onDelete={handleDeleteContract}
         />
       )}
     </div>

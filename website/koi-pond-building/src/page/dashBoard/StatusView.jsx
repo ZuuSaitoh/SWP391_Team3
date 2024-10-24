@@ -37,13 +37,13 @@ const StatusViewComponent = () => {
 
   if (loading)
     return (
-      <div className="loading">
+      <div style={{ textAlign: 'center', padding: '20px' }}>
         <FontAwesomeIcon icon={faSpinner} spin /> Loading statuses...
       </div>
     );
   if (error)
     return (
-      <div className="error">
+      <div style={{ textAlign: 'center', padding: '20px', color: 'red' }}>
         <FontAwesomeIcon icon={faExclamationTriangle} /> {error}
       </div>
     );
@@ -52,62 +52,86 @@ const StatusViewComponent = () => {
     return complete ? "#2980b9" : "#3498db";
   };
 
+  const containerStyle = {
+    padding: '20px',
+    maxWidth: '1200px',
+    margin: '0 auto',
+  };
+
+  const gridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4, 1fr)', // Four boxes per row
+    gap: '20px',
+  };
+
+  const itemStyle = {
+    backgroundColor: '#ffffff',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    overflow: 'hidden',
+  };
+
+  const headerStyle = (complete) => ({
+    padding: '15px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    color: 'white',
+    backgroundColor: getStatusColor(complete),
+  });
+
+  const bodyStyle = {
+    padding: '15px',
+  };
+
+  const infoRowStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '10px',
+    fontSize: '14px',
+  };
+
   return (
-    <div className="status-container">
-      <div className="">
-        {statuses.map((status) => (
-          <div
-            key={status.statusId}
-            className="status-item"
-            style={{ borderColor: getStatusColor(status.complete) }}
-          >
-            <div
-              className="status-header"
-              style={{ backgroundColor: getStatusColor(status.complete) }}
-            >
-              <h3>Status ID: {status.statusId}</h3>
+    <div style={containerStyle}>
+      <div style={gridStyle}>
+        {statuses.map((status, index) => (
+          <div key={status.statusId} style={itemStyle}>
+            <div style={headerStyle(status.complete)}>
+              <h3 style={{ margin: 0 }}>Status {index + 1}</h3>
               {status.complete ? (
-                <FontAwesomeIcon
-                  icon={faCheckCircle}
-                  className="status-icon complete"
-                />
+                <FontAwesomeIcon icon={faCheckCircle} />
               ) : (
-                <FontAwesomeIcon
-                  icon={faTimesCircle}
-                  className="status-icon incomplete"
-                />
+                <FontAwesomeIcon icon={faTimesCircle} />
               )}
             </div>
-            <div className="status-body">
-              <div className="info-row">
-                <span className="info-label">Order ID:</span>
-                <span className="info-value">{status.order.orderId}</span>
+            <div style={bodyStyle}>
+              <div style={infoRowStyle}>
+                <span style={{ fontWeight: 'bold' }}>Status ID:</span>
+                <span>{status.statusId}</span>
               </div>
-              <div className="info-row">
-                <span className="info-label">Customer:</span>
-                <span className="info-value">
-                  {status.order.customer.username}
-                </span>
+              <div style={infoRowStyle}>
+                <span style={{ fontWeight: 'bold' }}>Order ID:</span>
+                <span>{status.order.orderId}</span>
               </div>
-              <div className="info-row">
-                <span className="info-label">Description:</span>
-                <span className="info-value">{status.statusDescription}</span>
+              <div style={infoRowStyle}>
+                <span style={{ fontWeight: 'bold' }}>Customer:</span>
+                <span>{status.order.customer.username}</span>
               </div>
-              <div className="info-row">
-                <span className="info-label">Date:</span>
-                <span className="info-value">
-                  {new Date(status.statusDate).toLocaleString()}
-                </span>
+              <div style={infoRowStyle}>
+                <span style={{ fontWeight: 'bold' }}>Description:</span>
+                <span>{status.statusDescription}</span>
               </div>
-              <div className="info-row">
-                <span className="info-label">Complete:</span>
-                <span className="info-value">
-                  {status.complete ? "Yes" : "No"}
-                </span>
+              <div style={infoRowStyle}>
+                <span style={{ fontWeight: 'bold' }}>Date:</span>
+                <span>{new Date(status.statusDate).toLocaleString()}</span>
               </div>
-              <div className="info-row">
-                <span className="info-label">Updates:</span>
-                <span className="info-value">{status.numberOfUpdate}</span>
+              <div style={infoRowStyle}>
+                <span style={{ fontWeight: 'bold' }}>Complete:</span>
+                <span>{status.complete ? "Yes" : "No"}</span>
+              </div>
+              <div style={infoRowStyle}>
+                <span style={{ fontWeight: 'bold' }}>Updates:</span>
+                <span>{status.numberOfUpdate}</span>
               </div>
             </div>
           </div>
