@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import "./dashBoard.css";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const StaffProfileDashboard = () => {
   const { Id } = useParams();
@@ -95,6 +96,7 @@ const StaffProfileDashboard = () => {
 
   return (
     <div className="staff-profile">
+      <ToastContainer />
       <h2>Staff Profile</h2>
       <div className="profile-info">
         <p>

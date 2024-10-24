@@ -609,7 +609,7 @@ const Dashboard = () => {
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="staff-select">Select Staff</label>
+          <label htmlFor="staff-select">Select Consulting Staff</label>
           <select
             id="staff-select"
             value={newOrder.staff_id}
@@ -618,12 +618,14 @@ const Dashboard = () => {
             }
             required
           >
-            <option value="">Choose a staff member</option>
-            {staffs.map((staff) => (
-              <option key={staff.staffId} value={staff.staffId}>
-                {staff.username} ({staff.role})
-              </option>
-            ))}
+            <option value="">Choose a staff</option>
+            {staffs
+              .filter((staff) => staff.role === "Consulting Staff")
+              .map((staff) => (
+                <option key={staff.staffId} value={staff.staffId}>
+                  {staff.username} (Consulting Staff)
+                </option>
+              ))}
           </select>
         </div>
         <div className="form-actions">
@@ -727,12 +729,14 @@ const Dashboard = () => {
             }
             required
           >
-            <option value="">Select Staff ID</option>
-            {staffs.map((staff) => (
-              <option key={staff.staffId} value={staff.staffId}>
-                {staff.username} ({staff.role})
-              </option>
-            ))}
+            <option value="">Select Consulting Staff</option>
+            {staffs
+              .filter((staff) => staff.role === "Consulting Staff")
+              .map((staff) => (
+                <option key={staff.staffId} value={staff.staffId}>
+                  {staff.username} (Consulting Staff)
+                </option>
+              ))}
           </select>
           <input
             type="file"
