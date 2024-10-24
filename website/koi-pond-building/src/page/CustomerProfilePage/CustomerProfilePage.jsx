@@ -46,9 +46,9 @@ function CustomerProfilePage() {
           email: response.data.mail || "No email provided",
           phone: response.data.phone,
           address: response.data.address,
-          loyaltyPoints: response.data.point,
+          loyaltyPoints: response.data.point, // Update this line to use 'point' instead of 'loyaltyPoints'
           profilePicture:
-            response.data.avatar || "https://via.placeholder.com/150", // Use the avatar from the API response
+            response.data.avatar || "https://via.placeholder.com/150",
         };
         setCustomer(customerData);
         setEditedCustomer(customerData);

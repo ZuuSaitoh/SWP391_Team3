@@ -12,7 +12,12 @@ const Payment = () => {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [selectedService, setSelectedService] = useState(null);
   const [usingPoint, setUsingPoint] = useState(0);
+  const [availablePoints, setAvailablePoints] = useState(0);
+  const [discountedPrice, setDiscountedPrice] = useState(0);
   const navigate = useNavigate();
+
+  const pointToVND = (points) => points * 1000;
+  const VNDToPoint = (vnd) => Math.floor(vnd / 1000);
 
   useEffect(() => {
     const fetchCustomerData = async () => {
@@ -40,6 +45,7 @@ const Payment = () => {
         setAddress(response.data.address);
         setFullName(response.data.fullName);
         setPhoneNumber(response.data.phone);
+        setAvailablePoints(response.data.point || 0); // Set available points
       } catch (error) {
         console.error("Error fetching customer data:", error);
         toast.error("Error loading customer information");
@@ -59,7 +65,20 @@ const Payment = () => {
 
     fetchCustomerData();
     fetchSelectedService();
-  }, []);
+
+    // Add this to calculate the discounted price whenever selectedService or usingPoint changes
+    if (selectedService) {
+      const newDiscountedPrice = Math.max(
+        selectedService.price - pointToVND(usingPoint),
+        0
+      );
+      setDiscountedPrice(newDiscountedPrice);
+    }
+
+    if (discountedPrice === 0 && paymentMethod === "VNPay") {
+      setPaymentMethod("COD");
+    }
+  }, [selectedService, usingPoint, discountedPrice]);
 
   const handlePlaceOrder = async () => {
     if (!customer || !selectedService) {
@@ -76,7 +95,7 @@ const Payment = () => {
       const orderData = {
         customerId: customer.id,
         serviceId: selectedService.serviceId,
-        price: selectedService.price,
+        price: discountedPrice, // Use the discounted price
         usingPoint: usingPoint,
         paymentMethod: paymentMethod,
         address: address,
@@ -94,11 +113,14 @@ const Payment = () => {
 
       if (response.data && response.data.code === 1000) {
         toast.success("Order placed successfully!");
+
+        // Save the discounted price to local storage
+        localStorage.setItem("lastOrderPrice", discountedPrice.toString());
+
         localStorage.removeItem("selectedService");
 
         const bookingServiceId = response.data.result.bookingServiceId;
         if (!bookingServiceId) {
-          oun;
           toast.error("Booking service ID not found.");
           return;
         }
@@ -150,6 +172,22 @@ const Payment = () => {
   // Add this function to format numbers with thousand separators
   const formatNumber = (number) => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+
+  const handleUsePoints = (value) => {
+    const numValue = Number(value);
+    const maxPointsAllowed = VNDToPoint(
+      selectedService ? selectedService.price : 0
+    );
+    if (numValue < 0) {
+      setUsingPoint(0);
+    } else if (numValue > availablePoints) {
+      setUsingPoint(availablePoints);
+    } else if (numValue > maxPointsAllowed) {
+      setUsingPoint(maxPointsAllowed);
+    } else {
+      setUsingPoint(numValue);
+    }
   };
 
   return (
@@ -208,13 +246,18 @@ const Payment = () => {
                 <span className="payment-method-icon">🚚</span>
                 Cash
               </label>
-              <label className="payment-method">
+              <label
+                className={`payment-method ${
+                  discountedPrice === 0 ? "disabled" : ""
+                }`}
+              >
                 <input
                   type="radio"
                   name="paymentMethod"
                   value="VNPay"
                   checked={paymentMethod === "VNPay"}
                   onChange={(e) => setPaymentMethod(e.target.value)}
+                  disabled={discountedPrice === 0}
                 />
                 <span className="payment-method-icon">💳</span>
                 VNPay
@@ -236,12 +279,18 @@ const Payment = () => {
               <p>No service selected</p>
             )}
             <div className="payment-discount-code">
+              <p>Available Points: {formatNumber(availablePoints)}</p>
               <input
                 type="number"
                 className="payment-input"
                 placeholder="Use points"
                 value={usingPoint}
-                onChange={(e) => setUsingPoint(Number(e.target.value))}
+                onChange={(e) => handleUsePoints(e.target.value)}
+                min="0"
+                max={Math.min(
+                  availablePoints,
+                  VNDToPoint(selectedService ? selectedService.price : 0)
+                )}
               />
             </div>
             <div className="payment-total">
@@ -251,16 +300,14 @@ const Payment = () => {
               </p>
             </div>
             <div className="payment-shipping">
-              <p>Points used</p>
-              <p>-{formatNumber(usingPoint)} VND</p>
+              <p>Points used ({usingPoint} points)</p>
+              <p>-{formatNumber(pointToVND(usingPoint))} VND</p>
             </div>
             <div className="payment-grand-total">
               <p>Total</p>
               <p>
                 {selectedService
-                  ? formatNumber(
-                      Math.max(selectedService.price - usingPoint, 0)
-                    )
+                  ? formatNumber(selectedService.price - pointToVND(usingPoint))
                   : 0}{" "}
                 VND
               </p>

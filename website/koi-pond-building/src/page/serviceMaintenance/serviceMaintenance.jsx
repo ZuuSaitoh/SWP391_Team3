@@ -112,6 +112,32 @@ function ServiceMaintenance() {
           </p>
         </section>
 
+        {/* Add this new section for displaying maintenance services */}
+        <section className="maintenance-services-list">
+          <h2>Our Maintenance Services</h2>
+          {maintenanceServices.length > 0 ? (
+            <div className="services-grid">
+              {maintenanceServices.map((service) => (
+                <div key={service.serviceId} className="service-item">
+                  <h3>{service.serviceName}</h3>
+                  <p>{service.description}</p>
+                  <p className="service-price">
+                    Price: {service.price.toLocaleString()} VND
+                  </p>
+                  <button
+                    className="choose-service-btn"
+                    onClick={() => handleChooseService(service)}
+                  >
+                    Choose Service
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>Loading maintenance services...</p>
+          )}
+        </section>
+
         <section className="maintenance-importance">
           <h2>The Importance of Professional Maintenance</h2>
           <div className="importance-grid">
@@ -298,32 +324,6 @@ function ServiceMaintenance() {
               </p>
             </div>
           </div>
-        </section>
-
-        {/* Add this new section for displaying maintenance services */}
-        <section className="maintenance-services-list">
-          <h2>Our Maintenance Services</h2>
-          {maintenanceServices.length > 0 ? (
-            <div className="services-grid">
-              {maintenanceServices.map((service) => (
-                <div key={service.serviceId} className="service-item">
-                  <h3>{service.serviceName}</h3>
-                  <p>{service.description}</p>
-                  <p className="service-price">
-                    Price: {service.price.toLocaleString()} VND
-                  </p>
-                  <button
-                    className="choose-service-btn"
-                    onClick={() => handleChooseService(service)}
-                  >
-                    Choose Service
-                  </button>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p>Loading maintenance services...</p>
-          )}
         </section>
       </div>
 

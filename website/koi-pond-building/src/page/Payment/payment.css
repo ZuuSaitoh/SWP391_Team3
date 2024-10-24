@@ -182,3 +182,12 @@
 .payment-input[placeholder="Full Name"] {
     /* Add any specific styles for the full name input if needed */
 }
+
+.payment-method.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.payment-method.disabled input {
+    cursor: not-allowed;
+}

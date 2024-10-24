@@ -109,6 +109,7 @@ function ServiceClean() {
           </button>
         </div>
       </section>
+
       <div className="clean-content">
         <section className="clean-intro">
           <h2>Professional Koi Pond Cleaning</h2>
@@ -118,6 +119,31 @@ function ServiceClean() {
             services ensure that your pond remains a sparkling, healthy habitat
             for your prized Koi.
           </p>
+        </section>
+
+        <section className="cleaning-services">
+          <h2>Our Cleaning Services</h2>
+          {cleaningServices.length > 0 ? (
+            <div className="services-grid">
+              {cleaningServices.map((service) => (
+                <div key={service.serviceId} className="service-item">
+                  <h3>{service.serviceName}</h3>
+                  <p>{service.description}</p>
+                  <p className="service-price">
+                    Price: {service.price.toLocaleString()} VND
+                  </p>
+                  <button
+                    className="choose-service-btn"
+                    onClick={() => handleChooseService(service)}
+                  >
+                    Choose Service
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>Loading cleaning services...</p>
+          )}
         </section>
 
         <section className="clean-standards">
@@ -267,31 +293,6 @@ function ServiceClean() {
               </div>
             ))}
           </div>
-        </section>
-
-        <section className="cleaning-services">
-          <h2>Our Cleaning Services</h2>
-          {cleaningServices.length > 0 ? (
-            <div className="services-grid">
-              {cleaningServices.map((service) => (
-                <div key={service.serviceId} className="service-item">
-                  <h3>{service.serviceName}</h3>
-                  <p>{service.description}</p>
-                  <p className="service-price">
-                    Price: {service.price.toLocaleString()} VND
-                  </p>
-                  <button
-                    className="choose-service-btn"
-                    onClick={() => handleChooseService(service)}
-                  >
-                    Choose Service
-                  </button>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p>Loading cleaning services...</p>
-          )}
         </section>
       </div>
       {showScrollTop && (
