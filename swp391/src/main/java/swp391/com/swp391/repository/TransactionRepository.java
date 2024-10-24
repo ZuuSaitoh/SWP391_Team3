@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
     Optional<List<Transaction>> findByOrder_OrderId(int id);
+    Boolean existsByOrder_OrderId(int id);
 }

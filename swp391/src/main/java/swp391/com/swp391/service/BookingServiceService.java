@@ -6,16 +6,10 @@ import swp391.com.swp391.dto.request.BookingServiceAddStaffCreationRequest;
 import swp391.com.swp391.dto.request.BookingServiceCreationRequest;
 import swp391.com.swp391.dto.request.BookingServiceUpdateFeedbackRequest;
 import swp391.com.swp391.dto.request.BookingServiceUpdateStatusRequest;
-import swp391.com.swp391.entity.BookingService;
-import swp391.com.swp391.entity.Customer;
-import swp391.com.swp391.entity.Staff;
-import swp391.com.swp391.entity.Status;
+import swp391.com.swp391.entity.*;
 import swp391.com.swp391.exception.AppException;
 import swp391.com.swp391.exception.ErrorCode;
-import swp391.com.swp391.repository.BookingServiceRepository;
-import swp391.com.swp391.repository.CustomerRepository;
-import swp391.com.swp391.repository.ServiceRepository;
-import swp391.com.swp391.repository.StaffRepository;
+import swp391.com.swp391.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +25,8 @@ public class BookingServiceService {
     CustomerRepository customerRepository;
     @Autowired
     ServiceRepository serviceRepository;
+    @Autowired
+    ServiceTransactionRepository serviceTransactionRepository;
     @Autowired
     ServiceTransactionService serviceTransactionService;
 
@@ -50,7 +46,14 @@ public class BookingServiceService {
         bookingService.setService(service);
         bookingService.setBookingDate(LocalDateTime.now());
         bookingService.setPrice(request.getPrice());
+        //tru diem neu khach hang su dung diem
+        if (customer.getPoint() < request.getUsingPoint()){
+            throw new AppException(ErrorCode.MAX_POINT);
+        }
+        customer.setPoint(customer.getPoint() - request.getUsingPoint());
+        customerRepository.save(customer);
         bookingService.setUsingPoint(request.getUsingPoint());
+
 
         return bookingServiceRepository.save(bookingService);
     }
@@ -85,6 +88,14 @@ public class BookingServiceService {
         }
         bookingService.setStatus(request.isStatus());
         bookingService.setFinishDate(LocalDateTime.now());
+        if (serviceTransactionRepository.existsByBookingService_bookingServiceId(id)) {
+            if (bookingService.getPrice()>0) {
+                Customer customer = bookingService.getCustomer();
+                int point = (int) Math.floor(bookingService.getPrice()/100000);
+                customer.setPoint(customer.getPoint() + point);
+                customerRepository.save(customer);
+            }
+        }
         return bookingServiceRepository.save(bookingService);
     }
 

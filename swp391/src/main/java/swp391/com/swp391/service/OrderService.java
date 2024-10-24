@@ -8,10 +8,7 @@ import swp391.com.swp391.dto.request.OrderUpdateFeedbackRequest;
 import swp391.com.swp391.entity.*;
 import swp391.com.swp391.exception.AppException;
 import swp391.com.swp391.exception.ErrorCode;
-import swp391.com.swp391.repository.CustomerRepository;
-import swp391.com.swp391.repository.DesignRepository;
-import swp391.com.swp391.repository.OrderRepository;
-import swp391.com.swp391.repository.StaffRepository;
+import swp391.com.swp391.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +28,12 @@ public class OrderService {
 
     @Autowired
     FormService formService;
+
+    @Autowired
+    TransactionService transactionService;
+
+    @Autowired
+    TransactionRepository transactionRepository;
 
 
     public Order createOrder(OrderCreationRequest request){
@@ -67,7 +70,27 @@ public class OrderService {
 
     public Order updateEndDate(int order_id){
         Order order = getOrderById(order_id);
+        if (order.getFeedback_date()!=null){
+            throw new AppException(ErrorCode.ORDER_COMPLETE);
+        }
         order.setEnd_date(LocalDateTime.now());
+        if (transactionRepository.existsByOrder_OrderId(order_id)) {
+            Optional<List<Transaction>> transaction = transactionService.getAllTransactionByOrderId(order_id);
+            double total = 0;
+            int point = 0;
+            if (transaction.isPresent()) {
+                List<Transaction> transactionList = transaction.get();
+                for (Transaction transaction1 : transactionList){
+                    if (transaction1.getDepositMethod()!=null) {
+                        total += transaction1.getDeposit();
+                    }
+                }
+                point = (int) Math.floor(total/100000);
+                Customer customer = order.getCustomer();
+                customer.setPoint(customer.getPoint() + point);
+                customerRepository.save(customer);
+            }
+        }
         return orderRepository.save(order);
     }
 
