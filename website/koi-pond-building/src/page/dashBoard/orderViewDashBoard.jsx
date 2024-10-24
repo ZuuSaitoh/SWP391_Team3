@@ -9,7 +9,9 @@ import {
   faTrash,
   faEdit,
   faMoneyBillWave,
+  faDownload,
 } from "@fortawesome/free-solid-svg-icons";
+import uploadFile from "../../utils/file";
 
 const OrderViewDashboard = () => {
   const [order, setOrder] = useState(null);
@@ -45,6 +47,11 @@ const OrderViewDashboard = () => {
     description: "",
   });
   const [showViewContractsModal, setShowViewContractsModal] = useState(false);
+  const [showCreateAcceptanceModal, setShowCreateAcceptanceModal] = useState(false);
+  const [showViewAcceptanceModal, setShowViewAcceptanceModal] = useState(false);
+  const [acceptances, setAcceptances] = useState([]);
+  const [showUpdateAcceptanceModal, setShowUpdateAcceptanceModal] = useState(false);
+  const [currentAcceptance, setCurrentAcceptance] = useState(null);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -650,7 +657,16 @@ const OrderViewDashboard = () => {
                 value={new Date(contract.uploadDate).toLocaleString()}
               />
               <InfoRow label="Description" value={contract.description} />
-              <InfoRow label="Image Data" value={contract.imageData} />
+              <div className="info-row">
+                <span className="info-label">Image Data:</span>
+                <a
+                  href={contract.imageData} // Assuming imageData contains the file URL
+                  download
+                  className="download-btn"
+                >
+                  <FontAwesomeIcon icon={faDownload} /> Download
+                </a>
+              </div>
               <InfoRow label="Upload Staff" value={contract.staff.username} />
               <div className="status-actions">
                 <button
@@ -672,21 +688,52 @@ const OrderViewDashboard = () => {
 
   const CreateContractModal = ({ onClose }) => {
     const [localContract, setLocalContract] = useState({
-      imageData: "",
+      imageData: null,
       description: "",
     });
 
     const handleInputChange = (e) => {
-      const { id, value } = e.target;
-      setLocalContract(prev => ({
-        ...prev,
-        [id]: value
-      }));
+      const { id, value, files } = e.target;
+      if (id === "imageData") {
+        setLocalContract((prev) => ({
+          ...prev,
+          [id]: files[0],
+        }));
+      } else {
+        setLocalContract((prev) => ({
+          ...prev,
+          [id]: value,
+        }));
+      }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault();
-      handleCreateContract(localContract);
+      try {
+        const imageUrl = await uploadFile(localContract.imageData);
+
+        const response = await axios.post(
+          "http://localhost:8080/contracts/create",
+          {
+            orderId: parseInt(orderId),
+            uploadStaff: currentStaffId,
+            imageData: imageUrl, // Use the uploaded file URL
+            description: localContract.description,
+          }
+        );
+
+        if (response.data.code === 1000) {
+          toast.success("Contract created successfully");
+          setContracts([...contracts, response.data.result]);
+          setShowCreateContractModal(false);
+          setNewContract({ imageData: "", description: "" });
+        } else {
+          toast.error("Failed to create contract");
+        }
+      } catch (err) {
+        console.error("Error creating contract:", err);
+        toast.error("An error occurred while creating the contract");
+      }
     };
 
     return (
@@ -695,11 +742,11 @@ const OrderViewDashboard = () => {
           <h2>Create New Contract</h2>
           <form onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="imageData">Image Data:</label>
+              <label htmlFor="imageData">Upload File:</label>
               <input
-                type="text"
+                type="file"
                 id="imageData"
-                value={localContract.imageData}
+                accept=".jpg,.jpeg,.png,.pdf,.docx"
                 onChange={handleInputChange}
                 required
               />
@@ -742,6 +789,306 @@ const OrderViewDashboard = () => {
         toast.error("An error occurred while deleting the contract");
       }
     }
+  };
+
+  const CreateAcceptanceModal = ({ onClose }) => {
+    const [acceptanceData, setAcceptanceData] = useState({
+      consultingStaff: "",
+      designStaff: "",
+      constructionStaff: "",
+      imageData: null, // Change to null to store file object
+      description: "",
+    });
+
+    const handleInputChange = (e) => {
+      const { id, value, files } = e.target;
+      if (id === "imageData") {
+        setAcceptanceData((prev) => ({
+          ...prev,
+          [id]: files[0], // Store the file object
+        }));
+      } else {
+        setAcceptanceData((prev) => ({
+          ...prev,
+          [id]: value,
+        }));
+      }
+    };
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        const imageUrl = await uploadFile(acceptanceData.imageData);
+
+        const response = await axios.post(
+          "http://localhost:8080/acceptancetests/create",
+          {
+            orderId: parseInt(orderId),
+            ...acceptanceData,
+            imageData: imageUrl, // Use the uploaded file URL
+          }
+        );
+
+        if (response.data.code === 1000) {
+          toast.success("Acceptance test created successfully");
+          setShowCreateAcceptanceModal(false);
+        } else {
+          toast.error("Failed to create acceptance test");
+        }
+      } catch (err) {
+        console.error("Error creating acceptance test:", err);
+        toast.error("An error occurred while creating the acceptance test");
+      }
+    };
+
+    return (
+      <div className="status-modal-overlay" onClick={onClose}>
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+          <h2>Create Acceptance Test</h2>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="consultingStaff">Consulting Staff:</label>
+              <select
+                id="consultingStaff"
+                value={acceptanceData.consultingStaff}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select Consulting Staff</option>
+                {staffList
+                  .filter((staff) => staff.role === "Consulting Staff")
+                  .map((staff) => (
+                    <option key={staff.staffId} value={staff.staffId}>
+                      {staff.username}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="designStaff">Design Staff:</label>
+              <select
+                id="designStaff"
+                value={acceptanceData.designStaff}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select Design Staff</option>
+                {staffList
+                  .filter((staff) => staff.role === "Design Staff")
+                  .map((staff) => (
+                    <option key={staff.staffId} value={staff.staffId}>
+                      {staff.username}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="constructionStaff">Construction Staff:</label>
+              <select
+                id="constructionStaff"
+                value={acceptanceData.constructionStaff}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select Construction Staff</option>
+                {staffList
+                  .filter((staff) => staff.role === "Construction Staff")
+                  .map((staff) => (
+                    <option key={staff.staffId} value={staff.staffId}>
+                      {staff.username}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="imageData">Upload File:</label>
+              <input
+                type="file"
+                id="imageData"
+                accept=".jpg,.jpeg,.png,.pdf,.docx"
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="description">Description:</label>
+              <textarea
+                id="description"
+                value={acceptanceData.description}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="modal-actions">
+              <button type="submit" className="create-status-btn">
+                Create Acceptance
+              </button>
+              <button type="button" onClick={onClose} className="cancel-btn">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  };
+
+  const fetchAcceptances = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/acceptancetests/fetchAll/order/${orderId}`);
+      if (response.data.code === 9999) {
+        setAcceptances(response.data.result);
+        setShowViewAcceptanceModal(true);
+      } else {
+        toast.error("Failed to fetch acceptance tests");
+      }
+    } catch (err) {
+      console.error("Error fetching acceptance tests:", err);
+      toast.error("An error occurred while fetching acceptance tests");
+    }
+  };
+
+  const ViewAcceptanceModal = ({ acceptances, onClose }) => {
+    return (
+      <div className="status-modal-overlay" onClick={onClose}>
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+          <h2>Acceptance Tests</h2>
+          {acceptances.map((acceptance, index) => (
+            <div key={acceptance.acceptanceTestId} className="status-item">
+              <h3>Acceptance Test {index + 1}</h3>
+              <InfoRow label="Acceptance Test ID" value={acceptance.acceptanceTestId} />
+              <InfoRow label="Consulting Staff" value={acceptance.consultingStaff.username} />
+              <InfoRow label="Design Staff" value={acceptance.designStaff.username} />
+              <InfoRow label="Construction Staff" value={acceptance.constructionStaff.username} />
+              <InfoRow label="Finish Date" value={new Date(acceptance.finishDate).toLocaleString()} />
+              <InfoRow label="Description" value={acceptance.description} />
+              <div className="status-actions">
+                <a
+                  href={acceptance.imageData} // Assuming imageData contains the file URL
+                  download
+                  className="download-btn"
+                >
+                  <FontAwesomeIcon icon={faDownload} /> Download
+                </a>
+                <button
+                  onClick={() => {
+                    setCurrentAcceptance(acceptance);
+                    setShowUpdateAcceptanceModal(true);
+                  }}
+                  className="update-btn"
+                >
+                  <FontAwesomeIcon icon={faEdit} /> Update
+                </button>
+              </div>
+            </div>
+          ))}
+          <button onClick={onClose} className="close-modal-btn">
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const handleUpdateAcceptance = async (acceptanceId, updatedData) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/acceptancetests/update/${acceptanceId}`,
+        updatedData
+      );
+
+      if (response.data.code === 1234) {
+        toast.success("Acceptance test updated successfully");
+        setAcceptances(
+          acceptances.map((acceptance) =>
+            acceptance.acceptanceTestId === acceptanceId
+              ? { ...acceptance, ...response.data.result }
+              : acceptance
+          )
+        );
+        setShowUpdateAcceptanceModal(false);
+      } else {
+        toast.error("Failed to update acceptance test");
+      }
+    } catch (err) {
+      console.error("Error updating acceptance test:", err);
+      toast.error("An error occurred while updating the acceptance test");
+    }
+  };
+
+  const UpdateAcceptanceModal = ({ acceptance, onClose }) => {
+    const [updatedData, setUpdatedData] = useState({
+      imageData: null,
+      description: acceptance.description,
+    });
+
+    const handleInputChange = (e) => {
+      const { id, value, files } = e.target;
+      if (id === "imageData") {
+        setUpdatedData((prev) => ({
+          ...prev,
+          [id]: files[0],
+        }));
+      } else {
+        setUpdatedData((prev) => ({
+          ...prev,
+          [id]: value,
+        }));
+      }
+    };
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        const imageUrl = updatedData.imageData
+          ? await uploadFile(updatedData.imageData)
+          : acceptance.imageData;
+
+        await handleUpdateAcceptance(acceptance.acceptanceTestId, {
+          imageData: imageUrl,
+          description: updatedData.description,
+        });
+      } catch (err) {
+        console.error("Error updating acceptance test:", err);
+        toast.error("An error occurred while updating the acceptance test");
+      }
+    };
+
+    return (
+      <div className="status-modal-overlay" onClick={onClose}>
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+          <h2>Update Acceptance Test</h2>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="imageData">Upload New File:</label>
+              <input
+                type="file"
+                id="imageData"
+                accept=".jpg,.jpeg,.png,.pdf,.docx"
+                onChange={handleInputChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="description">Description:</label>
+              <textarea
+                id="description"
+                value={updatedData.description}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="modal-actions">
+              <button type="submit" className="create-status-btn">
+                Update Acceptance
+              </button>
+              <button type="button" onClick={onClose} className="cancel-btn">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
   };
 
   if (loading)
@@ -848,6 +1195,12 @@ const OrderViewDashboard = () => {
             >
               Contract
             </button>
+            <button
+              className={`tab-button ${activeTab === "acceptance" ? "active" : ""}`}
+              onClick={() => setActiveTab("acceptance")}
+            >
+              Acceptance
+            </button>
           </div>
           {activeTab === "status" && (
             <>
@@ -899,6 +1252,25 @@ const OrderViewDashboard = () => {
                   className="view-status-btn"
                 >
                   View Contracts
+                </button>
+              </div>
+            </>
+          )}
+          {activeTab === "acceptance" && (
+            <>
+              <h2>Acceptance Information</h2>
+              <div className="status-button-container">
+                <button
+                  onClick={fetchAcceptances}
+                  className="view-status-btn"
+                >
+                  View Acceptance
+                </button>
+                <button
+                  onClick={() => setShowCreateAcceptanceModal(true)}
+                  className="create-status-btn"
+                >
+                  Create Acceptance
                 </button>
               </div>
             </>
@@ -956,6 +1328,21 @@ const OrderViewDashboard = () => {
           contracts={contracts}
           onClose={() => setShowViewContractsModal(false)}
           onDelete={handleDeleteContract}
+        />
+      )}
+      {showCreateAcceptanceModal && (
+        <CreateAcceptanceModal onClose={() => setShowCreateAcceptanceModal(false)} />
+      )}
+      {showViewAcceptanceModal && (
+        <ViewAcceptanceModal
+          acceptances={acceptances}
+          onClose={() => setShowViewAcceptanceModal(false)}
+        />
+      )}
+      {showUpdateAcceptanceModal && currentAcceptance && (
+        <UpdateAcceptanceModal
+          acceptance={currentAcceptance}
+          onClose={() => setShowUpdateAcceptanceModal(false)}
         />
       )}
     </div>

@@ -2469,35 +2469,7 @@ body {
 .status-section {
   display: flex;
   flex-direction: column;
-}
-
-.status-button-container {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 15px;
-  /* Add some space between the title and the button */
-}
-
-.view-status-btn {
-  background-color: #3498db;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.view-status-btn:hover {
-  background-color: #2980b9;
-  transform: translateY(-2px);
-}
-
-.view-status-btn:active {
-  transform: translateY(0);
+  align-items: center; /* Center the content horizontally */
 }
 
 .status-button-container {
@@ -2506,6 +2478,7 @@ body {
   gap: 10px;
   width: 100%;
   margin-top: 15px;
+  flex-wrap: wrap; /* Allow buttons to wrap if needed */
 }
 
 .create-status-btn {
@@ -2915,6 +2888,9 @@ body {
 
 .tab-buttons {
   display: flex;
+  flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+  justify-content: center;
+  gap: 10px;
   margin-bottom: 15px;
 }
 
