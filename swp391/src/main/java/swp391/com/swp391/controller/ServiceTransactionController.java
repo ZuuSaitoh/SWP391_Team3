@@ -33,6 +33,12 @@ public class ServiceTransactionController {
     VNPayService vnPayService;
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @GetMapping("/check/{id}")
+    ApiResponse<Boolean> check(@PathVariable int id) {
+        return new ApiResponse<Boolean>(1234, "Check transaction", serviceTransactionService.checkTransactionStatus(id));
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/create/cash")
     ApiResponse<ServiceTransaction>
     createServiceTransactionByCash(@RequestBody @Valid ServiceTransactionCreationRequest request){

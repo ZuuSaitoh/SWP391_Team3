@@ -28,6 +28,10 @@ public class ServiceTransactionService {
     @Autowired
     BookingServiceRepository bookingServiceRepository;
 
+    public boolean checkTransactionStatus(int id){
+        return serviceTransactionRepository.existsByBookingService_bookingServiceId(id);
+    }
+
     public ServiceTransaction createTransactionByCash(ServiceTransactionCreationRequest request){
         ServiceTransaction serviceTransaction = new ServiceTransaction();
         BookingService bookingService = bookingServiceRepository.findById(request.getBookingServiceId())
