@@ -45,6 +45,9 @@ public class OrderService {
                 .orElseThrow(()->new AppException(ErrorCode.STAFF_NOT_EXISTED));
 
         order.setStaff(staff);
+        if(orderRepository.existsByForm_FormId(request.getForm_id())){
+            throw new AppException(ErrorCode.ORDER_CREATED);
+        }
         Form form = formService.findById(request.getForm_id());
         order.setForm(form);
 

@@ -1,5 +1,6 @@
 package swp391.com.swp391.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import swp391.com.swp391.dto.request.StatusCreationRequest;
@@ -20,7 +21,7 @@ public class StatusController {
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PostMapping("/create")
-    ApiResponse<Status> createStatus(@RequestBody StatusCreationRequest request){
+    ApiResponse<Status> createStatus(@RequestBody @Valid StatusCreationRequest request){
         ApiResponse<Status> apiResponse = new ApiResponse<>();
         apiResponse.setResult(statusService.createStatus(request));
         return apiResponse;
@@ -53,7 +54,7 @@ public class StatusController {
     }
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @PutMapping("/update-complete/{id}")
-    ApiResponse<Status> updateCompleteByStatusId(@PathVariable int id, @RequestBody StatusUpdateCompleteRequest request){
+    ApiResponse<Status> updateCompleteByStatusId(@PathVariable int id, @RequestBody @Valid StatusUpdateCompleteRequest request){
         return new ApiResponse<Status>
                 (999, "update complete of status", statusService.updateCompleteStatus(id, request));
     }

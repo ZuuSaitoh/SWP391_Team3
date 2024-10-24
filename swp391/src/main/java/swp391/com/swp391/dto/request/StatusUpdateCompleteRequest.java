@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 public class StatusUpdateCompleteRequest {
     @NotNull(message = "ENTER_ALL_FIELDS")
     boolean complete;
-    @NotNull(message = "ENTER_ALL_FIELDS")
+//    @NotNull(message = "ENTER_ALL_FIELDS")
     String rejectReason;
 
     @NotNull(message = "ENTER_ALL_FIELDS")
@@ -24,11 +24,11 @@ public class StatusUpdateCompleteRequest {
         this.complete = complete;
     }
 
-    public @NotNull(message = "ENTER_ALL_FIELDS") String getRejectReason() {
+    public String getRejectReason() {
         return rejectReason;
     }
 
-    public void setRejectReason(@NotNull(message = "ENTER_ALL_FIELDS") String rejectReason) {
+    public void setRejectReason(String rejectReason) {
         this.rejectReason = rejectReason;
     }
 //    @NotNull(message = "ENTER_ALL_FIELDS")

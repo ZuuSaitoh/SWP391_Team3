@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     Optional <List<Order>> findByCustomer_Id(int id);
     Optional <List<Order>> findByStaff_staffId(int id);
+    Boolean existsByForm_FormId(int id);
 }
