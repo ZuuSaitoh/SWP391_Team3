@@ -616,7 +616,13 @@ const OrderViewDashboard = () => {
   const InfoRow = ({ label, value }) => (
     <div className="info-row">
       <span className="info-label">{label}:</span>
-      <span className="info-value">{value}</span>
+      {label === "IMAGE DATA" && value ? (
+        <a href={value} download className="info-value">
+          Download
+        </a>
+      ) : (
+        <span className="info-value">{value}</span>
+      )}
     </div>
   );
 

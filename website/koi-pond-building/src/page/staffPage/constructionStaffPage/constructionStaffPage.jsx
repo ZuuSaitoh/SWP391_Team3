@@ -69,7 +69,10 @@ function ConstructionStaffPage() {
         `http://localhost:8080/bookingservices/fetchAll/staff/${staffId}`
       );
       if (response.data.code === 9999) {
-        setBookings(response.data.result);
+        const sortedBookings = response.data.result.sort(
+          (a, b) => new Date(b.bookingDate) - new Date(a.bookingDate)
+        );
+        setBookings(sortedBookings);
       } else {
         console.warn(
           "Unexpected response when fetching bookings:",
@@ -108,6 +111,29 @@ function ConstructionStaffPage() {
       );
     }
     setUpdateStatusModalVisible(false);
+  };
+
+  const handleUpdateStatusInView = async (statusId) => {
+    try {
+      const response = await api.patch(
+        `http://localhost:8080/status/update-number-of-update/${statusId}`
+      );
+      if (response.data.code === 999) {
+        setStaffStatuses((prevStatuses) =>
+          prevStatuses.map((status) =>
+            status.statusId === statusId ? response.data.result : status
+          )
+        );
+        toast.success("Status updated successfully");
+      } else if (response.data.code === 1027) {
+        toast.error("You can't change the status because this status has been set to done!");
+      } else {
+        toast.error("Failed to update status");
+      }
+    } catch (err) {
+      console.error("Error updating status:", err);
+      toast.error("Error updating status: " + (err.response?.data?.message || err.message));
+    }
   };
 
   useEffect(() => {
@@ -214,6 +240,15 @@ function ConstructionStaffPage() {
       dataIndex: "numberOfUpdate",
       key: "numberOfUpdate",
     },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <Button onClick={() => handleUpdateStatusInView(record.statusId)}>
+          Update Status
+        </Button>
+      ),
+    },
   ];
 
   const bookingColumns = [
@@ -236,7 +271,7 @@ function ConstructionStaffPage() {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (price) => `$${price.toFixed(2)}`,
+      render: (price) => `${price.toFixed(2)}VND`,
     },
     {
       title: "Booking Date",

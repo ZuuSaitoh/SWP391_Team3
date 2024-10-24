@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/file";
+import './designStaffPage.css';
 
 function DesignStaffPage() {
   const [datas, setDatas] = useState([]);
