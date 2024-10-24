@@ -25,6 +25,14 @@ const ViewBookingDashboard = () => {
   const [transactions, setTransactions] = useState([]);
   const [transactionCreated, setTransactionCreated] = useState(false);
   const [transaction, setTransaction] = useState(null);
+  const [hasTransaction, setHasTransaction] = useState(false);
+  const [constructionStaffs, setConstructionStaffs] = useState([]);
+  const [paymentStatus, setPaymentStatus] = useState(null);
+
+  const formatPrice = (price) => {
+    const wholePart = Math.floor(price);
+    return wholePart.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
 
   useEffect(() => {
     const fetchBookingDetails = async () => {
@@ -51,7 +59,11 @@ const ViewBookingDashboard = () => {
           "http://localhost:8080/staffs/fetchAll"
         );
         if (response.data.code === 9999) {
-          setStaffs(response.data.result);
+          const allStaffs = response.data.result;
+          const filteredStaffs = allStaffs.filter(
+            (staff) => staff.role === "Construction Staff"
+          );
+          setConstructionStaffs(filteredStaffs);
         } else {
           console.warn("Failed to fetch staffs");
         }
@@ -75,9 +87,48 @@ const ViewBookingDashboard = () => {
       }
     };
 
+    const checkTransaction = async () => {
+      try {
+        console.log(`Checking transaction for booking ID: ${bookingId}`);
+        const response = await axios.get(
+          `http://localhost:8080/serviceTransaction/check/${bookingId}`
+        );
+        console.log("Transaction check response:", response.data);
+        if (response.data.code === 1234) {
+          setHasTransaction(true);
+          setPaymentStatus(response.data.result);
+        } else {
+          console.warn("Unexpected response code:", response.data.code);
+          setHasTransaction(false);
+          setPaymentStatus(false);
+        }
+      } catch (err) {
+        console.error("Error checking transaction:", err);
+        if (err.response) {
+          console.error("Response data:", err.response.data);
+          console.error("Response status:", err.response.status);
+          console.error("Response headers:", err.response.headers);
+          if (err.response.status === 400) {
+            console.log(
+              "Bad request. Possibly no transaction exists for this booking."
+            );
+            setHasTransaction(false);
+            setPaymentStatus(false);
+          }
+        } else if (err.request) {
+          console.error("No response received:", err.request);
+        } else {
+          console.error("Error", err.message);
+        }
+        setHasTransaction(false);
+        setPaymentStatus(false);
+      }
+    };
+
     fetchBookingDetails();
     fetchStaffs();
     fetchTransactions();
+    checkTransaction();
   }, [bookingId]);
 
   const handleStatusChange = async () => {
@@ -153,9 +204,13 @@ const ViewBookingDashboard = () => {
         toast.success("Transaction created successfully");
         setTransactions([...transactions, response.data.result]);
         setTransactionCreated(true);
+        setPaymentStatus(true); // Update payment status to paid
+        setHasTransaction(true); // Update hasTransaction to true
       } else if (response.data.code === 1035) {
         toast.warning("Transaction has already been paid");
         setTransactionCreated(true);
+        setPaymentStatus(true); // Ensure payment status is set to paid
+        setHasTransaction(true); // Ensure hasTransaction is set to true
       } else {
         console.error("Unexpected response:", response.data);
         toast.error(
@@ -173,6 +228,8 @@ const ViewBookingDashboard = () => {
         if (err.response.data.message === "Transaction has been pay!") {
           toast.warning("Transaction has already been paid");
           setTransactionCreated(true);
+          setPaymentStatus(true); // Ensure payment status is set to paid
+          setHasTransaction(true); // Ensure hasTransaction is set to true
         } else {
           toast.error(
             `Error: ${err.response.data.message || err.response.statusText}`
@@ -191,7 +248,7 @@ const ViewBookingDashboard = () => {
   const handleViewTransaction = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/serviceTransaction/${bookingId}`
+        `http://localhost:8080/serviceTransaction/bookingService/${bookingId}`
       );
       if (response.data.code === 9999) {
         setTransaction(response.data.result);
@@ -236,7 +293,7 @@ const ViewBookingDashboard = () => {
             />
             <InfoRow
               label="Price"
-              value={`$${transaction.bookingService.price.toFixed(2)}`}
+              value={`${formatPrice(transaction.bookingService.price)} VND`}
             />
           </div>
           <button onClick={onClose} className="close-modal-btn">
@@ -266,7 +323,7 @@ const ViewBookingDashboard = () => {
           <strong>Service:</strong> {booking.service.serviceName}
         </p>
         <p>
-          <strong>Price:</strong> ${booking.price.toFixed(2)}
+          <strong>Price:</strong> {formatPrice(booking.price)} VND
         </p>
         <p>
           <strong>Booking Date:</strong>{" "}
@@ -300,6 +357,14 @@ const ViewBookingDashboard = () => {
             </p>
           </div>
         )}
+        <p>
+          <strong>Payment Status:</strong>{" "}
+          {paymentStatus === null
+            ? "Checking..."
+            : paymentStatus
+            ? "Paid"
+            : "Unpaid"}
+        </p>
       </div>
       <div className="profile-actions">
         <button
@@ -314,10 +379,10 @@ const ViewBookingDashboard = () => {
               value={selectedStaffId}
               onChange={(e) => setSelectedStaffId(e.target.value)}
             >
-              <option value="">Select a staff member</option>
-              {staffs.map((staff) => (
+              <option value="">Select a construction staff</option>
+              {constructionStaffs.map((staff) => (
                 <option key={staff.staffId} value={staff.staffId}>
-                  {staff.username} ({staff.role})
+                  {staff.username}
                 </option>
               ))}
             </select>
@@ -329,24 +394,25 @@ const ViewBookingDashboard = () => {
             </button>
           </div>
         )}
-        <button onClick={handleDeleteBooking} className="action-btn delete-btn">
-          <FontAwesomeIcon icon={faTrash} /> Delete Booking
-        </button>
-        <button
-          onClick={handleCreateCashTransaction}
-          className="action-btn create-transaction-btn"
-          disabled={transactionCreated}
-        >
-          <FontAwesomeIcon icon={faMoneyBillWave} />
-          {transactionCreated
-            ? "Transaction Created"
-            : "Create Cash Transaction"}
-        </button>
+        {!paymentStatus && (
+          <button
+            onClick={handleCreateCashTransaction}
+            className="action-btn create-transaction-btn"
+            disabled={transactionCreated}
+          >
+            <FontAwesomeIcon icon={faMoneyBillWave} />
+            {transactionCreated
+              ? "Transaction Created"
+              : "Create Cash Transaction"}
+          </button>
+        )}
         <button
           onClick={handleViewTransaction}
           className="action-btn view-transaction-btn"
+          disabled={!hasTransaction}
         >
-          <FontAwesomeIcon icon={faExchangeAlt} /> View Transaction
+          <FontAwesomeIcon icon={faExchangeAlt} />
+          {hasTransaction ? "View Transaction" : "No Transaction"}
         </button>
       </div>
       {showTransactionModal && (

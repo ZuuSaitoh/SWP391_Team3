@@ -86,7 +86,7 @@ function LoginStaff() {
           toast.error("Invalid role.");
         }
       } else {
-        toast.error("Authentication failed.");
+        // toast.error("Authentication failed.");
       }
     } catch (err) {
       console.error("Login error:", err);

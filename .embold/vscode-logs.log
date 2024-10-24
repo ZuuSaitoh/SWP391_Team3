@@ -64,3 +64,61 @@ Java HotSpot(TM) 64-Bit Server VM (build 21.0.1+12-LTS-29, mixed mode, sharing)
 2024-10-22 10:41:50 info: Row(s) deleted
 2024-10-22 10:41:54 info: Row(s) deleted
 2024-10-22 10:52:36 info: Row(s) deleted
+2024-10-24 07:15:43 info: Congratulations, your extension "Embold" is now active!
+2024-10-24 07:15:43 info: tempDirectory : c:\Users\dokyd\.cursor\extensions\embold-vscode.embold-0.1.8\temp
+2024-10-24 07:15:47 info: Extraction complete for source: c:\Users\dokyd\.cursor\extensions\embold-vscode.embold-0.1.8\resources\embold-scanner-archive.zip, destination: c:\Users\dokyd\.cursor\extensions\embold-vscode.embold-0.1.8\temp
+2024-10-24 07:15:47 info: Extension installed on machine OS : win32
+2024-10-24 07:15:47 info: Fetched the issues from DB
+2024-10-24 07:15:47 info: Java version installed on machine : 
+java version "21.0.1" 2023-10-17 LTS
+Java(TM) SE Runtime Environment (build 21.0.1+12-LTS-29)
+Java HotSpot(TM) 64-Bit Server VM (build 21.0.1+12-LTS-29, mixed mode, sharing)
+
+2024-10-24 07:15:47 info: Java installed on machine.
+2024-10-24 07:15:48 info: Embold extension version response:{"hasSupport":false,"version":"0.1.6","changeNotes":"<div> <p>Release Date: 09 Oct, 2023 <br><span>Bug fixes and improvements.</span></p> </div>"}
+2024-10-24 07:15:48 info: Current installed embold extension version : 0.1.8
+2024-10-24 07:15:48 info: Latest embold extension version on marketplace : 0.1.6
+2024-10-24 08:06:27 info: Congratulations, your extension "Embold" is now active!
+2024-10-24 08:06:27 info: tempDirectory : c:\Users\dokyd\.cursor\extensions\embold-vscode.embold-0.1.8\temp
+2024-10-24 08:06:31 info: Extraction complete for source: c:\Users\dokyd\.cursor\extensions\embold-vscode.embold-0.1.8\resources\embold-scanner-archive.zip, destination: c:\Users\dokyd\.cursor\extensions\embold-vscode.embold-0.1.8\temp
+2024-10-24 08:06:31 info: Extension installed on machine OS : win32
+2024-10-24 08:06:31 info: Fetched the issues from DB
+2024-10-24 08:06:31 info: Java version installed on machine : 
+java version "21.0.1" 2023-10-17 LTS
+Java(TM) SE Runtime Environment (build 21.0.1+12-LTS-29)
+Java HotSpot(TM) 64-Bit Server VM (build 21.0.1+12-LTS-29, mixed mode, sharing)
+
+2024-10-24 08:06:31 info: Java installed on machine.
+2024-10-24 08:06:35 info: Embold extension version response:{"hasSupport":false,"version":"0.1.6","changeNotes":"<div> <p>Release Date: 09 Oct, 2023 <br><span>Bug fixes and improvements.</span></p> </div>"}
+2024-10-24 08:06:35 info: Current installed embold extension version : 0.1.8
+2024-10-24 08:06:35 info: Latest embold extension version on marketplace : 0.1.6
+2024-10-24 10:01:01 info: Congratulations, your extension "Embold" is now active!
+2024-10-24 10:01:01 info: tempDirectory : c:\Users\dokyd\.cursor\extensions\embold-vscode.embold-0.1.8\temp
+2024-10-24 10:01:07 info: Extraction complete for source: c:\Users\dokyd\.cursor\extensions\embold-vscode.embold-0.1.8\resources\embold-scanner-archive.zip, destination: c:\Users\dokyd\.cursor\extensions\embold-vscode.embold-0.1.8\temp
+2024-10-24 10:01:07 info: Extension installed on machine OS : win32
+2024-10-24 10:01:07 info: Fetched the issues from DB
+2024-10-24 10:01:08 info: Java version installed on machine : 
+java version "21.0.1" 2023-10-17 LTS
+Java(TM) SE Runtime Environment (build 21.0.1+12-LTS-29)
+Java HotSpot(TM) 64-Bit Server VM (build 21.0.1+12-LTS-29, mixed mode, sharing)
+
+2024-10-24 10:01:08 info: Java installed on machine.
+2024-10-24 10:01:17 info: Embold extension version response:{"hasSupport":false,"version":"0.1.6","changeNotes":"<div> <p>Release Date: 09 Oct, 2023 <br><span>Bug fixes and improvements.</span></p> </div>"}
+2024-10-24 10:01:17 info: Current installed embold extension version : 0.1.8
+2024-10-24 10:01:17 info: Latest embold extension version on marketplace : 0.1.6
+2024-10-24 10:47:14 info: Row(s) deleted
+2024-10-24 12:28:14 info: Congratulations, your extension "Embold" is now active!
+2024-10-24 12:28:14 info: tempDirectory : c:\Users\dokyd\.cursor\extensions\embold-vscode.embold-0.1.8\temp
+2024-10-24 12:28:18 info: Extraction complete for source: c:\Users\dokyd\.cursor\extensions\embold-vscode.embold-0.1.8\resources\embold-scanner-archive.zip, destination: c:\Users\dokyd\.cursor\extensions\embold-vscode.embold-0.1.8\temp
+2024-10-24 12:28:18 info: Extension installed on machine OS : win32
+2024-10-24 12:28:18 info: Fetched the issues from DB
+2024-10-24 12:28:18 info: Java version installed on machine : 
+java version "21.0.1" 2023-10-17 LTS
+Java(TM) SE Runtime Environment (build 21.0.1+12-LTS-29)
+Java HotSpot(TM) 64-Bit Server VM (build 21.0.1+12-LTS-29, mixed mode, sharing)
+
+2024-10-24 12:28:18 info: Java installed on machine.
+2024-10-24 12:28:19 info: Embold extension version response:{"hasSupport":false,"version":"0.1.6","changeNotes":"<div> <p>Release Date: 09 Oct, 2023 <br><span>Bug fixes and improvements.</span></p> </div>"}
+2024-10-24 12:28:19 info: Current installed embold extension version : 0.1.8
+2024-10-24 12:28:19 info: Latest embold extension version on marketplace : 0.1.6
+2024-10-24 14:46:25 info: Row(s) deleted

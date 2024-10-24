@@ -35,6 +35,7 @@ import {
   faTrash,
   faCalendarCheck,
   faCheckCircle,
+  faClipboardQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import SheetDataViewComponent from "./SheetDataView";
 import StatusViewComponent from "./StatusView";
@@ -119,9 +120,9 @@ const Dashboard = () => {
   const [sidebarClosed, setSidebarClosed] = useState(false);
 
   const [transactions, setTransactions] = useState([]);
-  const [showTransactionModal, setShowTransactionModal] = useState(false);
-  const [showCreateTransactionModal, setShowCreateTransactionModal] =
-    useState(false);
+  // const [showTransactionModal, setShowTransactionModal] = useState(false);
+  // const [showCreateTransactionModal, setShowCreateTransactionModal] =
+  //   useState(false);
 
   const [bookings, setBookings] = useState([]);
 
@@ -130,6 +131,15 @@ const Dashboard = () => {
   const [editingAcceptance, setEditingAcceptance] = useState(null);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [availableStaff, setAvailableStaff] = useState([]);
+
+  const [customerRequests, setCustomerRequests] = useState([]);
+
+  const [isCreateOrderModalVisible, setIsCreateOrderModalVisible] =
+    useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedConsultingStaff, setSelectedConsultingStaff] = useState(null);
+
+  const [formsWithOrders, setFormsWithOrders] = useState(new Set());
 
   const toggleLock = () => {
     setSidebarLocked(!sidebarLocked);
@@ -168,12 +178,14 @@ const Dashboard = () => {
           ordersResponse,
           servicesResponse,
           contractsResponse,
+          transactionsResponse,
         ] = await Promise.all([
           axios.get("http://localhost:8080/customers/fetchAll"),
           axios.get("http://localhost:8080/staffs/fetchAll"),
           axios.get("http://localhost:8080/orders/fetchAll"),
           axios.get("http://localhost:8080/services/fetchAll"),
           axios.get("http://localhost:8080/contracts/fetchAll"),
+          axios.get("http://localhost:8080/transaction/fetchAll"),
         ]);
 
         if (customersResponse.data.code === 9999) {
@@ -205,26 +217,17 @@ const Dashboard = () => {
         } else {
           setError("Failed to fetch contracts");
         }
+
+        if (transactionsResponse.data.code === 9999) {
+          setTransactions(transactionsResponse.data.result);
+        } else {
+          setError("Failed to fetch transactions");
+        }
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("An error occurred while fetching data");
       } finally {
         setLoading(false);
-      }
-    };
-
-    const fetchTransactions = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8080/transaction/fetchAll"
-        );
-        if (response.data.code === 9999) {
-          setTransactions(response.data.result);
-        } else {
-          console.warn("Failed to fetch transactions");
-        }
-      } catch (err) {
-        console.error("Error fetching transactions:", err);
       }
     };
 
@@ -284,11 +287,39 @@ const Dashboard = () => {
       }
     };
 
+    const fetchCustomerRequests = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/forms/fetchAll"
+        );
+        if (response.data.code === 9999) {
+          setCustomerRequests(response.data.result);
+
+          // Fetch orders to determine which forms have associated orders
+          const ordersResponse = await axios.get(
+            "http://localhost:8080/orders/fetchAll"
+          );
+          if (ordersResponse.data.code === 9999) {
+            const formIdsWithOrders = new Set(
+              ordersResponse.data.result
+                .filter((order) => order.form)
+                .map((order) => order.form.formId)
+            );
+            setFormsWithOrders(formIdsWithOrders);
+          }
+        } else {
+          console.warn("Failed to fetch customer requests");
+        }
+      } catch (err) {
+        console.error("Error fetching customer requests:", err);
+      }
+    };
+
     fetchData();
-    fetchTransactions();
     fetchBookings();
     fetchAcceptanceTests();
     fetchAvailableStaff();
+    fetchCustomerRequests();
   }, [navigate]);
 
   console.log("Rendering dashboard. Customers:", customers);
@@ -316,7 +347,7 @@ const Dashboard = () => {
       );
       if (response.data.code === 1000) {
         toast.success("Customer created successfully");
-        setCustomers([...customers, response.data.result]);
+        setCustomers([response.data.result, ...customers]); // Add new customer to the beginning of the array
         setShowAddCustomerForm(false);
         setNewCustomer({
           username: "",
@@ -352,7 +383,7 @@ const Dashboard = () => {
       );
       if (response.data.code === 1000) {
         toast.success("Staff created successfully");
-        setStaffs([...staffs, response.data.result]);
+        setStaffs([response.data.result, ...staffs]); // Add new staff to the beginning of the array
         setShowAddStaffForm(false);
         setNewStaff({
           username: "",
@@ -380,7 +411,7 @@ const Dashboard = () => {
       });
       if (response.data.code === 1000) {
         toast.success("Order created successfully");
-        setOrders([...orders, response.data.result]);
+        setOrders([response.data.result, ...orders]); // Add new order to the beginning of the array
         setShowAddOrderForm(false);
         setNewOrder({
           customer_id: "",
@@ -410,7 +441,7 @@ const Dashboard = () => {
       );
       if (response.data.code === 1000) {
         toast.success("Service created successfully");
-        setServices([...services, response.data.result]);
+        setServices([response.data.result, ...services]); // Add new service to the beginning of the array
         setShowAddServiceForm(false);
         setNewService({
           serviceName: "",
@@ -448,7 +479,7 @@ const Dashboard = () => {
 
       if (response.data.code === 1000) {
         toast.success("Contract created successfully");
-        setContracts([...contracts, response.data.result]);
+        setContracts([response.data.result, ...contracts]); // Add new contract to the beginning of the array
         setShowAddContractForm(false);
         setNewContract({
           orderId: "",
@@ -821,7 +852,7 @@ const Dashboard = () => {
                   customer.mail.toLowerCase().includes(searchLower))
               );
             })
-            .sort((a, b) => a.id - b.id)
+            .sort((a, b) => b.id - a.id) // Sort in descending order
             .map((customer) => (
               <tr key={customer.id}>
                 <td>{customer.id}</td>
@@ -884,6 +915,7 @@ const Dashboard = () => {
                 (staff.mail && staff.mail.toLowerCase().includes(searchLower))
               );
             })
+            .sort((a, b) => b.staffId - a.staffId) // Sort in descending order
             .map((staff) => (
               <tr key={staff.staffId}>
                 <td>{staff.staffId}</td>
@@ -944,6 +976,7 @@ const Dashboard = () => {
                 order.staff.role.toLowerCase().includes(searchLower)
               );
             })
+            .sort((a, b) => b.orderId - a.orderId) // Sort in descending order
             .map((order) => (
               <tr key={order.orderId}>
                 <td>{order.orderId}</td>
@@ -1001,6 +1034,7 @@ const Dashboard = () => {
                   service.serviceType.toLowerCase().includes(searchLower))
               );
             })
+            .sort((a, b) => b.serviceId - a.serviceId) // Sort in descending order
             .map((service) => (
               <tr key={service.serviceId}>
                 <td>{service.serviceId}</td>
@@ -1068,6 +1102,7 @@ const Dashboard = () => {
                   contract.description.toLowerCase().includes(searchLower))
               );
             })
+            .sort((a, b) => b.contractId - a.contractId) // Sort in descending order
             .map((contract) => (
               <tr key={contract.contractId}>
                 <td>{contract.contractId}</td>
@@ -1100,6 +1135,7 @@ const Dashboard = () => {
     </div>
   );
 
+  //render transactions
   const renderTransactions = () => (
     <div className="transactions-view">
       <div className="transactions-container">
@@ -1158,6 +1194,7 @@ const Dashboard = () => {
     </div>
   );
 
+  //delete transaction
   const handleDeleteTransaction = async (transactionId) => {
     if (window.confirm("Are you sure you want to delete this transaction?")) {
       try {
@@ -1181,12 +1218,14 @@ const Dashboard = () => {
     }
   };
 
+  //view transaction details
   const handleViewTransactionDetails = (transactionId) => {
     // Implement view transaction details functionality
     console.log("View transaction details for ID:", transactionId);
     // You might want to navigate to a detailed view or open a modal here
   };
 
+  //render overview
   const renderOverview = () => {
     console.log("Rendering overview");
     console.log("Customers:", customers);
@@ -1339,6 +1378,7 @@ const Dashboard = () => {
     </div>
   );
 
+  //render bookings
   const renderBookings = () => (
     <div className="table-container">
       {renderSearchBar()}
@@ -1366,6 +1406,7 @@ const Dashboard = () => {
                 booking.service.serviceName.toLowerCase().includes(searchLower)
               );
             })
+            .sort((a, b) => b.bookingServiceId - a.bookingServiceId) // Sort in descending order
             .map((booking) => (
               <tr key={booking.bookingServiceId}>
                 <td>{booking.bookingServiceId}</td>
@@ -1396,10 +1437,12 @@ const Dashboard = () => {
     </div>
   );
 
+  //view booking details
   const handleViewBookingDetails = (bookingId) => {
     navigate(`/booking/${bookingId}`);
   };
 
+  //render sidebar button
   const renderSidebarButton = (view, icon, text) => (
     <button
       className={`sidebar-button ${activeView === view ? "active" : ""}`}
@@ -1410,6 +1453,7 @@ const Dashboard = () => {
     </button>
   );
 
+  //create acceptance test
   const handleSubmitAcceptance = async (values) => {
     try {
       setLoading(true);
@@ -1448,6 +1492,7 @@ const Dashboard = () => {
     }
   };
 
+  //edit acceptance
   const handleEditAcceptance = (record) => {
     setEditingAcceptance({
       ...record,
@@ -1456,6 +1501,7 @@ const Dashboard = () => {
     setIsEditModalVisible(true);
   };
 
+  //edit acceptance submit
   const handleEditSubmit = async (values) => {
     try {
       setLoading(true);
@@ -1496,6 +1542,7 @@ const Dashboard = () => {
     }
   };
 
+  //render acceptance tests
   const renderAcceptanceTests = () => (
     <div className="table-container">
       {renderSearchBar()}
@@ -1582,6 +1629,173 @@ const Dashboard = () => {
     </div>
   );
 
+  //create order
+  const handleCreateOrder = async () => {
+    if (!selectedRequest || !selectedConsultingStaff) {
+      toast.error("Please select a consulting staff");
+      return;
+    }
+
+    try {
+      console.log(
+        "Attempting to create order with form ID:",
+        selectedRequest.formId
+      );
+
+      const response = await axios.post("http://localhost:8080/orders/create", {
+        form_id: selectedRequest.formId,
+        customer_id: selectedRequest.customer.id,
+        staff_id: selectedConsultingStaff,
+      });
+
+      if (response.data.code === 1000) {
+        toast.success("Order created successfully");
+        setOrders([...orders, response.data.result]);
+        setFormsWithOrders(
+          new Set(formsWithOrders).add(selectedRequest.formId)
+        );
+        setIsCreateOrderModalVisible(false);
+        setSelectedRequest(null);
+        setSelectedConsultingStaff(null);
+      } else if (response.data.code === 1038) {
+        console.warn("Order already exists for this form:", response.data);
+        toast.warning("An order has already been created for this request.");
+      } else {
+        console.error(
+          "Failed to create order. Server response:",
+          response.data
+        );
+        toast.error("Failed to create order");
+      }
+    } catch (err) {
+      console.error("Error creating order:", err);
+      console.error(
+        "Error details:",
+        err.response?.data || "No detailed error information"
+      );
+      if (err.response?.data?.code === 1038) {
+        toast.warning("An order has already been created for this request.");
+      } else {
+        toast.error(
+          `An error occurred while creating the order: ${err.message}`
+        );
+      }
+    }
+  };
+
+  //render customer requests
+  const renderCustomerRequests = () => (
+    <div className="table-container">
+      {renderSearchBar()}
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>Form ID</th>
+            <th>Customer Name</th>
+            <th>Area</th>
+            <th>Style</th>
+            <th>Stage</th>
+            <th>Contact Method</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {customerRequests
+            .filter((request) => {
+              if (!request) return false;
+              const searchLower = search.toLowerCase().trim();
+              return (
+                searchLower === "" ||
+                request.formId.toString().includes(searchLower) ||
+                request.customer.username.toLowerCase().includes(searchLower) ||
+                request.area.toLowerCase().includes(searchLower) ||
+                request.style.toLowerCase().includes(searchLower)
+              );
+            })
+            .sort((a, b) => b.formId - a.formId) // Sort in descending order
+            .map((request) => (
+              <tr key={request.formId}>
+                <td>{request.formId}</td>
+                <td>{request.customer.username}</td>
+                <td>{request.area}</td>
+                <td>{request.style}</td>
+                <td>{request.stage}</td>
+                <td>{request.contactMethod}</td>
+                <td>
+                  {formsWithOrders.has(request.formId) ? (
+                    <button
+                      onClick={() => handleViewOrder(request.formId)}
+                      className="view-order-btn"
+                    >
+                      View Order
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setSelectedRequest(request);
+                        setIsCreateOrderModalVisible(true);
+                      }}
+                      className="create-order-btn"
+                    >
+                      Create Order
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+
+      <Modal
+        title="Create Order"
+        visible={isCreateOrderModalVisible}
+        onCancel={() => {
+          setIsCreateOrderModalVisible(false);
+          setSelectedRequest(null);
+          setSelectedConsultingStaff(null);
+        }}
+        footer={[
+          <Button
+            key="cancel"
+            onClick={() => setIsCreateOrderModalVisible(false)}
+          >
+            Cancel
+          </Button>,
+          <Button key="create" type="primary" onClick={handleCreateOrder}>
+            Create Order
+          </Button>,
+        ]}
+      >
+        <p>Creating order for customer: {selectedRequest?.customer.username}</p>
+        <Select
+          style={{ width: "100%" }}
+          placeholder="Select a consulting staff"
+          onChange={(value) => setSelectedConsultingStaff(value)}
+        >
+          {staffs
+            .filter((staff) => staff.role === "Consulting Staff")
+            .map((staff) => (
+              <Option key={staff.staffId} value={staff.staffId}>
+                {staff.username} (ID: {staff.staffId})
+              </Option>
+            ))}
+        </Select>
+      </Modal>
+    </div>
+  );
+
+  //view order
+  const handleViewOrder = (formId) => {
+    const order = orders.find(
+      (order) => order.form && order.form.formId === formId
+    );
+    if (order) {
+      navigate(`/order/${order.orderId}`);
+    } else {
+      toast.error("Order not found");
+    }
+  };
+
   return (
     <div className="dashboard">
       <ToastContainer />
@@ -1616,6 +1830,11 @@ const Dashboard = () => {
           {renderSidebarButton("transactions", faExchangeAlt, "Transactions")}
           {renderSidebarButton("bookings", faCalendarCheck, "Bookings")}
           {renderSidebarButton("acceptanceTests", faCheckCircle, "Acceptance")}
+          {renderSidebarButton(
+            "customerRequests",
+            faClipboardQuestion,
+            "Customer Requests"
+          )}
         </div>
         <div className="sidebar-footer">
           <button
@@ -1685,6 +1904,8 @@ const Dashboard = () => {
             renderBookings()
           ) : activeView === "acceptanceTests" ? (
             renderAcceptanceTests()
+          ) : activeView === "customerRequests" ? (
+            renderCustomerRequests()
           ) : null}
         </div>
         {selectedCustomerId && (

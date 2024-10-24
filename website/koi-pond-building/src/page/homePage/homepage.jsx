@@ -26,6 +26,7 @@ import blog3 from "../koi_photo/pond/pond3.jpg";
 import avatarDung from "../koi_photo/member/member 1.jpg";
 import avatarPhat from "../koi_photo/member/member 2.jpg";
 import avatarTuan from "../koi_photo/member/member 3.png";
+import axios from "axios"; // Make sure to import axios
 
 function HomePage() {
   const navigate = useNavigate();
@@ -45,11 +46,12 @@ function HomePage() {
   const [showPopup, setShowPopup] = useState(false);
   const [formData, setFormData] = useState({
     location: "",
-    area: "",
+    area: "", // Changed from text input to dropdown
     style: "",
     stage: "",
-    contactMethod: ""
+    contactMethod: "",
   });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   console.log("da vao home");
   useEffect(() => {
@@ -105,6 +107,12 @@ function HomePage() {
       navigate(location.pathname, { replace: true });
     }
   }, [location.search, navigate]);
+
+  useEffect(() => {
+    // Check if the user is logged in
+    const token = localStorage.getItem("authToken");
+    setIsLoggedIn(!!token);
+  }, []);
 
   const loginClick = () => {
     navigate("/login");
@@ -192,24 +200,55 @@ function HomePage() {
       area: "",
       style: "",
       stage: "",
-      contactMethod: ""
+      contactMethod: "",
     });
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
+    setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the form data to your backend
-    console.log("Form submitted:", formData);
-    toast.success("Request submitted successfully!");
-    handleClosePopup();
+    try {
+      // Get the customerId from localStorage
+      const user = JSON.parse(localStorage.getItem("user"));
+      const customerId = user ? user.id : null;
+
+      if (!customerId) {
+        toast.error("User not found. Please log in again.");
+        return;
+      }
+
+      const requestData = {
+        customerId: customerId,
+        location: formData.location,
+        style: formData.style,
+        area: formData.area,
+        stage: formData.stage,
+        contactMethod: formData.contactMethod,
+      };
+
+      const response = await axios.post(
+        "http://localhost:8080/forms/create",
+        requestData
+      );
+
+      if (response.status === 1000 || response.status === 1005) {
+        console.log("Form submitted successfully:", response.data);
+        toast.success("Request submitted successfully!");
+        handleClosePopup();
+      } else {
+        throw new Error("Unexpected response status");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Failed to submit request. Please try again.");
+    }
   };
 
   return (
@@ -233,7 +272,11 @@ function HomePage() {
             <div className="hero-content">
               <h1>Create Your Dream Koi Pond</h1>
               <p>Expert design and construction for serene water gardens</p>
-              <button className="cta-button" onClick={handleGetRequest}>Get Request Now</button>
+              {isLoggedIn && (
+                <button className="cta-button" onClick={handleGetRequest}>
+                  Send Request Now
+                </button>
+              )}
             </div>
             <div className="slider-controls">
               <button onClick={prevSlide} className="slider-control prev">
@@ -522,22 +565,32 @@ function HomePage() {
                 placeholder="Project location"
                 required
               />
-              <input
-                type="text"
+              <select
                 name="area"
                 value={formData.area}
                 onChange={handleInputChange}
-                placeholder="Estimated construction area (sqm)"
                 required
-              />
-              <input
-                type="text"
+              >
+                <option value="">Select estimated construction area</option>
+                <option value="50m2 - 100m2">50m² - 100m²</option>
+                <option value="100m2 - 200m2">100m² - 200m²</option>
+                <option value="200m2 - 300m2">200m² - 300m²</option>
+                <option value="300m2 - 500m2">300m² - 500m²</option>
+                <option value="500m2 - 1000m2">500m² - 1000m²</option>
+                <option value="Custom">Custom</option>
+              </select>
+              <select
                 name="style"
                 value={formData.style}
                 onChange={handleInputChange}
-                placeholder="Preferred style"
                 required
-              />
+              >
+                <option value="">Select preferred style</option>
+                <option value="Japanese">Japanese</option>
+                <option value="Modern">Modern</option>
+                <option value="Minimalist">Minimalist</option>
+                <option value="Custom">Custom</option>
+              </select>
               <select
                 name="stage"
                 value={formData.stage}
@@ -563,7 +616,9 @@ function HomePage() {
               </select>
               <button type="submit">Submit Request</button>
             </form>
-            <button className="close-popup" onClick={handleClosePopup}>×</button>
+            <button className="close-popup" onClick={handleClosePopup}>
+              ×
+            </button>
           </div>
         </div>
       )}

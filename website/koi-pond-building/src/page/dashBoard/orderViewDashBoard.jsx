@@ -38,6 +38,7 @@ const OrderViewDashboard = () => {
   const [showCreateTransactionModal, setShowCreateTransactionModal] =
     useState(false);
   const [activeTab, setActiveTab] = useState("status");
+  const [formData, setFormData] = useState(null);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -61,6 +62,7 @@ const OrderViewDashboard = () => {
         ]);
 
         setOrder(orderResponse.data);
+        setFormData(orderResponse.data.form);
 
         // Set current staff information from the order data
         if (orderResponse.data && orderResponse.data.staff) {
@@ -754,6 +756,18 @@ const OrderViewDashboard = () => {
             <InfoRow label="IMAGE DATA" value={contract.imageData} />
           </div>
         ))}
+
+        {/* Add this new section for form data */}
+        {formData && (
+          <div className="info-section">
+            <h2>Form Information</h2>
+            <InfoRow label="FORM ID" value={formData.formId} />
+            <InfoRow label="AREA" value={formData.area} />
+            <InfoRow label="STYLE" value={formData.style} />
+            <InfoRow label="STAGE" value={formData.stage} />
+            <InfoRow label="CONTACT METHOD" value={formData.contactMethod} />
+          </div>
+        )}
       </div>
       <div className="profile-actions">
         <button
@@ -762,9 +776,11 @@ const OrderViewDashboard = () => {
         >
           BACK TO DASHBOARD
         </button>
-        <button onClick={handleUpdateEndDate} className="update-end-date-btn">
-          UPDATE END DATE
-        </button>
+        {!order.end_date && (
+          <button onClick={handleUpdateEndDate} className="update-end-date-btn">
+            UPDATE END DATE
+          </button>
+        )}
       </div>
       {showStatusModal && (
         <StatusModal statuses={statuses} onClose={toggleStatusModal} />

@@ -66,7 +66,10 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
           console.warn("Failed to fetch contracts");
         }
       } catch (error) {
-        console.error("Error fetching contracts, statuses, and transactions:", error);
+        console.error(
+          "Error fetching contracts, statuses, and transactions:",
+          error
+        );
       }
     };
 
@@ -75,10 +78,15 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
 
   const fetchTransactions = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/transaction/fetchAll/order/${order.orderId}`);
+      const response = await axios.get(
+        `http://localhost:8080/transaction/fetchAll/order/${order.orderId}`
+      );
       if (response.data.code === 9999) {
-        const updatedTransactions = response.data.result.map(transaction => {
-          if (transaction.depositMethod === 'vnpay' || transaction.depositMethod === 'cash') {
+        const updatedTransactions = response.data.result.map((transaction) => {
+          if (
+            transaction.depositMethod === "vnpay" ||
+            transaction.depositMethod === "cash"
+          ) {
             handleTransactionDone(transaction);
           }
           return transaction;
@@ -94,45 +102,59 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
 
   const handleTransactionDone = async (transaction) => {
     try {
-      const response = await axios.put(`http://localhost:8080/transaction/update/${transaction.transactionId}`, {
-        ...transaction,
-        status: 'COMPLETED'
-      });
-      if (response.data.code === 1034) { // TRANSACTION_DONE
-        toast.success(`Transaction ${transaction.transactionId} completed successfully!`);
+      const response = await axios.put(
+        `http://localhost:8080/transaction/update/${transaction.transactionId}`,
+        {
+          ...transaction,
+          status: "COMPLETED",
+        }
+      );
+      if (response.data.code === 1034) {
+        // TRANSACTION_DONE
+        toast.success(
+          `Transaction ${transaction.transactionId} completed successfully!`
+        );
         // You might want to update the local state or refetch transactions here
         await fetchTransactions();
       }
     } catch (error) {
       console.error("Error updating transaction status:", error);
-      toast.error(`Failed to update transaction ${transaction.transactionId} status`);
+      toast.error(
+        `Failed to update transaction ${transaction.transactionId} status`
+      );
     }
   };
 
   const handlePaymentMethodChange = async (transactionId, newMethod) => {
     try {
       let response;
-      if (newMethod === 'cash') {
-        response = await axios.get(`http://localhost:8080/transaction/update/payment/cash/${transactionId}`);
-      } else if (newMethod === 'vnpay') {
+      if (newMethod === "cash") {
+        response = await axios.get(
+          `http://localhost:8080/transaction/update/payment/cash/${transactionId}`
+        );
+      } else if (newMethod === "vnpay") {
         // Keep the existing VNPay logic
-        response = await axios.post('http://localhost:8080/api/vnpay/test-payment', {
-          transactionId,
-          deposit: transactions.find(t => t.transactionId === transactionId)?.deposit
-        });
+        response = await axios.post(
+          "http://localhost:8080/api/vnpay/test-payment",
+          {
+            transactionId,
+            deposit: transactions.find((t) => t.transactionId === transactionId)
+              ?.deposit,
+          }
+        );
         if (response.data.code === 6666) {
-          window.open(response.data.result, '_blank');
+          window.open(response.data.result, "_blank");
           return; // Exit the function as we don't need to update the UI immediately for VNPay
         }
       } else {
-        throw new Error('Unsupported payment method');
+        throw new Error("Unsupported payment method");
       }
 
       if (response.data.code === 7777 || response.data.code === 9999) {
         toast.success(`Payment method updated to ${newMethod}`);
         // Update the local state
-        setTransactions(prevTransactions => 
-          prevTransactions.map(transaction => 
+        setTransactions((prevTransactions) =>
+          prevTransactions.map((transaction) =>
             transaction.transactionId === transactionId
               ? { ...transaction, ...response.data.result }
               : transaction
@@ -281,19 +303,22 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
       setShowRejectModal(false);
       setRejectReason("");
       setSelectedStatus(null);
-      
+
       // Update the status in the local state
-      setStatuses(prevStatuses => 
-        prevStatuses.map(status => 
+      setStatuses((prevStatuses) =>
+        prevStatuses.map((status) =>
           status.statusId === selectedStatus.statusId
-            ? { ...status, complete: false, checkDate: new Date().toISOString() }
+            ? {
+                ...status,
+                complete: false,
+                checkDate: new Date().toISOString(),
+              }
             : status
         )
       );
-      
+
       // Optionally, you might want to update the backend here as well
       // await updateStatusInBackend(selectedStatus.statusId, false);
-
     } catch (error) {
       console.error("Error sending rejection email:", error);
       toast.error("Failed to send rejection email. Please try again.");
@@ -302,20 +327,26 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
 
   const handleVNPayment = async (transactionId, deposit) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/vnpay/test-payment', {
-        transactionId,
-        deposit
-      });
+      const response = await axios.post(
+        "http://localhost:8080/api/vnpay/test-payment",
+        {
+          transactionId,
+          deposit,
+        }
+      );
 
       if (response.data.code === 6666) {
         // Open the payment URL in a new window
-        const paymentWindow = window.open(response.data.result, '_blank');
-        
+        const paymentWindow = window.open(response.data.result, "_blank");
+
         // Check the transaction status periodically
         const checkTransactionStatus = setInterval(async () => {
           try {
-            const statusResponse = await axios.get(`http://localhost:8080/transaction/status/${transactionId}`);
-            if (statusResponse.data.code === 1034) { // TRANSACTION_DONE
+            const statusResponse = await axios.get(
+              `http://localhost:8080/transaction/status/${transactionId}`
+            );
+            if (statusResponse.data.code === 1034) {
+              // TRANSACTION_DONE
               clearInterval(checkTransactionStatus);
               paymentWindow.close();
               toast.success("Payment completed successfully!");
@@ -342,12 +373,22 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
 
   const handleImageDownload = (imageUrl, fileName) => {
     // Create a temporary anchor element
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = imageUrl;
     link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  // Add this function at the beginning of your component, after the state declarations
+  const isWithinSevenDays = (endDate) => {
+    if (!endDate) return false;
+    const end = new Date(endDate);
+    const now = new Date();
+    const diffTime = now - end;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays <= 7;
   };
 
   return (
@@ -396,7 +437,10 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
                 download={`design_${updatedOrder.design.designId}`}
                 onClick={(e) => {
                   e.preventDefault();
-                  handleImageDownload(updatedOrder.design.imageData, `design_${updatedOrder.design.designId}`);
+                  handleImageDownload(
+                    updatedOrder.design.imageData,
+                    `design_${updatedOrder.design.designId}`
+                  );
                 }}
               >
                 View file
@@ -428,7 +472,10 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
                   download={`contract_${contract.contractId}`}
                   onClick={(e) => {
                     e.preventDefault();
-                    handleImageDownload(contract.imageData, `contract_${contract.contractId}`);
+                    handleImageDownload(
+                      contract.imageData,
+                      `contract_${contract.contractId}`
+                    );
                   }}
                 >
                   View file
@@ -450,17 +497,36 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
                 {statuses.map((status, index) => (
                   <div key={status.statusId} className="info-item status-item">
                     <h4>Status {index + 1}</h4>
-                    <p><strong>Description:</strong> {status.statusDescription}</p>
-                    <p><strong>Date:</strong> {new Date(status.statusDate).toLocaleString()}</p>
-                    <p><strong>Staff:</strong> {status.staff.username} ({status.staff.role})</p>
-                    <p><strong>Complete:</strong> {status.complete ? "Yes" : "No"}</p>
-                    <p><strong>Updates:</strong> {status.numberOfUpdate}</p>
+                    <p>
+                      <strong>Description:</strong> {status.statusDescription}
+                    </p>
+                    <p>
+                      <strong>Date:</strong>{" "}
+                      {new Date(status.statusDate).toLocaleString()}
+                    </p>
+                    <p>
+                      <strong>Staff:</strong> {status.staff.username} (
+                      {status.staff.role})
+                    </p>
+                    <p>
+                      <strong>Complete:</strong>{" "}
+                      {status.complete ? "Yes" : "No"}
+                    </p>
+                    <p>
+                      <strong>Updates:</strong> {status.numberOfUpdate}
+                    </p>
                     {!status.complete && (
                       <div className="action-buttons">
-                        <button onClick={() => handleAccept(status.statusId)} className="action-btn accept-btn">
+                        <button
+                          onClick={() => handleAccept(status.statusId)}
+                          className="action-btn accept-btn"
+                        >
                           Accept
                         </button>
-                        <button onClick={() => handleReject(status)} className="action-btn reject-btn">
+                        <button
+                          onClick={() => handleReject(status)}
+                          className="action-btn reject-btn"
+                        >
                           Reject
                         </button>
                       </div>
@@ -479,18 +545,48 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
           <div className="horizontal-scroll-container">
             <div className="horizontal-scroll-content transaction-container">
               {transactions.map((transaction) => (
-                <div key={transaction.transactionId} className="info-item transaction-item">
+                <div
+                  key={transaction.transactionId}
+                  className="info-item transaction-item"
+                >
                   <h4>Transaction {transaction.transactionId}</h4>
-                  <p><strong>Amount:</strong> {transaction.deposit.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
-                  <p><strong>Description:</strong> {transaction.depositDescription}</p>
-                  <p><strong>Method:</strong> {transaction.depositMethod || 'Not specified'}</p>
-                  <p><strong>Date:</strong> {transaction.depositDate ? new Date(transaction.depositDate).toLocaleString() : 'N/A'}</p>
-                  <p><strong>By:</strong> {transaction.depositPerson.fullName}</p>
-                  <p><strong>Transaction Number:</strong> {transaction.transactionNumber || 'N/A'}</p>
+                  <p>
+                    <strong>Amount:</strong>{" "}
+                    {transaction.deposit.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </p>
+                  <p>
+                    <strong>Description:</strong>{" "}
+                    {transaction.depositDescription}
+                  </p>
+                  <p>
+                    <strong>Method:</strong>{" "}
+                    {transaction.depositMethod || "Not specified"}
+                  </p>
+                  <p>
+                    <strong>Date:</strong>{" "}
+                    {transaction.depositDate
+                      ? new Date(transaction.depositDate).toLocaleString()
+                      : "N/A"}
+                  </p>
+                  <p>
+                    <strong>By:</strong> {transaction.depositPerson.fullName}
+                  </p>
+                  <p>
+                    <strong>Transaction Number:</strong>{" "}
+                    {transaction.transactionNumber || "N/A"}
+                  </p>
                   {!transaction.depositMethod && (
                     <div className="action-buttons">
-                      <button 
-                        onClick={() => handlePaymentMethodChange(transaction.transactionId, 'vnpay')}
+                      <button
+                        onClick={() =>
+                          handlePaymentMethodChange(
+                            transaction.transactionId,
+                            "vnpay"
+                          )
+                        }
                         className="action-btn vnpay-btn"
                       >
                         Pay with VNPay
@@ -505,46 +601,76 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
           <p>No transaction information available</p>
         )}
 
-        {isEditing ? (
-          <form onSubmit={handleSubmit}>
-            <p>
-              <strong>Rating:</strong> {renderStars(rating, setRating)}
-            </p>
-            <textarea
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder="Enter your feedback"
-            />
-            <button type="submit" className="submit-detail-btn">
-              Submit
-            </button>
-            <button
-              type="button"
-              className="cancel-btn"
-              onClick={() => setIsEditing(false)}
-            >
-              Cancel
-            </button>
-          </form>
-        ) : (
-          <>
-            <p>
-              <strong>Rating:</strong> {renderStars(updatedOrder.rating)}
-            </p>
-            <p>
-              <strong>Feedback:</strong>{" "}
-              {updatedOrder.feedback || "No feedback provided"}
-            </p>
-            {updatedOrder.feedback_date && (
+        {updatedOrder.end_date ? (
+          isWithinSevenDays(updatedOrder.end_date) ? (
+            <>
+              {isEditing ? (
+                <form onSubmit={handleSubmit}>
+                  <p>
+                    <strong>Rating:</strong> {renderStars(rating, setRating)}
+                  </p>
+                  <textarea
+                    value={feedback}
+                    onChange={(e) => setFeedback(e.target.value)}
+                    placeholder="Enter your feedback"
+                  />
+                  <button type="submit" className="submit-detail-btn">
+                    Submit
+                  </button>
+                  <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={() => setIsEditing(false)}
+                  >
+                    Cancel
+                  </button>
+                </form>
+              ) : (
+                <>
+                  <p>
+                    <strong>Rating:</strong> {renderStars(updatedOrder.rating)}
+                  </p>
+                  <p>
+                    <strong>Feedback:</strong>{" "}
+                    {updatedOrder.feedback || "No feedback provided"}
+                  </p>
+                  {updatedOrder.feedback_date && (
+                    <p>
+                      <strong>Feedback Date:</strong>{" "}
+                      {new Date(updatedOrder.feedback_date).toLocaleString()}
+                    </p>
+                  )}
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="edit-btn"
+                  >
+                    Edit Rating & Feedback
+                  </button>
+                </>
+              )}
+            </>
+          ) : (
+            <>
               <p>
-                <strong>Feedback Date:</strong>{" "}
-                {new Date(updatedOrder.feedback_date).toLocaleString()}
+                <strong>Rating:</strong> {renderStars(updatedOrder.rating)}
               </p>
-            )}
-            <button onClick={() => setIsEditing(true)} className="edit-btn">
-              Edit Rating & Feedback
-            </button>
-          </>
+              <p>
+                <strong>Feedback:</strong>{" "}
+                {updatedOrder.feedback || "No feedback provided"}
+              </p>
+              {updatedOrder.feedback_date && (
+                <p>
+                  <strong>Feedback Date:</strong>{" "}
+                  {new Date(updatedOrder.feedback_date).toLocaleString()}
+                </p>
+              )}
+              <p>The period for editing rating and feedback has expired.</p>
+            </>
+          )
+        ) : (
+          <p>
+            Rating and feedback will be available once the order is completed.
+          </p>
         )}
 
         <button onClick={onClose} className="close-button">
