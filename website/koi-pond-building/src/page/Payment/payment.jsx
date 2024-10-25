@@ -28,45 +28,39 @@ const Payment = () => {
         return;
       }
 
-      try {
-        const userData = JSON.parse(userString);
-        const customerId = userData.id;
+      const userData = JSON.parse(userString);
+      const customerId = userData.id;
 
-        if (!customerId) {
-          console.error("No customer ID found in user data");
-          toast.error("Invalid user data. Please log in again.");
-          return;
-        }
-
-        const response = await axios.get(
-          `http://localhost:8080/customers/${customerId}`
-        );
-        setCustomer(response.data);
-        setAddress(response.data.address);
-        setFullName(response.data.fullName);
-        setPhoneNumber(response.data.phone);
-        setAvailablePoints(response.data.point || 0); // Set available points
-      } catch (error) {
-        console.error("Error fetching customer data:", error);
-        toast.error("Error loading customer information");
+      if (!customerId) {
+        console.error("No customer ID found in user data");
+        toast.error("Invalid user data. Please log in again.");
+        return;
       }
+
+      const response = await axios.get(
+        `http://localhost:8080/customers/${customerId}`
+      );
+      setCustomer(response.data);
+      setAddress(response.data.address);
+      setFullName(response.data.fullName);
+      setPhoneNumber(response.data.phone);
+      setAvailablePoints(response.data.point || 0); // Set available points
     };
 
     const fetchSelectedService = () => {
       const serviceData = localStorage.getItem("selectedService");
-      if (serviceData) {
+      if (serviceData && !selectedService) {
         const parsedService = JSON.parse(serviceData);
-        console.log("Fetched service data:", parsedService);
         setSelectedService(parsedService);
-      } else {
-        console.log("No service data found in localStorage");
+        console.log("Fetched service data:", parsedService); // Log only once
       }
     };
 
     fetchCustomerData();
     fetchSelectedService();
+  }, []); // Empty dependency array to run only once on component mount
 
-    // Add this to calculate the discounted price whenever selectedService or usingPoint changes
+  useEffect(() => {
     if (selectedService) {
       const newDiscountedPrice = Math.max(
         selectedService.price - pointToVND(usingPoint),
@@ -78,7 +72,7 @@ const Payment = () => {
     if (discountedPrice === 0 && paymentMethod === "VNPay") {
       setPaymentMethod("COD");
     }
-  }, [selectedService, usingPoint, discountedPrice]);
+  }, [selectedService, usingPoint, discountedPrice, paymentMethod]);
 
   const handlePlaceOrder = async () => {
     if (!customer || !selectedService) {

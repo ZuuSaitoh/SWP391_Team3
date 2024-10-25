@@ -1740,6 +1740,13 @@ const Dashboard = () => {
                       Create Order
                     </button>
                   )}
+                  <button
+                    onClick={() => handleDeleteForm(request.formId)}
+                    className="delete-form-btn"
+                    disabled={formsWithOrders.has(request.formId)} // Disable if order exists
+                  >
+                    Delete Form
+                  </button>
                 </td>
               </tr>
             ))}
@@ -1793,6 +1800,28 @@ const Dashboard = () => {
       navigate(`/order/${order.orderId}`);
     } else {
       toast.error("Order not found");
+    }
+  };
+
+  // Add this function to handle form deletion
+  const handleDeleteForm = async (formId) => {
+    if (window.confirm("Are you sure you want to delete this form?")) {
+      try {
+        const response = await axios.delete(
+          `http://localhost:8080/forms/delete/${formId}`
+        );
+        if (response.data.code === 3333) {
+          toast.success("Form deleted successfully");
+          setCustomerRequests(
+            customerRequests.filter((request) => request.formId !== formId)
+          );
+        } else {
+          toast.error("Failed to delete form");
+        }
+      } catch (err) {
+        console.error("Error deleting form:", err);
+        toast.error("An error occurred while deleting the form");
+      }
     }
   };
 

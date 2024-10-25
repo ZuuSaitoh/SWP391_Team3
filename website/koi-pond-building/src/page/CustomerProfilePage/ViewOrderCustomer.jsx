@@ -16,6 +16,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
+  const [acceptanceTests, setAcceptanceTests] = useState([]);
 
   useEffect(() => {
     console.log("Statuses state updated:", statuses);
@@ -41,6 +42,21 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
       setIsLoading(false);
     }
   }, [order.orderId]);
+
+  const fetchAcceptanceTests = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/acceptancetests/fetchAll/order/${order.orderId}`
+      );
+      if (response.data.code === 9999) {
+        setAcceptanceTests(response.data.result);
+      } else {
+        console.warn("Failed to fetch acceptance tests");
+      }
+    } catch (error) {
+      console.error("Error fetching acceptance tests:", error);
+    }
+  };
 
   useEffect(() => {
     console.log("ViewOrderCustomer useEffect triggered");
@@ -74,6 +90,14 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
     };
 
     fetchContractsAndStatusesAndTransactions();
+  }, [order, fetchStatuses]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchAcceptanceTests(); // Fetch acceptance tests
+    };
+
+    fetchData();
   }, [order, fetchStatuses]);
 
   const fetchTransactions = async () => {
@@ -431,7 +455,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
               {updatedOrder.design.designVersion}
             </p>
             <p>
-              <strong>Image Data:</strong>{" "}
+              <strong>File: </strong>{" "}
               <a
                 href={updatedOrder.design.imageData}
                 download={`design_${updatedOrder.design.designId}`}
@@ -466,7 +490,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
                 <strong>Description:</strong> {contract.description}
               </p>
               <p>
-                <strong>Image Data:</strong>{" "}
+                <strong>File:</strong>{" "}
                 <a
                   href={contract.imageData}
                   download={`contract_${contract.contractId}`}
@@ -485,6 +509,42 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
           ))
         ) : (
           <p>No contract information available</p>
+        )}
+
+        <h3>Acceptance Information</h3>
+        {acceptanceTests.length > 0 ? (
+          acceptanceTests.map((test) => (
+            <div key={test.acceptanceTestId}>
+              <p>
+                <strong>Acceptance Test ID:</strong> {test.acceptanceTestId}
+              </p>
+              <p>
+                <strong>Description:</strong> {test.description}
+              </p>
+              <p>
+                <strong>Upload Date:</strong>{" "}
+                {new Date(test.finishDate).toLocaleString()}
+              </p>
+              <p>
+                <strong>File: </strong>{" "}
+                <a
+                  href={test.imageData}
+                  download={`acceptance_${test.acceptanceTestId}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleImageDownload(
+                      test.imageData,
+                      `acceptance_${test.acceptanceTestId}`
+                    );
+                  }}
+                >
+                  View file
+                </a>
+              </p>
+            </div>
+          ))
+        ) : (
+          <p>No acceptance information available</p>
         )}
 
         <h3>Status Information</h3>

@@ -215,7 +215,6 @@ function HomePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Get the customerId from localStorage
       const user = JSON.parse(localStorage.getItem("user"));
       const customerId = user ? user.id : null;
 
@@ -238,7 +237,7 @@ function HomePage() {
         requestData
       );
 
-      if (response.status === 1000 || response.status === 1005) {
+      if (response.data.code === 1000 || response.data.code === 1005) {
         console.log("Form submitted successfully:", response.data);
         toast.success("Request submitted successfully!");
         handleClosePopup();
@@ -572,11 +571,11 @@ function HomePage() {
                 required
               >
                 <option value="">Select estimated construction area</option>
-                <option value="50m2 - 100m2">50m² - 100m²</option>
-                <option value="100m2 - 200m2">100m² - 200m²</option>
-                <option value="200m2 - 300m2">200m² - 300m²</option>
-                <option value="300m2 - 500m2">300m² - 500m²</option>
-                <option value="500m2 - 1000m2">500m² - 1000m²</option>
+                <option value="50m2 - 100m2">50m2 - 100m2</option>
+                <option value="100m2 - 200m2">100m2 - 200m2</option>
+                <option value="200m2 - 300m2">200m2 - 300m2</option>
+                <option value="300m2 - 500m2">300m2 - 500m2</option>
+                <option value="500m2 - 1000m2">500m2 - 1000m2</option>
                 <option value="Custom">Custom</option>
               </select>
               <select
