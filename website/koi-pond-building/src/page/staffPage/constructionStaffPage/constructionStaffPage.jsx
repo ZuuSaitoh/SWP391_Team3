@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table, Modal, Form, Input, Image, Tabs, message } from "antd";
+import { Button, Table, Modal, Tabs, message } from "antd";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
 import { useNavigate } from "react-router-dom";
 
 function ConstructionStaffPage() {
-  const [orders, setOrders] = useState([]);
   const [bookings, setBookings] = useState([]);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [statusModalVisible, setStatusModalVisible] = useState(false);
   const [staffStatuses, setStaffStatuses] = useState([]);
   const [updateStatusModalVisible, setUpdateStatusModalVisible] =
@@ -17,29 +14,6 @@ function ConstructionStaffPage() {
 
   const staffId = localStorage.getItem("staffId");
   const navigate = useNavigate();
-
-  const fetchOrders = async () => {
-    try {
-      const response = await api.get(
-        `http://localhost:8080/orders/staff/fetchAll/${staffId}`
-      );
-      setOrders(response.data.result);
-    } catch (err) {
-      console.error(err);
-      toast.error(err.response ? err.response.data : "An error occurred");
-    }
-  };
-
-  const handleViewOrderDetail = async (orderId) => {
-    try {
-      const response = await api.get(`http://localhost:8080/orders/${orderId}`);
-      setSelectedOrder(response.data);
-      setIsModalVisible(true);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to fetch order details");
-    }
-  };
 
   const fetchStatusesByStaffId = async () => {
     try {
@@ -94,12 +68,12 @@ function ConstructionStaffPage() {
       const response = await api.put(
         `http://localhost:8080/bookingservices/updateStatus/${bookingId}`,
         {
-          status: true, // or whatever data the server expects
+          status: true,
         }
       );
       if (response.data.code === 1000) {
         message.success("Booking status updated successfully");
-        fetchBookings(); // Refresh the bookings list
+        fetchBookings();
       } else {
         message.error("Failed to update booking status");
       }
@@ -126,19 +100,22 @@ function ConstructionStaffPage() {
         );
         toast.success("Status updated successfully");
       } else if (response.data.code === 1027) {
-        toast.error("You can't change the status because this status has been set to done!");
+        toast.error(
+          "You can't change the status because this status has been set to done!"
+        );
       } else {
         toast.error("Failed to update status");
       }
     } catch (err) {
       console.error("Error updating status:", err);
-      toast.error("Error updating status: " + (err.response?.data?.message || err.message));
+      toast.error(
+        "Error updating status: " + (err.response?.data?.message || err.message)
+      );
     }
   };
 
   useEffect(() => {
     if (staffId) {
-      fetchOrders();
       fetchBookings();
     } else {
       toast.error("Staff ID not found. Please log in again.");
@@ -147,33 +124,44 @@ function ConstructionStaffPage() {
 
   const columns = [
     {
-      title: "Order ID",
-      dataIndex: "orderId",
-      key: "orderId",
+      title: "Booking ID",
+      dataIndex: "bookingServiceId",
+      key: "bookingServiceId",
     },
     {
       title: "Customer",
-      dataIndex: ["customer", "username"],
-      key: "customer",
+      dataIndex: ["customer", "fullName"],
+      key: "customerName",
     },
     {
-      title: "Order Date",
-      dataIndex: "order_date",
-      key: "order_date",
+      title: "Service",
+      dataIndex: ["service", "serviceName"],
+      key: "serviceName",
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (price) => `${price.toFixed(2)}VND`,
+    },
+    {
+      title: "Booking Date",
+      dataIndex: "bookingDate",
+      key: "bookingDate",
       render: (date) => new Date(date).toLocaleString(),
     },
     {
-      title: "End Date",
-      dataIndex: "end_date",
-      key: "end_date",
+      title: "Finish Date",
+      dataIndex: "finishDate",
+      key: "finishDate",
       render: (date) =>
         date ? new Date(date).toLocaleString() : "Not completed",
     },
     {
-      title: "Rating",
-      dataIndex: "rating",
-      key: "rating",
-      render: (rating) => rating || "Not rated",
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (status ? "Completed" : "Pending"),
     },
     {
       title: "Feedback",
@@ -185,8 +173,14 @@ function ConstructionStaffPage() {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <Button onClick={() => handleViewOrderDetail(record.orderId)}>
-          View Order Detail
+        <Button
+          onClick={() => {
+            setSelectedBooking(record);
+            setUpdateStatusModalVisible(true);
+          }}
+          disabled={record.status}
+        >
+          Update Status
         </Button>
       ),
     },
@@ -319,82 +313,16 @@ function ConstructionStaffPage() {
     navigate("/");
   };
 
-  const renderOrderDetails = () => {
-    if (!selectedOrder) return null;
-
-    return (
-      <div>
-        <h2>Order Details</h2>
-        <p>
-          <strong>Order ID:</strong> {selectedOrder.orderId}
-        </p>
-        <p>
-          <strong>Customer:</strong> {selectedOrder.customer.username}
-        </p>
-        <p>
-          <strong>Staff:</strong> {selectedOrder.staff.username}
-        </p>
-        <p>
-          <strong>Order Date:</strong>{" "}
-          {new Date(selectedOrder.order_date).toLocaleString()}
-        </p>
-        <p>
-          <strong>End Date:</strong>{" "}
-          {selectedOrder.end_date
-            ? new Date(selectedOrder.end_date).toLocaleString()
-            : "Not completed"}
-        </p>
-        <p>
-          <strong>Rating:</strong> {selectedOrder.rating || "Not rated"}
-        </p>
-        <p>
-          <strong>Feedback:</strong> {selectedOrder.feedback || "No feedback"}
-        </p>
-        <p>
-          <strong>Feedback Date:</strong>{" "}
-          {selectedOrder.feedback_date
-            ? new Date(selectedOrder.feedback_date).toLocaleString()
-            : "N/A"}
-        </p>
-
-        <h3>Customer Details</h3>
-        <p>
-          <strong>Name:</strong> {selectedOrder.customer.fullName}
-        </p>
-        <p>
-          <strong>Email:</strong> {selectedOrder.customer.mail}
-        </p>
-        <p>
-          <strong>Address:</strong> {selectedOrder.customer.address}
-        </p>
-        <p>
-          <strong>Phone:</strong> {selectedOrder.customer.phone}
-        </p>
-
-        <h3>Staff Details</h3>
-        <p>
-          <strong>Name:</strong> {selectedOrder.staff.fullName}
-        </p>
-        <p>
-          <strong>Email:</strong> {selectedOrder.staff.mail}
-        </p>
-        <p>
-          <strong>Role:</strong> {selectedOrder.staff.role}
-        </p>
-      </div>
-    );
+  const handleLogout = () => {
+    // Clear the staffId from localStorage
+    localStorage.removeItem("staffId");
+    navigate("/login-staff"); // Adjust this path as needed
+    toast.success("Logged out successfully");
   };
 
   const items = [
     {
       key: "1",
-      label: "Orders",
-      children: (
-        <Table dataSource={orders} columns={columns} rowKey="orderId" />
-      ),
-    },
-    {
-      key: "2",
       label: "Bookings",
       children: (
         <Table
@@ -418,20 +346,18 @@ function ConstructionStaffPage() {
         <Button onClick={backToHomepage} style={{ marginRight: "10px" }}>
           Return to Homepage
         </Button>
-        <Button onClick={fetchStatusesByStaffId}>View My Statuses</Button>
+        <Button
+          onClick={fetchStatusesByStaffId}
+          style={{ marginRight: "10px" }}
+        >
+          View My Statuses
+        </Button>
+        <Button onClick={handleLogout} type="primary" danger>
+          Logout
+        </Button>
       </div>
 
       <Tabs defaultActiveKey="1" items={items} />
-
-      <Modal
-        title="Order Details"
-        open={isModalVisible}
-        onOk={() => setIsModalVisible(false)}
-        onCancel={() => setIsModalVisible(false)}
-        width={700}
-      >
-        {renderOrderDetails()}
-      </Modal>
 
       <Modal
         title="My Statuses"

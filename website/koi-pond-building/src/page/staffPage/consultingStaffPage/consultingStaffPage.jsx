@@ -18,6 +18,7 @@ import {
   UploadOutlined,
   HomeOutlined,
   FileAddOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import { toast, ToastContainer } from "react-toastify";
 import api from "../../../config/axios";
@@ -135,10 +136,12 @@ function ConsultingStaffPage() {
   const fetchAvailableStaff = async () => {
     try {
       const response = await api.get("/staffs/fetchAll");
-        setAvailableStaff(response.data.result);
+      setAvailableStaff(response.data.result);
     } catch (err) {
       console.error("Error fetching staff:", err);
-      toast.error("Error fetching staff: " + (err.response?.data?.message || err.message));
+      toast.error(
+        "Error fetching staff: " + (err.response?.data?.message || err.message)
+      );
     }
   };
   useEffect(() => {
@@ -329,7 +332,6 @@ function ConsultingStaffPage() {
       ),
     },
   ];
-
 
   const renderOrderDetails = () => {
     if (!selectedOrder) return null;
@@ -545,7 +547,11 @@ function ConsultingStaffPage() {
       setLoading(true);
       let imageUrl = "";
 
-      if (values.imageData && values.imageData.length > 0 && values.imageData[0].originFileObj) {
+      if (
+        values.imageData &&
+        values.imageData.length > 0 &&
+        values.imageData[0].originFileObj
+      ) {
         imageUrl = await uploadFile(values.imageData[0].originFileObj);
       }
 
@@ -582,10 +588,18 @@ function ConsultingStaffPage() {
               >
                 Add new order
               </Button>
-              <Button onClick={fetchStatusesByStaffId} type="primary" style={{ marginRight: 8 }}>
+              <Button
+                onClick={fetchStatusesByStaffId}
+                type="primary"
+                style={{ marginRight: 8 }}
+              >
                 View My Statuses
               </Button>
-              <Button onClick={handleAddContract} type="primary" icon={<FileAddOutlined />}>
+              <Button
+                onClick={handleAddContract}
+                type="primary"
+                icon={<FileAddOutlined />}
+              >
                 Add New Contract
               </Button>
             </div>
@@ -620,6 +634,12 @@ function ConsultingStaffPage() {
     navigate("/");
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("staffId");
+    // Add any other items you want to remove from localStorage
+    navigate("/login-staff");
+  };
+
   return (
     <Layout>
       <Header
@@ -642,14 +662,24 @@ function ConsultingStaffPage() {
             }}
           />
         </div>
-        <Button
-          type="primary"
-          icon={<HomeOutlined />}
-          onClick={handleReturnHome}
-          style={{ marginLeft: "16px" }}
-        >
-          Return to Homepage
-        </Button>
+        <div>
+          <Button
+            type="primary"
+            icon={<HomeOutlined />}
+            onClick={handleReturnHome}
+            style={{ marginRight: "16px" }}
+          >
+            Return to Homepage
+          </Button>
+          <Button
+            type="primary"
+            danger
+            icon={<LogoutOutlined />}
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        </div>
       </Header>
       <Layout>
         <Sider
@@ -672,6 +702,9 @@ function ConsultingStaffPage() {
         <Layout
           style={{
             padding: "0 24px 24px",
+            display: "flex",
+            flexDirection: "column",
+            height: "calc(100vh - 64px)", // Subtract header height
           }}
         >
           <Breadcrumb
@@ -687,8 +720,8 @@ function ConsultingStaffPage() {
           <Content
             style={{
               padding: 24,
-              margin: 0,
-              minHeight: 280,
+              flex: 1,
+              overflow: "auto",
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
@@ -777,12 +810,14 @@ function ConsultingStaffPage() {
           <Form.Item
             name="designStaff"
             label="Design Staff"
-            rules={[{ required: true, message: "Please select a design staff" }]}
+            rules={[
+              { required: true, message: "Please select a design staff" },
+            ]}
           >
             <Select
               placeholder="Select design staff"
               options={availableStaff
-                .filter(staff => staff.role === "Design Staff")
+                .filter((staff) => staff.role === "Design Staff")
                 .map((staff) => ({
                   value: staff.staffId,
                   label: `${staff.fullName} (ID: ${staff.staffId})`,
@@ -792,12 +827,14 @@ function ConsultingStaffPage() {
           <Form.Item
             name="constructionStaff"
             label="Construction Staff"
-            rules={[{ required: true, message: "Please select a construction staff" }]}
+            rules={[
+              { required: true, message: "Please select a construction staff" },
+            ]}
           >
             <Select
               placeholder="Select construction staff"
               options={availableStaff
-                .filter(staff => staff.role === "Construction Staff")
+                .filter((staff) => staff.role === "Construction Staff")
                 .map((staff) => ({
                   value: staff.staffId,
                   label: `${staff.fullName} (ID: ${staff.staffId})`,
@@ -880,7 +917,11 @@ function ConsultingStaffPage() {
         onCancel={() => setShowContractModal(false)}
         footer={null}
       >
-        <Form form={contractForm} onFinish={handleSubmitContract} layout="vertical">
+        <Form
+          form={contractForm}
+          onFinish={handleSubmitContract}
+          layout="vertical"
+        >
           <Form.Item
             name="orderId"
             label="Order ID"

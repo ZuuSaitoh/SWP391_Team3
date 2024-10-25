@@ -14,9 +14,13 @@ import {
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  LoadingOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
 import uploadFile from "../../../utils/file";
-import './designStaffPage.css';
+import "./designStaffPage.css";
 
 function DesignStaffPage() {
   const [datas, setDatas] = useState([]);
@@ -29,13 +33,14 @@ function DesignStaffPage() {
   const [uploading, setUploading] = useState(false);
   const [editingDesign, setEditingDesign] = useState(null);
   const [editForm] = Form.useForm();
-  const [modalMode, setModalMode] = useState('create'); // New state to track modal mode
+  const [modalMode, setModalMode] = useState("create"); // New state to track modal mode
   const [statusModalVisible, setStatusModalVisible] = useState(false);
   const [staffStatuses, setStaffStatuses] = useState([]);
   const [updatingStatus, setUpdatingStatus] = useState(null);
   const [designs, setDesigns] = useState([]);
   const [updatingDesign, setUpdatingDesign] = useState(null);
-  const [updateDesignModalVisible, setUpdateDesignModalVisible] = useState(false);
+  const [updateDesignModalVisible, setUpdateDesignModalVisible] =
+    useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [selectedDesignId, setSelectedDesignId] = useState(null);
 
@@ -47,8 +52,13 @@ function DesignStaffPage() {
       if (response.data.code === 9999) {
         setDatas(response.data.result);
       } else {
-        console.warn("Unexpected response when fetching designs:", response.data);
-        toast.warning("Unexpected response when fetching designs. Data may be incomplete.");
+        console.warn(
+          "Unexpected response when fetching designs:",
+          response.data
+        );
+        toast.warning(
+          "Unexpected response when fetching designs. Data may be incomplete."
+        );
       }
     } catch (err) {
       console.error("Error fetching designs:", err);
@@ -90,10 +100,16 @@ function DesignStaffPage() {
       let response;
       if (editingDesign) {
         // Update existing design
-        response = await api.put(`http://localhost:8080/designs/update/${editingDesign.designId}`, designData);
+        response = await api.put(
+          `http://localhost:8080/designs/update/${editingDesign.designId}`,
+          designData
+        );
       } else {
         // Create new design
-        response = await api.post("http://localhost:8080/designs/create", designData);
+        response = await api.post(
+          "http://localhost:8080/designs/create",
+          designData
+        );
       }
 
       console.log("API response:", response);
@@ -101,38 +117,57 @@ function DesignStaffPage() {
       if (response.data) {
         const newOrUpdatedDesign = {
           ...response.data.result, // Use result from the response
-          designId: editingDesign ? editingDesign.designId : response.data.result.designId,
-          staff: { 
-            staffId: staffId, 
-            username: localStorage.getItem("staffUser") 
-              ? JSON.parse(localStorage.getItem("staffUser")).username 
-              : "Unknown" 
+          designId: editingDesign
+            ? editingDesign.designId
+            : response.data.result.designId,
+          staff: {
+            staffId: staffId,
+            username: localStorage.getItem("staffUser")
+              ? JSON.parse(localStorage.getItem("staffUser")).username
+              : "Unknown",
           },
           designDate: new Date().toISOString(),
           imageData: imageUrl, // Ensure the new image URL is used
         };
 
-        setDatas(prevData => {
+        setDatas((prevData) => {
           if (editingDesign) {
-            return prevData.map(design => 
-              design.designId === newOrUpdatedDesign.designId ? newOrUpdatedDesign : design
+            return prevData.map((design) =>
+              design.designId === newOrUpdatedDesign.designId
+                ? newOrUpdatedDesign
+                : design
             );
           } else {
             return [...prevData, newOrUpdatedDesign];
           }
         });
 
-        toast.success(editingDesign ? "Successfully updated design" : "Successfully added new design");
+        toast.success(
+          editingDesign
+            ? "Successfully updated design"
+            : "Successfully added new design"
+        );
         setShowModal(false);
         setFileList([]);
         setEditingDesign(null);
         form.resetFields();
       } else {
-        toast.error(`Failed to ${editingDesign ? 'update' : 'add'} design. Please try again.`);
+        toast.error(
+          `Failed to ${
+            editingDesign ? "update" : "add"
+          } design. Please try again.`
+        );
       }
     } catch (err) {
-      console.error(`Error in handle${editingDesign ? 'Update' : 'Submit'}:`, err);
-      toast.error(`Error ${editingDesign ? 'updating' : 'adding'} design. Please try again.`);
+      console.error(
+        `Error in handle${editingDesign ? "Update" : "Submit"}:`,
+        err
+      );
+      toast.error(
+        `Error ${
+          editingDesign ? "updating" : "adding"
+        } design. Please try again.`
+      );
     } finally {
       setLoading(false);
     }
@@ -140,7 +175,7 @@ function DesignStaffPage() {
 
   const handleCancel = () => {
     setShowModal(false);
-    setModalMode('create');
+    setModalMode("create");
     setEditingDesign(null);
     form.resetFields();
     editForm.resetFields();
@@ -153,16 +188,30 @@ function DesignStaffPage() {
       const response = await api.delete(`/designs/delete/${designId}`);
       console.log("Delete response:", response);
 
-      if (response.data && (response.data.code === 9999 || response.data.code === 9876)) {
-        setDatas(prevDatas => prevDatas.filter(design => design.designId !== designId));
+      if (
+        response.data &&
+        (response.data.code === 9999 || response.data.code === 9876)
+      ) {
+        setDatas((prevDatas) =>
+          prevDatas.filter((design) => design.designId !== designId)
+        );
         toast.success(response.data.result || "Design deleted successfully");
       } else {
-        console.error("Unexpected response when deleting design:", response.data);
-        toast.error(`Failed to delete design: ${response.data?.message || 'Unknown error'}`);
+        console.error(
+          "Unexpected response when deleting design:",
+          response.data
+        );
+        toast.error(
+          `Failed to delete design: ${
+            response.data?.message || "Unknown error"
+          }`
+        );
       }
     } catch (err) {
       console.error("Error deleting design:", err);
-      toast.error(`Failed to delete design: ${err.response?.data?.message || err.message}`);
+      toast.error(
+        `Failed to delete design: ${err.response?.data?.message || err.message}`
+      );
     }
   };
 
@@ -191,7 +240,10 @@ function DesignStaffPage() {
         setStaffStatuses(response.data.result);
         setStatusModalVisible(true);
       } else {
-        console.warn("Unexpected response when fetching statuses:", response.data);
+        console.warn(
+          "Unexpected response when fetching statuses:",
+          response.data
+        );
         toast.warning("Unexpected response when fetching statuses.");
       }
     } catch (err) {
@@ -205,11 +257,13 @@ function DesignStaffPage() {
 
   const handleUpdateStatus = async (statusId) => {
     try {
-      const response = await api.patch(`http://localhost:8080/status/update-number-of-update/${statusId}`);
+      const response = await api.patch(
+        `http://localhost:8080/status/update-number-of-update/${statusId}`
+      );
       if (response.data.code === 999) {
         // Update the local state with the new data
-        setStaffStatuses(prevStatuses =>
-          prevStatuses.map(status =>
+        setStaffStatuses((prevStatuses) =>
+          prevStatuses.map((status) =>
             status.statusId === statusId ? response.data.result : status
           )
         );
@@ -219,7 +273,9 @@ function DesignStaffPage() {
       }
     } catch (err) {
       console.error("Error updating status:", err);
-      toast.error("Error updating status: " + (err.response?.data?.message || err.message));
+      toast.error(
+        "Error updating status: " + (err.response?.data?.message || err.message)
+      );
     }
   };
 
@@ -229,12 +285,18 @@ function DesignStaffPage() {
       if (response.data.code === 9999) {
         setDesigns(response.data.result);
       } else {
-        console.warn("Unexpected response when fetching designs:", response.data);
+        console.warn(
+          "Unexpected response when fetching designs:",
+          response.data
+        );
         toast.warning("Unexpected response when fetching designs.");
       }
     } catch (err) {
       console.error("Error fetching designs:", err);
-      toast.error("Error fetching designs: " + (err.response?.data?.message || err.message));
+      toast.error(
+        "Error fetching designs: " +
+          (err.response?.data?.message || err.message)
+      );
     }
   };
 
@@ -245,11 +307,22 @@ function DesignStaffPage() {
     }
     try {
       setUpdatingDesign(selectedOrderId);
-      const response = await api.put(`/orders/update-design/${selectedOrderId}`, { designId: selectedDesignId });
+      const response = await api.put(
+        `/orders/update-design/${selectedOrderId}`,
+        { designId: selectedDesignId }
+      );
       if (response.data.code === 9997) {
-        setStaffStatuses(prevStatuses =>
-          prevStatuses.map(status =>
-            status.order.orderId === selectedOrderId ? { ...status, order: { ...status.order, design: response.data.result.design } } : status
+        setStaffStatuses((prevStatuses) =>
+          prevStatuses.map((status) =>
+            status.order.orderId === selectedOrderId
+              ? {
+                  ...status,
+                  order: {
+                    ...status.order,
+                    design: response.data.result.design,
+                  },
+                }
+              : status
           )
         );
         toast.success("Design updated successfully");
@@ -259,7 +332,9 @@ function DesignStaffPage() {
       }
     } catch (err) {
       console.error("Error updating design:", err);
-      toast.error("Error updating design: " + (err.response?.data?.message || err.message));
+      toast.error(
+        "Error updating design: " + (err.response?.data?.message || err.message)
+      );
     } finally {
       setUpdatingDesign(null);
     }
@@ -273,50 +348,50 @@ function DesignStaffPage() {
 
   const statusColumns = [
     {
-      title: 'Order ID',
-      dataIndex: ['order', 'orderId'],
-      key: 'orderId',
+      title: "Order ID",
+      dataIndex: ["order", "orderId"],
+      key: "orderId",
     },
     {
-      title: 'Customer Name',
-      dataIndex: ['order', 'customer', 'fullName'],
-      key: 'customerName',
+      title: "Customer Name",
+      dataIndex: ["order", "customer", "fullName"],
+      key: "customerName",
     },
     {
-      title: 'Customer Email',
-      dataIndex: ['order', 'customer', 'mail'],
-      key: 'customerEmail',
+      title: "Customer Email",
+      dataIndex: ["order", "customer", "mail"],
+      key: "customerEmail",
     },
     {
-      title: 'Customer Phone',
-      dataIndex: ['order', 'customer', 'phone'],
-      key: 'customerPhone',
+      title: "Customer Phone",
+      dataIndex: ["order", "customer", "phone"],
+      key: "customerPhone",
     },
     {
-      title: 'Status Description',
-      dataIndex: 'statusDescription',
-      key: 'statusDescription',
+      title: "Status Description",
+      dataIndex: "statusDescription",
+      key: "statusDescription",
     },
     {
-      title: 'Status Date',
-      dataIndex: 'statusDate',
-      key: 'statusDate',
+      title: "Status Date",
+      dataIndex: "statusDate",
+      key: "statusDate",
       render: (date) => new Date(date).toLocaleString(),
     },
     {
-      title: 'Complete',
-      dataIndex: 'complete',
-      key: 'complete',
-      render: (complete) => complete ? 'Yes' : 'No',
+      title: "Complete",
+      dataIndex: "complete",
+      key: "complete",
+      render: (complete) => (complete ? "Yes" : "No"),
     },
     {
-      title: 'Number of Updates',
-      dataIndex: 'numberOfUpdate',
-      key: 'numberOfUpdate',
+      title: "Number of Updates",
+      dataIndex: "numberOfUpdate",
+      key: "numberOfUpdate",
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: "Actions",
+      key: "actions",
       render: (_, record) => (
         <Button onClick={() => handleUpdateStatus(record.statusId)}>
           Update
@@ -324,8 +399,8 @@ function DesignStaffPage() {
       ),
     },
     {
-      title: 'Update Design',
-      key: 'updateDesign',
+      title: "Update Design",
+      key: "updateDesign",
       render: (_, record) => (
         <Button onClick={() => openUpdateDesignModal(record.order.orderId)}>
           Update Design
@@ -383,18 +458,21 @@ function DesignStaffPage() {
       key: "designId",
       render: (_, record) => (
         <>
-          <Button onClick={() => handleEdit(record)} style={{ marginRight: '10px' }}>
+          <Button
+            onClick={() => handleEdit(record)}
+            style={{ marginRight: "10px" }}
+          >
             Edit
           </Button>
-          <Popconfirm 
-            title="Delete" 
+          <Popconfirm
+            title="Delete"
             description="Do you want to delete this design?"
             onConfirm={() => handleDelete(record.designId)}
           >
             <Button type="primary" danger>
               Delete
             </Button>
-          </Popconfirm> 
+          </Popconfirm>
         </>
       ),
     },
@@ -452,21 +530,61 @@ function DesignStaffPage() {
     </div>
   );
 
+  const handleLogout = () => {
+    localStorage.removeItem("staffId");
+    localStorage.removeItem("staffUser");
+    navigate("/login-staff");
+  };
+
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '20px' }}>
-        <Button onClick={handleAddNew}>Add new design</Button>
-        <Button onClick={backToHomepage} style={{ marginLeft: "10px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+          marginBottom: "20px",
+        }}
+      >
+        <Button onClick={handleAddNew} style={{ marginRight: "10px" }}>
+          Add new design
+        </Button>
+        <Button
+          onClick={backToHomepage}
+          style={{
+            marginRight: "10px",
+            backgroundColor: "#4CAF50",
+            borderColor: "#4CAF50",
+            color: "white",
+          }}
+        >
           Return to Homepage
         </Button>
-        <Button onClick={fetchStatusesByStaffId} style={{ marginLeft: "10px" }}>
+        <Button
+          onClick={fetchStatusesByStaffId}
+          style={{
+            marginRight: "10px",
+            backgroundColor: "#4CAF50",
+            borderColor: "#4CAF50",
+            color: "white",
+          }}
+        >
           View My Statuses
         </Button>
+        <Button
+          onClick={handleLogout}
+          style={{
+            backgroundColor: "#FF4D4F",
+            borderColor: "#FF4D4F",
+            color: "white",
+          }}
+        >
+          Logout
+        </Button>
       </div>
-      
-      <Table 
-        dataSource={datas} 
-        columns={columns} 
+
+      <Table
+        dataSource={datas}
+        columns={columns}
         rowKey="designId"
         key={datas.length}
       />
@@ -550,21 +668,29 @@ function DesignStaffPage() {
         visible={updateDesignModalVisible}
         onCancel={() => setUpdateDesignModalVisible(false)}
         footer={[
-          <Button key="cancel" onClick={() => setUpdateDesignModalVisible(false)}>
+          <Button
+            key="cancel"
+            onClick={() => setUpdateDesignModalVisible(false)}
+          >
             Cancel
           </Button>,
-          <Button key="update" type="primary" onClick={handleUpdateDesign} loading={updatingDesign === selectedOrderId}>
+          <Button
+            key="update"
+            type="primary"
+            onClick={handleUpdateDesign}
+            loading={updatingDesign === selectedOrderId}
+          >
             Update
-          </Button>
+          </Button>,
         ]}
       >
         <Select
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
           placeholder="Select a design"
           value={selectedDesignId}
           onChange={(value) => setSelectedDesignId(value)}
         >
-          {designs.map(design => (
+          {designs.map((design) => (
             <Select.Option key={design.designId} value={design.designId}>
               {design.designName}
             </Select.Option>
