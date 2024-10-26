@@ -9,6 +9,7 @@ import { storage } from "../../config/firebase"; // Make sure this import is cor
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { toast } from "react-toastify"; // Make sure you have this import
 import { ToastContainer } from "react-toastify";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa"; // Import icons
 
 function CustomerProfilePage() {
   const { customerId } = useParams(); // Fetch customerId from URL params
@@ -22,6 +23,7 @@ function CustomerProfilePage() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBookingsExpanded, setIsBookingsExpanded] = useState(false);
   const handleOrderUpdate = (updatedOrder) => {
     setOrders((prevOrders) =>
       prevOrders.map((order) =>
@@ -247,59 +249,66 @@ function CustomerProfilePage() {
 
   const renderBookings = () => (
     <div className="customer-bookings">
-      <h3>Bookings</h3>
-      {bookings.length > 0 ? (
-        <ul className="booking-list">
-          {bookings.map((booking) => (
-            <li key={booking.bookingServiceId} className="booking-item">
-              <div className="booking-info">
-                <div className="booking-main-info">
-                  <div className="booking-details">
-                    <span className="booking-id">
-                      Booking #{booking.bookingServiceId}
-                    </span>
-                    <span className="booking-service">
-                      {booking.service.serviceName}
-                    </span>
-                    <span className="booking-date">
-                      {new Date(booking.bookingDate).toLocaleDateString()}
+      <div
+        className="bookings-header"
+        onClick={() => setIsBookingsExpanded(!isBookingsExpanded)}
+      >
+        <h3>Bookings</h3>
+        {isBookingsExpanded ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+      {isBookingsExpanded &&
+        (bookings.length > 0 ? (
+          <ul className="booking-list">
+            {[...bookings].reverse().map((booking) => (
+              <li key={booking.bookingServiceId} className="booking-item">
+                <div className="booking-info">
+                  <div className="booking-main-info">
+                    <div className="booking-details">
+                      <span className="booking-id">
+                        Booking #{booking.bookingServiceId}
+                      </span>
+                      <span className="booking-service">
+                        {booking.service.serviceName}
+                      </span>
+                      <span className="booking-date">
+                        {new Date(booking.bookingDate).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <span className="booking-price">
+                      {formatCurrency(booking.price)} VND
                     </span>
                   </div>
-                  <span className="booking-price">
-                    {formatCurrency(booking.price)} VND
-                  </span>
-                </div>
-                <span
-                  className={`booking-status ${
-                    booking.status ? "completed" : "pending"
-                  }`}
-                >
-                  {booking.status ? "Completed" : "Pending"}
-                </span>
-                {booking.feedback && (
-                  <div className="booking-feedback">
-                    <strong>Feedback:</strong> {booking.feedback}
-                  </div>
-                )}
-              </div>
-              <div className="booking-actions">
-                {booking.status && !booking.feedback && (
-                  <button
-                    className="feedback-btn"
-                    onClick={() =>
-                      setFeedbackBookingId(booking.bookingServiceId)
-                    }
+                  <span
+                    className={`booking-status ${
+                      booking.status ? "completed" : "pending"
+                    }`}
                   >
-                    Leave Feedback
-                  </button>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No bookings found for this customer.</p>
-      )}
+                    {booking.status ? "Completed" : "Pending"}
+                  </span>
+                  {booking.feedback && (
+                    <div className="booking-feedback">
+                      <strong>Feedback:</strong> {booking.feedback}
+                    </div>
+                  )}
+                </div>
+                <div className="booking-actions">
+                  {booking.status && !booking.feedback && (
+                    <button
+                      className="feedback-btn"
+                      onClick={() =>
+                        setFeedbackBookingId(booking.bookingServiceId)
+                      }
+                    >
+                      Leave Feedback
+                    </button>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No bookings found for this customer.</p>
+        ))}
       {feedbackBookingId && (
         <div className="feedback-modal">
           <h4>Leave Feedback</h4>

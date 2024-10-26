@@ -235,14 +235,14 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
         if (onOrderUpdate) {
           onOrderUpdate(newUpdatedOrder);
         }
-        alert("Rating and feedback updated successfully");
+        toast.success("Rating and feedback submitted successfully");
       } else {
         console.warn("Unexpected response:", response.data);
-        alert("An error occurred while updating rating and feedback");
+        toast.error("An error occurred while submitting rating and feedback");
       }
     } catch (error) {
-      console.error("Error updating rating and feedback:", error);
-      alert("An error occurred while updating rating and feedback");
+      console.error("Error submitting rating and feedback:", error);
+      toast.error("An error occurred while submitting rating and feedback");
     }
   };
 
@@ -720,12 +720,14 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
                       {new Date(updatedOrder.feedback_date).toLocaleString()}
                     </p>
                   )}
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="edit-btn"
-                  >
-                    Edit Rating & Feedback
-                  </button>
+                  {!updatedOrder.feedback && !updatedOrder.rating && (
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className="edit-btn"
+                    >
+                      Add Rating & Feedback
+                    </button>
+                  )}
                 </>
               )}
             </>
@@ -744,7 +746,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
                   {new Date(updatedOrder.feedback_date).toLocaleString()}
                 </p>
               )}
-              <p>The period for editing rating and feedback has expired.</p>
+              <p>The period for adding rating and feedback has expired.</p>
             </>
           )
         ) : (
