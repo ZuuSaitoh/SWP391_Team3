@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import emailjs from "emailjs-com";
 import "./ViewOrderCustomer.css";
@@ -17,6 +17,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [acceptanceTests, setAcceptanceTests] = useState([]);
+  const modalRef = useRef(null);
 
   useEffect(() => {
     console.log("Statuses state updated:", statuses);
@@ -415,9 +416,31 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
     return diffDays <= 7;
   };
 
+  // Add this new function to determine the status of a timeline item
+  const getTimelineItemStatus = (status, index) => {
+    if (status.complete) return "completed";
+    if (index === 0) return "current";
+    return "pending";
+  };
+
+  useEffect(() => {
+    if (modalRef.current) {
+      const modalHeight = modalRef.current.scrollHeight;
+      modalRef.current.scrollTop = modalHeight / 4; // Scroll to 1/4 of the modal height
+    }
+
+    // Disable scrolling on the main page
+    document.body.style.overflow = "hidden";
+
+    // Re-enable scrolling when component unmounts
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
   return (
     <div className="view-order-overlay">
-      <div className="view-order-modal">
+      <div className="view-order-modal" ref={modalRef}>
         <h2>Order Details</h2>
         {console.log("Rendering order details:", updatedOrder)}
         <p>
@@ -547,54 +570,51 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
           <p>No acceptance information available</p>
         )}
 
-        <h3>Status Information</h3>
+        <h3>Status Timeline</h3>
         {isLoading ? (
           <p>Loading statuses...</p>
         ) : statuses.length > 0 ? (
-          <div className="horizontal-scroll-container">
-            <div className="horizontal-scroll-content">
-              <div className="status-container">
-                {statuses.map((status, index) => (
-                  <div key={status.statusId} className="info-item status-item">
-                    <h4>Status {index + 1}</h4>
-                    <p>
-                      <strong>Description:</strong> {status.statusDescription}
-                    </p>
-                    <p>
-                      <strong>Date:</strong>{" "}
-                      {new Date(status.statusDate).toLocaleString()}
-                    </p>
-                    <p>
-                      <strong>Staff:</strong> {status.staff.username} (
-                      {status.staff.role})
-                    </p>
-                    <p>
-                      <strong>Complete:</strong>{" "}
-                      {status.complete ? "Yes" : "No"}
-                    </p>
-                    <p>
-                      <strong>Updates:</strong> {status.numberOfUpdate}
-                    </p>
-                    {!status.complete && (
-                      <div className="action-buttons">
-                        <button
-                          onClick={() => handleAccept(status.statusId)}
-                          className="action-btn accept-btn"
-                        >
-                          Accept
-                        </button>
-                        <button
-                          onClick={() => handleReject(status)}
-                          className="action-btn reject-btn"
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ))}
+          <div className="timeline-container">
+            {[...statuses].reverse().map((status, index) => (
+              <div
+                key={status.statusId}
+                className={`timeline-item ${getTimelineItemStatus(
+                  status,
+                  statuses.length - 1 - index
+                )}`}
+              >
+                <div className="timeline-content">
+                  <h4>{status.statusDescription}</h4>
+                  <p>
+                    <strong>Date:</strong>{" "}
+                    {new Date(status.statusDate).toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>Staff:</strong> {status.staff.username} (
+                    {status.staff.role})
+                  </p>
+                  <p>
+                    <strong>Updates:</strong> {status.numberOfUpdate}
+                  </p>
+                  {!status.complete && (
+                    <div className="action-buttons">
+                      <button
+                        onClick={() => handleAccept(status.statusId)}
+                        className="action-btn accept-btn"
+                      >
+                        Accept
+                      </button>
+                      <button
+                        onClick={() => handleReject(status)}
+                        className="action-btn reject-btn"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         ) : (
           <p>No status information available</p>

@@ -10,8 +10,6 @@ function ServiceDesign() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [slider1, slider2, slider3];
-
-  // Add this new state for designs
   const [designs, setDesigns] = useState([]);
 
   // Add this new useEffect to fetch designs

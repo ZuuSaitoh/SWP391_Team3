@@ -623,3 +623,8 @@ body {
 .feedback-actions button:hover {
   opacity: 0.8;
 }
+
+.page-background.no-scroll {
+  overflow: hidden;
+  height: 100vh;
+}

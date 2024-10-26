@@ -9,22 +9,20 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  overflow: hidden;
+  /* Prevent scrolling on the overlay */
 }
 
 .view-order-modal {
   background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
-  max-width: 50%;
-  /* Further reduce the max-width */
-  width: 70%;
-  /* Reduce the width */
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-  overflow-y: auto;
+  max-width: 80%;
+  width: 90%;
   max-height: 90vh;
-  font-size: 13px;
-  /* Slightly reduce the overall font size */
-  padding-left: 25px; /* Increase left padding to compensate for the shift */
+  overflow-y: auto;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  font-size: 14px;
 }
 
 h2 {
@@ -369,7 +367,7 @@ button {
   padding: 15px;
   min-width: 250px;
   flex: 0 0 auto;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .info-item h4 {
@@ -474,6 +472,7 @@ button {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+
   .status-item,
   .transaction-item {
     min-width: 220px;
@@ -489,8 +488,9 @@ button {
   padding-bottom: 10px;
   margin-bottom: 15px;
   width: 100%;
-  padding-left: 0; 
-  margin-left: -10px; /* Move items to the left */
+  padding-left: 0;
+  margin-left: -10px;
+  /* Move items to the left */
 }
 
 /* Adjust the status items */
@@ -507,7 +507,8 @@ button {
 /* Adjust the view-order-modal to compensate */
 .view-order-modal {
   /* ... existing styles ... */
-  padding-left: 25px; /* Increase left padding */
+  padding-left: 25px;
+  /* Increase left padding */
 }
 
 /* Update these styles */
@@ -522,7 +523,8 @@ button {
   display: flex;
   flex-wrap: nowrap;
   gap: 15px;
-  padding-bottom: 10px; /* Add padding to show scrollbar */
+  padding-bottom: 10px;
+  /* Add padding to show scrollbar */
 }
 
 /* Adjust scrollbar styles for better visibility */
@@ -551,7 +553,8 @@ button {
   display: flex;
   flex-wrap: nowrap;
   gap: 15px;
-  padding-bottom: 10px; /* Add padding to show scrollbar */
+  padding-bottom: 10px;
+  /* Add padding to show scrollbar */
 }
 
 .status-container,
@@ -559,7 +562,8 @@ button {
   display: flex;
   flex-wrap: nowrap;
   gap: 15px;
-  min-width: max-content; /* Ensure content doesn't wrap */
+  min-width: max-content;
+  /* Ensure content doesn't wrap */
 }
 
 .status-item,
@@ -568,8 +572,10 @@ button {
   border: 1px solid #e9ecef;
   border-radius: 8px;
   padding: 15px;
-  min-width: 250px; /* Set a minimum width */
-  max-width: 300px; /* Set a maximum width */
+  min-width: 250px;
+  /* Set a minimum width */
+  max-width: 300px;
+  /* Set a maximum width */
   flex: 0 0 auto;
 }
 
@@ -585,4 +591,115 @@ button {
 
 .horizontal-scroll-container::-webkit-scrollbar-track {
   background-color: #f1f1f1;
+}
+
+.timeline-container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.timeline-container::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  background-color: #e0e0e0;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  margin-left: -3px;
+}
+
+.timeline-item {
+  padding: 10px 40px;
+  position: relative;
+  background-color: inherit;
+  width: 50%;
+}
+
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  right: -17px;
+  background-color: white;
+  border: 4px solid #FF9F55;
+  top: 15px;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.timeline-item:nth-child(even) {
+  left: 50%;
+}
+
+.timeline-item:nth-child(odd) {
+  left: 0;
+}
+
+.timeline-item:nth-child(even)::after {
+  left: -16px;
+}
+
+.timeline-content {
+  padding: 20px 30px;
+  background-color: white;
+  position: relative;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-item.completed::after {
+  background-color: #4CAF50;
+  border-color: #45a049;
+}
+
+.timeline-item.current::after {
+  background-color: #2196F3;
+  border-color: #1e88e5;
+}
+
+.timeline-item.pending::after {
+  background-color: #FFC107;
+  border-color: #ffa000;
+}
+
+@media screen and (max-width: 600px) {
+  .timeline-container::after {
+    left: 31px;
+  }
+
+  .timeline-item {
+    width: 100%;
+    padding-left: 70px;
+    padding-right: 25px;
+  }
+
+  .timeline-item::after {
+    left: 15px;
+  }
+
+  .timeline-item:nth-child(even) {
+    left: 0%;
+  }
+}
+
+/* Customize the scrollbar for the modal */
+.view-order-modal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.view-order-modal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.view-order-modal::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+.view-order-modal::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

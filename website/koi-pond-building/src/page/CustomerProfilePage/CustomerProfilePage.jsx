@@ -21,6 +21,7 @@ function CustomerProfilePage() {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleOrderUpdate = (updatedOrder) => {
     setOrders((prevOrders) =>
       prevOrders.map((order) =>
@@ -206,10 +207,12 @@ function CustomerProfilePage() {
 
   const handleViewOrder = (order) => {
     setSelectedOrder(order);
+    setIsModalOpen(true);
   };
 
   const handleCloseOrderView = () => {
     setSelectedOrder(null);
+    setIsModalOpen(false);
   };
 
   const handleFeedbackSubmit = async (bookingId) => {
@@ -335,7 +338,7 @@ function CustomerProfilePage() {
 
   return (
     <AnimatedPage>
-      <div className="page-background">
+      <div className={`page-background ${isModalOpen ? "no-scroll" : ""}`}>
         <div className="customer-profile-container">
           <Link to="/" className="home-link">
             <i className="fas fa-home"></i> Home
