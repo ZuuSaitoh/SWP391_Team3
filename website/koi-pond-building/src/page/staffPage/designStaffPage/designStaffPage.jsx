@@ -10,6 +10,10 @@ import {
   Upload,
   message,
   Select,
+  Layout,
+  Menu,
+  theme,
+  Breadcrumb,
 } from "antd";
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
@@ -18,9 +22,32 @@ import {
   PlusOutlined,
   LoadingOutlined,
   LogoutOutlined,
+  DesktopOutlined,
+  FileOutlined,
+  PieChartOutlined,
+  TeamOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import uploadFile from "../../../utils/file";
 import "./designStaffPage.css";
+
+const { Header, Content, Footer, Sider } = Layout;
+
+function getItem(label, key, icon, children) {
+  return {
+    key,
+    icon,
+    children,
+    label,
+  };
+}
+
+const items = [
+  getItem('Designs', '1', <PieChartOutlined />),
+  getItem('My Statuses', '2', <DesktopOutlined />),
+  getItem('Return to Homepage', '3', <UserOutlined />),
+  getItem('Logout', '4', <LogoutOutlined />),
+];
 
 function DesignStaffPage() {
   const [datas, setDatas] = useState([]);
@@ -45,6 +72,12 @@ function DesignStaffPage() {
   const [selectedDesignId, setSelectedDesignId] = useState(null);
 
   const staffId = localStorage.getItem("staffId");
+
+  const [collapsed, setCollapsed] = useState(false);
+  const [selectedMenuItem, setSelectedMenuItem] = useState('1');
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
 
   const fetchData = async () => {
     try {
@@ -536,58 +569,90 @@ function DesignStaffPage() {
     navigate("/login-staff");
   };
 
-  return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-start",
-          marginBottom: "20px",
-        }}
-      >
-        <Button onClick={handleAddNew} style={{ marginRight: "10px" }}>
-          Add new design
-        </Button>
-        <Button
-          onClick={backToHomepage}
-          style={{
-            marginRight: "10px",
-            backgroundColor: "#4CAF50",
-            borderColor: "#4CAF50",
-            color: "white",
-          }}
-        >
-          Return to Homepage
-        </Button>
-        <Button
-          onClick={fetchStatusesByStaffId}
-          style={{
-            marginRight: "10px",
-            backgroundColor: "#4CAF50",
-            borderColor: "#4CAF50",
-            color: "white",
-          }}
-        >
-          View My Statuses
-        </Button>
-        <Button
-          onClick={handleLogout}
-          style={{
-            backgroundColor: "#FF4D4F",
-            borderColor: "#FF4D4F",
-            color: "white",
-          }}
-        >
-          Logout
-        </Button>
-      </div>
+  const handleMenuClick = (key) => {
+    setSelectedMenuItem(key);
+    switch (key) {
+      case '1':
+        // Already on Designs page
+        break;
+      case '2':
+        fetchStatusesByStaffId();
+        break;
+      case '3':
+        backToHomepage();
+        break;
+      case '4':
+        handleLogout();
+        break;
+      default:
+        break;
+    }
+  };
 
-      <Table
-        dataSource={datas}
-        columns={columns}
-        rowKey="designId"
-        key={datas.length}
-      />
+  const renderContent = () => {
+    switch (selectedMenuItem) {
+      case '1':
+        return (
+          <>
+            <Button onClick={handleAddNew} style={{ marginBottom: '20px' }}>
+              Add new design
+            </Button>
+            <Table
+              dataSource={datas}
+              columns={columns}
+              rowKey="designId"
+              key={datas.length}
+            />
+          </>
+        );
+      case '2':
+        return (
+          <Table
+            dataSource={staffStatuses}
+            columns={statusColumns}
+            rowKey="statusId"
+            scroll={{ x: true }}
+          />
+        );
+      default:
+        return <div>Select an option from the menu</div>;
+    }
+  };
+
+  return (
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+        <div className="demo-logo-vertical" />
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={['1']}
+          mode="inline"
+          items={items}
+          onSelect={({ key }) => handleMenuClick(key)}
+        />
+      </Sider>
+      <Layout>
+        <Header style={{ padding: 0, background: colorBgContainer }} />
+        <Content style={{ margin: '0 16px' }}>
+          <Breadcrumb style={{ margin: '16px 0' }}>
+            <Breadcrumb.Item>Design Staff</Breadcrumb.Item>
+            <Breadcrumb.Item>{items.find(item => item.key === selectedMenuItem)?.label}</Breadcrumb.Item>
+          </Breadcrumb>
+          <div
+            style={{
+              padding: 24,
+              minHeight: 360,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
+            {renderContent()}
+          </div>
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>
+          Koi Pond Building ©{new Date().getFullYear()} Created by Your Company
+        </Footer>
+      </Layout>
 
       <Modal
         open={showModal}
@@ -649,21 +714,6 @@ function DesignStaffPage() {
       </Modal>
 
       <Modal
-        title="My Statuses"
-        visible={statusModalVisible}
-        onCancel={() => setStatusModalVisible(false)}
-        footer={null}
-        width={1200}
-      >
-        <Table
-          dataSource={staffStatuses}
-          columns={statusColumns}
-          rowKey="statusId"
-          scroll={{ x: true }}
-        />
-      </Modal>
-
-      <Modal
         title="Update Design"
         visible={updateDesignModalVisible}
         onCancel={() => setUpdateDesignModalVisible(false)}
@@ -711,7 +761,7 @@ function DesignStaffPage() {
           src={previewImage}
         />
       )}
-    </div>
+    </Layout>
   );
 }
 

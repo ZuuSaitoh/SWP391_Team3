@@ -1,19 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table, Modal, Tabs, message } from "antd";
+import { Button, Table, Modal, Tabs, message, Layout, Menu, theme, Breadcrumb } from "antd";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
 import { useNavigate } from "react-router-dom";
+import {
+  DesktopOutlined,
+  FileOutlined,
+  PieChartOutlined,
+  TeamOutlined,
+  UserOutlined,
+  HomeOutlined,
+  LogoutOutlined,
+} from '@ant-design/icons';
+
+const { Header, Content, Footer, Sider } = Layout;
 
 function ConstructionStaffPage() {
   const [bookings, setBookings] = useState([]);
   const [statusModalVisible, setStatusModalVisible] = useState(false);
   const [staffStatuses, setStaffStatuses] = useState([]);
-  const [updateStatusModalVisible, setUpdateStatusModalVisible] =
-    useState(false);
+  const [updateStatusModalVisible, setUpdateStatusModalVisible] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [collapsed, setCollapsed] = useState(false);
+  const [selectedMenuItem, setSelectedMenuItem] = useState('1');
 
   const staffId = localStorage.getItem("staffId");
   const navigate = useNavigate();
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
 
   const fetchStatusesByStaffId = async () => {
     try {
@@ -323,56 +338,104 @@ function ConstructionStaffPage() {
   const items = [
     {
       key: "1",
+      icon: <PieChartOutlined />,
       label: "Bookings",
-      children: (
-        <Table
-          dataSource={bookings}
-          columns={bookingColumns}
-          rowKey="bookingServiceId"
-        />
-      ),
+    },
+    {
+      key: "2",
+      icon: <DesktopOutlined />,
+      label: "My Statuses",
+    },
+    {
+      key: "3",
+      icon: <HomeOutlined />,
+      label: "Return to Homepage",
+    },
+    {
+      key: "4",
+      icon: <LogoutOutlined />,
+      label: "Logout",
     },
   ];
 
+  const handleMenuClick = (key) => {
+    setSelectedMenuItem(key);
+    switch (key) {
+      case '1':
+        // Already on Bookings page
+        break;
+      case '2':
+        fetchStatusesByStaffId();
+        break;
+      case '3':
+        backToHomepage();
+        break;
+      case '4':
+        handleLogout();
+        break;
+      default:
+        break;
+    }
+  };
+
+  const renderContent = () => {
+    switch (selectedMenuItem) {
+      case '1':
+        return (
+          <Table
+            dataSource={bookings}
+            columns={bookingColumns}
+            rowKey="bookingServiceId"
+          />
+        );
+      case '2':
+        return (
+          <Table
+            dataSource={staffStatuses}
+            columns={statusColumns}
+            rowKey="statusId"
+            scroll={{ x: true }}
+          />
+        );
+      default:
+        return <div>Select an option from the menu</div>;
+    }
+  };
+
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-start",
-          marginBottom: "20px",
-        }}
-      >
-        <Button onClick={backToHomepage} style={{ marginRight: "10px" }}>
-          Return to Homepage
-        </Button>
-        <Button
-          onClick={fetchStatusesByStaffId}
-          style={{ marginRight: "10px" }}
-        >
-          View My Statuses
-        </Button>
-        <Button onClick={handleLogout} type="primary" danger>
-          Logout
-        </Button>
-      </div>
-
-      <Tabs defaultActiveKey="1" items={items} />
-
-      <Modal
-        title="My Statuses"
-        visible={statusModalVisible}
-        onCancel={() => setStatusModalVisible(false)}
-        footer={null}
-        width={1200}
-      >
-        <Table
-          dataSource={staffStatuses}
-          columns={statusColumns}
-          rowKey="statusId"
-          scroll={{ x: true }}
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+        <div className="demo-logo-vertical" />
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={['1']}
+          mode="inline"
+          items={items}
+          onSelect={({ key }) => handleMenuClick(key)}
         />
-      </Modal>
+      </Sider>
+      <Layout>
+        <Header style={{ padding: 0, background: colorBgContainer }} />
+        <Content style={{ margin: '0 16px' }}>
+          <Breadcrumb style={{ margin: '16px 0' }}>
+            <Breadcrumb.Item>Construction Staff</Breadcrumb.Item>
+            <Breadcrumb.Item>{items.find(item => item.key === selectedMenuItem)?.label}</Breadcrumb.Item>
+          </Breadcrumb>
+          <div
+            style={{
+              padding: 24,
+              minHeight: 360,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
+            {renderContent()}
+          </div>
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>
+          Koi Pond Building ©{new Date().getFullYear()} Created by Your Company
+        </Footer>
+      </Layout>
 
       <Modal
         title="Update Booking Status"
@@ -387,7 +450,7 @@ function ConstructionStaffPage() {
         <p>Customer: {selectedBooking?.customer?.fullName}</p>
         <p>Service: {selectedBooking?.service?.serviceName}</p>
       </Modal>
-    </div>
+    </Layout>
   );
 }
 

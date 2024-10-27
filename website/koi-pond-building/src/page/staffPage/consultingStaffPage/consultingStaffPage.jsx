@@ -11,6 +11,7 @@ import {
   Breadcrumb,
   Upload,
   Select,
+  message,
 } from "antd";
 import {
   FileOutlined,
@@ -205,6 +206,26 @@ function ConsultingStaffPage() {
     },
   ];
 
+  const handleUpdateStatus = async (statusId) => {
+    try {
+      const response = await api.patch(`/status/update-number-of-update/${statusId}`);
+      if (response.data.code === 999) {
+        message.success("Status updated successfully");
+        // Refresh the statuses after update
+        fetchStatusesByStaffId();
+      } else if (response.data.code === 1025) {
+        message.error("Status does not exist");
+      } else if (response.data.code === 1026) {
+        message.warning("You can't update more than 3 times!");
+      } else {
+        message.error("Failed to update status");
+      }
+    } catch (err) {
+      console.error("Error updating status:", err);
+      message.error("An error occurred while updating the status");
+    }
+  };
+
   const statusColumns = [
     {
       title: "Order ID",
@@ -252,6 +273,18 @@ function ConsultingStaffPage() {
       title: "Number of Updates",
       dataIndex: "numberOfUpdate",
       key: "numberOfUpdate",
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <Button 
+          onClick={() => handleUpdateStatus(record.statusId)}
+          disabled={record.complete || record.numberOfUpdate >= 3}
+        >
+          Update Status
+        </Button>
+      ),
     },
   ];
 
