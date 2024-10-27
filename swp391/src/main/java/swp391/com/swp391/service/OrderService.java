@@ -117,4 +117,8 @@ public class OrderService {
         order.setDesign(design);
         return orderRepository.save(order);
     }
+
+    public void deleteOrderByOrderId(int id){
+        orderRepository.deleteById(id);
+    }
 }

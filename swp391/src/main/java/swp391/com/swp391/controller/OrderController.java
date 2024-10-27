@@ -73,4 +73,11 @@ public class OrderController {
         return new ApiResponse<Order>
                 (9997, "Update Design",orderService.updateDesignById(id, request));
     }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @DeleteMapping("/delete/{id}")
+    public ApiResponse<String> deleteOrderByOrderId(@PathVariable int id){
+        orderService.deleteOrderByOrderId(id);
+        return new ApiResponse<String>(9876, "Delete Order", "Delete Successfully!");
+    }
 }
