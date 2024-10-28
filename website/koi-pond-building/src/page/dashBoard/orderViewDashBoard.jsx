@@ -153,6 +153,10 @@ const OrderViewDashboard = () => {
   };
 
   const toggleCreateStatusModal = () => {
+    if (statuses.length >= 9) {
+      toast.warning("Maximum number of statuses (9) reached");
+      return;
+    }
     setShowCreateStatusModal(!showCreateStatusModal);
   };
 
@@ -1314,10 +1318,28 @@ const OrderViewDashboard = () => {
                 <button
                   onClick={toggleCreateStatusModal}
                   className="create-status-btn"
+                  disabled={statuses.length >= 9}
+                  style={
+                    statuses.length >= 9
+                      ? { opacity: 0.5, cursor: "not-allowed" }
+                      : {}
+                  }
                 >
                   Create Status
                 </button>
               </div>
+              {statuses.length >= 9 && (
+                <p
+                  className="status-limit-warning"
+                  style={{
+                    color: "#ff4444",
+                    marginTop: "10px",
+                    fontSize: "14px",
+                  }}
+                >
+                  Maximum number of statuses (9) reached
+                </p>
+              )}
             </>
           )}
           {activeTab === "transaction" && (

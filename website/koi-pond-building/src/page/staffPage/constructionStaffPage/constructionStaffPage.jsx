@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table, Modal, Tabs, message, Layout, Menu, theme, Breadcrumb } from "antd";
+import {
+  Button,
+  Table,
+  Modal,
+  Tabs,
+  message,
+  Layout,
+  Menu,
+  theme,
+  Breadcrumb,
+} from "antd";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +21,7 @@ import {
   UserOutlined,
   HomeOutlined,
   LogoutOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -19,10 +29,11 @@ function ConstructionStaffPage() {
   const [bookings, setBookings] = useState([]);
   const [statusModalVisible, setStatusModalVisible] = useState(false);
   const [staffStatuses, setStaffStatuses] = useState([]);
-  const [updateStatusModalVisible, setUpdateStatusModalVisible] = useState(false);
+  const [updateStatusModalVisible, setUpdateStatusModalVisible] =
+    useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedMenuItem, setSelectedMenuItem] = useState('1');
+  const [selectedMenuItem, setSelectedMenuItem] = useState("1");
 
   const staffId = localStorage.getItem("staffId");
   const navigate = useNavigate();
@@ -324,13 +335,16 @@ function ConstructionStaffPage() {
     },
   ];
 
+  const backToHomepage = () => {
+    navigate("/");
+  };
+
   const handleLogout = () => {
-    // Clear all staff-related items from localStorage
-    localStorage.removeItem("staffAuthToken");
+    // Clear all staff-related data from localStorage
     localStorage.removeItem("staffId");
-    localStorage.removeItem("staffUser");
+    localStorage.removeItem("staffAuthToken");
+    navigate("/login-staff");
     toast.success("Logged out successfully");
-    navigate("/login-staff", { replace: true });
   };
 
   const items = [
@@ -346,6 +360,11 @@ function ConstructionStaffPage() {
     },
     {
       key: "3",
+      icon: <HomeOutlined />,
+      label: "Return to Homepage",
+    },
+    {
+      key: "4",
       icon: <LogoutOutlined />,
       label: "Logout",
     },
@@ -354,13 +373,16 @@ function ConstructionStaffPage() {
   const handleMenuClick = (key) => {
     setSelectedMenuItem(key);
     switch (key) {
-      case '1':
+      case "1":
         // Already on Bookings page
         break;
-      case '2':
+      case "2":
         fetchStatusesByStaffId();
         break;
-      case '3':
+      case "3":
+        backToHomepage();
+        break;
+      case "4":
         handleLogout();
         break;
       default:
@@ -370,7 +392,7 @@ function ConstructionStaffPage() {
 
   const renderContent = () => {
     switch (selectedMenuItem) {
-      case '1':
+      case "1":
         return (
           <Table
             dataSource={bookings}
@@ -378,7 +400,7 @@ function ConstructionStaffPage() {
             rowKey="bookingServiceId"
           />
         );
-      case '2':
+      case "2":
         return (
           <Table
             dataSource={staffStatuses}
@@ -393,12 +415,16 @@ function ConstructionStaffPage() {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+      >
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={["1"]}
           mode="inline"
           items={items}
           onSelect={({ key }) => handleMenuClick(key)}
@@ -406,10 +432,12 @@ function ConstructionStaffPage() {
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }} />
-        <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
+        <Content style={{ margin: "0 16px" }}>
+          <Breadcrumb style={{ margin: "16px 0" }}>
             <Breadcrumb.Item>Construction Staff</Breadcrumb.Item>
-            <Breadcrumb.Item>{items.find(item => item.key === selectedMenuItem)?.label}</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {items.find((item) => item.key === selectedMenuItem)?.label}
+            </Breadcrumb.Item>
           </Breadcrumb>
           <div
             style={{
@@ -422,7 +450,7 @@ function ConstructionStaffPage() {
             {renderContent()}
           </div>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>
+        <Footer style={{ textAlign: "center" }}>
           Koi Pond Building ©{new Date().getFullYear()} Created by Your Company
         </Footer>
       </Layout>

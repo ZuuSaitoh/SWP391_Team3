@@ -208,7 +208,9 @@ function ConsultingStaffPage() {
 
   const handleUpdateStatus = async (statusId) => {
     try {
-      const response = await api.patch(`/status/update-number-of-update/${statusId}`);
+      const response = await api.patch(
+        `/status/update-number-of-update/${statusId}`
+      );
       if (response.data.code === 999) {
         message.success("Status updated successfully");
         // Refresh the statuses after update
@@ -278,7 +280,7 @@ function ConsultingStaffPage() {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <Button 
+        <Button
           onClick={() => handleUpdateStatus(record.statusId)}
           disabled={record.complete || record.numberOfUpdate >= 3}
         >
@@ -663,14 +665,15 @@ function ConsultingStaffPage() {
     }
   };
 
+  const handleReturnHome = () => {
+    navigate("/");
+  };
 
   const handleLogout = () => {
-    // Clear all staff-related items from localStorage
-    localStorage.removeItem("staffAuthToken");
     localStorage.removeItem("staffId");
-    localStorage.removeItem("staffUser");
+    localStorage.removeItem("staffAuthToken");
+    navigate("/login-staff");
     toast.success("Logged out successfully");
-    navigate("/login-staff", { replace: true });
   };
 
   return (
@@ -696,6 +699,14 @@ function ConsultingStaffPage() {
           />
         </div>
         <div>
+          <Button
+            type="primary"
+            icon={<HomeOutlined />}
+            onClick={handleReturnHome}
+            style={{ marginRight: "16px" }}
+          >
+            Return to Homepage
+          </Button>
           <Button
             type="primary"
             danger
