@@ -48,53 +48,54 @@ function LoginStaff() {
 
   const handleLogin = async (values) => {
     try {
-      console.log("Sending staff login data:", values);
       const response = await api.post("/staff/auth/token", values);
       const token = response.data.result.token;
       const isAuthenticated = response.data.result.authenticated;
 
-      console.log("Staff login response:", response.data);
-
-      if (isAuthenticated) {
+      if (isAuthenticated && token) {
         const decodedToken = jwtDecode(token);
-        console.log("Decoded token:", decodedToken);
+        console.log("Decoded token:", decodedToken); // For debugging
 
-        const { staffID, sub: username, role } = decodedToken;
+        // Clear any existing tokens first
+        localStorage.clear();
 
+        // Store new token and user info
         localStorage.setItem("staffAuthToken", token);
-        console.log(
-          "Token stored in localStorage:",
-          localStorage.getItem("staffAuthToken")
-        ); // Add this line
-        localStorage.setItem(
-          "staffUser",
-          JSON.stringify({ id: staffID, username, role })
-        );
-        localStorage.setItem("staffId", staffID);
+        localStorage.setItem("staffUser", JSON.stringify({
+          id: decodedToken.staffID,
+          username: decodedToken.sub,
+          role: decodedToken.role
+        }));
+        localStorage.setItem("staffId", decodedToken.staffID);
 
         toast.success("Logged in successfully");
 
-        if (role === "Manager") {
-          navigate("/dashboard");
-        } else if (role === "Consulting Staff") {
-          navigate("/consultingStaffPage/:staffId");
-        } else if (role === "Design Staff") {
-          navigate("/designStaffPage/:staffId");
-        } else if (role === "Construction Staff") {
-          navigate("/constructionStaffPage/:staffId");
-        } else {
-          toast.error("Invalid role.");
+        // Navigate based on role
+        switch (decodedToken.role) {
+          case "Manager":
+            navigate("/dashboard");
+            break;
+          case "Consulting Staff":
+            navigate(`/consultingStaffPage/${decodedToken.staffID}`);
+            break;
+          case "Design Staff":
+            navigate(`/designStaffPage/${decodedToken.staffID}`);
+            break;
+          case "Construction Staff":
+            navigate(`/constructionStaffPage/${decodedToken.staffID}`);
+            break;
+          default:
+            toast.error("Invalid role");
+            localStorage.clear();
+            break;
         }
       } else {
-        // toast.error("Authentication failed.");
+        toast.error("Authentication failed");
       }
     } catch (err) {
       console.error("Login error:", err);
-      toast.error(
-        `Login failed: ${
-          err.response?.data?.message || "Authentication failed."
-        }`
-      );
+      toast.error(err.response?.data?.message || "Login failed");
+      localStorage.clear();
     }
   };
 

@@ -36,12 +36,14 @@ import {
   faCalendarCheck,
   faCheckCircle,
   faClipboardQuestion,
+  faPercentage,
 } from "@fortawesome/free-solid-svg-icons";
 import SheetDataViewComponent from "./SheetDataView";
 import StatusViewComponent from "./StatusView";
 import uploadFile from "../../utils/file";
 import { Upload, Modal, Form, Input, Select, Button } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import DiscountViewDashBoard from "./DiscountViewDashBoard";
 
 ChartJS.register(
   CategoryScale,
@@ -1353,10 +1355,12 @@ const Dashboard = () => {
 
   //logout
   const handleLogout = () => {
+    // Clear all staff-related items from localStorage
     localStorage.removeItem("staffAuthToken");
+    localStorage.removeItem("staffId");
     localStorage.removeItem("staffUser");
     toast.success("Logged out successfully");
-    navigate("/login-staff");
+    navigate("/login-staff", { replace: true });
   };
 
   //view service details
@@ -1864,6 +1868,7 @@ const Dashboard = () => {
             faClipboardQuestion,
             "Customer Requests"
           )}
+          {renderSidebarButton("discounts", faPercentage, "Discounts")}
         </div>
         <div className="sidebar-footer">
           <button
@@ -1932,6 +1937,8 @@ const Dashboard = () => {
             renderAcceptanceTests()
           ) : activeView === "customerRequests" ? (
             renderCustomerRequests()
+          ) : activeView === "discounts" ? (
+            <DiscountViewDashBoard />
           ) : null}
         </div>
         {selectedCustomerId && (

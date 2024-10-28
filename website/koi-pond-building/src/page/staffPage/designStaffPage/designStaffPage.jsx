@@ -45,8 +45,7 @@ function getItem(label, key, icon, children) {
 const items = [
   getItem('Designs', '1', <PieChartOutlined />),
   getItem('My Statuses', '2', <DesktopOutlined />),
-  getItem('Return to Homepage', '3', <UserOutlined />),
-  getItem('Logout', '4', <LogoutOutlined />),
+  getItem('Logout', '3', <LogoutOutlined />),
 ];
 
 function DesignStaffPage() {
@@ -104,9 +103,6 @@ function DesignStaffPage() {
 
   const navigate = useNavigate();
 
-  const backToHomepage = () => {
-    navigate("/");
-  };
 
   const handleSubmit = async (values) => {
     try {
@@ -564,9 +560,12 @@ function DesignStaffPage() {
   );
 
   const handleLogout = () => {
+    // Clear all staff-related items from localStorage
+    localStorage.removeItem("staffAuthToken");
     localStorage.removeItem("staffId");
     localStorage.removeItem("staffUser");
-    navigate("/login-staff");
+    toast.success("Logged out successfully");
+    navigate("/login-staff", { replace: true });
   };
 
   const handleMenuClick = (key) => {
@@ -579,9 +578,6 @@ function DesignStaffPage() {
         fetchStatusesByStaffId();
         break;
       case '3':
-        backToHomepage();
-        break;
-      case '4':
         handleLogout();
         break;
       default:
