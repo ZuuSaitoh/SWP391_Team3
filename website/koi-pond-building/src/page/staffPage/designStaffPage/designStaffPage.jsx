@@ -60,7 +60,7 @@ function DesignStaffPage() {
   const [uploading, setUploading] = useState(false);
   const [editingDesign, setEditingDesign] = useState(null);
   const [editForm] = Form.useForm();
-  const [modalMode, setModalMode] = useState("create"); // New state to track modal mode
+  const [modalMode, setModalMode] = useState("create"); 
   const [statusModalVisible, setStatusModalVisible] = useState(false);
   const [staffStatuses, setStaffStatuses] = useState([]);
   const [updatingStatus, setUpdatingStatus] = useState(null);
@@ -149,7 +149,7 @@ function DesignStaffPage() {
 
       if (response.data) {
         const newOrUpdatedDesign = {
-          ...response.data.result, // Use result from the response
+          ...response.data.result, 
           designId: editingDesign
             ? editingDesign.designId
             : response.data.result.designId,
@@ -160,7 +160,7 @@ function DesignStaffPage() {
               : "Unknown",
           },
           designDate: new Date().toISOString(),
-          imageData: imageUrl, // Ensure the new image URL is used
+          imageData: imageUrl, 
         };
 
         setDatas((prevData) => {
@@ -270,7 +270,10 @@ function DesignStaffPage() {
       const staffId = localStorage.getItem("staffId");
       const response = await api.get(`/status/fetchAll/staff/${staffId}`);
       if (response.data.code === 9999) {
-        setStaffStatuses(response.data.result);
+        const sortedStatuses = response.data.result.sort((a, b) => 
+          new Date(b.statusDate) - new Date(a.statusDate)
+        );
+        setStaffStatuses(sortedStatuses);
         setStatusModalVisible(true);
       } else {
         console.warn(
@@ -294,7 +297,6 @@ function DesignStaffPage() {
         `http://localhost:8080/status/update-number-of-update/${statusId}`
       );
       if (response.data.code === 999) {
-        // Update the local state with the new data
         setStaffStatuses((prevStatuses) =>
           prevStatuses.map((status) =>
             status.statusId === statusId ? response.data.result : status
@@ -379,6 +381,34 @@ function DesignStaffPage() {
     setUpdateDesignModalVisible(true);
   };
 
+  // Add this new function near your other handlers
+  const handleUpdateComplete = async (statusId) => {
+    try {
+      const response = await api.put(`/status/update-complete/${statusId}`, {
+        complete: true,
+        rejectReason: "" 
+      });
+      
+      if (response.data.code === 999) {
+        setStaffStatuses((prevStatuses) =>
+          prevStatuses.map((status) =>
+            status.statusId === statusId ? { ...status, complete: true } : status
+          )
+        );
+        toast.success("Status updated successfully");
+      } else if (response.data.code === 1025) {
+        toast.error("Status does not exist");
+      } else {
+        toast.error("Failed to update status");
+      }
+    } catch (err) {
+      console.error("Error updating status:", err);
+      toast.error(
+        "Error updating status: " + (err.response?.data?.message || err.message)
+      );
+    }
+  };
+
   const statusColumns = [
     {
       title: "Order ID",
@@ -415,7 +445,17 @@ function DesignStaffPage() {
       title: "Complete",
       dataIndex: "complete",
       key: "complete",
-      render: (complete) => (complete ? "Yes" : "No"),
+      render: (complete, record) => (
+        <div>
+          <Button
+            onClick={() => handleUpdateComplete(record.statusId)}
+            type={complete ? "primary" : "default"}
+            disabled={complete}
+          >
+            {complete ? "Completed" : "Update Complete"}
+          </Button>
+        </div>
+      ),
     },
     {
       title: "Number of Updates",

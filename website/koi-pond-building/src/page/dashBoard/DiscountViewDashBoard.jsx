@@ -20,6 +20,7 @@ const DiscountViewDashBoard = () => {
     try {
       const response = await axios.get("http://localhost:8080/discounts/fetchAll");
       if (response.data.code === 9999) {
+        console.log("Fetched discounts:", response.data.result); 
         setDiscounts(response.data.result);
       } else {
         toast.error("Failed to fetch discounts");
@@ -34,7 +35,6 @@ const DiscountViewDashBoard = () => {
 
   const handleCreateDiscount = async (values) => {
     try {
-      // Get staff user from localStorage
       const staffUser = JSON.parse(localStorage.getItem("staffUser"));
       console.log("Staff user from localStorage:", staffUser);
 
@@ -44,7 +44,7 @@ const DiscountViewDashBoard = () => {
       }
 
       const response = await axios.post("http://localhost:8080/discounts/create", {
-        discountAuthorId: staffUser.id, // Use staffUser.id directly
+        discountAuthorId: staffUser.id, 
         discountName: values.discountName,
         discountPercent: values.discountPercentage,
         status: true
@@ -67,12 +67,12 @@ const DiscountViewDashBoard = () => {
   };
 
   const handleEditDiscount = (record) => {
-    console.log("Editing discount:", record); // For debugging
+    console.log("Editing discount:", record); 
     setEditingDiscount(record);
     editForm.setFieldsValue({
       discountName: record.discountName,
       discountPercentage: record.discountPercent,
-      status: record.status === true // Ensure boolean value
+      status: record.status === true 
     });
     setIsEditModalVisible(true);
   };
@@ -86,7 +86,6 @@ const DiscountViewDashBoard = () => {
         return;
       }
 
-      // Convert checkbox value to boolean
       const status = values.status || false;
 
       const response = await axios.put(
@@ -101,9 +100,7 @@ const DiscountViewDashBoard = () => {
 
       console.log("Update response:", response.data);
 
-      // Changed from 9876 to 1234 based on your API response
       if (response.data.code === 1234) {
-        // First update the local state
         setDiscounts(prevDiscounts => 
           prevDiscounts.map(discount => 
             discount.discountId === editingDiscount.discountId
@@ -117,15 +114,12 @@ const DiscountViewDashBoard = () => {
           )
         );
 
-        // Then close the modal and reset form
         setIsEditModalVisible(false);
         setEditingDiscount(null);
         editForm.resetFields();
 
-        // Show success message
         toast.success("Discount updated successfully");
 
-        // Finally fetch fresh data
         fetchDiscounts();
       } else {
         const errorMessage = response.data.message || "Failed to update discount";
@@ -145,7 +139,7 @@ const DiscountViewDashBoard = () => {
         const response = await axios.delete(
           `http://localhost:8080/discounts/delete/${discountId}`
         );
-        if (response.data.code === 9876) { // Changed from 3333 to 9876
+        if (response.data.code === 9876) { 
           toast.success("Discount deleted successfully");
           fetchDiscounts();
         } else {
@@ -192,10 +186,10 @@ const DiscountViewDashBoard = () => {
     },
     {
       title: "Author",
-      dataIndex: "discountAuthor",
-      key: "discountAuthor",
+      dataIndex: ["staff", "username"], 
+      key: "author",
       className: "column-header",
-      render: (author) => author?.username || "N/A",
+      render: (text, record) => record.staff?.username || "N/A",
     },
     {
       title: "Action",

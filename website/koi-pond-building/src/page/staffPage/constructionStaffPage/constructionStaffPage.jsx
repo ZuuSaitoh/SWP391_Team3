@@ -115,20 +115,20 @@ function ConstructionStaffPage() {
 
   const handleUpdateStatusInView = async (statusId) => {
     try {
-      const response = await api.patch(
-        `http://localhost:8080/status/update-number-of-update/${statusId}`
-      );
+      const response = await api.put(`/status/update-complete/${statusId}`, {
+        complete: true,
+        rejectReason: "" 
+      });
+      
       if (response.data.code === 999) {
         setStaffStatuses((prevStatuses) =>
           prevStatuses.map((status) =>
-            status.statusId === statusId ? response.data.result : status
+            status.statusId === statusId ? { ...status, complete: true } : status
           )
         );
         toast.success("Status updated successfully");
-      } else if (response.data.code === 1027) {
-        toast.error(
-          "You can't change the status because this status has been set to done!"
-        );
+      } else if (response.data.code === 1025) {
+        toast.error("Status does not exist");
       } else {
         toast.error("Failed to update status");
       }
@@ -253,22 +253,16 @@ function ConstructionStaffPage() {
       title: "Complete",
       dataIndex: "complete",
       key: "complete",
-      render: (complete) => (complete ? "Yes" : "No"),
-    },
-    {
-      title: "Number of Updates",
-      dataIndex: "numberOfUpdate",
-      key: "numberOfUpdate",
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_, record) => (
-        <Button onClick={() => handleUpdateStatusInView(record.statusId)}>
-          Update Status
+      render: (complete, record) => (
+        <Button
+          onClick={() => handleUpdateStatusInView(record.statusId)}
+          type={complete ? "primary" : "default"}
+          disabled={complete}
+        >
+          {complete ? "Completed" : "Update Complete"}
         </Button>
       ),
-    },
+    }
   ];
 
   const bookingColumns = [
@@ -278,9 +272,19 @@ function ConstructionStaffPage() {
       key: "bookingServiceId",
     },
     {
-      title: "Customer",
+      title: "Customer Name",
       dataIndex: ["customer", "fullName"],
       key: "customerName",
+    },
+    {
+      title: "Customer Phone",
+      dataIndex: ["customer", "phone"],
+      key: "customerPhone",
+    },
+    {
+      title: "Customer Address",
+      dataIndex: ["customer", "address"],
+      key: "customerAddress",
     },
     {
       title: "Service",
@@ -340,7 +344,11 @@ function ConstructionStaffPage() {
   };
 
   const handleLogout = () => {
+<<<<<<< Updated upstream
     // Clear all staff-related data from localStorage
+=======
+    localStorage.removeItem("staffAuthToken");
+>>>>>>> Stashed changes
     localStorage.removeItem("staffId");
     localStorage.removeItem("staffAuthToken");
     navigate("/login-staff");

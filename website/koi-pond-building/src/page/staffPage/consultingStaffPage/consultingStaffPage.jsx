@@ -59,7 +59,10 @@ function ConsultingStaffPage() {
       const response = await api.get(
         `http://localhost:8080/orders/staff/fetchAll/${staffId}`
       );
-      setOrders(response.data.result);
+      const sortedOrders = response.data.result.sort((a, b) => {
+        return new Date(b.order_date) - new Date(a.order_date);
+      });
+      setOrders(sortedOrders);
     } catch (err) {
       console.error(err);
       toast.error(err.response ? err.response.data : "An error occurred");
@@ -101,7 +104,10 @@ function ConsultingStaffPage() {
     try {
       const response = await api.get(`/status/fetchAll/staff/${staffId}`);
       if (response.data.code === 9999) {
-        setStaffStatuses(response.data.result);
+        const sortedStatuses = response.data.result.sort((a, b) => {
+          return new Date(b.statusDate) - new Date(a.statusDate);
+        });
+        setStaffStatuses(sortedStatuses);
         setStatusModalVisible(true);
       } else {
         console.warn(
@@ -208,17 +214,22 @@ function ConsultingStaffPage() {
 
   const handleUpdateStatus = async (statusId) => {
     try {
+<<<<<<< Updated upstream
       const response = await api.patch(
         `/status/update-number-of-update/${statusId}`
       );
+=======
+      const response = await api.put(`/status/update-complete/${statusId}`, {
+        complete: true,
+        rejectReason: "" 
+      });
+      
+>>>>>>> Stashed changes
       if (response.data.code === 999) {
         message.success("Status updated successfully");
-        // Refresh the statuses after update
         fetchStatusesByStaffId();
       } else if (response.data.code === 1025) {
         message.error("Status does not exist");
-      } else if (response.data.code === 1026) {
-        message.warning("You can't update more than 3 times!");
       } else {
         message.error("Failed to update status");
       }
@@ -255,7 +266,7 @@ function ConsultingStaffPage() {
       key: "customerAddress",
     },
     {
-      title: "Status Description",
+      title: "Status Description", 
       dataIndex: "statusDescription",
       key: "statusDescription",
     },
@@ -269,6 +280,7 @@ function ConsultingStaffPage() {
       title: "Complete",
       dataIndex: "complete",
       key: "complete",
+<<<<<<< Updated upstream
       render: (complete) => (complete ? "Yes" : "No"),
     },
     {
@@ -280,14 +292,18 @@ function ConsultingStaffPage() {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
+=======
+      render: (complete, record) => (
+>>>>>>> Stashed changes
         <Button
           onClick={() => handleUpdateStatus(record.statusId)}
-          disabled={record.complete || record.numberOfUpdate >= 3}
+          type={complete ? "primary" : "default"}
+          disabled={complete}
         >
-          Update Status
+          {complete ? "Completed" : "Update Complete"}
         </Button>
       ),
-    },
+    }
   ];
 
   const acceptanceColumns = [
