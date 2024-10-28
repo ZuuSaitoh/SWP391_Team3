@@ -208,7 +208,9 @@ function ConsultingStaffPage() {
 
   const handleUpdateStatus = async (statusId) => {
     try {
-      const response = await api.patch(`/status/update-number-of-update/${statusId}`);
+      const response = await api.patch(
+        `/status/update-number-of-update/${statusId}`
+      );
       if (response.data.code === 999) {
         message.success("Status updated successfully");
         // Refresh the statuses after update
@@ -278,7 +280,7 @@ function ConsultingStaffPage() {
       title: "Actions",
       key: "actions",
       render: (_, record) => (
-        <Button 
+        <Button
           onClick={() => handleUpdateStatus(record.statusId)}
           disabled={record.complete || record.numberOfUpdate >= 3}
         >
@@ -669,8 +671,9 @@ function ConsultingStaffPage() {
 
   const handleLogout = () => {
     localStorage.removeItem("staffId");
-    // Add any other items you want to remove from localStorage
+    localStorage.removeItem("staffAuthToken");
     navigate("/login-staff");
+    toast.success("Logged out successfully");
   };
 
   return (

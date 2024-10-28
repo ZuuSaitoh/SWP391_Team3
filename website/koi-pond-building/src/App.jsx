@@ -34,12 +34,15 @@ function App() {
       <ScrollToTop />
       <Routes>
         {/* Public routes */}
+
+        <Route path="/login" element={<LoginPage />} />
+
+        <Route path="/login-staff" element={<LoginStaff />} />
+
         <Route path="/" element={<HomePage />} />
         <Route path="/service-design" element={<ServiceDesign />} />
         <Route path="/service-clean" element={<ServiceClean />} />
         <Route path="/service-maintenance" element={<ServiceMaintenance />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/login-staff" element={<LoginStaff />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
 

@@ -43,10 +43,10 @@ function getItem(label, key, icon, children) {
 }
 
 const items = [
-  getItem('Designs', '1', <PieChartOutlined />),
-  getItem('My Statuses', '2', <DesktopOutlined />),
-  getItem('Return to Homepage', '3', <UserOutlined />),
-  getItem('Logout', '4', <LogoutOutlined />),
+  getItem("Designs", "1", <PieChartOutlined />),
+  getItem("My Statuses", "2", <DesktopOutlined />),
+  getItem("Return to Homepage", "3", <UserOutlined />),
+  getItem("Logout", "4", <LogoutOutlined />),
 ];
 
 function DesignStaffPage() {
@@ -74,7 +74,7 @@ function DesignStaffPage() {
   const staffId = localStorage.getItem("staffId");
 
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedMenuItem, setSelectedMenuItem] = useState('1');
+  const [selectedMenuItem, setSelectedMenuItem] = useState("1");
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -564,24 +564,26 @@ function DesignStaffPage() {
   );
 
   const handleLogout = () => {
+    // Clear all staff-related data from localStorage
     localStorage.removeItem("staffId");
-    localStorage.removeItem("staffUser");
+    localStorage.removeItem("staffAuthToken"); // Add this line
     navigate("/login-staff");
+    toast.success("Logged out successfully");
   };
 
   const handleMenuClick = (key) => {
     setSelectedMenuItem(key);
     switch (key) {
-      case '1':
+      case "1":
         // Already on Designs page
         break;
-      case '2':
+      case "2":
         fetchStatusesByStaffId();
         break;
-      case '3':
+      case "3":
         backToHomepage();
         break;
-      case '4':
+      case "4":
         handleLogout();
         break;
       default:
@@ -591,10 +593,10 @@ function DesignStaffPage() {
 
   const renderContent = () => {
     switch (selectedMenuItem) {
-      case '1':
+      case "1":
         return (
           <>
-            <Button onClick={handleAddNew} style={{ marginBottom: '20px' }}>
+            <Button onClick={handleAddNew} style={{ marginBottom: "20px" }}>
               Add new design
             </Button>
             <Table
@@ -605,7 +607,7 @@ function DesignStaffPage() {
             />
           </>
         );
-      case '2':
+      case "2":
         return (
           <Table
             dataSource={staffStatuses}
@@ -620,12 +622,16 @@ function DesignStaffPage() {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+      >
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={["1"]}
           mode="inline"
           items={items}
           onSelect={({ key }) => handleMenuClick(key)}
@@ -633,10 +639,12 @@ function DesignStaffPage() {
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }} />
-        <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
+        <Content style={{ margin: "0 16px" }}>
+          <Breadcrumb style={{ margin: "16px 0" }}>
             <Breadcrumb.Item>Design Staff</Breadcrumb.Item>
-            <Breadcrumb.Item>{items.find(item => item.key === selectedMenuItem)?.label}</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {items.find((item) => item.key === selectedMenuItem)?.label}
+            </Breadcrumb.Item>
           </Breadcrumb>
           <div
             style={{
@@ -649,7 +657,7 @@ function DesignStaffPage() {
             {renderContent()}
           </div>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>
+        <Footer style={{ textAlign: "center" }}>
           Koi Pond Building ©{new Date().getFullYear()} Created by Your Company
         </Footer>
       </Layout>

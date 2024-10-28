@@ -596,22 +596,6 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
                   <p>
                     <strong>Updates:</strong> {status.numberOfUpdate}
                   </p>
-                  {!status.complete && (
-                    <div className="action-buttons">
-                      <button
-                        onClick={() => handleAccept(status.statusId)}
-                        className="action-btn accept-btn"
-                      >
-                        Accept
-                      </button>
-                      <button
-                        onClick={() => handleReject(status)}
-                        className="action-btn reject-btn"
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  )}
                 </div>
               </div>
             ))}
