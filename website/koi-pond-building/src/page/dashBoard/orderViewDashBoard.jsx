@@ -13,23 +13,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import uploadFile from "../../utils/file";
 
-// Add this constant at the top of the file, outside the component
-const STAGE_DEFINITIONS = [
-  { id: 1, name: "Tu Van:", role: "Consulting Staff" },
-  {
-    id: 2,
-    name: "Hop dong xay dung ho ca:",
-    role: "Consulting Staff",
-  },
-  { id: 3, name: "Phi thiet ke", role: "Consulting Staff" },
-  { id: 4, name: "Design ho ca", role: "Design Staff" },
-  { id: 5, name: "Phi vat lieu", role: "Consulting Staff" },
-  { id: 6, name: "Xay dung", role: "Construction Staff" },
-  { id: 7, name: "Hop dong nghiem thu", role: "Consulting Staff" },
-  { id: 8, name: "Phi xay dung", role: "Consulting Staff" },
-  { id: 9, name: "Hoan thanh du an", role: "Consulting Staff" },
-];
-
 const OrderViewDashboard = () => {
   const [order, setOrder] = useState(null);
   const [contracts, setContracts] = useState([]);
@@ -64,12 +47,10 @@ const OrderViewDashboard = () => {
     description: "",
   });
   const [showViewContractsModal, setShowViewContractsModal] = useState(false);
-  const [showCreateAcceptanceModal, setShowCreateAcceptanceModal] =
-    useState(false);
+  const [showCreateAcceptanceModal, setShowCreateAcceptanceModal] = useState(false);
   const [showViewAcceptanceModal, setShowViewAcceptanceModal] = useState(false);
   const [acceptances, setAcceptances] = useState([]);
-  const [showUpdateAcceptanceModal, setShowUpdateAcceptanceModal] =
-    useState(false);
+  const [showUpdateAcceptanceModal, setShowUpdateAcceptanceModal] = useState(false);
   const [currentAcceptance, setCurrentAcceptance] = useState(null);
 
   useEffect(() => {
@@ -576,51 +557,11 @@ const OrderViewDashboard = () => {
   const CreateStatusModal = ({ onClose }) => {
     const [description, setDescription] = useState("");
     const [selectedStaffId, setSelectedStaffId] = useState("");
-    const [selectedStage, setSelectedStage] = useState("");
-    const [selectedStaffRole, setSelectedStaffRole] = useState("");
-
-    // Get the current stage based on existing statuses
-    const currentStageNumber = statuses.length + 1;
-
-    // Filter staff list based on the required role for the current stage
-    const getFilteredStaffList = () => {
-      const currentStageDefinition = STAGE_DEFINITIONS[currentStageNumber - 1];
-      if (!currentStageDefinition) return [];
-
-      return staffList.filter(
-        (staff) => staff.role === currentStageDefinition.role
-      );
-    };
-
-    const handleStaffChange = (e) => {
-      const staffId = e.target.value;
-      setSelectedStaffId(staffId);
-
-      // Find the selected staff's role
-      const staff = staffList.find((s) => s.staffId.toString() === staffId);
-      setSelectedStaffRole(staff?.role || "");
-    };
 
     const handleSubmit = (e) => {
       e.preventDefault();
-
-      // Validate that the selected staff has the correct role for the current stage
-      const currentStageDefinition = STAGE_DEFINITIONS[currentStageNumber - 1];
-      if (!currentStageDefinition) {
-        toast.error("All stages have been completed");
-        return;
-      }
-
-      if (selectedStaffRole !== currentStageDefinition.role) {
-        toast.error(`This stage requires a ${currentStageDefinition.role}`);
-        return;
-      }
-
-      // Include the stage information in the description
-      const stageDescription = `Stage ${currentStageNumber}: ${currentStageDefinition.name} - ${description}`;
-
       handleCreateStatus({
-        statusDescription: stageDescription,
+        statusDescription: description,
         staffId: selectedStaffId,
       });
     };
@@ -633,27 +574,6 @@ const OrderViewDashboard = () => {
         >
           <h2>Create New Status</h2>
           <form onSubmit={handleSubmit}>
-            <div>
-              <label>Current Stage:</label>
-              <input
-                type="text"
-                value={
-                  STAGE_DEFINITIONS[currentStageNumber - 1]?.name ||
-                  "All stages completed"
-                }
-                readOnly
-                className="readonly-input"
-              />
-            </div>
-            <div>
-              <label>Required Role:</label>
-              <input
-                type="text"
-                value={STAGE_DEFINITIONS[currentStageNumber - 1]?.role || "N/A"}
-                readOnly
-                className="readonly-input"
-              />
-            </div>
             <div>
               <label htmlFor="statusDescription">Status Description:</label>
               <textarea
@@ -670,11 +590,11 @@ const OrderViewDashboard = () => {
               <select
                 id="staffId"
                 value={selectedStaffId}
-                onChange={handleStaffChange}
+                onChange={(e) => setSelectedStaffId(e.target.value)}
                 required
               >
                 <option value="">Select a staff member</option>
-                {getFilteredStaffList().map((staff) => (
+                {staffList.map((staff) => (
                   <option key={staff.staffId} value={staff.staffId}>
                     {staff.username} - {staff.role}
                   </option>
@@ -708,15 +628,12 @@ const OrderViewDashboard = () => {
 
   const handleCreateContract = async (contractData) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/contracts/create",
-        {
-          orderId: parseInt(orderId),
-          uploadStaff: currentStaffId,
-          imageData: contractData.imageData,
-          description: contractData.description,
-        }
-      );
+      const response = await axios.post("http://localhost:8080/contracts/create", {
+        orderId: parseInt(orderId),
+        uploadStaff: currentStaffId,
+        imageData: contractData.imageData,
+        description: contractData.description,
+      });
 
       if (response.data.code === 1000) {
         toast.success("Contract created successfully");
@@ -735,10 +652,7 @@ const OrderViewDashboard = () => {
   const ViewContractsModal = ({ contracts, onClose, onDelete }) => {
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div
-          className="status-modal-content"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
           <h2>Contract Information</h2>
           {contracts.map((contract, index) => (
             <div key={contract.contractId} className="status-item">
@@ -830,10 +744,7 @@ const OrderViewDashboard = () => {
 
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div
-          className="status-modal-content"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
           <h2>Create New Contract</h2>
           <form onSubmit={handleSubmit}>
             <div>
@@ -872,14 +783,10 @@ const OrderViewDashboard = () => {
   const handleDeleteContract = async (contractId) => {
     if (window.confirm("Are you sure you want to delete this contract?")) {
       try {
-        const response = await axios.delete(
-          `http://localhost:8080/contracts/delete/${contractId}`
-        );
+        const response = await axios.delete(`http://localhost:8080/contracts/delete/${contractId}`);
         if (response.data.code === 9876) {
           toast.success("Contract deleted successfully");
-          setContracts(
-            contracts.filter((contract) => contract.contractId !== contractId)
-          );
+          setContracts(contracts.filter(contract => contract.contractId !== contractId));
         } else {
           toast.error("Failed to delete contract");
         }
@@ -942,10 +849,7 @@ const OrderViewDashboard = () => {
 
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div
-          className="status-modal-content"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
           <h2>Create Acceptance Test</h2>
           <form onSubmit={handleSubmit}>
             <div>
@@ -1037,9 +941,7 @@ const OrderViewDashboard = () => {
 
   const fetchAcceptances = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/acceptancetests/fetchAll/order/${orderId}`
-      );
+      const response = await axios.get(`http://localhost:8080/acceptancetests/fetchAll/order/${orderId}`);
       if (response.data.code === 9999) {
         setAcceptances(response.data.result);
         setShowViewAcceptanceModal(true);
@@ -1055,34 +957,16 @@ const OrderViewDashboard = () => {
   const ViewAcceptanceModal = ({ acceptances, onClose }) => {
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div
-          className="status-modal-content"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
           <h2>Acceptance Tests</h2>
           {acceptances.map((acceptance, index) => (
             <div key={acceptance.acceptanceTestId} className="status-item">
               <h3>Acceptance Test {index + 1}</h3>
-              <InfoRow
-                label="Acceptance Test ID"
-                value={acceptance.acceptanceTestId}
-              />
-              <InfoRow
-                label="Consulting Staff"
-                value={acceptance.consultingStaff.username}
-              />
-              <InfoRow
-                label="Design Staff"
-                value={acceptance.designStaff.username}
-              />
-              <InfoRow
-                label="Construction Staff"
-                value={acceptance.constructionStaff.username}
-              />
-              <InfoRow
-                label="Finish Date"
-                value={new Date(acceptance.finishDate).toLocaleString()}
-              />
+              <InfoRow label="Acceptance Test ID" value={acceptance.acceptanceTestId} />
+              <InfoRow label="Consulting Staff" value={acceptance.consultingStaff.username} />
+              <InfoRow label="Design Staff" value={acceptance.designStaff.username} />
+              <InfoRow label="Construction Staff" value={acceptance.constructionStaff.username} />
+              <InfoRow label="Finish Date" value={new Date(acceptance.finishDate).toLocaleString()} />
               <InfoRow label="Description" value={acceptance.description} />
               <div className="status-actions">
                 <a
@@ -1178,10 +1062,7 @@ const OrderViewDashboard = () => {
 
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div
-          className="status-modal-content"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
           <h2>Update Acceptance Test</h2>
           <form onSubmit={handleSubmit}>
             <div>
@@ -1309,25 +1190,19 @@ const OrderViewDashboard = () => {
               Status
             </button>
             <button
-              className={`tab-button ${
-                activeTab === "transaction" ? "active" : ""
-              }`}
+              className={`tab-button ${activeTab === "transaction" ? "active" : ""}`}
               onClick={() => setActiveTab("transaction")}
             >
               Transaction
             </button>
             <button
-              className={`tab-button ${
-                activeTab === "contract" ? "active" : ""
-              }`}
+              className={`tab-button ${activeTab === "contract" ? "active" : ""}`}
               onClick={() => setActiveTab("contract")}
             >
               Contract
             </button>
             <button
-              className={`tab-button ${
-                activeTab === "acceptance" ? "active" : ""
-              }`}
+              className={`tab-button ${activeTab === "acceptance" ? "active" : ""}`}
               onClick={() => setActiveTab("acceptance")}
             >
               Acceptance
@@ -1391,7 +1266,10 @@ const OrderViewDashboard = () => {
             <>
               <h2>Acceptance Information</h2>
               <div className="status-button-container">
-                <button onClick={fetchAcceptances} className="view-status-btn">
+                <button
+                  onClick={fetchAcceptances}
+                  className="view-status-btn"
+                >
                   View Acceptance
                 </button>
                 <button
@@ -1449,9 +1327,7 @@ const OrderViewDashboard = () => {
         />
       )}
       {showCreateContractModal && (
-        <CreateContractModal
-          onClose={() => setShowCreateContractModal(false)}
-        />
+        <CreateContractModal onClose={() => setShowCreateContractModal(false)} />
       )}
       {showViewContractsModal && (
         <ViewContractsModal
@@ -1461,9 +1337,7 @@ const OrderViewDashboard = () => {
         />
       )}
       {showCreateAcceptanceModal && (
-        <CreateAcceptanceModal
-          onClose={() => setShowCreateAcceptanceModal(false)}
-        />
+        <CreateAcceptanceModal onClose={() => setShowCreateAcceptanceModal(false)} />
       )}
       {showViewAcceptanceModal && (
         <ViewAcceptanceModal
