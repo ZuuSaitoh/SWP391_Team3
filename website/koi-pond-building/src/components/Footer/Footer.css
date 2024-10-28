@@ -1,0 +1,142 @@
+.footer {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    padding: 4rem 2rem 2rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-section {
+    flex-basis: calc(33.333% - 2rem);
+    margin-bottom: 2rem;
+    max-width: 400px;
+}
+
+.footer-section h3 {
+    color: #ffffff;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.footer-section h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background-color: #ffffff;
+    transition: width 0.3s ease;
+}
+
+.footer-section:hover h3::after {
+    width: 75px;
+}
+
+.footer-section p {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.koi-logo-small {
+    max-width: 100px;
+    height: auto;
+    margin-top: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.koi-logo-small:hover {
+    transform: scale(1.05);
+}
+
+.contact-info p {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.contact-info p:hover {
+    transform: translateX(5px);
+}
+
+.footer-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    vertical-align: middle;
+    flex-shrink: 0;
+    filter: invert(1) brightness(100);
+}
+
+.contact-info p span {
+    padding-left: 5px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.social-icon-link {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.social-icon-link:hover {
+    transform: translateY(-3px);
+}
+
+.social-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.social-icon-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #333;
+    transition: background-color 0.3s ease;
+}
+
+.social-icon-placeholder:hover {
+    background-color: #444;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .footer-section {
+        flex-basis: 100%;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .footer-section h3::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .contact-info p {
+        justify-content: center;
+    }
+}
