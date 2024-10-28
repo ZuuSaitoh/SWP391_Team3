@@ -3,7 +3,7 @@ package swp391.com.swp391.exception;
 import jakarta.validation.constraints.NotBlank;
 
 public enum ErrorCode {
-    UNCATEGORIZED_EXCEPTION(9999, "Uncategorized error"),
+    UNCATEGORIZED_EXCEPTION(99999, "Uncategorized error"),
     INVALID_KEY(1001, "Uncategorized error"),
     USER_EXISTED(1002, "User existed"),
     USERNAME_INVALID(1003, "Username must be at least 3 characters"),
