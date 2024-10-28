@@ -11,7 +11,6 @@ import ServiceDesign from "./page/serviceDesign/serviceDesign.jsx";
 import ServiceClean from "./page/serviceClean/serviceClean.jsx";
 import ServiceMaintenance from "./page/serviceMaintenance/serviceMaintenance.jsx";
 import DashBoard from "./page/dashBoard/dashBoard.jsx";
-import ProtectedRoutes from "./utils/ProtectedRoutes.jsx";
 import ChangePassword from "./page/changePassword/changePassword.jsx";
 import CustomerProfileDashBoard from "./page/dashBoard/customerProfileDashBoard";
 import StaffProfileDashBoard from "./page/dashBoard/staffProfileDashBoard";
@@ -20,14 +19,15 @@ import DesignStaffPage from "./page/staffPage/designStaffPage/designStaffPage.js
 import LoginStaff from "./page/login staff/loginStaff.jsx";
 import ConsultingStaffPage from "./page/staffPage/consultingStaffPage/consultingStaffPage.jsx";
 import ServiceViewDashboard from "./page/dashBoard/ServiceViewDashboard";
-import ProtectedStaffRoutes from "./utils/ProtectedStaffRoutes.jsx";
 import ContractViewDashBoard from "./page/dashBoard/contractViewDashBoard.jsx";
 import ConstructionStaffPage from "./page/staffPage/constructionStaffPage/constructionStaffPage.jsx";
 import PaymentPage from "./page/Payment/payment.jsx";
 import ViewBookingDashboard from "./page/dashBoard/viewBookingDashboard";
 import PaymentSuccess from "./page/Payment/success/paymentSuccess";
 import PaymentFailed from "./page/Payment/failed/paymentFailed";
-import BlogDetail from './components/BlogDetail/BlogDetail';
+import BlogDetail from "./components/BlogDetail/BlogDetail";
+import ProtectedLoginRoute from "./utils/ProtectedLoginRoute.jsx";
+import ProtectedLoginStaffRoute from "./utils/ProtectedLoginStaffRoute.jsx";
 
 function App() {
   return (
@@ -39,13 +39,17 @@ function App() {
         <Route path="/service-design" element={<ServiceDesign />} />
         <Route path="/service-clean" element={<ServiceClean />} />
         <Route path="/service-maintenance" element={<ServiceMaintenance />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/login-staff" element={<LoginStaff />} />
+        <Route element={<ProtectedLoginRoute />}>
+          <Route path="/login" element={<LoginPage />} />
+        </Route>
+        <Route element={<ProtectedLoginStaffRoute />}>
+          <Route path="/login-staff" element={<LoginStaff />} />
+        </Route>
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
 
         {/* Protected Customer Routes */}
-        <Route element={<ProtectedRoutes />}>
+        <Route element={<ProtectedLoginRoute />}>
           <Route
             path="/customer-profile/:customerId"
             element={<CustomerProfilePage />}
@@ -57,7 +61,7 @@ function App() {
         </Route>
 
         {/* Protected Staff Routes */}
-        <Route element={<ProtectedStaffRoutes />}>
+        <Route element={<ProtectedLoginStaffRoute />}>
           <Route path="/dashboard" element={<DashBoard />} />
           <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
           <Route

@@ -663,14 +663,14 @@ function ConsultingStaffPage() {
     }
   };
 
-  const handleReturnHome = () => {
-    navigate("/");
-  };
 
   const handleLogout = () => {
+    // Clear all staff-related items from localStorage
+    localStorage.removeItem("staffAuthToken");
     localStorage.removeItem("staffId");
-    // Add any other items you want to remove from localStorage
-    navigate("/login-staff");
+    localStorage.removeItem("staffUser");
+    toast.success("Logged out successfully");
+    navigate("/login-staff", { replace: true });
   };
 
   return (
@@ -696,14 +696,6 @@ function ConsultingStaffPage() {
           />
         </div>
         <div>
-          <Button
-            type="primary"
-            icon={<HomeOutlined />}
-            onClick={handleReturnHome}
-            style={{ marginRight: "16px" }}
-          >
-            Return to Homepage
-          </Button>
           <Button
             type="primary"
             danger

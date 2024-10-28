@@ -1355,10 +1355,12 @@ const Dashboard = () => {
 
   //logout
   const handleLogout = () => {
+    // Clear all staff-related items from localStorage
     localStorage.removeItem("staffAuthToken");
+    localStorage.removeItem("staffId");
     localStorage.removeItem("staffUser");
     toast.success("Logged out successfully");
-    navigate("/login-staff");
+    navigate("/login-staff", { replace: true });
   };
 
   //view service details
