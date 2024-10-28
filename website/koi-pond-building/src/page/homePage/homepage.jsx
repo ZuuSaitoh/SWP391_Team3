@@ -17,15 +17,14 @@ import { u } from "framer-motion/client";
 import slider1 from "../koi_photo/slider/slider1.jpg";
 import slider2 from "../koi_photo/slider/slider2.jpg";
 import slider3 from "../koi_photo/slider/slider3.jpg";
-import member1 from "../koi_photo/member/member 1.jpg";
-import member2 from "../koi_photo/member/member 2.jpg";
-import member3 from "../koi_photo/member/member 3.png";
+import member1 from "../koi_photo/member/Dungsenpai.jpg";
+import member2 from "../koi_photo/member/phat.jpg";
+import member3 from "../koi_photo/member/Manh.jpg";
+import member4 from "../koi_photo/member/TuanAnh.jpg";
+import member5 from "../koi_photo/member/Lam.jpg";
 import blog1 from "../koi_photo/pond/koi_pond.jpg";
 import blog2 from "../koi_photo/pond/koi_pond2.jpg";
 import blog3 from "../koi_photo/pond/pond3.jpg";
-import avatarDung from "../koi_photo/member/member 1.jpg";
-import avatarPhat from "../koi_photo/member/member 2.jpg";
-import avatarTuan from "../koi_photo/member/member 3.png";
 import axios from "axios"; // Make sure to import axios
 
 function HomePage() {
@@ -437,24 +436,38 @@ function HomePage() {
             <h2>Our Team</h2>
             <div className="team-container">
               <div className="team-member">
-                <img src={member2} alt="Kazuto Kirigaya" />
+                <img src={member2} alt="Phát" />
                 <div className="team-member-info">
-                  <h3>Kazuto Kirigaya</h3>
+                  <h3>Phát</h3>
                   <p>Founder & CEO</p>
                 </div>
               </div>
               <div className="team-member">
-                <img src={member1} alt="Asada Shino" />
+                <img src={member1} alt="DungSenPai" />
                 <div className="team-member-info">
-                  <h3>Asada Shino</h3>
+                  <h3>Dũng</h3>
                   <p>COO</p>
                 </div>
               </div>
               <div className="team-member">
-                <img src={member3} alt="Asuna Yuuki" />
+                <img src={member3} alt="Mạnh" />
                 <div className="team-member-info">
-                  <h3>Asuna Yuuki</h3>
+                  <h3>Mạnh</h3>
                   <p>Architect</p>
+                </div>
+              </div>
+              <div className="team-member">
+                <img src={member4} alt="Tuấn Anh" />
+                <div className="team-member-info">
+                  <h3>Tuấn Anh</h3>
+                  <p>Employee</p>
+                </div>
+              </div>
+              <div className="team-member">
+                <img src={member5} alt="Lâm" />
+                <div className="team-member-info">
+                  <h3>Lâm</h3>
+                  <p>Employee</p>
                 </div>
               </div>
             </div>
@@ -465,7 +478,7 @@ function HomePage() {
             <div className="testimonial-container">
               <div className="testimonial-item">
                 <div className="testimonial-avatar">
-                  <img src={avatarDung} alt="Dũng Senpai" />
+                  <img src={member1} alt="Dũng Senpai" />
                 </div>
                 <p>
                   "Koi Pond Builders transformed our backyard into a serene
@@ -476,7 +489,7 @@ function HomePage() {
               </div>
               <div className="testimonial-item">
                 <div className="testimonial-avatar">
-                  <img src={avatarPhat} alt="Thầy Phát" />
+                  <img src={member2} alt="Thầy Phát" />
                 </div>
                 <p>
                   "The team was professional, punctual, and a pleasure to work
@@ -487,7 +500,7 @@ function HomePage() {
               </div>
               <div className="testimonial-item">
                 <div className="testimonial-avatar">
-                  <img src={avatarTuan} alt="Tuấn Anh" />
+                  <img src={member4} alt="Tuấn Anh" />
                 </div>
                 <p>
                   "From design to completion, the process was smooth and the
