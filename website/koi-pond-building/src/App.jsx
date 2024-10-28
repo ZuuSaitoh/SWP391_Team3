@@ -27,6 +27,7 @@ import PaymentPage from "./page/Payment/payment.jsx";
 import ViewBookingDashboard from "./page/dashBoard/viewBookingDashboard";
 import PaymentSuccess from "./page/Payment/success/paymentSuccess";
 import PaymentFailed from "./page/Payment/failed/paymentFailed";
+import BlogDetail from './page/blog/BlogDetail';
 
 function App() {
   return (
@@ -34,17 +35,15 @@ function App() {
       <ScrollToTop />
       <Routes>
         {/* Public routes */}
-
         <Route path="/login" element={<LoginPage />} />
-
         <Route path="/login-staff" element={<LoginStaff />} />
-
         <Route path="/" element={<HomePage />} />
         <Route path="/service-design" element={<ServiceDesign />} />
         <Route path="/service-clean" element={<ServiceClean />} />
         <Route path="/service-maintenance" element={<ServiceMaintenance />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/blog/:id" element={<BlogDetail />} />
 
         {/* Protected Customer Routes */}
         <Route element={<ProtectedRoutes />}>
