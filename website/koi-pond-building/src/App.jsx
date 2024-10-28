@@ -27,7 +27,7 @@ import PaymentPage from "./page/Payment/payment.jsx";
 import ViewBookingDashboard from "./page/dashBoard/viewBookingDashboard";
 import PaymentSuccess from "./page/Payment/success/paymentSuccess";
 import PaymentFailed from "./page/Payment/failed/paymentFailed";
-import BlogDetail from './page/blog/BlogDetail';
+import BlogDetail from './components/BlogDetail/BlogDetail';
 
 function App() {
   return (
