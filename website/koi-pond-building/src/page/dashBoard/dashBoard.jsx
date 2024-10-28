@@ -36,12 +36,14 @@ import {
   faCalendarCheck,
   faCheckCircle,
   faClipboardQuestion,
+  faPercentage,
 } from "@fortawesome/free-solid-svg-icons";
 import SheetDataViewComponent from "./SheetDataView";
 import StatusViewComponent from "./StatusView";
 import uploadFile from "../../utils/file";
 import { Upload, Modal, Form, Input, Select, Button } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import DiscountViewDashBoard from "./DiscountViewDashBoard";
 
 ChartJS.register(
   CategoryScale,
@@ -1864,6 +1866,7 @@ const Dashboard = () => {
             faClipboardQuestion,
             "Customer Requests"
           )}
+          {renderSidebarButton("discounts", faPercentage, "Discounts")}
         </div>
         <div className="sidebar-footer">
           <button
@@ -1932,6 +1935,8 @@ const Dashboard = () => {
             renderAcceptanceTests()
           ) : activeView === "customerRequests" ? (
             renderCustomerRequests()
+          ) : activeView === "discounts" ? (
+            <DiscountViewDashBoard />
           ) : null}
         </div>
         {selectedCustomerId && (

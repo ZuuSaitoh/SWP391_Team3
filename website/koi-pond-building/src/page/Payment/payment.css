@@ -191,3 +191,23 @@
 .payment-method.disabled input {
     cursor: not-allowed;
 }
+
+.payment-discount-selection {
+    margin-bottom: 20px;
+}
+
+.payment-discount-selection h4 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.payment-discount {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #e74c3c;
+}
+
+.payment-discount p:last-child {
+    font-weight: bold;
+}

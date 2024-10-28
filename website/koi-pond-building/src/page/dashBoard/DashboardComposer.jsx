@@ -1,30 +1,31 @@
-import React, { useState } from 'react';
-import Overview from './Overview';
-import CustomerProfileDashBoard from './customerProfileDashBoard';
-import StaffProfileDashBoard from './staffProfileDashBoard';
-import OrderViewDashBoard from './orderViewDashBoard';
-import ServiceViewDashboard from './ServiceViewDashboard';
-import ContractViewDashBoard from './contractViewDashBoard';
-import SheetDataView from './SheetDataView';
+import React, { useState } from "react";
+import Overview from "./Overview";
+import CustomerProfileDashBoard from "./customerProfileDashBoard";
+import StaffProfileDashBoard from "./staffProfileDashBoard";
+import OrderViewDashBoard from "./orderViewDashBoard";
+import ServiceViewDashboard from "./ServiceViewDashboard";
+import ContractViewDashBoard from "./contractViewDashBoard";
+import SheetDataView from "./SheetDataView";
+
 
 const DashboardComposer = () => {
-  const [activeView, setActiveView] = useState('overview');
+  const [activeView, setActiveView] = useState("overview");
 
   const renderContent = () => {
     switch (activeView) {
-      case 'overview':
+      case "overview":
         return <Overview />;
-      case 'customers':
+      case "customers":
         return <CustomerProfileDashBoard />;
-      case 'staffs':
+      case "staffs":
         return <StaffProfileDashBoard />;
-      case 'orders':
+      case "orders":
         return <OrderViewDashBoard />;
-      case 'services':
+      case "services":
         return <ServiceViewDashboard />;
-      case 'contracts':
+      case "contracts":
         return <ContractViewDashBoard />;
-      case 'sheetData':
+      case "sheetData":
         return <SheetDataView />;
       default:
         return <Overview />;
@@ -34,17 +35,15 @@ const DashboardComposer = () => {
   return (
     <div className="dashboard-composer">
       <nav className="dashboard-nav">
-        <button onClick={() => setActiveView('overview')}>Overview</button>
-        <button onClick={() => setActiveView('customers')}>Customers</button>
-        <button onClick={() => setActiveView('staffs')}>Staffs</button>
-        <button onClick={() => setActiveView('orders')}>Orders</button>
-        <button onClick={() => setActiveView('services')}>Services</button>
-        <button onClick={() => setActiveView('contracts')}>Contracts</button>
-        <button onClick={() => setActiveView('sheetData')}>Sheet Data</button>
+        <button onClick={() => setActiveView("overview")}>Overview</button>
+        <button onClick={() => setActiveView("customers")}>Customers</button>
+        <button onClick={() => setActiveView("staffs")}>Staffs</button>
+        <button onClick={() => setActiveView("orders")}>Orders</button>
+        <button onClick={() => setActiveView("services")}>Services</button>
+        <button onClick={() => setActiveView("contracts")}>Contracts</button>
+        <button onClick={() => setActiveView("sheetData")}>Sheet Data</button>
       </nav>
-      <main className="dashboard-content">
-        {renderContent()}
-      </main>
+      <main className="dashboard-content">{renderContent()}</main>
     </div>
   );
 };

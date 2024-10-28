@@ -14,6 +14,8 @@ const Payment = () => {
   const [usingPoint, setUsingPoint] = useState(0);
   const [availablePoints, setAvailablePoints] = useState(0);
   const [discountedPrice, setDiscountedPrice] = useState(0);
+  const [availableDiscounts, setAvailableDiscounts] = useState([]);
+  const [selectedDiscount, setSelectedDiscount] = useState(null);
   const navigate = useNavigate();
 
   const pointToVND = (points) => points * 1000;
@@ -56,14 +58,34 @@ const Payment = () => {
       }
     };
 
+    const fetchAvailableDiscounts = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/discounts/fetchAll");
+        if (response.data.code === 9999) {
+          // Filter only active discounts
+          const activeDiscounts = response.data.result.filter(discount => discount.status === true);
+          setAvailableDiscounts(activeDiscounts);
+        } else {
+          console.error("Failed to fetch discounts");
+        }
+      } catch (err) {
+        console.error("Error fetching discounts:", err);
+      }
+    };
+
     fetchCustomerData();
     fetchSelectedService();
+    fetchAvailableDiscounts();
   }, []); // Empty dependency array to run only once on component mount
 
   useEffect(() => {
     if (selectedService) {
+      const discountAmount = selectedDiscount 
+        ? (selectedService.price * selectedDiscount.discountPercent / 100)
+        : 0;
+      
       const newDiscountedPrice = Math.max(
-        selectedService.price - pointToVND(usingPoint),
+        selectedService.price - pointToVND(usingPoint) - discountAmount,
         0
       );
       setDiscountedPrice(newDiscountedPrice);
@@ -72,7 +94,7 @@ const Payment = () => {
     if (discountedPrice === 0 && paymentMethod === "VNPay") {
       setPaymentMethod("COD");
     }
-  }, [selectedService, usingPoint, discountedPrice, paymentMethod]);
+  }, [selectedService, usingPoint, selectedDiscount, paymentMethod]);
 
   const handlePlaceOrder = async () => {
     if (!customer || !selectedService) {
@@ -89,11 +111,12 @@ const Payment = () => {
       const orderData = {
         customerId: customer.id,
         serviceId: selectedService.serviceId,
-        price: discountedPrice, // Use the discounted price
+        price: discountedPrice,
         usingPoint: usingPoint,
         paymentMethod: paymentMethod,
         address: address,
         phoneNumber: phoneNumber,
+        discountId: selectedDiscount?.discountId // Add discount ID if selected
       };
 
       console.log("Sending order data:", orderData);
@@ -272,6 +295,27 @@ const Payment = () => {
             ) : (
               <p>No service selected</p>
             )}
+            
+            {/* Add discount selection */}
+            <div className="payment-discount-selection">
+              <h4>Available Discounts</h4>
+              <select
+                className="payment-input"
+                value={selectedDiscount?.discountId || ""}
+                onChange={(e) => {
+                  const discount = availableDiscounts.find(d => d.discountId === parseInt(e.target.value));
+                  setSelectedDiscount(discount || null);
+                }}
+              >
+                <option value="">Select a discount</option>
+                {availableDiscounts.map(discount => (
+                  <option key={discount.discountId} value={discount.discountId}>
+                    {discount.discountName} ({discount.discountPercent}% off)
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="payment-discount-code">
               <p>Available Points: {formatNumber(availablePoints)}</p>
               <input
@@ -287,21 +331,31 @@ const Payment = () => {
                 )}
               />
             </div>
+
             <div className="payment-total">
               <p>Subtotal</p>
               <p>
                 {selectedService ? formatNumber(selectedService.price) : 0} VND
               </p>
             </div>
+
+            {selectedDiscount && (
+              <div className="payment-discount">
+                <p>Discount ({selectedDiscount.discountPercent}%)</p>
+                <p>-{formatNumber(selectedService ? (selectedService.price * selectedDiscount.discountPercent / 100) : 0)} VND</p>
+              </div>
+            )}
+
             <div className="payment-shipping">
               <p>Points used ({usingPoint} points)</p>
               <p>-{formatNumber(pointToVND(usingPoint))} VND</p>
             </div>
+
             <div className="payment-grand-total">
               <p>Total</p>
               <p>
                 {selectedService
-                  ? formatNumber(selectedService.price - pointToVND(usingPoint))
+                  ? formatNumber(discountedPrice)
                   : 0}{" "}
                 VND
               </p>
