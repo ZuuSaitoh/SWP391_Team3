@@ -2469,7 +2469,8 @@ body {
 .status-section {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center the content horizontally */
+  align-items: center;
+  /* Center the content horizontally */
 }
 
 .status-button-container {
@@ -2478,7 +2479,8 @@ body {
   gap: 10px;
   width: 100%;
   margin-top: 15px;
-  flex-wrap: wrap; /* Allow buttons to wrap if needed */
+  flex-wrap: wrap;
+  /* Allow buttons to wrap if needed */
 }
 
 .create-status-btn {
@@ -2888,7 +2890,8 @@ body {
 
 .tab-buttons {
   display: flex;
-  flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+  flex-wrap: wrap;
+  /* Allow buttons to wrap to the next line */
   justify-content: center;
   gap: 10px;
   margin-bottom: 15px;

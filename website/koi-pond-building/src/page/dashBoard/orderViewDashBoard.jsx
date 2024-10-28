@@ -47,10 +47,12 @@ const OrderViewDashboard = () => {
     description: "",
   });
   const [showViewContractsModal, setShowViewContractsModal] = useState(false);
-  const [showCreateAcceptanceModal, setShowCreateAcceptanceModal] = useState(false);
+  const [showCreateAcceptanceModal, setShowCreateAcceptanceModal] =
+    useState(false);
   const [showViewAcceptanceModal, setShowViewAcceptanceModal] = useState(false);
   const [acceptances, setAcceptances] = useState([]);
-  const [showUpdateAcceptanceModal, setShowUpdateAcceptanceModal] = useState(false);
+  const [showUpdateAcceptanceModal, setShowUpdateAcceptanceModal] =
+    useState(false);
   const [currentAcceptance, setCurrentAcceptance] = useState(null);
 
   useEffect(() => {
@@ -554,9 +556,34 @@ const OrderViewDashboard = () => {
     );
   };
 
+  // First, add this function near the top of your component, after the useState declarations
+  const getRequiredRoleForStatus = (statusCount) => {
+    const statusRoleMap = {
+      0: "Consulting Staff", // Tu van
+      1: "Consulting Staff", // Tu van
+      2: "Consulting Staff", // Tu van
+      3: "Design Staff", // Design
+      4: "Consulting Staff", // Tu van
+      5: "Construction Staff", // Xay dung
+      6: "Consulting Staff", // Tu van
+      7: "Consulting Staff", // Tu van
+      8: "Consulting Staff", // Tu van
+    };
+    return statusRoleMap[statusCount] || "Consulting Staff";
+  };
+
+  // Replace the existing CreateStatusModal component with this updated version
   const CreateStatusModal = ({ onClose }) => {
     const [description, setDescription] = useState("");
     const [selectedStaffId, setSelectedStaffId] = useState("");
+
+    // Get the required role based on current status count
+    const requiredRole = getRequiredRoleForStatus(statuses.length);
+
+    // Filter staff list based on the required role
+    const eligibleStaff = staffList.filter(
+      (staff) => staff.role === requiredRole
+    );
 
     const handleSubmit = (e) => {
       e.preventDefault();
@@ -566,13 +593,37 @@ const OrderViewDashboard = () => {
       });
     };
 
+    // Get status step number (1-based index)
+    const currentStep = statuses.length + 1;
+
+    // Get default status description based on step
+    const getDefaultDescription = () => {
+      const descriptions = {
+        1: "Consultation",
+        2: "Koi Pond Construction Contract (Signed)",
+        3: "Design Fee Payment",
+        4: "Design Drawing",
+        5: "Material Cost Payment",
+        6: "Construction",
+        7: "Acceptance Contract",
+        8: "Construction Fee Payment",
+        9: "Project Completion",
+      };
+      return descriptions[currentStep] || "";
+    };
+
+    // Set default description when component mounts
+    useEffect(() => {
+      setDescription(getDefaultDescription());
+    }, []);
+
     return (
       <div className="status-modal-overlay" onClick={onClose}>
         <div
           className="status-modal-content"
           onClick={(e) => e.stopPropagation()}
         >
-          <h2>Create New Status</h2>
+          <h2>Create New Status (Step {currentStep})</h2>
           <form onSubmit={handleSubmit}>
             <div>
               <label htmlFor="statusDescription">Status Description:</label>
@@ -586,7 +637,7 @@ const OrderViewDashboard = () => {
               />
             </div>
             <div>
-              <label htmlFor="staffId">Staff:</label>
+              <label htmlFor="staffId">Staff ({requiredRole} only):</label>
               <select
                 id="staffId"
                 value={selectedStaffId}
@@ -594,7 +645,7 @@ const OrderViewDashboard = () => {
                 required
               >
                 <option value="">Select a staff member</option>
-                {staffList.map((staff) => (
+                {eligibleStaff.map((staff) => (
                   <option key={staff.staffId} value={staff.staffId}>
                     {staff.username} - {staff.role}
                   </option>
@@ -628,12 +679,15 @@ const OrderViewDashboard = () => {
 
   const handleCreateContract = async (contractData) => {
     try {
-      const response = await axios.post("http://localhost:8080/contracts/create", {
-        orderId: parseInt(orderId),
-        uploadStaff: currentStaffId,
-        imageData: contractData.imageData,
-        description: contractData.description,
-      });
+      const response = await axios.post(
+        "http://localhost:8080/contracts/create",
+        {
+          orderId: parseInt(orderId),
+          uploadStaff: currentStaffId,
+          imageData: contractData.imageData,
+          description: contractData.description,
+        }
+      );
 
       if (response.data.code === 1000) {
         toast.success("Contract created successfully");
@@ -652,7 +706,10 @@ const OrderViewDashboard = () => {
   const ViewContractsModal = ({ contracts, onClose, onDelete }) => {
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="status-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
           <h2>Contract Information</h2>
           {contracts.map((contract, index) => (
             <div key={contract.contractId} className="status-item">
@@ -744,7 +801,10 @@ const OrderViewDashboard = () => {
 
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="status-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
           <h2>Create New Contract</h2>
           <form onSubmit={handleSubmit}>
             <div>
@@ -783,10 +843,14 @@ const OrderViewDashboard = () => {
   const handleDeleteContract = async (contractId) => {
     if (window.confirm("Are you sure you want to delete this contract?")) {
       try {
-        const response = await axios.delete(`http://localhost:8080/contracts/delete/${contractId}`);
+        const response = await axios.delete(
+          `http://localhost:8080/contracts/delete/${contractId}`
+        );
         if (response.data.code === 9876) {
           toast.success("Contract deleted successfully");
-          setContracts(contracts.filter(contract => contract.contractId !== contractId));
+          setContracts(
+            contracts.filter((contract) => contract.contractId !== contractId)
+          );
         } else {
           toast.error("Failed to delete contract");
         }
@@ -849,7 +913,10 @@ const OrderViewDashboard = () => {
 
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="status-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
           <h2>Create Acceptance Test</h2>
           <form onSubmit={handleSubmit}>
             <div>
@@ -941,7 +1008,9 @@ const OrderViewDashboard = () => {
 
   const fetchAcceptances = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/acceptancetests/fetchAll/order/${orderId}`);
+      const response = await axios.get(
+        `http://localhost:8080/acceptancetests/fetchAll/order/${orderId}`
+      );
       if (response.data.code === 9999) {
         setAcceptances(response.data.result);
         setShowViewAcceptanceModal(true);
@@ -957,16 +1026,34 @@ const OrderViewDashboard = () => {
   const ViewAcceptanceModal = ({ acceptances, onClose }) => {
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="status-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
           <h2>Acceptance Tests</h2>
           {acceptances.map((acceptance, index) => (
             <div key={acceptance.acceptanceTestId} className="status-item">
               <h3>Acceptance Test {index + 1}</h3>
-              <InfoRow label="Acceptance Test ID" value={acceptance.acceptanceTestId} />
-              <InfoRow label="Consulting Staff" value={acceptance.consultingStaff.username} />
-              <InfoRow label="Design Staff" value={acceptance.designStaff.username} />
-              <InfoRow label="Construction Staff" value={acceptance.constructionStaff.username} />
-              <InfoRow label="Finish Date" value={new Date(acceptance.finishDate).toLocaleString()} />
+              <InfoRow
+                label="Acceptance Test ID"
+                value={acceptance.acceptanceTestId}
+              />
+              <InfoRow
+                label="Consulting Staff"
+                value={acceptance.consultingStaff.username}
+              />
+              <InfoRow
+                label="Design Staff"
+                value={acceptance.designStaff.username}
+              />
+              <InfoRow
+                label="Construction Staff"
+                value={acceptance.constructionStaff.username}
+              />
+              <InfoRow
+                label="Finish Date"
+                value={new Date(acceptance.finishDate).toLocaleString()}
+              />
               <InfoRow label="Description" value={acceptance.description} />
               <div className="status-actions">
                 <a
@@ -1062,7 +1149,10 @@ const OrderViewDashboard = () => {
 
     return (
       <div className="status-modal-overlay" onClick={onClose}>
-        <div className="status-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="status-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
           <h2>Update Acceptance Test</h2>
           <form onSubmit={handleSubmit}>
             <div>
@@ -1190,19 +1280,25 @@ const OrderViewDashboard = () => {
               Status
             </button>
             <button
-              className={`tab-button ${activeTab === "transaction" ? "active" : ""}`}
+              className={`tab-button ${
+                activeTab === "transaction" ? "active" : ""
+              }`}
               onClick={() => setActiveTab("transaction")}
             >
               Transaction
             </button>
             <button
-              className={`tab-button ${activeTab === "contract" ? "active" : ""}`}
+              className={`tab-button ${
+                activeTab === "contract" ? "active" : ""
+              }`}
               onClick={() => setActiveTab("contract")}
             >
               Contract
             </button>
             <button
-              className={`tab-button ${activeTab === "acceptance" ? "active" : ""}`}
+              className={`tab-button ${
+                activeTab === "acceptance" ? "active" : ""
+              }`}
               onClick={() => setActiveTab("acceptance")}
             >
               Acceptance
@@ -1266,10 +1362,7 @@ const OrderViewDashboard = () => {
             <>
               <h2>Acceptance Information</h2>
               <div className="status-button-container">
-                <button
-                  onClick={fetchAcceptances}
-                  className="view-status-btn"
-                >
+                <button onClick={fetchAcceptances} className="view-status-btn">
                   View Acceptance
                 </button>
                 <button
@@ -1327,7 +1420,9 @@ const OrderViewDashboard = () => {
         />
       )}
       {showCreateContractModal && (
-        <CreateContractModal onClose={() => setShowCreateContractModal(false)} />
+        <CreateContractModal
+          onClose={() => setShowCreateContractModal(false)}
+        />
       )}
       {showViewContractsModal && (
         <ViewContractsModal
@@ -1337,7 +1432,9 @@ const OrderViewDashboard = () => {
         />
       )}
       {showCreateAcceptanceModal && (
-        <CreateAcceptanceModal onClose={() => setShowCreateAcceptanceModal(false)} />
+        <CreateAcceptanceModal
+          onClose={() => setShowCreateAcceptanceModal(false)}
+        />
       )}
       {showViewAcceptanceModal && (
         <ViewAcceptanceModal
