@@ -5,7 +5,7 @@ import pond2 from "../koi_photo/pond/pond2.jpg";
 import pond3 from "../koi_photo/pond/pond3.jpg";
 import pond4 from "../koi_photo/pond/pond4.jpg";
 import pond5 from "../koi_photo/pond/pond5.jpg";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import { toast, ToastContainer } from "react-toastify";
@@ -511,9 +511,9 @@ function HomePage() {
                     Discover how a koi pond can improve your well-being and
                     create a peaceful atmosphere in your backyard.
                   </p>
-                  <a href="#" className="read-more">
+                  <Link to="/blog/1" className="read-more">
                     Read More <i className="fas fa-arrow-right"></i>
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="blog-post">
@@ -526,9 +526,9 @@ function HomePage() {
                     Learn about the best koi varieties for those just starting
                     their journey into the world of koi keeping.
                   </p>
-                  <a href="#" className="read-more">
+                  <Link to="/blog/2" className="read-more">
                     Read More <i className="fas fa-arrow-right"></i>
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="blog-post">
@@ -541,9 +541,9 @@ function HomePage() {
                     Essential maintenance tasks to keep your koi pond healthy
                     and beautiful throughout the year.
                   </p>
-                  <a href="#" className="read-more">
+                  <Link to="/blog/3" className="read-more">
                     Read More <i className="fas fa-arrow-right"></i>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

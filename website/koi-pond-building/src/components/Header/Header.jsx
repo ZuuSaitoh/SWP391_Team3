@@ -76,9 +76,6 @@ function Header({ isTransparent }) {
               Testimonials
             </a>
           </li>
-          <li>
-            <a onClick={() => navigateToSection("contact")}>Contact</a>
-          </li>
           {currentStaff && currentStaff.role === "Manager" && (
             <li>
               <Link to="/dashboard">Dashboard</Link>
