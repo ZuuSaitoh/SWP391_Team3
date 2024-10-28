@@ -16,7 +16,7 @@ import {
   Breadcrumb,
 } from "antd";
 import api from "../../../config/axios";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import {
   PlusOutlined,
@@ -45,8 +45,7 @@ function getItem(label, key, icon, children) {
 const items = [
   getItem("Designs", "1", <PieChartOutlined />),
   getItem("My Statuses", "2", <DesktopOutlined />),
-  getItem("Return to Homepage", "3", <UserOutlined />),
-  getItem("Logout", "4", <LogoutOutlined />),
+  getItem("Logout", "3", <LogoutOutlined />),
 ];
 
 function DesignStaffPage() {
@@ -104,9 +103,6 @@ function DesignStaffPage() {
 
   const navigate = useNavigate();
 
-  const backToHomepage = () => {
-    navigate("/");
-  };
 
   const handleSubmit = async (values) => {
     try {
@@ -621,9 +617,6 @@ function DesignStaffPage() {
         fetchStatusesByStaffId();
         break;
       case "3":
-        backToHomepage();
-        break;
-      case "4":
         handleLogout();
         break;
       default:
@@ -809,6 +802,7 @@ function DesignStaffPage() {
           src={previewImage}
         />
       )}
+      <ToastContainer />
     </Layout>
   );
 }

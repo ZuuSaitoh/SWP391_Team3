@@ -339,16 +339,8 @@ function ConstructionStaffPage() {
     },
   ];
 
-  const backToHomepage = () => {
-    navigate("/");
-  };
 
   const handleLogout = () => {
-<<<<<<< Updated upstream
-    // Clear all staff-related data from localStorage
-=======
-    localStorage.removeItem("staffAuthToken");
->>>>>>> Stashed changes
     localStorage.removeItem("staffId");
     localStorage.removeItem("staffAuthToken");
     navigate("/login-staff");
@@ -368,11 +360,6 @@ function ConstructionStaffPage() {
     },
     {
       key: "3",
-      icon: <HomeOutlined />,
-      label: "Return to Homepage",
-    },
-    {
-      key: "4",
       icon: <LogoutOutlined />,
       label: "Logout",
     },
@@ -388,9 +375,6 @@ function ConstructionStaffPage() {
         fetchStatusesByStaffId();
         break;
       case "3":
-        backToHomepage();
-        break;
-      case "4":
         handleLogout();
         break;
       default:

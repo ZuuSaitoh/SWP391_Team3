@@ -214,17 +214,11 @@ function ConsultingStaffPage() {
 
   const handleUpdateStatus = async (statusId) => {
     try {
-<<<<<<< Updated upstream
-      const response = await api.patch(
-        `/status/update-number-of-update/${statusId}`
-      );
-=======
       const response = await api.put(`/status/update-complete/${statusId}`, {
         complete: true,
         rejectReason: "" 
       });
-      
->>>>>>> Stashed changes
+
       if (response.data.code === 999) {
         message.success("Status updated successfully");
         fetchStatusesByStaffId();
@@ -280,21 +274,7 @@ function ConsultingStaffPage() {
       title: "Complete",
       dataIndex: "complete",
       key: "complete",
-<<<<<<< Updated upstream
-      render: (complete) => (complete ? "Yes" : "No"),
-    },
-    {
-      title: "Number of Updates",
-      dataIndex: "numberOfUpdate",
-      key: "numberOfUpdate",
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_, record) => (
-=======
       render: (complete, record) => (
->>>>>>> Stashed changes
         <Button
           onClick={() => handleUpdateStatus(record.statusId)}
           type={complete ? "primary" : "default"}
@@ -681,9 +661,6 @@ function ConsultingStaffPage() {
     }
   };
 
-  const handleReturnHome = () => {
-    navigate("/");
-  };
 
   const handleLogout = () => {
     localStorage.removeItem("staffId");
@@ -715,14 +692,6 @@ function ConsultingStaffPage() {
           />
         </div>
         <div>
-          <Button
-            type="primary"
-            icon={<HomeOutlined />}
-            onClick={handleReturnHome}
-            style={{ marginRight: "16px" }}
-          >
-            Return to Homepage
-          </Button>
           <Button
             type="primary"
             danger
