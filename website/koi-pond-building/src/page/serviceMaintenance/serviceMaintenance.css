@@ -1,0 +1,673 @@
+.service-maintenance-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.maintenance-hero {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--light-text-color);
+    position: relative;
+}
+
+.maintenance-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    /* Adjust the opacity as needed */
+}
+
+.maintenance-hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 2rem;
+    text-align: center;
+    color: var(--light-text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.maintenance-hero-content h1 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: maintenanceFadeIn 1s ease-in-out;
+    color: white;
+    /* Ensure text is white for visibility */
+}
+
+.maintenance-hero-content p {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    animation: maintenanceFadeIn 1.5s ease-in-out;
+    color: white;
+    /* Ensure text is white for visibility */
+}
+
+@keyframes maintenanceFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.maintenance-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+    font-family: 'Poppins', Arial, sans-serif;
+}
+
+.maintenance-content h1,
+.maintenance-content h2,
+.maintenance-content h3 {
+    color: #333;
+}
+
+.maintenance-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--primary-color);
+    text-align: center;
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+/* Remove the underline */
+.maintenance-content h2::after {
+    content: none;
+}
+
+.maintenance-content p {
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+.maintenance-intro {
+    font-size: 1.1em;
+    margin-bottom: 4rem;
+}
+
+.maintenance-services ol,
+.maintenance-process ol {
+    padding-left: 20px;
+}
+
+.maintenance-services li,
+.maintenance-process li {
+    margin-bottom: 20px;
+}
+
+.maintenance-benefits,
+.maintenance-why-choose-us,
+.maintenance-process,
+.maintenance-packages {
+    margin-top: 6rem;
+}
+
+@keyframes maintenanceFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .maintenance-hero h1 {
+        font-size: 3rem;
+    }
+
+    .maintenance-hero p {
+        font-size: 1.5rem;
+    }
+}
+
+.maintenance-scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--primary-color);
+    /* Use the primary color variable */
+    color: var(--light-text-color);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    z-index: 1000;
+}
+
+.maintenance-scroll-to-top:hover {
+    background-color: var(--secondary-color);
+    /* Use the secondary color variable */
+    transform: translateY(-5px);
+}
+
+@keyframes maintenanceBounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.importance-item i,
+.service-item i {
+    color: var(--primary-color);
+    /* Use the primary color variable */
+}
+
+.process-timeline::before {
+    background-color: var(--primary-color);
+    /* Use the primary color variable */
+}
+
+.step-number {
+    background-color: var(--primary-color);
+    /* Use the primary color variable */
+}
+
+.step-content h3 {
+    color: var(--primary-color);
+    /* Use the primary color variable */
+}
+
+.cta-button {
+    background-color: var(--primary-color);
+    /* Use the primary color variable */
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: var(--secondary-color);
+    /* Use the secondary color variable */
+    transform: translateY(-3px);
+}
+
+.hero-cta {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    margin-top: 2rem;
+}
+
+.hero-cta:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-3px);
+}
+
+.maintenance-content section {
+    margin-bottom: 6rem;
+    padding: 3rem;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Center the text within sections */
+.maintenance-content section {
+    text-align: center;
+}
+
+/* Adjust grid items to be left-aligned */
+.importance-item,
+.service-item,
+.process-step,
+.faq-item {
+    text-align: left;
+}
+
+.importance-grid,
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.importance-item,
+.service-item {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.importance-item:hover,
+.service-item:hover {
+    transform: translateY(-5px);
+}
+
+.importance-item i,
+.service-item i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.maintenance-content section {
+    animation: fadeInUp 0.6s ease-out both;
+}
+
+.maintenance-content section:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.maintenance-content section:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.maintenance-content section:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.maintenance-content section:nth-child(4) {
+    animation-delay: 0.8s;
+}
+
+.maintenance-content section:nth-child(5) {
+    animation-delay: 1s;
+}
+
+.process-timeline {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.process-timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    background: var(--primary-color);
+    transform: translateX(-50%);
+}
+
+.process-step {
+    position: relative;
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.process-step:nth-child(even) {
+    justify-content: flex-end;
+}
+
+.step-content {
+    width: 45%;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.process-step:nth-child(odd) .step-content {
+    margin-right: 55%;
+}
+
+.process-step:nth-child(even) .step-content {
+    margin-left: 55%;
+}
+
+.step-number {
+    position: absolute;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.step-content h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.step-content p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .process-timeline::before {
+        left: 20px;
+    }
+
+    .process-step,
+    .process-step:nth-child(even) {
+        justify-content: flex-start;
+    }
+
+    .step-content {
+        width: calc(100% - 60px);
+        margin-left: 60px !important;
+    }
+
+    .step-number {
+        left: 0;
+        transform: translateX(0);
+    }
+}
+
+.plans-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.plan {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    min-width: 250px;
+    max-width: 350px;
+    transition: transform 0.3s;
+    position: relative;
+}
+
+.plan:hover {
+    transform: translateY(-10px);
+}
+
+.plan.featured {
+    border: 2px solid var(--primary-color);
+    transform: scale(1.05);
+}
+
+.featured-banner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-top-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.plan h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.plan .price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.plan ul {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+.plan li {
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.check-icon {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+.plan-cta {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.plan-cta:hover {
+    background-color: var(--secondary-color);
+}
+
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.faq-item h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+    color: var(--primary-color);
+}
+
+.maintenance-cta {
+    text-align: center;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 4rem 2rem;
+    border-radius: 10px;
+}
+
+.maintenance-cta h2 {
+    color: white;
+    margin-bottom: 1.5rem;
+}
+
+.maintenance-cta p {
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.cta-button {
+    background-color: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.cta-button:hover {
+    background-color: var(--light-text-color);
+    transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+    .plans-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .plan {
+        width: 100%;
+        max-width: none;
+    }
+
+    .plan.featured {
+        transform: none;
+        order: -1;
+    }
+}
+
+/* You can remove or comment out this CSS if you're not using it elsewhere */
+/*
+.hero-cta {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    margin-top: 2rem;
+}
+
+.hero-cta:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-3px);
+}
+*/
+
+/* Add these styles to your existing CSS file */
+
+.maintenance-services-list {
+    margin-bottom: 6rem;
+    padding: 3rem;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.service-item {
+    background-color: #f8f9fa;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.service-item h3 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.service-item p {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.service-price {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.choose-service-btn {
+    background-color: #007bff;
+    /* Changed from #4CAF50 to a blue color */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.choose-service-btn:hover {
+    background-color: #0056b3;
+    /* Darker blue for hover state */
+}
