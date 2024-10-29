@@ -39,25 +39,25 @@ function App() {
         <Route path="/service-design" element={<ServiceDesign />} />
         <Route path="/service-clean" element={<ServiceClean />} />
         <Route path="/service-maintenance" element={<ServiceMaintenance />} />
+        <Route
+          path="/customer-profile/:customerId"
+          element={<CustomerProfilePage />}
+        />
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-failed" element={<PaymentFailed />} />
         <Route element={<ProtectedLoginRoute />}>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
         </Route>
         <Route element={<ProtectedLoginStaffRoute />}>
           <Route path="/login-staff" element={<LoginStaff />} />
         </Route>
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgotpassword" element={<ForgotPassword />} />
 
         {/* Protected Customer Routes */}
         <Route element={<ProtectedLoginRoute />}>
-          <Route
-            path="/customer-profile/:customerId"
-            element={<CustomerProfilePage />}
-          />
           <Route path="/change-password" element={<ChangePassword />} />
-          <Route path="/payment" element={<PaymentPage />} />
-          <Route path="/payment-success" element={<PaymentSuccess />} />
-          <Route path="/payment-failed" element={<PaymentFailed />} />
         </Route>
 
         {/* Protected Staff Routes */}

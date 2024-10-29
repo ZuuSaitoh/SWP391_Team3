@@ -117,13 +117,15 @@ function ConstructionStaffPage() {
     try {
       const response = await api.put(`/status/update-complete/${statusId}`, {
         complete: true,
-        rejectReason: "" 
+        rejectReason: "",
       });
-      
+
       if (response.data.code === 999) {
         setStaffStatuses((prevStatuses) =>
           prevStatuses.map((status) =>
-            status.statusId === statusId ? { ...status, complete: true } : status
+            status.statusId === statusId
+              ? { ...status, complete: true }
+              : status
           )
         );
         toast.success("Status updated successfully");
@@ -262,7 +264,7 @@ function ConstructionStaffPage() {
           {complete ? "Completed" : "Update Complete"}
         </Button>
       ),
-    }
+    },
   ];
 
   const bookingColumns = [
@@ -339,7 +341,6 @@ function ConstructionStaffPage() {
     },
   ];
 
-
   const handleLogout = () => {
     localStorage.removeItem("staffId");
     localStorage.removeItem("staffAuthToken");
@@ -390,6 +391,7 @@ function ConstructionStaffPage() {
             dataSource={bookings}
             columns={bookingColumns}
             rowKey="bookingServiceId"
+            scroll={{ x: true }} // Add this line to enable horizontal scrolling
           />
         );
       case "2":

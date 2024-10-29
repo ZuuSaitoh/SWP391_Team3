@@ -12,6 +12,7 @@ import {
   faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 import uploadFile from "../../utils/file";
+import "./timeline.css";
 
 const OrderViewDashboard = () => {
   const [order, setOrder] = useState(null);
@@ -54,6 +55,8 @@ const OrderViewDashboard = () => {
   const [showUpdateAcceptanceModal, setShowUpdateAcceptanceModal] =
     useState(false);
   const [currentAcceptance, setCurrentAcceptance] = useState(null);
+  const [currentTimelineIndex, setCurrentTimelineIndex] = useState(0);
+  const [selectedStatus, setSelectedStatus] = useState(null);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -1191,6 +1194,186 @@ const OrderViewDashboard = () => {
     );
   };
 
+  // Add this function to determine which buttons to show based on status index
+  const getVisibleButtons = (statusIndex) => {
+    switch (statusIndex) {
+      case 1: // Status 2 - Contract related
+        return {
+          showContract: true,
+          showTransaction: false,
+          showAcceptance: false,
+        };
+      case 2: // Status 3 - Design Fee Payment
+        return {
+          showContract: false,
+          showTransaction: true,
+          showAcceptance: false,
+        };
+      case 4: // Status 5 - Material Cost Payment
+        return {
+          showContract: false,
+          showTransaction: true,
+          showAcceptance: false,
+        };
+      case 6: // Status 7 - Acceptance Contract
+        return {
+          showContract: false,
+          showTransaction: false,
+          showAcceptance: true,
+        };
+      case 7: // Status 8 - Construction Fee Payment
+        return {
+          showContract: false,
+          showTransaction: true,
+          showAcceptance: false,
+        };
+      default:
+        return {
+          showContract: false,
+          showTransaction: false,
+          showAcceptance: false,
+        };
+    }
+  };
+
+  // Update the Timeline component
+  const Timeline = ({ statuses }) => {
+    const handleNodeClick = (status) => {
+      setSelectedStatus(status);
+    };
+
+    const handleNext = () => {
+      setCurrentTimelineIndex((prev) =>
+        prev < statuses.length - 1 ? prev + 1 : prev
+      );
+    };
+
+    const handlePrev = () => {
+      setCurrentTimelineIndex((prev) => (prev > 0 ? prev - 1 : prev));
+    };
+
+    const visibleButtons = getVisibleButtons(currentTimelineIndex);
+
+    return (
+      <div className="timeline-container">
+        <div className="timeline">
+          {statuses.map((status, index) => (
+            <div
+              key={status.statusId}
+              className={`timeline-node ${
+                index === currentTimelineIndex
+                  ? "active"
+                  : index < currentTimelineIndex
+                  ? "completed"
+                  : ""
+              }`}
+              onClick={() => handleNodeClick(status)}
+            >
+              <span className="timeline-label">{`Status ${index + 1}`}</span>
+            </div>
+          ))}
+        </div>
+        <div className="timeline-navigation">
+          <button
+            className="timeline-btn"
+            onClick={handlePrev}
+            disabled={currentTimelineIndex === 0}
+          >
+            Previous
+          </button>
+          {visibleButtons.showContract && (
+            <>
+              <button
+                className="timeline-btn"
+                onClick={() => setShowCreateContractModal(true)}
+              >
+                Create Contract
+              </button>
+              <button
+                className="timeline-btn"
+                onClick={() => setShowViewContractsModal(true)}
+              >
+                View Contracts
+              </button>
+            </>
+          )}
+          {visibleButtons.showTransaction && (
+            <>
+              <button
+                className="timeline-btn"
+                onClick={() => setShowCreateTransactionModal(true)}
+              >
+                Create Transaction
+              </button>
+              <button
+                className="timeline-btn"
+                onClick={() => setShowTransactionModal(true)}
+              >
+                View Transactions
+              </button>
+            </>
+          )}
+          {visibleButtons.showAcceptance && (
+            <>
+              <button
+                className="timeline-btn"
+                onClick={() => setShowCreateAcceptanceModal(true)}
+              >
+                Create Acceptance
+              </button>
+              <button className="timeline-btn" onClick={fetchAcceptances}>
+                View Acceptance
+              </button>
+            </>
+          )}
+          <button
+            className="timeline-btn"
+            onClick={handleNext}
+            disabled={currentTimelineIndex === statuses.length - 1}
+          >
+            Next
+          </button>
+        </div>
+        {selectedStatus && (
+          <div
+            className="timeline-modal-overlay"
+            onClick={() => setSelectedStatus(null)}
+          >
+            <div
+              className="timeline-status-modal"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3>Status Details</h3>
+              <p>
+                <strong>Description:</strong> {selectedStatus.statusDescription}
+              </p>
+              <p>
+                <strong>Date:</strong>{" "}
+                {new Date(selectedStatus.statusDate).toLocaleString()}
+              </p>
+              <p>
+                <strong>Staff:</strong> {selectedStatus.staff.username}
+              </p>
+              <p>
+                <strong>Complete:</strong>{" "}
+                {selectedStatus.complete ? "Yes" : "No"}
+              </p>
+              <p>
+                <strong>Updates:</strong> {selectedStatus.numberOfUpdate}
+              </p>
+              <button
+                className="timeline-btn"
+                onClick={() => setSelectedStatus(null)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   if (loading)
     return <div className="dashboard-loading">Loading order details...</div>;
   if (error) return <div className="dashboard-error">{error}</div>;
@@ -1210,6 +1393,7 @@ const OrderViewDashboard = () => {
         pauseOnHover
       />
       <h1>Order Details</h1>
+      <Timeline statuses={statuses} />
       <div className="order-details-grid">
         <div className="info-section">
           <h2>Order Information</h2>

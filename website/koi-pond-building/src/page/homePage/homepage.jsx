@@ -610,10 +610,14 @@ function HomePage() {
                 required
               >
                 <option value="">Select design stage</option>
-                <option value="stage1">Stage 1</option>
-                <option value="stage2">Stage 2</option>
-                <option value="stage3">Stage 3</option>
-                <option value="stage4">Stage 4</option>
+                <option value="stage1">
+                  Stage 1: Current situation survey
+                </option>
+                <option value="stage2">Stage 2: Overall site planning</option>
+                <option value="stage3">Stage 3: Overall 3D rendering</option>
+                <option value="stage4">
+                  Stage 4: Construction design documentation
+                </option>
               </select>
               <select
                 name="contactMethod"
