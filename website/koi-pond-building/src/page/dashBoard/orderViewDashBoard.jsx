@@ -57,6 +57,16 @@ const OrderViewDashboard = () => {
   const [currentAcceptance, setCurrentAcceptance] = useState(null);
   const [currentTimelineIndex, setCurrentTimelineIndex] = useState(0);
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const [showAssignDesignStaffModal, setShowAssignDesignStaffModal] =
+    useState(false);
+  const [selectedDesignStaff, setSelectedDesignStaff] = useState("");
+  const [pendingStatusCreation, setPendingStatusCreation] = useState(null);
+  const [
+    showAssignConstructionStaffModal,
+    setShowAssignConstructionStaffModal,
+  ] = useState(false);
+  const [selectedConstructionStaff, setSelectedConstructionStaff] =
+    useState("");
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -99,7 +109,12 @@ const OrderViewDashboard = () => {
         }
 
         if (statusesResponse.data.code === 9999) {
-          setStatuses(statusesResponse.data.result);
+          const fetchedStatuses = statusesResponse.data.result;
+          setStatuses(fetchedStatuses);
+
+          if (fetchedStatuses.length === 0) {
+            console.warn("No statuses found for this order");
+          }
         } else {
           console.warn("Failed to fetch statuses");
         }
@@ -213,11 +228,58 @@ const OrderViewDashboard = () => {
       );
       if (response.data.code === 999) {
         toast.success("Status updated successfully");
-        setStatuses(
-          statuses.map((status) =>
-            status.statusId === statusId ? response.data.result : status
-          )
+
+        // Find the updated status in the current statuses
+        const updatedStatus = response.data.result;
+        const updatedStatuses = statuses.map((status) =>
+          status.statusId === statusId ? updatedStatus : status
         );
+        setStatuses(updatedStatuses);
+
+        // If the status is complete, create the next status automatically
+        const currentIndex = updatedStatuses.findIndex(
+          (s) => s.statusId === statusId
+        );
+        if (
+          updatedStatus.complete &&
+          currentIndex === updatedStatuses.length - 1
+        ) {
+          const nextStatusConfig = getNextStatusConfig(currentIndex);
+          if (nextStatusConfig) {
+            try {
+              const createStatusResponse = await axios.post(
+                "http://localhost:8080/status/create",
+                {
+                  orderId: orderId,
+                  statusDescription: nextStatusConfig.description,
+                  staffId:
+                    nextStatusConfig.role === currentStaffRole
+                      ? currentStaffId
+                      : findStaffByRole(staffList, nextStatusConfig.role)
+                          ?.staffId,
+                }
+              );
+
+              if (createStatusResponse.data.code === 1000) {
+                const newStatuses = [
+                  ...updatedStatuses,
+                  createStatusResponse.data.result,
+                ];
+                setStatuses(newStatuses);
+                // Automatically move to the next status
+                setCurrentTimelineIndex(currentIndex + 1);
+                toast.success(
+                  `${nextStatusConfig.description} created automatically`
+                );
+              } else {
+                toast.error(`Failed to create ${nextStatusConfig.description}`);
+              }
+            } catch (error) {
+              console.error("Error creating next status:", error);
+              toast.error("An error occurred while creating next status");
+            }
+          }
+        }
       } else if (response.data.code === 1026) {
         toast.error("You can't update more than 3 times!");
       } else {
@@ -231,6 +293,54 @@ const OrderViewDashboard = () => {
         toast.error("An error occurred while updating the status");
       }
     }
+  };
+
+  // Helper function to find staff by role
+  const findStaffByRole = (staffList, role) => {
+    return staffList.find((staff) => staff.role === role);
+  };
+
+  // Configuration for next status based on current index
+  const getNextStatusConfig = (currentIndex) => {
+    const statusConfigs = [
+      {
+        description: "Koi Pond Construction Contract (Signed)",
+        role: "Manager",
+      },
+      {
+        description: "Design Fee Payment",
+        role: "Manager",
+      },
+      {
+        description: "Design Drawing",
+        role: "Design Staff",
+      },
+      {
+        description: "Material Cost Payment",
+        role: "Manager",
+      },
+      {
+        description: "Construction",
+        role: "Construction Staff",
+      },
+      {
+        description: "Acceptance Contract",
+        role: "Manager",
+      },
+      {
+        description: "Construction Fee Payment",
+        role: "Manager",
+      },
+      {
+        description: "Project Completion",
+        role: "Manager",
+      },
+    ];
+
+    // Return null if we're at or beyond status 8 (index 7)
+    return currentIndex < statusConfigs.length && currentIndex !== 8
+      ? statusConfigs[currentIndex]
+      : null;
   };
 
   const handleCreateTransaction = async (localTransactionData) => {
@@ -869,11 +979,19 @@ const OrderViewDashboard = () => {
   };
 
   const CreateAcceptanceModal = ({ onClose }) => {
+    // Find the design and construction staff from previous statuses
+    const findStaffFromStatus = (description) => {
+      const status = statuses.find((s) => s.statusDescription === description);
+      return status?.staff?.staffId || "";
+    };
+
     const [acceptanceData, setAcceptanceData] = useState({
-      consultingStaff: "",
-      designStaff: "",
-      constructionStaff: "",
-      imageData: null, // Change to null to store file object
+      consultingStaff: order.staff.staffId,
+      // Auto-assign design staff from "Design Drawing" status
+      designStaff: findStaffFromStatus("Design Drawing"),
+      // Auto-assign construction staff from "Construction" status
+      constructionStaff: findStaffFromStatus("Construction"),
+      imageData: null,
       description: "",
     });
 
@@ -882,7 +1000,7 @@ const OrderViewDashboard = () => {
       if (id === "imageData") {
         setAcceptanceData((prev) => ({
           ...prev,
-          [id]: files[0], // Store the file object
+          [id]: files[0],
         }));
       } else {
         setAcceptanceData((prev) => ({
@@ -901,8 +1019,11 @@ const OrderViewDashboard = () => {
           "http://localhost:8080/acceptancetests/create",
           {
             orderId: parseInt(orderId),
-            ...acceptanceData,
-            imageData: imageUrl, // Use the uploaded file URL
+            consultingStaff: order.staff.staffId,
+            designStaff: acceptanceData.designStaff,
+            constructionStaff: acceptanceData.constructionStaff,
+            imageData: imageUrl,
+            description: acceptanceData.description,
           }
         );
 
@@ -918,6 +1039,12 @@ const OrderViewDashboard = () => {
       }
     };
 
+    // Find the staff usernames for display
+    const getStaffUsername = (staffId) => {
+      const staff = staffList.find((s) => s.staffId === parseInt(staffId));
+      return staff?.username || "";
+    };
+
     return (
       <div className="status-modal-overlay" onClick={onClose}>
         <div
@@ -928,57 +1055,33 @@ const OrderViewDashboard = () => {
           <form onSubmit={handleSubmit}>
             <div>
               <label htmlFor="consultingStaff">Consulting Staff:</label>
-              <select
+              <input
+                type="text"
                 id="consultingStaff"
-                value={acceptanceData.consultingStaff}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select Consulting Staff</option>
-                {staffList
-                  .filter((staff) => staff.role === "Consulting Staff")
-                  .map((staff) => (
-                    <option key={staff.staffId} value={staff.staffId}>
-                      {staff.username}
-                    </option>
-                  ))}
-              </select>
+                value={order.staff.username}
+                disabled
+                style={{ backgroundColor: "#f0f0f0" }}
+              />
             </div>
             <div>
               <label htmlFor="designStaff">Design Staff:</label>
-              <select
+              <input
+                type="text"
                 id="designStaff"
-                value={acceptanceData.designStaff}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select Design Staff</option>
-                {staffList
-                  .filter((staff) => staff.role === "Design Staff")
-                  .map((staff) => (
-                    <option key={staff.staffId} value={staff.staffId}>
-                      {staff.username}
-                    </option>
-                  ))}
-              </select>
+                value={getStaffUsername(acceptanceData.designStaff)}
+                disabled
+                style={{ backgroundColor: "#f0f0f0" }}
+              />
             </div>
             <div>
               <label htmlFor="constructionStaff">Construction Staff:</label>
-              <select
+              <input
+                type="text"
                 id="constructionStaff"
-                value={acceptanceData.constructionStaff}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select Construction Staff</option>
-                {staffList
-                  .filter((staff) => staff.role === "Construction Staff")
-                  .map((staff) => (
-                    <option key={staff.staffId} value={staff.staffId}>
-                      {staff.username}
-                    </option>
-                  ))}
-              </select>
+                value={getStaffUsername(acceptanceData.constructionStaff)}
+                disabled
+                style={{ backgroundColor: "#f0f0f0" }}
+              />
             </div>
             <div>
               <label htmlFor="imageData">Upload File:</label>
@@ -1236,16 +1339,80 @@ const OrderViewDashboard = () => {
     }
   };
 
-  // Update the Timeline component
+  // Add this new function to handle status completion
+  const handleCompleteStatus = async (statusId) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/status/update-complete/${statusId}`,
+        {
+          complete: true,
+          rejectReason: "",
+        }
+      );
+      if (response.data.code === 999) {
+        toast.success("Status marked as complete");
+
+        // Update the status in the local state
+        const updatedStatuses = statuses.map((status) =>
+          status.statusId === statusId ? { ...status, complete: true } : status
+        );
+        setStatuses(updatedStatuses);
+
+        // Close the status modal if it's open
+        setSelectedStatus(null);
+      } else {
+        toast.error("Failed to complete status");
+      }
+    } catch (err) {
+      console.error("Error completing status:", err);
+      toast.error("An error occurred while completing the status");
+    }
+  };
+
+  // Update the Timeline component's modal section to include the complete button
   const Timeline = ({ statuses }) => {
     const handleNodeClick = (status) => {
       setSelectedStatus(status);
     };
 
-    const handleNext = () => {
-      setCurrentTimelineIndex((prev) =>
-        prev < statuses.length - 1 ? prev + 1 : prev
-      );
+    const handleNext = async () => {
+      const currentStatus = statuses[currentTimelineIndex];
+
+      if (
+        currentStatus?.complete &&
+        currentTimelineIndex === statuses.length - 1
+      ) {
+        const nextStatusConfig = getNextStatusConfig(currentTimelineIndex);
+
+        // Check if next status is Design Drawing (status 4)
+        if (
+          nextStatusConfig &&
+          nextStatusConfig.description === "Design Drawing"
+        ) {
+          setShowAssignDesignStaffModal(true);
+          setPendingStatusCreation(nextStatusConfig);
+          return;
+        }
+
+        // Check if next status is Construction (status 6)
+        if (
+          nextStatusConfig &&
+          nextStatusConfig.description === "Construction"
+        ) {
+          setShowAssignConstructionStaffModal(true);
+          setPendingStatusCreation(nextStatusConfig);
+          return;
+        }
+
+        // Normal status creation logic...
+        if (nextStatusConfig) {
+          createNextStatus(nextStatusConfig);
+        }
+      } else {
+        setCurrentTimelineIndex((prev) =>
+          prev < statuses.length - 1 ? prev + 1 : prev
+        );
+      }
     };
 
     const handlePrev = () => {
@@ -1253,6 +1420,23 @@ const OrderViewDashboard = () => {
     };
 
     const visibleButtons = getVisibleButtons(currentTimelineIndex);
+
+    // Updated isNextEnabled function
+    const isNextEnabled = () => {
+      const currentStatus = statuses[currentTimelineIndex];
+      // Disable next button if we're at status 9 (index 8)
+      if (currentTimelineIndex === 8) {
+        return false;
+      }
+      // Enable next button if current status is complete
+      return currentStatus?.complete;
+    };
+
+    // Add this function to check if current status is complete
+    const isCurrentStatusComplete = () => {
+      const currentStatus = statuses[currentTimelineIndex];
+      return currentStatus?.complete;
+    };
 
     return (
       <div className="timeline-container">
@@ -1266,7 +1450,7 @@ const OrderViewDashboard = () => {
                   : index < currentTimelineIndex
                   ? "completed"
                   : ""
-              }`}
+              } ${status.complete ? "complete" : ""}`}
               onClick={() => handleNodeClick(status)}
             >
               <span className="timeline-label">{`Status ${index + 1}`}</span>
@@ -1281,55 +1465,86 @@ const OrderViewDashboard = () => {
           >
             Previous
           </button>
-          {visibleButtons.showContract && (
-            <>
-              <button
-                className="timeline-btn"
-                onClick={() => setShowCreateContractModal(true)}
-              >
-                Create Contract
-              </button>
-              <button
-                className="timeline-btn"
-                onClick={() => setShowViewContractsModal(true)}
-              >
-                View Contracts
-              </button>
-            </>
-          )}
-          {visibleButtons.showTransaction && (
-            <>
-              <button
-                className="timeline-btn"
-                onClick={() => setShowCreateTransactionModal(true)}
-              >
-                Create Transaction
-              </button>
-              <button
-                className="timeline-btn"
-                onClick={() => setShowTransactionModal(true)}
-              >
-                View Transactions
-              </button>
-            </>
-          )}
-          {visibleButtons.showAcceptance && (
-            <>
-              <button
-                className="timeline-btn"
-                onClick={() => setShowCreateAcceptanceModal(true)}
-              >
-                Create Acceptance
-              </button>
-              <button className="timeline-btn" onClick={fetchAcceptances}>
-                View Acceptance
-              </button>
-            </>
-          )}
+
+          <div className="timeline-center-buttons">
+            {visibleButtons.showContract && (
+              <>
+                <button
+                  className="timeline-btn"
+                  onClick={() => setShowCreateContractModal(true)}
+                  disabled={isCurrentStatusComplete()}
+                  style={{
+                    opacity: isCurrentStatusComplete() ? 0.5 : 1,
+                    cursor: isCurrentStatusComplete()
+                      ? "not-allowed"
+                      : "pointer",
+                  }}
+                >
+                  Create Contract
+                </button>
+                <button
+                  className="timeline-btn"
+                  onClick={() => setShowViewContractsModal(true)}
+                >
+                  View Contracts
+                </button>
+              </>
+            )}
+            {visibleButtons.showTransaction && (
+              <>
+                <button
+                  className="timeline-btn"
+                  onClick={() => setShowCreateTransactionModal(true)}
+                  disabled={isCurrentStatusComplete()}
+                  style={{
+                    opacity: isCurrentStatusComplete() ? 0.5 : 1,
+                    cursor: isCurrentStatusComplete()
+                      ? "not-allowed"
+                      : "pointer",
+                  }}
+                >
+                  Create Transaction
+                </button>
+                <button
+                  className="timeline-btn"
+                  onClick={() => setShowTransactionModal(true)}
+                >
+                  View Transactions
+                </button>
+              </>
+            )}
+            {visibleButtons.showAcceptance && (
+              <>
+                <button
+                  className="timeline-btn"
+                  onClick={() => setShowCreateAcceptanceModal(true)}
+                  disabled={isCurrentStatusComplete()}
+                  style={{
+                    opacity: isCurrentStatusComplete() ? 0.5 : 1,
+                    cursor: isCurrentStatusComplete()
+                      ? "not-allowed"
+                      : "pointer",
+                  }}
+                >
+                  Create Acceptance
+                </button>
+                <button className="timeline-btn" onClick={fetchAcceptances}>
+                  View Acceptance
+                </button>
+              </>
+            )}
+          </div>
+
           <button
-            className="timeline-btn"
+            className={`timeline-btn ${
+              isNextEnabled() ? "active" : "disabled"
+            }`}
             onClick={handleNext}
-            disabled={currentTimelineIndex === statuses.length - 1}
+            disabled={!isNextEnabled()}
+            style={{
+              opacity: isNextEnabled() ? 1 : 0.5,
+              cursor: isNextEnabled() ? "pointer" : "not-allowed",
+            }}
           >
             Next
           </button>
@@ -1361,17 +1576,232 @@ const OrderViewDashboard = () => {
               <p>
                 <strong>Updates:</strong> {selectedStatus.numberOfUpdate}
               </p>
-              <button
-                className="timeline-btn"
-                onClick={() => setSelectedStatus(null)}
-              >
-                Close
-              </button>
+              <div className="timeline-modal-actions">
+                {!selectedStatus.complete && (
+                  <button
+                    className="complete-status-btn"
+                    onClick={() =>
+                      handleCompleteStatus(selectedStatus.statusId)
+                    }
+                    style={{
+                      backgroundColor: "#4CAF50",
+                      color: "white",
+                      padding: "8px 16px",
+                      marginRight: "8px",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Mark as Complete
+                  </button>
+                )}
+                <button
+                  className="timeline-btn"
+                  onClick={() => setSelectedStatus(null)}
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         )}
       </div>
     );
+  };
+
+  // Add new function to handle design staff assignment and status creation
+  const handleDesignStaffAssign = async (designStaffId) => {
+    try {
+      if (pendingStatusCreation) {
+        const createStatusResponse = await axios.post(
+          "http://localhost:8080/status/create",
+          {
+            orderId: orderId,
+            statusDescription: pendingStatusCreation.description,
+            staffId: designStaffId, // Use the selected design staff ID directly
+          }
+        );
+
+        if (createStatusResponse.data.code === 1000) {
+          const newStatuses = [...statuses, createStatusResponse.data.result];
+          setStatuses(newStatuses);
+          setCurrentTimelineIndex(currentTimelineIndex + 1);
+          setShowAssignDesignStaffModal(false);
+          setPendingStatusCreation(null);
+          setSelectedDesignStaff("");
+          toast.success("Design Drawing status created with assigned staff");
+        } else {
+          toast.error("Failed to create Design Drawing status");
+        }
+      }
+    } catch (error) {
+      console.error("Error creating Design Drawing status:", error);
+      toast.error("An error occurred while creating Design Drawing status");
+    }
+  };
+
+  // Add helper function for creating next status
+  const createNextStatus = async (statusConfig) => {
+    try {
+      // Skip creation of initial status since it's already created
+      if (statuses.length === 0) {
+        console.log("Initial status should already exist");
+        return;
+      }
+
+      const createStatusResponse = await axios.post(
+        "http://localhost:8080/status/create",
+        {
+          orderId: orderId,
+          statusDescription: statusConfig.description,
+          staffId:
+            statusConfig.staffId ||
+            (statusConfig.role === currentStaffRole
+              ? currentStaffId
+              : findStaffByRole(staffList, statusConfig.role)?.staffId),
+        }
+      );
+
+      if (createStatusResponse.data.code === 1000) {
+        const newStatuses = [...statuses, createStatusResponse.data.result];
+        setStatuses(newStatuses);
+        setCurrentTimelineIndex(currentTimelineIndex + 1);
+        toast.success(`${statusConfig.description} created automatically`);
+      } else {
+        toast.error(`Failed to create ${statusConfig.description}`);
+      }
+    } catch (error) {
+      console.error("Error creating next status:", error);
+      toast.error("An error occurred while creating next status");
+    }
+  };
+
+  // Add new component for assigning design staff
+  const AssignDesignStaffModal = ({ onClose, onAssign }) => {
+    return (
+      <div className="status-modal-overlay" onClick={onClose}>
+        <div
+          className="status-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2>Assign Design Staff</h2>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onAssign(selectedDesignStaff);
+            }}
+          >
+            <div>
+              <label htmlFor="designStaff">Select Design Staff:</label>
+              <select
+                id="designStaff"
+                value={selectedDesignStaff}
+                onChange={(e) => setSelectedDesignStaff(e.target.value)}
+                required
+              >
+                <option value="">Select a staff member</option>
+                {staffList
+                  .filter((staff) => staff.role === "Design Staff")
+                  .map((staff) => (
+                    <option key={staff.staffId} value={staff.staffId}>
+                      {staff.username}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div className="modal-actions">
+              <button type="submit" className="create-status-btn">
+                Assign Staff
+              </button>
+              <button type="button" onClick={onClose} className="cancel-btn">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  };
+
+  // Add new component for assigning construction staff
+  const AssignConstructionStaffModal = ({ onClose, onAssign }) => {
+    return (
+      <div className="status-modal-overlay" onClick={onClose}>
+        <div
+          className="status-modal-content"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h2>Assign Construction Staff</h2>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onAssign(selectedConstructionStaff);
+            }}
+          >
+            <div>
+              <label htmlFor="constructionStaff">
+                Select Construction Staff:
+              </label>
+              <select
+                id="constructionStaff"
+                value={selectedConstructionStaff}
+                onChange={(e) => setSelectedConstructionStaff(e.target.value)}
+                required
+              >
+                <option value="">Select a staff member</option>
+                {staffList
+                  .filter((staff) => staff.role === "Construction Staff")
+                  .map((staff) => (
+                    <option key={staff.staffId} value={staff.staffId}>
+                      {staff.username}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div className="modal-actions">
+              <button type="submit" className="create-status-btn">
+                Assign Staff
+              </button>
+              <button type="button" onClick={onClose} className="cancel-btn">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  };
+
+  // Add handler for construction staff assignment
+  const handleConstructionStaffAssign = async (constructionStaffId) => {
+    try {
+      if (pendingStatusCreation) {
+        const createStatusResponse = await axios.post(
+          "http://localhost:8080/status/create",
+          {
+            orderId: orderId,
+            statusDescription: pendingStatusCreation.description,
+            staffId: constructionStaffId,
+          }
+        );
+
+        if (createStatusResponse.data.code === 1000) {
+          const newStatuses = [...statuses, createStatusResponse.data.result];
+          setStatuses(newStatuses);
+          setCurrentTimelineIndex(currentTimelineIndex + 1);
+          setShowAssignConstructionStaffModal(false);
+          setPendingStatusCreation(null);
+          setSelectedConstructionStaff("");
+          toast.success("Construction status created with assigned staff");
+        } else {
+          toast.error("Failed to create Construction status");
+        }
+      }
+    } catch (error) {
+      console.error("Error creating Construction status:", error);
+      toast.error("An error occurred while creating Construction status");
+    }
   };
 
   if (loading)
@@ -1652,6 +2082,26 @@ const OrderViewDashboard = () => {
         <UpdateAcceptanceModal
           acceptance={currentAcceptance}
           onClose={() => setShowUpdateAcceptanceModal(false)}
+        />
+      )}
+      {showAssignDesignStaffModal && (
+        <AssignDesignStaffModal
+          onClose={() => {
+            setShowAssignDesignStaffModal(false);
+            setPendingStatusCreation(null);
+            setSelectedDesignStaff("");
+          }}
+          onAssign={handleDesignStaffAssign}
+        />
+      )}
+      {showAssignConstructionStaffModal && (
+        <AssignConstructionStaffModal
+          onClose={() => {
+            setShowAssignConstructionStaffModal(false);
+            setPendingStatusCreation(null);
+            setSelectedConstructionStaff("");
+          }}
+          onAssign={handleConstructionStaffAssign}
         />
       )}
     </div>

@@ -143,6 +143,8 @@ const Dashboard = () => {
 
   const [formsWithOrders, setFormsWithOrders] = useState(new Set());
 
+  const [selectedManager, setSelectedManager] = useState(null);
+
   const toggleLock = () => {
     setSidebarLocked(!sidebarLocked);
     if (sidebarLocked) {
@@ -1635,8 +1637,8 @@ const Dashboard = () => {
 
   //create order
   const handleCreateOrder = async () => {
-    if (!selectedRequest || !selectedConsultingStaff) {
-      toast.error("Please select a consulting staff");
+    if (!selectedRequest || !selectedManager || !selectedConsultingStaff) {
+      toast.error("Please select both a manager and consulting staff");
       return;
     }
 
@@ -1646,28 +1648,49 @@ const Dashboard = () => {
         selectedRequest.formId
       );
 
-      const response = await axios.post("http://localhost:8080/orders/create", {
-        form_id: selectedRequest.formId,
-        customer_id: selectedRequest.customer.id,
-        staff_id: selectedConsultingStaff,
-      });
+      // First create the order with manager
+      const orderResponse = await axios.post(
+        "http://localhost:8080/orders/create",
+        {
+          form_id: selectedRequest.formId,
+          customer_id: selectedRequest.customer.id,
+          staff_id: selectedManager,
+        }
+      );
 
-      if (response.data.code === 1000) {
-        toast.success("Order created successfully");
-        setOrders([...orders, response.data.result]);
-        setFormsWithOrders(
-          new Set(formsWithOrders).add(selectedRequest.formId)
+      if (orderResponse.data.code === 1000) {
+        const newOrder = orderResponse.data.result;
+
+        // Then create initial status with consulting staff
+        const statusResponse = await axios.post(
+          "http://localhost:8080/status/create",
+          {
+            orderId: newOrder.orderId,
+            statusDescription: "Consultation",
+            staffId: selectedConsultingStaff,
+          }
         );
-        setIsCreateOrderModalVisible(false);
-        setSelectedRequest(null);
-        setSelectedConsultingStaff(null);
-      } else if (response.data.code === 1038) {
-        console.warn("Order already exists for this form:", response.data);
+
+        if (statusResponse.data.code === 1000) {
+          toast.success("Order and initial status created successfully");
+          setOrders([...orders, newOrder]);
+          setFormsWithOrders(
+            new Set(formsWithOrders).add(selectedRequest.formId)
+          );
+          setIsCreateOrderModalVisible(false);
+          setSelectedRequest(null);
+          setSelectedManager(null);
+          setSelectedConsultingStaff(null);
+        } else {
+          toast.error("Failed to create initial status");
+        }
+      } else if (orderResponse.data.code === 1038) {
+        console.warn("Order already exists for this form:", orderResponse.data);
         toast.warning("An order has already been created for this request.");
       } else {
         console.error(
           "Failed to create order. Server response:",
-          response.data
+          orderResponse.data
         );
         toast.error("Failed to create order");
       }
@@ -1763,6 +1786,7 @@ const Dashboard = () => {
         onCancel={() => {
           setIsCreateOrderModalVisible(false);
           setSelectedRequest(null);
+          setSelectedManager(null);
           setSelectedConsultingStaff(null);
         }}
         footer={[
@@ -1772,25 +1796,51 @@ const Dashboard = () => {
           >
             Cancel
           </Button>,
-          <Button key="create" type="primary" onClick={handleCreateOrder}>
+          <Button
+            key="create"
+            type="primary"
+            onClick={handleCreateOrder}
+            disabled={!selectedManager || !selectedConsultingStaff}
+          >
             Create Order
           </Button>,
         ]}
       >
         <p>Creating order for customer: {selectedRequest?.customer.username}</p>
-        <Select
-          style={{ width: "100%" }}
-          placeholder="Select a consulting staff"
-          onChange={(value) => setSelectedConsultingStaff(value)}
-        >
-          {staffs
-            .filter((staff) => staff.role === "Consulting Staff")
-            .map((staff) => (
-              <Option key={staff.staffId} value={staff.staffId}>
-                {staff.username} (ID: {staff.staffId})
-              </Option>
-            ))}
-        </Select>
+
+        {/* Add Manager Selection */}
+        <div style={{ marginBottom: "16px" }}>
+          <Select
+            style={{ width: "100%" }}
+            placeholder="Select a manager"
+            onChange={(value) => setSelectedManager(value)}
+          >
+            {staffs
+              .filter((staff) => staff.role === "Manager")
+              .map((staff) => (
+                <Option key={staff.staffId} value={staff.staffId}>
+                  {staff.username} (Manager)
+                </Option>
+              ))}
+          </Select>
+        </div>
+
+        {/* Consulting Staff Selection */}
+        <div>
+          <Select
+            style={{ width: "100%" }}
+            placeholder="Select a consulting staff"
+            onChange={(value) => setSelectedConsultingStaff(value)}
+          >
+            {staffs
+              .filter((staff) => staff.role === "Consulting Staff")
+              .map((staff) => (
+                <Option key={staff.staffId} value={staff.staffId}>
+                  {staff.username} (Consulting Staff)
+                </Option>
+              ))}
+          </Select>
+        </div>
       </Modal>
     </div>
   );

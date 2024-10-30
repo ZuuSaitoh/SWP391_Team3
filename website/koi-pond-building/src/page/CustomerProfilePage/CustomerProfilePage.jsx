@@ -35,6 +35,9 @@ function CustomerProfilePage() {
   const [bookings, setBookings] = useState([]);
   const [feedbackBookingId, setFeedbackBookingId] = useState(null);
   const [feedbackText, setFeedbackText] = useState("");
+  const [activeOrderTab, setActiveOrderTab] = useState("inProgress");
+  const [forms, setForms] = useState([]);
+  const [isFormsExpanded, setIsFormsExpanded] = useState(false);
 
   useEffect(() => {
     const fetchCustomerData = async () => {
@@ -78,6 +81,17 @@ function CustomerProfilePage() {
           setBookings(bookingsResponse.data.result);
         } else {
           console.warn("Failed to fetch bookings");
+        }
+
+        // Fetch customer forms
+        const formsResponse = await axios.get(
+          `http://localhost:8080/forms/customer/${customerId}`
+        );
+        console.log("Forms response:", formsResponse.data);
+        if (formsResponse.data.code === 1111) {
+          setForms(formsResponse.data.result);
+        } else {
+          console.warn("Failed to fetch forms");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -270,9 +284,18 @@ function CustomerProfilePage() {
                       <span className="booking-service">
                         {booking.service.serviceName}
                       </span>
-                      <span className="booking-date">
-                        {new Date(booking.bookingDate).toLocaleDateString()}
-                      </span>
+                      <div className="booking-dates">
+                        <span className="booking-date">
+                          <i className="far fa-calendar-alt"></i> Start:{" "}
+                          {new Date(booking.bookingDate).toLocaleDateString()}
+                        </span>
+                        <span className="booking-date">
+                          <i className="far fa-calendar-check"></i> Finish:{" "}
+                          {booking.finishDate
+                            ? new Date(booking.finishDate).toLocaleDateString()
+                            : "Not set"}
+                        </span>
+                      </div>
                     </div>
                     <span className="booking-price">
                       {formatCurrency(booking.price)} VND
@@ -325,6 +348,136 @@ function CustomerProfilePage() {
           </div>
         </div>
       )}
+    </div>
+  );
+
+  const filterOrders = (orders) => {
+    const currentDate = new Date();
+    return {
+      inProgress: orders.filter(
+        (order) => !order.end_date || new Date(order.end_date) > currentDate
+      ),
+      completed: orders.filter(
+        (order) => order.end_date && new Date(order.end_date) <= currentDate
+      ),
+    };
+  };
+
+  const renderOrders = () => {
+    const { inProgress, completed } = filterOrders(orders);
+
+    return (
+      <div className="order-status">
+        <h3>Recent Orders</h3>
+        <div className="order-tabs">
+          <button
+            className={`tab-button ${
+              activeOrderTab === "inProgress" ? "active" : ""
+            }`}
+            onClick={() => setActiveOrderTab("inProgress")}
+          >
+            In Progress ({inProgress.length})
+          </button>
+          <button
+            className={`tab-button ${
+              activeOrderTab === "completed" ? "active" : ""
+            }`}
+            onClick={() => setActiveOrderTab("completed")}
+          >
+            Completed ({completed.length})
+          </button>
+        </div>
+
+        <div className="order-content">
+          {orders.length > 0 ? (
+            <ul className="order-list">
+              {(activeOrderTab === "inProgress" ? inProgress : completed).map(
+                (order) => (
+                  <li key={order.orderId} className="order-item">
+                    <div className="order-info">
+                      <span className="order-id">Order #{order.orderId}</span>
+                      <br />
+                      <span className="order-date">
+                        Order Date:{" "}
+                        {new Date(order.order_date).toLocaleDateString()}
+                      </span>
+                      {order.end_date && (
+                        <>
+                          <br />
+                          <span className="end-date">
+                            End Date:{" "}
+                            {new Date(order.end_date).toLocaleDateString()}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleViewOrder(order)}
+                      className="view-order-button"
+                    >
+                      View Order
+                    </button>
+                  </li>
+                )
+              )}
+            </ul>
+          ) : (
+            <p>No orders found for this customer.</p>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderForms = () => (
+    <div className="customer-forms">
+      <div
+        className="forms-header"
+        onClick={() => setIsFormsExpanded(!isFormsExpanded)}
+      >
+        <h3>Service Requests</h3>
+        {isFormsExpanded ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+      {isFormsExpanded &&
+        (forms.length > 0 ? (
+          <ul className="form-list">
+            {forms.map((form) => (
+              <li key={form.formId} className="form-item">
+                <div className="form-info">
+                  <div className="form-main-info">
+                    <div className="form-details">
+                      <span className="form-id">Request #{form.formId}</span>
+                      <span className="form-area">
+                        <i className="fas fa-ruler-combined"></i> Area:{" "}
+                        {form.area}
+                      </span>
+                      <span className="form-style">
+                        <i className="fas fa-paint-brush"></i> Style:{" "}
+                        {form.style}
+                      </span>
+                      <span className="form-stage">
+                        <i className="fas fa-tasks"></i> Stage: {form.stage}
+                      </span>
+                      <span className="form-contact">
+                        <i className="fas fa-comments"></i> Contact via:{" "}
+                        {form.contactMethod}
+                      </span>
+                    </div>
+                    <span
+                      className={`form-status ${form.stage
+                        .toLowerCase()
+                        .replace(" ", "-")}`}
+                    >
+                      {form.stage}
+                    </span>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No service requests found.</p>
+        ))}
     </div>
   );
 
@@ -457,32 +610,8 @@ function CustomerProfilePage() {
           </div>
           {renderBookings()}
 
-          <div className="order-status">
-            <h3>Recent Orders</h3>
-            {orders.length > 0 ? (
-              <ul className="order-list">
-                {orders.map((order) => (
-                  <li key={order.orderId} className="order-item">
-                    <div className="order-info">
-                      <span className="order-id">Order #{order.orderId}</span>
-                      <br />
-                      <span className="order-date">
-                        {new Date(order.order_date).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => handleViewOrder(order)}
-                      className="view-order-button"
-                    >
-                      View Order
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No orders found for this customer.</p>
-            )}
-          </div>
+          {renderOrders()}
+
           {selectedOrder && (
             <ViewOrderCustomer
               order={selectedOrder}
@@ -490,6 +619,7 @@ function CustomerProfilePage() {
               onOrderUpdate={handleOrderUpdate}
             />
           )}
+          {renderForms()}
           <ToastContainer />
         </div>
       </div>
