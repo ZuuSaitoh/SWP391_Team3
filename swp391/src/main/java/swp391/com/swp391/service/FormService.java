@@ -36,7 +36,7 @@ public class FormService {
     public Form findById(int id){
         return formRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.FORM_NOT_EXISTED));
     }
-    public Optional<Form> findByCustomerId(int id){
+    public Optional<List<Form>> findByCustomerId(int id){
         return Optional.ofNullable(formRepository.findByCustomer_id(id).orElseThrow(() -> new AppException(ErrorCode.FORM_NOT_EXISTED)));
     }
     public Form updateForm(int id, FormUpdateRequest request){

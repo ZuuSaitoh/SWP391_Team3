@@ -36,8 +36,8 @@ public class FormController {
     }
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
     @GetMapping("/customer/{id}")
-    ApiResponse<Optional<Form>> getFormByCustomerId(@PathVariable int id){
-        return new ApiResponse<Optional<Form>>(1111, "Form", formService.findByCustomerId(id));
+    ApiResponse<Optional<List<Form>>> getFormByCustomerId(@PathVariable int id){
+        return new ApiResponse<Optional<List<Form>>>(1111, "Form", formService.findByCustomerId(id));
     }
 
     @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
