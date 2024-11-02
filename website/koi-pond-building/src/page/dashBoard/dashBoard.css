@@ -2997,3 +2997,83 @@ body {
     max-width: 100%;
   }
 }
+
+/* Add these styles at the end of the file */
+
+.view-order-btn,
+.create-order-btn,
+.delete-form-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.view-order-btn {
+  background-color: #3498db;
+  color: #ffffff;
+}
+
+.view-order-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+}
+
+.create-order-btn {
+  background-color: #2ecc71;
+  color: #ffffff;
+}
+
+.create-order-btn:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2);
+}
+
+.delete-form-btn {
+  background-color: #e74c3c;
+  color: #ffffff;
+}
+
+.delete-form-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(231, 76, 60, 0.2);
+}
+
+.delete-form-btn:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.delete-form-btn:disabled:hover {
+  background-color: #95a5a6;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Add styles for the action cell to properly align buttons */
+.data-table td:last-child {
+  display: flex;
+  gap: 5px;
+  justify-content: flex-start;
+  align-items: center;
+  min-width: 200px; /* Ensure enough space for buttons */
+}
+
+.view-order-btn:active,
+.create-order-btn:active,
+.delete-form-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}

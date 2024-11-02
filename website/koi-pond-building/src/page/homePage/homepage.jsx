@@ -673,11 +673,11 @@ function HomePage() {
                   <label>
                     <input
                       type="checkbox"
-                      name="message"
-                      checked={formData.contactMethods?.includes('message')}
+                      name="mail"
+                      checked={formData.contactMethods?.includes('mail')}
                       onChange={handleContactMethodChange}
                     />
-                    Message
+                    Mail
                   </label>
                 </div>
               </div>

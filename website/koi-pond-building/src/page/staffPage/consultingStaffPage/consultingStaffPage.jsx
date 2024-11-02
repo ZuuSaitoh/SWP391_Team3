@@ -22,6 +22,7 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import api from "../../../config/axios";
 import { useNavigate } from "react-router-dom";
 import uploadFile from "../../../utils/file";
@@ -151,16 +152,28 @@ function ConsultingStaffPage() {
       );
     }
   };
+
   useEffect(() => {
-    if (!staffId) {
-      toast.error("Staff ID not found. Please log in again.");
-      navigate("/login");
-    } else {
+    if (staffId) {
       fetchOrders();
       fetchAcceptanceTests();
       fetchAvailableStaff();
+    } else {
+      toast.error("Staff ID not found. Please log in again.");
     }
   }, [staffId, navigate]);
+
+  useEffect(() => {
+    toast.success("Login successful! Welcome back!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }, []);
 
   const columns = [
     {
@@ -220,7 +233,7 @@ function ConsultingStaffPage() {
       });
 
       if (response.data.code === 999) {
-        message.success("Status updated successfully");
+        toast.success("Status updated successfully");
         fetchStatusesByStaffId();
       } else if (response.data.code === 1025) {
         message.error("Status does not exist");
@@ -594,13 +607,29 @@ function ConsultingStaffPage() {
       };
 
       const response = await api.post("/contracts/create", contractData);
-      toast.success("Contract created successfully");
+      toast.success("Contract created successfully", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       setShowContractModal(false);
       contractForm.resetFields();
       // Optionally, you can fetch updated data here if needed
     } catch (err) {
       console.error("Error creating contract:", err);
-      toast.error("An error occurred while creating the contract");
+      toast.error("An error occurred while creating the contract", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } finally {
       setLoading(false);
     }
@@ -670,324 +699,337 @@ function ConsultingStaffPage() {
   };
 
   return (
-    <Layout>
-      <Header
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div className="demo-logo" />
-          <Menu
-            theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={["2"]}
-            items={[{ key: "1", label: "Consulting Staff Dashboard" }]}
-            style={{
-              flex: 1,
-              minWidth: 0,
-            }}
-          />
-        </div>
-        <div>
-          <Button
-            type="primary"
-            danger
-            icon={<LogoutOutlined />}
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
-        </div>
-      </Header>
+    <>
       <Layout>
-        <Sider
-          width={200}
+        <Header
           style={{
-            background: colorBgContainer,
-          }}
-        >
-          <Menu
-            mode="inline"
-            selectedKeys={[activeTab]}
-            style={{
-              height: "100%",
-              borderRight: 0,
-            }}
-            items={menuItems}
-            onSelect={({ key }) => setActiveTab(key)}
-          />
-        </Sider>
-        <Layout
-          style={{
-            padding: "0 24px 24px",
             display: "flex",
-            flexDirection: "column",
-            height: "calc(100vh - 64px)", // Subtract header height
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <Breadcrumb
-            items={[
-              { title: "Home" },
-              { title: "Consulting Staff" },
-              { title: activeTab === "orders" ? "Orders" : "Acceptance" },
-            ]}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div className="demo-logo" />
+            <Menu
+              theme="dark"
+              mode="horizontal"
+              defaultSelectedKeys={["2"]}
+              items={[{ key: "1", label: "Consulting Staff Dashboard" }]}
+              style={{
+                flex: 1,
+                minWidth: 0,
+              }}
+            />
+          </div>
+          <div>
+            <Button
+              type="primary"
+              danger
+              icon={<LogoutOutlined />}
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
+          </div>
+        </Header>
+        <Layout>
+          <Sider
+            width={200}
             style={{
-              margin: "16px 0",
-            }}
-          />
-          <Content
-            style={{
-              padding: 24,
-              flex: 1,
-              overflow: "auto",
               background: colorBgContainer,
-              borderRadius: borderRadiusLG,
             }}
           >
-            {renderContent()}
-          </Content>
+            <Menu
+              mode="inline"
+              selectedKeys={[activeTab]}
+              style={{
+                height: "100%",
+                borderRight: 0,
+              }}
+              items={menuItems}
+              onSelect={({ key }) => setActiveTab(key)}
+            />
+          </Sider>
+          <Layout
+            style={{
+              padding: "0 24px 24px",
+              display: "flex",
+              flexDirection: "column",
+              height: "calc(100vh - 64px)", // Subtract header height
+            }}
+          >
+            <Breadcrumb
+              items={[
+                { title: "Home" },
+                { title: "Consulting Staff" },
+                { title: activeTab === "orders" ? "Orders" : "Acceptance" },
+              ]}
+              style={{
+                margin: "16px 0",
+              }}
+            />
+            <Content
+              style={{
+                padding: 24,
+                flex: 1,
+                overflow: "auto",
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+              }}
+            >
+              {renderContent()}
+            </Content>
+          </Layout>
         </Layout>
-      </Layout>
 
-      <Modal
-        title="Order Details"
-        open={isModalVisible}
-        onOk={() => setIsModalVisible(false)}
-        onCancel={() => setIsModalVisible(false)}
-        width={700}
-      >
-        {renderOrderDetails()}
-      </Modal>
-
-      <Modal
-        open={showModal}
-        onCancel={() => setShowModal(false)}
-        title="Create New Order"
-        onOk={() => form.submit()}
-        confirmLoading={loading}
-      >
-        <Form
-          form={form}
-          labelCol={{
-            span: 24,
-          }}
-          onFinish={handleSubmit}
+        <Modal
+          title="Order Details"
+          open={isModalVisible}
+          onOk={() => setIsModalVisible(false)}
+          onCancel={() => setIsModalVisible(false)}
+          width={700}
         >
-          <Form.Item
-            label="Customer ID"
-            name="customer_id"
-            rules={[{ required: true, message: "Customer ID is required" }]}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
+          {renderOrderDetails()}
+        </Modal>
 
-      <Modal
-        title="My Statuses"
-        visible={statusModalVisible}
-        onCancel={() => setStatusModalVisible(false)}
-        footer={null}
-        width={1200}
-      >
-        <Table
-          dataSource={staffStatuses}
-          columns={statusColumns}
-          rowKey="statusId"
-          scroll={{ x: true }}
-        />
-      </Modal>
-
-      <Modal
-        title="Create New Acceptance Test"
-        open={showAcceptanceModal}
-        onCancel={() => setShowAcceptanceModal(false)}
-        footer={null}
-      >
-        <Form
-          form={acceptanceForm}
-          onFinish={handleSubmitAcceptance}
-          // layout="horizontal"
-          labelCol={{
-            span: 24,
-          }}
+        <Modal
+          open={showModal}
+          onCancel={() => setShowModal(false)}
+          title="Create New Order"
+          onOk={() => form.submit()}
+          confirmLoading={loading}
         >
-          <Form.Item
-            name="orderId"
-            label="Order ID"
-            rules={[{ required: true, message: "Please select an order" }]}
+          <Form
+            form={form}
+            labelCol={{
+              span: 24,
+            }}
+            onFinish={handleSubmit}
           >
-            <Select
-              placeholder="Select an order"
-              options={orders.map((order) => ({
-                value: order.orderId,
-                label: `Order ${order.orderId}`,
-              }))}
-            />
-          </Form.Item>
-          <Form.Item
-            name="designStaff"
-            label="Design Staff"
-            rules={[
-              { required: true, message: "Please select a design staff" },
-            ]}
-          >
-            <Select
-              placeholder="Select design staff"
-              options={availableStaff
-                .filter((staff) => staff.role === "Design Staff")
-                .map((staff) => ({
-                  value: staff.staffId,
-                  label: `${staff.fullName} (ID: ${staff.staffId})`,
-                }))}
-            />
-          </Form.Item>
-          <Form.Item
-            name="constructionStaff"
-            label="Construction Staff"
-            rules={[
-              { required: true, message: "Please select a construction staff" },
-            ]}
-          >
-            <Select
-              placeholder="Select construction staff"
-              options={availableStaff
-                .filter((staff) => staff.role === "Construction Staff")
-                .map((staff) => ({
-                  value: staff.staffId,
-                  label: `${staff.fullName} (ID: ${staff.staffId})`,
-                }))}
-            />
-          </Form.Item>
-          <Form.Item
-            name="imageData"
-            label="Upload File"
-            valuePropName="fileList"
-            getValueFromEvent={(e) => {
-              if (Array.isArray(e)) {
-                return e;
-              }
-              return e && e.fileList;
+            <Form.Item
+              label="Customer ID"
+              name="customer_id"
+              rules={[{ required: true, message: "Customer ID is required" }]}
+            >
+              <Input />
+            </Form.Item>
+          </Form>
+        </Modal>
+
+        <Modal
+          title="My Statuses"
+          visible={statusModalVisible}
+          onCancel={() => setStatusModalVisible(false)}
+          footer={null}
+          width={1200}
+        >
+          <Table
+            dataSource={staffStatuses}
+            columns={statusColumns}
+            rowKey="statusId"
+            scroll={{ x: true }}
+          />
+        </Modal>
+
+        <Modal
+          title="Create New Acceptance Test"
+          open={showAcceptanceModal}
+          onCancel={() => setShowAcceptanceModal(false)}
+          footer={null}
+        >
+          <Form
+            form={acceptanceForm}
+            onFinish={handleSubmitAcceptance}
+            // layout="horizontal"
+            labelCol={{
+              span: 24,
             }}
           >
-            <Upload beforeUpload={() => false} maxCount={1}>
-              <Button icon={<UploadOutlined />}>Click to upload file</Button>
-            </Upload>
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ required: true, message: "Please enter a description" }]}
-          >
-            <Input.TextArea rows={4} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading}>
-              Create Acceptance
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Modal
-        title="Edit Acceptance Test"
-        open={isEditModalVisible}
-        onCancel={() => setIsEditModalVisible(false)}
-        footer={null}
-      >
-        <Form form={editForm} onFinish={handleEditSubmit} layout="vertical">
-          <Form.Item
-            name="imageData"
-            label="Upload New File"
-            valuePropName="fileList"
-            getValueFromEvent={(e) => {
-              if (Array.isArray(e)) {
-                return e;
-              }
-              return e && e.fileList;
-            }}
-          >
-            <Upload beforeUpload={() => false} maxCount={1}>
-              <Button icon={<UploadOutlined />}>
-                Click to upload new file
+            <Form.Item
+              name="orderId"
+              label="Order ID"
+              rules={[{ required: true, message: "Please select an order" }]}
+            >
+              <Select
+                placeholder="Select an order"
+                options={orders.map((order) => ({
+                  value: order.orderId,
+                  label: `Order ${order.orderId}`,
+                }))}
+              />
+            </Form.Item>
+            <Form.Item
+              name="designStaff"
+              label="Design Staff"
+              rules={[
+                { required: true, message: "Please select a design staff" },
+              ]}
+            >
+              <Select
+                placeholder="Select design staff"
+                options={availableStaff
+                  .filter((staff) => staff.role === "Design Staff")
+                  .map((staff) => ({
+                    value: staff.staffId,
+                    label: `${staff.fullName} (ID: ${staff.staffId})`,
+                  }))}
+              />
+            </Form.Item>
+            <Form.Item
+              name="constructionStaff"
+              label="Construction Staff"
+              rules={[
+                { required: true, message: "Please select a construction staff" },
+              ]}
+            >
+              <Select
+                placeholder="Select construction staff"
+                options={availableStaff
+                  .filter((staff) => staff.role === "Construction Staff")
+                  .map((staff) => ({
+                    value: staff.staffId,
+                    label: `${staff.fullName} (ID: ${staff.staffId})`,
+                  }))}
+              />
+            </Form.Item>
+            <Form.Item
+              name="imageData"
+              label="Upload File"
+              valuePropName="fileList"
+              getValueFromEvent={(e) => {
+                if (Array.isArray(e)) {
+                  return e;
+                }
+                return e && e.fileList;
+              }}
+            >
+              <Upload beforeUpload={() => false} maxCount={1}>
+                <Button icon={<UploadOutlined />}>Click to upload file</Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item
+              name="description"
+              label="Description"
+              rules={[{ required: true, message: "Please enter a description" }]}
+            >
+              <Input.TextArea rows={4} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" loading={loading}>
+                Create Acceptance
               </Button>
-            </Upload>
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ required: true, message: "Please enter a description" }]}
-          >
-            <Input.TextArea rows={4} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading}>
-              Update Acceptance
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
+            </Form.Item>
+          </Form>
+        </Modal>
 
-      {/* Add New Contract Modal */}
-      <Modal
-        title="Create New Contract"
-        open={showContractModal}
-        onCancel={() => setShowContractModal(false)}
-        footer={null}
-      >
-        <Form
-          form={contractForm}
-          onFinish={handleSubmitContract}
-          layout="vertical"
+        <Modal
+          title="Edit Acceptance Test"
+          open={isEditModalVisible}
+          onCancel={() => setIsEditModalVisible(false)}
+          footer={null}
         >
-          <Form.Item
-            name="orderId"
-            label="Order ID"
-            rules={[{ required: true, message: "Please select an order" }]}
-          >
-            <Select
-              placeholder="Select an order"
-              options={orders.map((order) => ({
-                value: order.orderId,
-                label: `Order ${order.orderId}`,
-              }))}
-            />
-          </Form.Item>
-          <Form.Item
-            name="imageData"
-            label="Upload File"
-            valuePropName="fileList"
-            getValueFromEvent={(e) => {
-              if (Array.isArray(e)) {
-                return e;
-              }
-              return e && e.fileList;
-            }}
-          >
-            <Upload beforeUpload={() => false} maxCount={1}>
-              <Button icon={<UploadOutlined />}>Click to upload file</Button>
-            </Upload>
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ required: true, message: "Please enter a description" }]}
-          >
-            <Input.TextArea rows={4} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading}>
-              Create Contract
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
+          <Form form={editForm} onFinish={handleEditSubmit} layout="vertical">
+            <Form.Item
+              name="imageData"
+              label="Upload New File"
+              valuePropName="fileList"
+              getValueFromEvent={(e) => {
+                if (Array.isArray(e)) {
+                  return e;
+                }
+                return e && e.fileList;
+              }}
+            >
+              <Upload beforeUpload={() => false} maxCount={1}>
+                <Button icon={<UploadOutlined />}>
+                  Click to upload new file
+                </Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item
+              name="description"
+              label="Description"
+              rules={[{ required: true, message: "Please enter a description" }]}
+            >
+              <Input.TextArea rows={4} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" loading={loading}>
+                Update Acceptance
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
 
-      <ToastContainer />
-    </Layout>
+        {/* Add New Contract Modal */}
+        <Modal
+          title="Create New Contract"
+          open={showContractModal}
+          onCancel={() => setShowContractModal(false)}
+          footer={null}
+        >
+          <Form
+            form={contractForm}
+            onFinish={handleSubmitContract}
+            layout="vertical"
+          >
+            <Form.Item
+              name="orderId"
+              label="Order ID"
+              rules={[{ required: true, message: "Please select an order" }]}
+            >
+              <Select
+                placeholder="Select an order"
+                options={orders.map((order) => ({
+                  value: order.orderId,
+                  label: `Order ${order.orderId}`,
+                }))}
+              />
+            </Form.Item>
+            <Form.Item
+              name="imageData"
+              label="Upload File"
+              valuePropName="fileList"
+              getValueFromEvent={(e) => {
+                if (Array.isArray(e)) {
+                  return e;
+                }
+                return e && e.fileList;
+              }}
+            >
+              <Upload beforeUpload={() => false} maxCount={1}>
+                <Button icon={<UploadOutlined />}>Click to upload file</Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item
+              name="description"
+              label="Description"
+              rules={[{ required: true, message: "Please enter a description" }]}
+            >
+              <Input.TextArea rows={4} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" loading={loading}>
+                Create Contract
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </Layout>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        style={{ zIndex: 9999 }}
+      />
+    </>
   );
 }
 

@@ -17,6 +17,7 @@ import {
 } from "antd";
 import api from "../../../config/axios";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import {
   PlusOutlined,
@@ -89,14 +90,32 @@ function DesignStaffPage() {
           response.data
         );
         toast.warning(
-          "Unexpected response when fetching designs. Data may be incomplete."
+          "Unexpected response when fetching designs. Data may be incomplete.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
         );
       }
     } catch (err) {
       console.error("Error fetching designs:", err);
       toast.error(
         "Error fetching designs: " +
-          (err.response?.data?.message || err.message)
+          (err.response?.data?.message || err.message),
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
       );
     }
   };
@@ -174,7 +193,16 @@ function DesignStaffPage() {
         toast.success(
           editingDesign
             ? "Successfully updated design"
-            : "Successfully added new design"
+            : "Successfully added new design",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
         );
         setShowModal(false);
         setFileList([]);
@@ -184,7 +212,16 @@ function DesignStaffPage() {
         toast.error(
           `Failed to ${
             editingDesign ? "update" : "add"
-          } design. Please try again.`
+          } design. Please try again.`,
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
         );
       }
     } catch (err) {
@@ -195,7 +232,16 @@ function DesignStaffPage() {
       toast.error(
         `Error ${
           editingDesign ? "updating" : "adding"
-        } design. Please try again.`
+        } design. Please try again.`,
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
       );
     } finally {
       setLoading(false);
@@ -224,7 +270,15 @@ function DesignStaffPage() {
         setDatas((prevDatas) =>
           prevDatas.filter((design) => design.designId !== designId)
         );
-        toast.success(response.data.result || "Design deleted successfully");
+        toast.success(response.data.result || "Design deleted successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } else {
         console.error(
           "Unexpected response when deleting design:",
@@ -233,13 +287,31 @@ function DesignStaffPage() {
         toast.error(
           `Failed to delete design: ${
             response.data?.message || "Unknown error"
-          }`
+          }`,
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
         );
       }
     } catch (err) {
       console.error("Error deleting design:", err);
       toast.error(
-        `Failed to delete design: ${err.response?.data?.message || err.message}`
+        `Failed to delete design: ${err.response?.data?.message || err.message}`,
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
       );
     }
   };
@@ -276,13 +348,30 @@ function DesignStaffPage() {
           "Unexpected response when fetching statuses:",
           response.data
         );
-        toast.warning("Unexpected response when fetching statuses.");
+        toast.warning("Unexpected response when fetching statuses.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (err) {
       console.error("Error fetching statuses:", err);
       toast.error(
         "Error fetching statuses: " +
-          (err.response?.data?.message || err.message)
+          (err.response?.data?.message || err.message),
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
       );
     }
   };
@@ -298,14 +387,39 @@ function DesignStaffPage() {
             status.statusId === statusId ? response.data.result : status
           )
         );
-        toast.success("Status updated successfully");
+        toast.success("Status updated successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } else {
-        toast.error("Failed to update status");
+        toast.error("Failed to update status", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (err) {
       console.error("Error updating status:", err);
       toast.error(
-        "Error updating status: " + (err.response?.data?.message || err.message)
+        "Error updating status: " + (err.response?.data?.message || err.message),
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
       );
     }
   };
@@ -320,20 +434,45 @@ function DesignStaffPage() {
           "Unexpected response when fetching designs:",
           response.data
         );
-        toast.warning("Unexpected response when fetching designs.");
+        toast.warning("Unexpected response when fetching designs.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (err) {
       console.error("Error fetching designs:", err);
       toast.error(
         "Error fetching designs: " +
-          (err.response?.data?.message || err.message)
+          (err.response?.data?.message || err.message),
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
       );
     }
   };
 
   const handleUpdateDesign = async () => {
     if (!selectedOrderId || !selectedDesignId) {
-      toast.error("Please select a design");
+      toast.error("Please select a design", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       return;
     }
     try {
@@ -356,15 +495,40 @@ function DesignStaffPage() {
               : status
           )
         );
-        toast.success("Design updated successfully");
+        toast.success("Design updated successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         setUpdateDesignModalVisible(false);
       } else {
-        toast.error("Failed to update design");
+        toast.error("Failed to update design", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (err) {
       console.error("Error updating design:", err);
       toast.error(
-        "Error updating design: " + (err.response?.data?.message || err.message)
+        "Error updating design: " + (err.response?.data?.message || err.message),
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
       );
     } finally {
       setUpdatingDesign(null);
@@ -391,16 +555,49 @@ function DesignStaffPage() {
             status.statusId === statusId ? { ...status, complete: true } : status
           )
         );
-        toast.success("Status updated successfully");
+        toast.success("Status updated successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } else if (response.data.code === 1025) {
-        toast.error("Status does not exist");
+        toast.error("Status does not exist", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } else {
-        toast.error("Failed to update status");
+        toast.error("Failed to update status", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (err) {
       console.error("Error updating status:", err);
       toast.error(
-        "Error updating status: " + (err.response?.data?.message || err.message)
+        "Error updating status: " + (err.response?.data?.message || err.message),
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
       );
     }
   };
@@ -481,6 +678,18 @@ function DesignStaffPage() {
   useEffect(() => {
     fetchData();
     fetchAllDesigns();
+  }, []);
+
+  useEffect(() => {
+    toast.success("Login successful! Welcome back!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
   }, []);
 
   const columns = [
@@ -572,10 +781,26 @@ function DesignStaffPage() {
       setUploading(true);
     } else if (file.status === "done") {
       setUploading(false);
-      message.success(`${file.name} file uploaded successfully`);
+      message.success(`${file.name} file uploaded successfully`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } else if (file.status === "error") {
       setUploading(false);
-      message.error(`${file.name} file upload failed.`);
+      message.error(`${file.name} file upload failed.`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -588,7 +813,15 @@ function DesignStaffPage() {
     } catch (err) {
       onError(err);
       setUploading(false);
-      message.error(`${file.name} file upload failed.`);
+      message.error(`${file.name} file upload failed.`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -604,7 +837,15 @@ function DesignStaffPage() {
     localStorage.removeItem("staffId");
     localStorage.removeItem("staffAuthToken"); // Add this line
     navigate("/login-staff");
-    toast.success("Logged out successfully");
+    toast.success("Logged out successfully", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
   };
 
   const handleMenuClick = (key) => {
@@ -655,155 +896,61 @@ function DesignStaffPage() {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-      >
-        <div className="demo-logo-vertical" />
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items}
-          onSelect={({ key }) => handleMenuClick(key)}
-        />
-      </Sider>
-      <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }} />
-        <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>Design Staff</Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {items.find((item) => item.key === selectedMenuItem)?.label}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div
-            style={{
-              padding: 24,
-              minHeight: 360,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            {renderContent()}
-          </div>
-        </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Koi Pond Building ©{new Date().getFullYear()} Created by Your Company
-        </Footer>
-      </Layout>
-
-      <Modal
-        open={showModal}
-        onCancel={handleCancel}
-        title={editingDesign ? "Edit Design" : "Add New Design"}
-        footer={[
-          <Button key="cancel" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            loading={loading}
-            onClick={() => form.submit()}
-          >
-            {editingDesign ? "Update" : "Submit"}
-          </Button>,
-        ]}
-      >
-        <Form
-          form={form}
-          labelCol={{
-            span: 24,
-          }}
-          onFinish={handleSubmit}
-          initialValues={{
-            designName: editingDesign?.designName,
-            designVersion: editingDesign?.designVersion,
-          }}
+    <>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
         >
-          <Form.Item
-            name="designName"
-            label="Design Name"
-            rules={[{ required: true, message: "Please input Design Name" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item name="imageData" label="Image">
-            <Upload
-              customRequest={customUpload}
-              listType="picture-card"
-              fileList={fileList}
-              onPreview={handlePreview}
-              onChange={handleChange}
+          <div className="demo-logo-vertical" />
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={["1"]}
+            mode="inline"
+            items={items}
+            onSelect={({ key }) => handleMenuClick(key)}
+          />
+        </Sider>
+        <Layout>
+          <Header style={{ padding: 0, background: colorBgContainer }} />
+          <Content style={{ margin: "0 16px" }}>
+            <Breadcrumb style={{ margin: "16px 0" }}>
+              <Breadcrumb.Item>Design Staff</Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {items.find((item) => item.key === selectedMenuItem)?.label}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <div
+              style={{
+                padding: 24,
+                minHeight: 360,
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+              }}
             >
-              {fileList.length >= 1 ? null : uploadButton}
-            </Upload>
-          </Form.Item>
-
-          <Form.Item
-            name="designVersion"
-            label="Version"
-            rules={[{ required: true, message: "Please input Design version" }]}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Modal
-        title="Update Design"
-        visible={updateDesignModalVisible}
-        onCancel={() => setUpdateDesignModalVisible(false)}
-        footer={[
-          <Button
-            key="cancel"
-            onClick={() => setUpdateDesignModalVisible(false)}
-          >
-            Cancel
-          </Button>,
-          <Button
-            key="update"
-            type="primary"
-            onClick={handleUpdateDesign}
-            loading={updatingDesign === selectedOrderId}
-          >
-            Update
-          </Button>,
-        ]}
-      >
-        <Select
-          style={{ width: "100%" }}
-          placeholder="Select a design"
-          value={selectedDesignId}
-          onChange={(value) => setSelectedDesignId(value)}
-        >
-          {designs.map((design) => (
-            <Select.Option key={design.designId} value={design.designId}>
-              {design.designName}
-            </Select.Option>
-          ))}
-        </Select>
-      </Modal>
-
-      {previewImage && (
-        <Image
-          wrapperStyle={{
-            display: "none",
-          }}
-          preview={{
-            visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(""),
-          }}
-          src={previewImage}
-        />
-      )}
-      <ToastContainer />
-    </Layout>
+              {renderContent()}
+            </div>
+          </Content>
+          <Footer style={{ textAlign: "center" }}>
+            Koi Pond Building ©{new Date().getFullYear()} Created by Your Company
+          </Footer>
+        </Layout>
+      </Layout>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        style={{ zIndex: 9999 }}
+      />
+    </>
   );
 }
 

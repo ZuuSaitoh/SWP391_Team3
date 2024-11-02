@@ -10,7 +10,8 @@ import {
   theme,
   Breadcrumb,
 } from "antd";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import api from "../../../config/axios";
 import { useNavigate } from "react-router-dom";
 import {
@@ -98,16 +99,41 @@ function ConstructionStaffPage() {
         }
       );
       if (response.data.code === 1000) {
-        message.success("Booking status updated successfully");
+        toast.success("Booking status updated successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         fetchBookings();
       } else {
-        message.error("Failed to update booking status");
+        toast.error("Failed to update booking status", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (err) {
       console.error("Error updating booking status:", err);
-      message.error(
+      toast.error(
         "Error updating booking status: " +
-          (err.response?.data?.message || err.message)
+          (err.response?.data?.message || err.message),
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
       );
     }
     setUpdateStatusModalVisible(false);
@@ -149,6 +175,18 @@ function ConstructionStaffPage() {
       toast.error("Staff ID not found. Please log in again.");
     }
   }, [staffId]);
+
+  useEffect(() => {
+    toast.success("Login successful! Welcome back!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }, []);
 
   const columns = [
     {
@@ -409,60 +447,75 @@ function ConstructionStaffPage() {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-      >
-        <div className="demo-logo-vertical" />
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items}
-          onSelect={({ key }) => handleMenuClick(key)}
-        />
-      </Sider>
-      <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }} />
-        <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>Construction Staff</Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {items.find((item) => item.key === selectedMenuItem)?.label}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div
-            style={{
-              padding: 24,
-              minHeight: 360,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            {renderContent()}
-          </div>
-        </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Koi Pond Building ©{new Date().getFullYear()} Created by Your Company
-        </Footer>
-      </Layout>
+    <>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+        >
+          <div className="demo-logo-vertical" />
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={["1"]}
+            mode="inline"
+            items={items}
+            onSelect={({ key }) => handleMenuClick(key)}
+          />
+        </Sider>
+        <Layout>
+          <Header style={{ padding: 0, background: colorBgContainer }} />
+          <Content style={{ margin: "0 16px" }}>
+            <Breadcrumb style={{ margin: "16px 0" }}>
+              <Breadcrumb.Item>Construction Staff</Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {items.find((item) => item.key === selectedMenuItem)?.label}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <div
+              style={{
+                padding: 24,
+                minHeight: 360,
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+              }}
+            >
+              {renderContent()}
+            </div>
+          </Content>
+          <Footer style={{ textAlign: "center" }}>
+            Koi Pond Building ©{new Date().getFullYear()} Created by Your Company
+          </Footer>
+        </Layout>
 
-      <Modal
-        title="Update Booking Status"
-        visible={updateStatusModalVisible}
-        onOk={() => handleUpdateStatus(selectedBooking?.bookingServiceId)}
-        onCancel={() => setUpdateStatusModalVisible(false)}
-        okText="Confirm"
-        cancelText="Cancel"
-      >
-        <p>Are you sure you want to update the status of this booking?</p>
-        <p>Booking ID: {selectedBooking?.bookingServiceId}</p>
-        <p>Customer: {selectedBooking?.customer?.fullName}</p>
-        <p>Service: {selectedBooking?.service?.serviceName}</p>
-      </Modal>
-    </Layout>
+        <Modal
+          title="Update Booking Status"
+          visible={updateStatusModalVisible}
+          onOk={() => handleUpdateStatus(selectedBooking?.bookingServiceId)}
+          onCancel={() => setUpdateStatusModalVisible(false)}
+          okText="Confirm"
+          cancelText="Cancel"
+        >
+          <p>Are you sure you want to update the status of this booking?</p>
+          <p>Booking ID: {selectedBooking?.bookingServiceId}</p>
+          <p>Customer: {selectedBooking?.customer?.fullName}</p>
+          <p>Service: {selectedBooking?.service?.serviceName}</p>
+        </Modal>
+      </Layout>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        style={{ zIndex: 9999 }}
+      />
+    </>
   );
 }
 
