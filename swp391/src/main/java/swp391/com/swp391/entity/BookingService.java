@@ -49,6 +49,9 @@ public class BookingService {
     @Column(name = "feedback_date")
     LocalDateTime feedbackDate;
 
+    @Column(name = "rating")
+    int rating;
+
     @Column(name = "using_point")
     int usingPoint;
 
@@ -141,5 +144,13 @@ public class BookingService {
 
     public void setUsingPoint(int usingPoint) {
         this.usingPoint = usingPoint;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 }

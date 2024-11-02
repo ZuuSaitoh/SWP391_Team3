@@ -99,10 +99,11 @@ public class BookingServiceService {
         return bookingServiceRepository.save(bookingService);
     }
 
-    public BookingService updateBookingServiceFeedback(int id, BookingServiceUpdateFeedbackRequest request){
+    public BookingService updateBookingServiceRatingAndFeedback(int id, BookingServiceUpdateFeedbackRequest request){
         BookingService bookingService = bookingServiceRepository.findById(id)
                 .orElseThrow(()-> new AppException(ErrorCode.BOOKING_SERVICE_NOT_EXISTED));
         bookingService.setFeedback(request.getFeedback());
+        bookingService.setRating(request.getRating());
         bookingService.setFeedbackDate(LocalDateTime.now());
         return bookingServiceRepository.save(bookingService);
     }

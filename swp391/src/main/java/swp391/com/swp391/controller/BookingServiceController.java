@@ -68,7 +68,7 @@ public class BookingServiceController {
     @PutMapping("/updateFeedback/{id}")
     public ApiResponse<BookingService> updateBookingServiceFeedback(@PathVariable int id, @RequestBody @Valid BookingServiceUpdateFeedbackRequest request) {
         ApiResponse<BookingService> apiResponse = new ApiResponse<>();
-        BookingService updatedBookingService = bookingServiceService.updateBookingServiceFeedback(id, request);
+        BookingService updatedBookingService = bookingServiceService.updateBookingServiceRatingAndFeedback(id, request);
         apiResponse.setResult(updatedBookingService);
         return apiResponse;
     }
