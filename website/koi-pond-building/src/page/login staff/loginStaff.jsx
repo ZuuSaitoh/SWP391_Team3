@@ -54,7 +54,7 @@ function LoginStaff() {
 
       if (isAuthenticated && token) {
         const decodedToken = jwtDecode(token);
-        console.log("Decoded token:", decodedToken); // For debugging
+        console.log("Decoded token:", decodedToken);
 
         // Clear any existing tokens first
         localStorage.clear();
@@ -68,7 +68,15 @@ function LoginStaff() {
         }));
         localStorage.setItem("staffId", decodedToken.staffID);
 
-        toast.success("Logged in successfully");
+        toast.success("Login successful! Welcome back!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
 
         // Navigate based on role
         switch (decodedToken.role) {
@@ -85,16 +93,40 @@ function LoginStaff() {
             navigate(`/constructionStaffPage/${decodedToken.staffID}`);
             break;
           default:
-            toast.error("Invalid role");
+            toast.error("Invalid role", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
             localStorage.clear();
             break;
         }
       } else {
-        toast.error("Authentication failed");
+        toast.error("Authentication failed", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (err) {
       console.error("Login error:", err);
-      toast.error(err.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.message || "Login failed", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       localStorage.clear();
     }
   };
@@ -170,14 +202,16 @@ function LoginStaff() {
       </AnimatedPage>
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={3000}
         hideProgressBar={false}
-        newestOnTop={false}
+        newestOnTop
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
+        theme="light"
+        style={{ zIndex: 9999 }}
       />
     </>
   );

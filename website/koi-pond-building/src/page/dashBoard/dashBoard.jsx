@@ -1723,6 +1723,7 @@ const Dashboard = () => {
             <th>Style</th>
             <th>Stage</th>
             <th>Contact Method</th>
+            <th>Created Date</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -1739,7 +1740,7 @@ const Dashboard = () => {
                 request.style.toLowerCase().includes(searchLower)
               );
             })
-            .sort((a, b) => b.formId - a.formId) // Sort in descending order
+            .sort((a, b) => b.formId - a.formId)
             .map((request) => (
               <tr key={request.formId}>
                 <td>{request.formId}</td>
@@ -1748,6 +1749,7 @@ const Dashboard = () => {
                 <td>{request.style}</td>
                 <td>{request.stage}</td>
                 <td>{request.contactMethod}</td>
+                <td>{new Date(request.createDate).toLocaleString()}</td>
                 <td>
                   {formsWithOrders.has(request.formId) ? (
                     <button
@@ -1770,7 +1772,7 @@ const Dashboard = () => {
                   <button
                     onClick={() => handleDeleteForm(request.formId)}
                     className="delete-form-btn"
-                    disabled={formsWithOrders.has(request.formId)} // Disable if order exists
+                    disabled={formsWithOrders.has(request.formId)}
                   >
                     Delete Form
                   </button>

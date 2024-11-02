@@ -48,7 +48,8 @@ function HomePage() {
     area: "", // Changed from text input to dropdown
     style: "",
     stage: "",
-    contactMethod: "",
+    contactMethods: [], // Changed from contactMethod string to array
+    phoneNumber: "", // Added for Zalo contact
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -199,7 +200,8 @@ function HomePage() {
       area: "",
       style: "",
       stage: "",
-      contactMethod: "",
+      contactMethods: [],
+      phoneNumber: "",
     });
   };
 
@@ -209,6 +211,23 @@ function HomePage() {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const handleContactMethodChange = (e) => {
+    const { name, checked } = e.target;
+    if (checked) {
+      setFormData(prevData => ({
+        ...prevData,
+        contactMethods: [name], // Only store the current selection
+        phoneNumber: name !== 'zalo' ? '' : prevData.phoneNumber // Clear phone number if not Zalo
+      }));
+    } else {
+      setFormData(prevData => ({
+        ...prevData,
+        contactMethods: [], // Clear the selection
+        phoneNumber: '' // Clear phone number when unchecking
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -228,7 +247,8 @@ function HomePage() {
         style: formData.style,
         area: formData.area,
         stage: formData.stage,
-        contactMethod: formData.contactMethod,
+        contactMethods: formData.contactMethods, // Now sending array of contact methods
+        phoneNumber: formData.phoneNumber, // Include phone number if provided
       };
 
       const response = await axios.post(
@@ -619,17 +639,48 @@ function HomePage() {
                   Stage 4: Construction design documentation
                 </option>
               </select>
-              <select
-                name="contactMethod"
-                value={formData.contactMethod}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select contact method</option>
-                <option value="zalo">Zalo</option>
-                <option value="phone">Phone</option>
-                <option value="message">Message</option>
-              </select>
+              <div className="contact-methods">
+                <h4>Contact Methods (Select one)</h4>
+                <div className="checkbox-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="zalo"
+                      checked={formData.contactMethods?.includes('zalo')}
+                      onChange={handleContactMethodChange}
+                    />
+                    Zalo
+                  </label>
+                  {formData.contactMethods?.includes('zalo') && (
+                    <input
+                      type="tel"
+                      name="phoneNumber"
+                      value={formData.phoneNumber || ''}
+                      onChange={handleInputChange}
+                      placeholder="Enter your phone number for Zalo"
+                      required
+                    />
+                  )}
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="phone"
+                      checked={formData.contactMethods?.includes('phone')}
+                      onChange={handleContactMethodChange}
+                    />
+                    Phone
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="message"
+                      checked={formData.contactMethods?.includes('message')}
+                      onChange={handleContactMethodChange}
+                    />
+                    Message
+                  </label>
+                </div>
+              </div>
               <button type="submit">Submit Request</button>
             </form>
             <button className="close-popup" onClick={handleClosePopup}>

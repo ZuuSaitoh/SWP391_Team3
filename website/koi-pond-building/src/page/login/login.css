@@ -450,7 +450,7 @@ body {
 }
 
 .Toastify__toast-body {
-  color: #ff0000; /* Change notification text color to red */
+  color: black;
   font-weight: 500;
 }
 
