@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import swp391.com.swp391.dto.request.FormCreationRequest;
 import swp391.com.swp391.dto.request.FormUpdateRequest;
+import swp391.com.swp391.dto.request.UpdateRejectReasonRequest;
 import swp391.com.swp391.entity.Customer;
 import swp391.com.swp391.entity.Form;
 import swp391.com.swp391.exception.AppException;
 import swp391.com.swp391.exception.ErrorCode;
 import swp391.com.swp391.repository.FormRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +30,7 @@ public class FormService {
         form.setContactMethod(request.getContactMethod());
         form.setStyle(request.getStyle());
         form.setStage(request.getStage());
+        form.setCreateDate(LocalDateTime.now());
         return formRepository.save(form);
     }
     public List<Form> getAllForm(){
@@ -52,5 +55,11 @@ public class FormService {
             throw new AppException(ErrorCode.FORM_NOT_EXISTED);
         }
         formRepository.deleteById(id);
+    }
+    public Form updateRejectReason(int id, UpdateRejectReasonRequest request){
+        Form form = findById(id);
+        form.setRejectReason(request.getRejectReason());
+        form.setRejectDate(LocalDateTime.now());
+        return formRepository.save(form);
     }
 }

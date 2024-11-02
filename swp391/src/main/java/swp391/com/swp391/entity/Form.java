@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @Entity
@@ -27,6 +29,12 @@ public class Form {
     String stage;
     @Column(name = "contact_method")
     String contactMethod;
+    @Column(name = "create_date")
+    LocalDateTime createDate;
+    @Column(name = "reject_reason")
+    String rejectReason;
+    @Column(name = "reject_date")
+    LocalDateTime rejectDate;
 
     public Form() {
     }
@@ -77,5 +85,29 @@ public class Form {
 
     public void setContactMethod(String contactMethod) {
         this.contactMethod = contactMethod;
+    }
+
+    public LocalDateTime getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getRejectReason() {
+        return rejectReason;
+    }
+
+    public void setRejectReason(String rejectReason) {
+        this.rejectReason = rejectReason;
+    }
+
+    public LocalDateTime getRejectDate() {
+        return rejectDate;
+    }
+
+    public void setRejectDate(LocalDateTime rejectDate) {
+        this.rejectDate = rejectDate;
     }
 }

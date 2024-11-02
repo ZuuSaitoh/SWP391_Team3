@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import swp391.com.swp391.dto.request.FormCreationRequest;
 import swp391.com.swp391.dto.request.FormUpdateRequest;
+import swp391.com.swp391.dto.request.UpdateRejectReasonRequest;
 import swp391.com.swp391.dto.response.ApiResponse;
 import swp391.com.swp391.entity.Form;
 import swp391.com.swp391.service.FormService;
@@ -50,5 +51,11 @@ public class FormController {
     ApiResponse<String> deleteForm(@PathVariable int id){
         formService.deleteForm(id);
         return new ApiResponse<String>(3333, "Delete form", "Delete form successfully");
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+    @PutMapping("/update/reject/{id}")
+    ApiResponse<Form> updateRejectReason(@PathVariable int id, @RequestBody @Valid UpdateRejectReasonRequest request){
+        return new ApiResponse<Form>(2222, "Update form", formService.updateRejectReason(id, request));
     }
 }

@@ -52,7 +52,7 @@ public class BookingService {
     @Column(name = "rating")
     int rating;
 
-    @Column(name = "using_point")
+    @Column(name = "using_point", nullable = true)
     int usingPoint;
 
     public BookingService() {
