@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import emailjs from "emailjs-com";
+import { toast } from "react-toastify";
 import "./forgotpassword.css";
 
-function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
+function VerifyEmail({ email, setEmail, setIsEmailVerified }) {
   const [otp, setOtp] = useState("");
   const [generatedOtp, setGeneratedOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
@@ -20,17 +21,18 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
   const checkEmailExists = async () => {
     setIsCheckingEmail(true);
     try {
-      const response = await fetch(`http://localhost:8080/customers/checkMail/${email}`);
+      const response = await fetch(
+        `http://localhost:8080/customers/checkMail/${email}`
+      );
       const data = await response.json();
       if (response.ok && data.result === true) {
         return true;
       } else {
-        setMessage("Email not found. Please check your email address.");
         return false;
       }
     } catch (error) {
       console.error("Error checking email:", error);
-      setMessage("An error occurred while checking your email.");
+      toast.error("An error occurred while checking your email.");
       return false;
     } finally {
       setIsCheckingEmail(false);
@@ -39,10 +41,10 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
 
   const sendOtp = async (e) => {
     e.preventDefault();
-    
+
     const emailExists = await checkEmailExists();
     if (!emailExists) {
-      setMessage("Email not found. Please check your email address.");
+      toast.error("Email not found. Please check your email address.");
       return;
     }
 
@@ -67,10 +69,10 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
       console.log(result.text);
       setOtpSent(true);
       setCountdown(60);
-      setMessage("OTP sent to your email. Please check your inbox.");
+      toast.success("OTP sent to your email. Please check your inbox.");
     } catch (error) {
       console.error("Error sending OTP:", error);
-      setMessage("Error sending OTP. Please try again.");
+      toast.error("Error sending OTP. Please try again.");
     }
   };
 
@@ -78,11 +80,11 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
     e.preventDefault();
     if (otp === generatedOtp && countdown > 0) {
       setIsEmailVerified(true);
-      setMessage("OTP verified successfully. Please set your new password.");
+      toast.success("OTP verified successfully. Please set your new password.");
     } else if (countdown === 0) {
-      setMessage("OTP has expired. Please request a new one.");
+      toast.error("OTP has expired. Please request a new one.");
     } else {
-      setMessage("Invalid OTP. Please try again.");
+      toast.error("Invalid OTP. Please try again.");
     }
   };
 
@@ -100,7 +102,11 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified, setMessage }) {
             />
           </div>
           <div className="forgot-password-submit-container">
-            <button type="submit" className="forgot-password-submit" disabled={isCheckingEmail}>
+            <button
+              type="submit"
+              className="forgot-password-submit"
+              disabled={isCheckingEmail}
+            >
               {isCheckingEmail ? "Checking..." : "Send OTP"}
             </button>
           </div>

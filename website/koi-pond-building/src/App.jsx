@@ -28,6 +28,8 @@ import PaymentFailed from "./page/Payment/failed/paymentFailed";
 import BlogDetail from "./components/BlogDetail/BlogDetail";
 import ProtectedLoginRoute from "./utils/ProtectedLoginRoute.jsx";
 import ProtectedLoginStaffRoute from "./utils/ProtectedLoginStaffRoute.jsx";
+import ProtectedRoutes from "./utils/ProtectedRoutes.jsx";
+import ProtectedStaffRoutes from "./utils/ProtectedStaffRoutes.jsx";
 
 function App() {
   return (
@@ -39,29 +41,21 @@ function App() {
         <Route path="/service-design" element={<ServiceDesign />} />
         <Route path="/service-clean" element={<ServiceClean />} />
         <Route path="/service-maintenance" element={<ServiceMaintenance />} />
-        <Route
-          path="/customer-profile/:customerId"
-          element={<CustomerProfilePage />}
-        />
-        <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-failed" element={<PaymentFailed />} />
-        <Route element={<ProtectedLoginRoute />}>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/forgotpassword" element={<ForgotPassword />} />
-        </Route>
-        <Route element={<ProtectedLoginStaffRoute />}>
-          <Route path="/login-staff" element={<LoginStaff />} />
-        </Route>
 
         {/* Protected Customer Routes */}
-        <Route element={<ProtectedLoginRoute />}>
+        <Route element={<ProtectedRoutes />}>
           <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route
+            path="/customer-profile/:customerId"
+            element={<CustomerProfilePage />}
+          />
         </Route>
 
         {/* Protected Staff Routes */}
-        <Route element={<ProtectedLoginStaffRoute />}>
+        <Route element={<ProtectedStaffRoutes />}>
           <Route path="/dashboard" element={<DashBoard />} />
           <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
           <Route
@@ -91,6 +85,19 @@ function App() {
             element={<ViewBookingDashboard />}
           />
         </Route>
+
+        {/* Protected LoginRoute Routes */}
+        <Route element={<ProtectedLoginRoute />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+        </Route>
+
+        {/* Protected LoginStaff Routes */}
+        <Route element={<ProtectedLoginStaffRoute />}>
+          <Route path="/login-staff" element={<LoginStaff />} />
+        </Route>
+
         <Route path="/blog/:id" element={<BlogDetail />} />
       </Routes>
     </>

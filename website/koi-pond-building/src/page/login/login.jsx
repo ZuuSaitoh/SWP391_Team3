@@ -98,7 +98,10 @@ function Login() {
   const handleLogin = async (values) => {
     try {
       console.log("Sending login data:", values);
-      const response = await api.post("/customers/auth/token", values);
+      const response = await api.post(
+        "http://localhost:8080/customers/auth/token",
+        values
+      );
       const token = response.data.result.token;
       const isAuthenticated = response.data.result.authenticated;
 
