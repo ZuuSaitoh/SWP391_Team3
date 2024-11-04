@@ -102,15 +102,22 @@ const RegisterPage = () => {
     <AnimatedPage>
       <div className="register-page-container">
         <ToastContainer
-          position="top-right" // You can change the position
-          autoClose={5000} // Auto close after 5 seconds
+          position="top-right"
+          autoClose={3000}
           hideProgressBar={false}
-          newestOnTop={false}
+          newestOnTop
           closeOnClick
           rtl={false}
           pauseOnFocusLoss
           draggable
           pauseOnHover
+          theme="colored"
+          limit={3}
+          style={{
+            fontSize: "14px",
+            fontWeight: "500",
+            letterSpacing: "0.5px",
+          }}
         />
         {/* This is needed to show the toast notifications */}
         <div className="register-image-container"></div>
