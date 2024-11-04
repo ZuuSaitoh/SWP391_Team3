@@ -72,7 +72,6 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified }) {
 
   return (
     <div className="register-inputs">
-      <ToastContainer />
       {!otpSent ? (
         <form onSubmit={sendOtp}>
           <div className="register-input">
