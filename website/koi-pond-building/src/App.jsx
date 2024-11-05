@@ -30,11 +30,13 @@ import ProtectedLoginRoute from "./utils/ProtectedLoginRoute.jsx";
 import ProtectedLoginStaffRoute from "./utils/ProtectedLoginStaffRoute.jsx";
 import ProtectedRoutes from "./utils/ProtectedRoutes.jsx";
 import ProtectedStaffRoutes from "./utils/ProtectedStaffRoutes.jsx";
+import { ToastConfig } from "./components/ToastConfig";
 
 function App() {
   return (
     <>
       <ScrollToTop />
+      <ToastConfig />
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<HomePage />} />
@@ -54,23 +56,10 @@ function App() {
           />
         </Route>
 
-        {/* Protected Staff Routes */}
-        <Route element={<ProtectedStaffRoutes />}>
+        {/* Manager-only routes */}
+        <Route element={<ProtectedStaffRoutes allowedRoles={["Manager"]} />}>
           <Route path="/dashboard" element={<DashBoard />} />
           <Route path="/staff/:Id" element={<StaffProfileDashBoard />} />
-          <Route
-            path="/designStaffPage/:staffId"
-            element={<DesignStaffPage />}
-          />
-          <Route
-            path="/consultingStaffPage/:staffId"
-            element={<ConsultingStaffPage />}
-          />
-          <Route
-            path="/constructionStaffPage/:staffId"
-            element={<ConstructionStaffPage />}
-          />
-          <Route path="/order/:orderId" element={<OrderViewDashboard />} />
           <Route path="/customer/:Id" element={<CustomerProfileDashBoard />} />
           <Route
             path="/service/:serviceId"
@@ -84,6 +73,52 @@ function App() {
             path="/booking/:bookingId"
             element={<ViewBookingDashboard />}
           />
+        </Route>
+
+        {/* Staff-specific routes */}
+        <Route
+          element={<ProtectedStaffRoutes allowedRoles={["Design Staff"]} />}
+        >
+          <Route
+            path="/designStaffPage/:staffId"
+            element={<DesignStaffPage />}
+          />
+        </Route>
+
+        <Route
+          element={<ProtectedStaffRoutes allowedRoles={["Consulting Staff"]} />}
+        >
+          <Route
+            path="/consultingStaffPage/:staffId"
+            element={<ConsultingStaffPage />}
+          />
+        </Route>
+
+        <Route
+          element={
+            <ProtectedStaffRoutes allowedRoles={["Construction Staff"]} />
+          }
+        >
+          <Route
+            path="/constructionStaffPage/:staffId"
+            element={<ConstructionStaffPage />}
+          />
+        </Route>
+
+        {/* Common routes for all staff */}
+        <Route
+          element={
+            <ProtectedStaffRoutes
+              allowedRoles={[
+                "Manager",
+                "Design Staff",
+                "Consulting Staff",
+                "Construction Staff",
+              ]}
+            />
+          }
+        >
+          <Route path="/order/:orderId" element={<OrderViewDashboard />} />
         </Route>
 
         {/* Protected LoginRoute Routes */}

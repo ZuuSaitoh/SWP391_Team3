@@ -60,10 +60,14 @@ const Payment = () => {
 
     const fetchAvailableDiscounts = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/discounts/fetchAll");
+        const response = await axios.get(
+          "http://localhost:8080/discounts/fetchAll"
+        );
         if (response.data.code === 9999) {
           // Filter only active discounts
-          const activeDiscounts = response.data.result.filter(discount => discount.status === true);
+          const activeDiscounts = response.data.result.filter(
+            (discount) => discount.status === true
+          );
           setAvailableDiscounts(activeDiscounts);
         } else {
           console.error("Failed to fetch discounts");
@@ -80,10 +84,10 @@ const Payment = () => {
 
   useEffect(() => {
     if (selectedService) {
-      const discountAmount = selectedDiscount 
-        ? (selectedService.price * selectedDiscount.discountPercent / 100)
+      const discountAmount = selectedDiscount
+        ? (selectedService.price * selectedDiscount.discountPercent) / 100
         : 0;
-      
+
       const newDiscountedPrice = Math.max(
         selectedService.price - pointToVND(usingPoint) - discountAmount,
         0
@@ -116,7 +120,7 @@ const Payment = () => {
         paymentMethod: paymentMethod,
         address: address,
         phoneNumber: phoneNumber,
-        discountId: selectedDiscount?.discountId // Add discount ID if selected
+        discountId: selectedDiscount?.discountId, // Add discount ID if selected
       };
 
       console.log("Sending order data:", orderData);
@@ -207,6 +211,14 @@ const Payment = () => {
     }
   };
 
+  // Add this function after your other handler functions
+  const handleCancel = () => {
+    // Clear the selected service from localStorage
+    localStorage.removeItem("selectedService");
+    // Navigate back to services page
+    navigate("/");
+  };
+
   return (
     <div className="payment-page">
       <div className="payment-container">
@@ -295,7 +307,7 @@ const Payment = () => {
             ) : (
               <p>No service selected</p>
             )}
-            
+
             {/* Add discount selection */}
             <div className="payment-discount-selection">
               <h4>Available Discounts</h4>
@@ -303,12 +315,14 @@ const Payment = () => {
                 className="payment-input"
                 value={selectedDiscount?.discountId || ""}
                 onChange={(e) => {
-                  const discount = availableDiscounts.find(d => d.discountId === parseInt(e.target.value));
+                  const discount = availableDiscounts.find(
+                    (d) => d.discountId === parseInt(e.target.value)
+                  );
                   setSelectedDiscount(discount || null);
                 }}
               >
                 <option value="">Select a discount</option>
-                {availableDiscounts.map(discount => (
+                {availableDiscounts.map((discount) => (
                   <option key={discount.discountId} value={discount.discountId}>
                     {discount.discountName} ({discount.discountPercent}% off)
                   </option>
@@ -342,7 +356,17 @@ const Payment = () => {
             {selectedDiscount && (
               <div className="payment-discount">
                 <p>Discount ({selectedDiscount.discountPercent}%)</p>
-                <p>-{formatNumber(selectedService ? (selectedService.price * selectedDiscount.discountPercent / 100) : 0)} VND</p>
+                <p>
+                  -
+                  {formatNumber(
+                    selectedService
+                      ? (selectedService.price *
+                          selectedDiscount.discountPercent) /
+                          100
+                      : 0
+                  )}{" "}
+                  VND
+                </p>
               </div>
             )}
 
@@ -353,12 +377,7 @@ const Payment = () => {
 
             <div className="payment-grand-total">
               <p>Total</p>
-              <p>
-                {selectedService
-                  ? formatNumber(discountedPrice)
-                  : 0}{" "}
-                VND
-              </p>
+              <p>{selectedService ? formatNumber(discountedPrice) : 0} VND</p>
             </div>
           </div>
         </div>
@@ -366,9 +385,12 @@ const Payment = () => {
           <button
             className="payment-submit-button"
             onClick={handlePlaceOrder}
-            disabled={!selectedService || !customer || !paymentMethod}
+            disabled={!paymentMethod}
           >
             Place Order
+          </button>
+          <button className="cancel-button" onClick={handleCancel}>
+            Cancel
           </button>
         </div>
       </div>
