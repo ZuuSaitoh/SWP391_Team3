@@ -61,72 +61,86 @@ function LoginStaff() {
 
         // Store new token and user info
         localStorage.setItem("staffAuthToken", token);
-        localStorage.setItem("staffUser", JSON.stringify({
-          id: decodedToken.staffID,
-          username: decodedToken.sub,
-          role: decodedToken.role
-        }));
+        localStorage.setItem(
+          "staffUser",
+          JSON.stringify({
+            id: decodedToken.staffID,
+            username: decodedToken.sub,
+            role: decodedToken.role,
+          })
+        );
         localStorage.setItem("staffId", decodedToken.staffID);
 
-        toast.success("Login successful! Welcome back!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-
-        // Navigate based on role
+        // First navigate based on role
         switch (decodedToken.role) {
           case "Manager":
             navigate("/dashboard");
+            // Show welcome toast after a small delay to ensure navigation is complete
+            setTimeout(() => {
+              toast.success("Welcome back, Manager!", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+              });
+            }, 100);
             break;
           case "Consulting Staff":
             navigate(`/consultingStaffPage/${decodedToken.staffID}`);
+            setTimeout(() => {
+              toast.success("Welcome back, Consulting Staff!", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+              });
+            }, 100);
             break;
           case "Design Staff":
             navigate(`/designStaffPage/${decodedToken.staffID}`);
+            setTimeout(() => {
+              toast.success("Welcome back, Design Staff!", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+              });
+            }, 100);
             break;
           case "Construction Staff":
             navigate(`/constructionStaffPage/${decodedToken.staffID}`);
+            setTimeout(() => {
+              toast.success("Welcome back, Construction Staff!", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+              });
+            }, 100);
             break;
           default:
-            toast.error("Invalid role", {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-            });
+            toast.error("Invalid role");
             localStorage.clear();
             break;
         }
       } else {
-        toast.error("Authentication failed", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        toast.error("Authentication failed");
       }
     } catch (err) {
       console.error("Login error:", err);
-      toast.error(err.response?.data?.message || "Login failed", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error(err.response?.data?.message || "Login failed");
       localStorage.clear();
     }
   };
@@ -204,14 +218,13 @@ function LoginStaff() {
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}
-        newestOnTop
+        newestOnTop={false}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
         theme="light"
-        style={{ zIndex: 9999 }}
       />
     </>
   );

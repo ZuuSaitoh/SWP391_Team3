@@ -1883,7 +1883,20 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        limit={3}
+        style={{ zIndex: 9999 }}
+      />
       <div
         className={`sidebar ${sidebarLocked ? "locked" : "hoverable"} ${
           sidebarClosed ? "closed" : ""

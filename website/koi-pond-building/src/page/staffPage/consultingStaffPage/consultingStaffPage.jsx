@@ -163,18 +163,6 @@ function ConsultingStaffPage() {
     }
   }, [staffId, navigate]);
 
-  useEffect(() => {
-    toast.success("Login successful! Welcome back!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  }, []);
-
   const columns = [
     {
       title: "Order ID",
@@ -229,7 +217,7 @@ function ConsultingStaffPage() {
     try {
       const response = await api.put(`/status/update-complete/${statusId}`, {
         complete: true,
-        rejectReason: "" 
+        rejectReason: "",
       });
 
       if (response.data.code === 999) {
@@ -273,7 +261,7 @@ function ConsultingStaffPage() {
       key: "customerAddress",
     },
     {
-      title: "Status Description", 
+      title: "Status Description",
       dataIndex: "statusDescription",
       key: "statusDescription",
     },
@@ -296,7 +284,7 @@ function ConsultingStaffPage() {
           {complete ? "Completed" : "Update Complete"}
         </Button>
       ),
-    }
+    },
   ];
 
   const acceptanceColumns = [
@@ -690,7 +678,6 @@ function ConsultingStaffPage() {
     }
   };
 
-
   const handleLogout = () => {
     localStorage.removeItem("staffId");
     localStorage.removeItem("staffAuthToken");
@@ -879,7 +866,10 @@ function ConsultingStaffPage() {
               name="constructionStaff"
               label="Construction Staff"
               rules={[
-                { required: true, message: "Please select a construction staff" },
+                {
+                  required: true,
+                  message: "Please select a construction staff",
+                },
               ]}
             >
               <Select
@@ -910,7 +900,9 @@ function ConsultingStaffPage() {
             <Form.Item
               name="description"
               label="Description"
-              rules={[{ required: true, message: "Please enter a description" }]}
+              rules={[
+                { required: true, message: "Please enter a description" },
+              ]}
             >
               <Input.TextArea rows={4} />
             </Form.Item>
@@ -949,7 +941,9 @@ function ConsultingStaffPage() {
             <Form.Item
               name="description"
               label="Description"
-              rules={[{ required: true, message: "Please enter a description" }]}
+              rules={[
+                { required: true, message: "Please enter a description" },
+              ]}
             >
               <Input.TextArea rows={4} />
             </Form.Item>
@@ -1004,7 +998,9 @@ function ConsultingStaffPage() {
             <Form.Item
               name="description"
               label="Description"
-              rules={[{ required: true, message: "Please enter a description" }]}
+              rules={[
+                { required: true, message: "Please enter a description" },
+              ]}
             >
               <Input.TextArea rows={4} />
             </Form.Item>

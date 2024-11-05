@@ -60,7 +60,7 @@ function DesignStaffPage() {
   const [uploading, setUploading] = useState(false);
   const [editingDesign, setEditingDesign] = useState(null);
   const [editForm] = Form.useForm();
-  const [modalMode, setModalMode] = useState("create"); 
+  const [modalMode, setModalMode] = useState("create");
   const [statusModalVisible, setStatusModalVisible] = useState(false);
   const [staffStatuses, setStaffStatuses] = useState([]);
   const [updatingStatus, setUpdatingStatus] = useState(null);
@@ -122,7 +122,6 @@ function DesignStaffPage() {
 
   const navigate = useNavigate();
 
-
   const handleSubmit = async (values) => {
     try {
       setLoading(true);
@@ -164,7 +163,7 @@ function DesignStaffPage() {
 
       if (response.data) {
         const newOrUpdatedDesign = {
-          ...response.data.result, 
+          ...response.data.result,
           designId: editingDesign
             ? editingDesign.designId
             : response.data.result.designId,
@@ -175,7 +174,7 @@ function DesignStaffPage() {
               : "Unknown",
           },
           designDate: new Date().toISOString(),
-          imageData: imageUrl, 
+          imageData: imageUrl,
         };
 
         setDatas((prevData) => {
@@ -302,7 +301,9 @@ function DesignStaffPage() {
     } catch (err) {
       console.error("Error deleting design:", err);
       toast.error(
-        `Failed to delete design: ${err.response?.data?.message || err.message}`,
+        `Failed to delete design: ${
+          err.response?.data?.message || err.message
+        }`,
         {
           position: "top-right",
           autoClose: 3000,
@@ -338,8 +339,8 @@ function DesignStaffPage() {
       const staffId = localStorage.getItem("staffId");
       const response = await api.get(`/status/fetchAll/staff/${staffId}`);
       if (response.data.code === 9999) {
-        const sortedStatuses = response.data.result.sort((a, b) => 
-          new Date(b.statusDate) - new Date(a.statusDate)
+        const sortedStatuses = response.data.result.sort(
+          (a, b) => new Date(b.statusDate) - new Date(a.statusDate)
         );
         setStaffStatuses(sortedStatuses);
         setStatusModalVisible(true);
@@ -410,7 +411,8 @@ function DesignStaffPage() {
     } catch (err) {
       console.error("Error updating status:", err);
       toast.error(
-        "Error updating status: " + (err.response?.data?.message || err.message),
+        "Error updating status: " +
+          (err.response?.data?.message || err.message),
         {
           position: "top-right",
           autoClose: 3000,
@@ -519,7 +521,8 @@ function DesignStaffPage() {
     } catch (err) {
       console.error("Error updating design:", err);
       toast.error(
-        "Error updating design: " + (err.response?.data?.message || err.message),
+        "Error updating design: " +
+          (err.response?.data?.message || err.message),
         {
           position: "top-right",
           autoClose: 3000,
@@ -546,13 +549,15 @@ function DesignStaffPage() {
     try {
       const response = await api.put(`/status/update-complete/${statusId}`, {
         complete: true,
-        rejectReason: "" 
+        rejectReason: "",
       });
-      
+
       if (response.data.code === 999) {
         setStaffStatuses((prevStatuses) =>
           prevStatuses.map((status) =>
-            status.statusId === statusId ? { ...status, complete: true } : status
+            status.statusId === statusId
+              ? { ...status, complete: true }
+              : status
           )
         );
         toast.success("Status updated successfully", {
@@ -588,7 +593,8 @@ function DesignStaffPage() {
     } catch (err) {
       console.error("Error updating status:", err);
       toast.error(
-        "Error updating status: " + (err.response?.data?.message || err.message),
+        "Error updating status: " +
+          (err.response?.data?.message || err.message),
         {
           position: "top-right",
           autoClose: 3000,
@@ -678,18 +684,6 @@ function DesignStaffPage() {
   useEffect(() => {
     fetchData();
     fetchAllDesigns();
-  }, []);
-
-  useEffect(() => {
-    toast.success("Login successful! Welcome back!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
   }, []);
 
   const columns = [
@@ -933,7 +927,8 @@ function DesignStaffPage() {
             </div>
           </Content>
           <Footer style={{ textAlign: "center" }}>
-            Koi Pond Building ©{new Date().getFullYear()} Created by Your Company
+            Koi Pond Building ©{new Date().getFullYear()} Created by Your
+            Company
           </Footer>
         </Layout>
       </Layout>

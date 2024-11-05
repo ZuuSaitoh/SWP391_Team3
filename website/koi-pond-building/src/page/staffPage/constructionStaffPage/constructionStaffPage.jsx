@@ -171,22 +171,11 @@ function ConstructionStaffPage() {
   useEffect(() => {
     if (staffId) {
       fetchBookings();
+      fetchStatusesByStaffId();
     } else {
       toast.error("Staff ID not found. Please log in again.");
     }
   }, [staffId]);
-
-  useEffect(() => {
-    toast.success("Login successful! Welcome back!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  }, []);
 
   const columns = [
     {
@@ -484,7 +473,8 @@ function ConstructionStaffPage() {
             </div>
           </Content>
           <Footer style={{ textAlign: "center" }}>
-            Koi Pond Building ©{new Date().getFullYear()} Created by Your Company
+            Koi Pond Building ©{new Date().getFullYear()} Created by Your
+            Company
           </Footer>
         </Layout>
 
