@@ -218,7 +218,7 @@ function HomePage() {
     if (checked) {
       setFormData(prevData => ({
         ...prevData,
-        contactMethods: [name], // Only store the current selection
+        contactMethods: name, // Only store the current selection
         phoneNumber: name !== 'zalo' ? '' : prevData.phoneNumber // Clear phone number if not Zalo
       }));
     } else {
@@ -247,7 +247,7 @@ function HomePage() {
         style: formData.style,
         area: formData.area,
         stage: formData.stage,
-        contactMethods: formData.contactMethods, // Now sending array of contact methods
+        contactMethod: formData.contactMethods, // Now sending array of contact methods
         phoneNumber: formData.phoneNumber, // Include phone number if provided
       };
 
