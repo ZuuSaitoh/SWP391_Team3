@@ -111,7 +111,7 @@ const RegisterPage = () => {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="colored"
+          theme="clear"
           limit={3}
           style={{
             fontSize: "14px",
