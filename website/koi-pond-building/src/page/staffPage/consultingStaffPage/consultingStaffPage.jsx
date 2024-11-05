@@ -20,6 +20,8 @@ import {
   HomeOutlined,
   FileAddOutlined,
   LogoutOutlined,
+  ClockCircleOutlined,
+  CheckSquareOutlined,
 } from "@ant-design/icons";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -155,13 +157,17 @@ function ConsultingStaffPage() {
 
   useEffect(() => {
     if (staffId) {
-      fetchOrders();
-      fetchAcceptanceTests();
-      fetchAvailableStaff();
+      if (activeTab === 'orders') {
+        fetchOrders();
+      } else if (activeTab === 'acceptance') {
+        fetchAcceptanceTests();
+      } else if (activeTab === 'pending-statuses' || activeTab === 'completed-statuses') {
+        fetchStatusesByStaffId();
+      }
     } else {
       toast.error("Staff ID not found. Please log in again.");
     }
-  }, [staffId, navigate]);
+  }, [staffId, activeTab]);
 
   const columns = [
     {
@@ -435,13 +441,30 @@ function ConsultingStaffPage() {
     {
       key: "orders",
       icon: <FileOutlined />,
-      label: "Orders",
+      label: "Orders"
     },
     {
       key: "acceptance",
       icon: <CheckCircleOutlined />,
-      label: "Acceptance",
+      label: "Acceptance"
     },
+    {
+      key: "statuses",
+      icon: <HomeOutlined />,
+      label: "My Statuses",
+      children: [
+        {
+          key: "pending-statuses",
+          icon: <ClockCircleOutlined />,
+          label: "Pending Tasks"
+        },
+        {
+          key: "completed-statuses",
+          icon: <CheckSquareOutlined />,
+          label: "Completed"
+        }
+      ]
+    }
   ];
 
   const handleSubmitAcceptance = async (values) => {
@@ -637,13 +660,6 @@ function ConsultingStaffPage() {
                 Add new order
               </Button>
               <Button
-                onClick={fetchStatusesByStaffId}
-                type="primary"
-                style={{ marginRight: 8 }}
-              >
-                View My Statuses
-              </Button>
-              <Button
                 onClick={handleAddContract}
                 type="primary"
                 icon={<FileAddOutlined />}
@@ -672,6 +688,38 @@ function ConsultingStaffPage() {
               scroll={{ x: true }}
             />
           </>
+        );
+      case "pending-statuses":
+        const pendingStatuses = staffStatuses.filter(status => !status.complete);
+        return (
+          <div className="status-section">
+            <h2>Pending Tasks ({pendingStatuses.length})</h2>
+            <Table
+              dataSource={pendingStatuses}
+              columns={statusColumns}
+              rowKey="statusId"
+              scroll={{ x: true }}
+            />
+          </div>
+        );
+      case "completed-statuses":
+        const completedStatuses = staffStatuses.filter(status => status.complete);
+        return (
+          <div className="status-section">
+            <h2>Completed ({completedStatuses.length})</h2>
+            <Table
+              dataSource={completedStatuses}
+              columns={statusColumns.map(col => {
+                // Remove the Complete button column for completed statuses
+                if (col.key === 'complete') {
+                  return null;
+                }
+                return col;
+              }).filter(Boolean)}
+              rowKey="statusId"
+              scroll={{ x: true }}
+            />
+          </div>
         );
       default:
         return null;
@@ -749,7 +797,15 @@ function ConsultingStaffPage() {
               items={[
                 { title: "Home" },
                 { title: "Consulting Staff" },
-                { title: activeTab === "orders" ? "Orders" : "Acceptance" },
+                { 
+                  title: activeTab === "orders" 
+                    ? "Orders" 
+                    : activeTab === "acceptance" 
+                    ? "Acceptance"
+                    : activeTab === "pending-statuses"
+                    ? "Pending Tasks"
+                    : "Completed"
+                },
               ]}
               style={{
                 margin: "16px 0",
@@ -801,21 +857,6 @@ function ConsultingStaffPage() {
               <Input />
             </Form.Item>
           </Form>
-        </Modal>
-
-        <Modal
-          title="My Statuses"
-          visible={statusModalVisible}
-          onCancel={() => setStatusModalVisible(false)}
-          footer={null}
-          width={1200}
-        >
-          <Table
-            dataSource={staffStatuses}
-            columns={statusColumns}
-            rowKey="statusId"
-            scroll={{ x: true }}
-          />
         </Modal>
 
         <Modal
@@ -1012,19 +1053,7 @@ function ConsultingStaffPage() {
           </Form>
         </Modal>
       </Layout>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        style={{ zIndex: 9999 }}
-      />
+      <ToastContainer />
     </>
   );
 }

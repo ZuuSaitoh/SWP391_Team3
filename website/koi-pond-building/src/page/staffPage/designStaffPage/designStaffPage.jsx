@@ -45,7 +45,10 @@ function getItem(label, key, icon, children) {
 
 const items = [
   getItem("Designs", "1", <PieChartOutlined />),
-  getItem("My Statuses", "2", <DesktopOutlined />),
+  getItem("My Statuses", "sub1", <DesktopOutlined />, [
+    getItem("Pending Tasks", "2-1"),
+    getItem("Completed History", "2-2"),
+  ]),
   getItem("Logout", "3", <LogoutOutlined />),
 ];
 
@@ -78,6 +81,8 @@ function DesignStaffPage() {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  const [activeTab, setActiveTab] = useState('incomplete');
 
   const fetchData = async () => {
     try {
@@ -478,7 +483,6 @@ function DesignStaffPage() {
       return;
     }
     try {
-      setUpdatingDesign(selectedOrderId);
       const response = await api.put(
         `/orders/update-design/${selectedOrderId}`,
         { designId: selectedDesignId }
@@ -533,8 +537,6 @@ function DesignStaffPage() {
           progress: undefined,
         }
       );
-    } finally {
-      setUpdatingDesign(null);
     }
   };
 
@@ -846,9 +848,14 @@ function DesignStaffPage() {
     setSelectedMenuItem(key);
     switch (key) {
       case "1":
-        // Already on Designs page
+        // Designs page
         break;
-      case "2":
+      case "2-1":
+        setActiveTab('incomplete');
+        fetchStatusesByStaffId();
+        break;
+      case "2-2":
+        setActiveTab('completed');
         fetchStatusesByStaffId();
         break;
       case "3":
@@ -875,18 +882,82 @@ function DesignStaffPage() {
             />
           </>
         );
-      case "2":
+      case "2-1":
+        const incompleteStatuses = staffStatuses.filter(status => !status.complete);
         return (
-          <Table
-            dataSource={staffStatuses}
-            columns={statusColumns}
-            rowKey="statusId"
-            scroll={{ x: true }}
-          />
+          <div className="status-section">
+            <h2>Pending Tasks ({incompleteStatuses.length})</h2>
+            <Table
+              dataSource={incompleteStatuses}
+              columns={statusColumns}
+              rowKey="statusId"
+              scroll={{ x: true }}
+              pagination={{
+                defaultPageSize: 5,
+                showSizeChanger: true,
+                showTotal: (total) => `Total ${total} items`,
+              }}
+            />
+          </div>
+        );
+      case "2-2":
+        const completedStatuses = staffStatuses.filter(status => status.complete);
+        return (
+          <div className="status-section">
+            <h2>Completed History ({completedStatuses.length})</h2>
+            <Table
+              dataSource={completedStatuses}
+              columns={statusColumns.map(col => {
+                if (col.key === 'updateDesign') {
+                  return {
+                    ...col,
+                    render: () => (
+                      <Button disabled style={{ backgroundColor: '#f5f5f5', color: '#d9d9d9' }}>
+                        Update Design
+                      </Button>
+                    )
+                  };
+                }
+                // Filter out 'complete' and 'actions' columns
+                return col.key !== 'complete' && col.key !== 'actions' ? col : null;
+              }).filter(Boolean)}
+              rowKey="statusId"
+              scroll={{ x: true }}
+            />
+          </div>
         );
       default:
         return <div>Select an option from the menu</div>;
     }
+  };
+
+  const UpdateDesignModal = ({ visible, onClose }) => {
+    return (
+      <Modal
+        title="Update Design"
+        open={visible}
+        onCancel={onClose}
+        onOk={handleUpdateDesign}
+        okText="Update"
+        cancelText="Cancel"
+      >
+        <Form layout="vertical">
+          <Form.Item label="Select Design">
+            <Select
+              value={selectedDesignId}
+              onChange={(value) => setSelectedDesignId(value)}
+              placeholder="Select a design"
+            >
+              {datas.map((design) => (
+                <Select.Option key={design.designId} value={design.designId}>
+                  {design.designName} (Version: {design.designVersion})
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
+    );
   };
 
   return (
@@ -911,9 +982,18 @@ function DesignStaffPage() {
           <Content style={{ margin: "0 16px" }}>
             <Breadcrumb style={{ margin: "16px 0" }}>
               <Breadcrumb.Item>Design Staff</Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {items.find((item) => item.key === selectedMenuItem)?.label}
-              </Breadcrumb.Item>
+              {selectedMenuItem.startsWith("2") ? (
+                <>
+                  <Breadcrumb.Item>My Statuses</Breadcrumb.Item>
+                  <Breadcrumb.Item>
+                    {selectedMenuItem === "2-1" ? "Pending Tasks" : "Completed History"}
+                  </Breadcrumb.Item>
+                </>
+              ) : (
+                <Breadcrumb.Item>
+                  {items.find((item) => item.key === selectedMenuItem)?.label}
+                </Breadcrumb.Item>
+              )}
             </Breadcrumb>
             <div
               style={{
@@ -932,6 +1012,44 @@ function DesignStaffPage() {
           </Footer>
         </Layout>
       </Layout>
+
+      <Modal
+        title={editingDesign ? "Edit Design" : "Add New Design"}
+        open={showModal}
+        onOk={form.submit}
+        onCancel={handleCancel}
+        confirmLoading={loading}
+      >
+        <Form form={form} onFinish={handleSubmit}>
+          <Form.Item
+            name="designName"
+            label="Design Name"
+            rules={[{ required: true, message: 'Please input design name!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="designVersion"
+            label="Version"
+            rules={[{ required: true, message: 'Please input version!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label="Image">
+            <Upload
+              listType="picture-card"
+              fileList={fileList}
+              onPreview={handlePreview}
+              onChange={handleChange}
+              customRequest={customUpload}
+              maxCount={1}
+            >
+              {fileList.length >= 1 ? null : uploadButton}
+            </Upload>
+          </Form.Item>
+        </Form>
+      </Modal>
+
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -944,6 +1062,10 @@ function DesignStaffPage() {
         pauseOnHover
         theme="light"
         style={{ zIndex: 9999 }}
+      />
+      <UpdateDesignModal 
+        visible={updateDesignModalVisible}
+        onClose={() => setUpdateDesignModalVisible(false)}
       />
     </>
   );

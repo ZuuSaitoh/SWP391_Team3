@@ -22,6 +22,8 @@ import {
   UserOutlined,
   HomeOutlined,
   LogoutOutlined,
+  ClockCircleOutlined,
+  CheckSquareOutlined,
 } from "@ant-design/icons";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -385,6 +387,18 @@ function ConstructionStaffPage() {
       key: "2",
       icon: <DesktopOutlined />,
       label: "My Statuses",
+      children: [
+        {
+          key: "2-1",
+          icon: <ClockCircleOutlined />,
+          label: "Pending Tasks",
+        },
+        {
+          key: "2-2",
+          icon: <CheckSquareOutlined />,
+          label: "Completed",
+        },
+      ],
     },
     {
       key: "3",
@@ -399,7 +413,8 @@ function ConstructionStaffPage() {
       case "1":
         // Already on Bookings page
         break;
-      case "2":
+      case "2-1":
+      case "2-2":
         fetchStatusesByStaffId();
         break;
       case "3":
@@ -418,17 +433,39 @@ function ConstructionStaffPage() {
             dataSource={bookings}
             columns={bookingColumns}
             rowKey="bookingServiceId"
-            scroll={{ x: true }} // Add this line to enable horizontal scrolling
-          />
-        );
-      case "2":
-        return (
-          <Table
-            dataSource={staffStatuses}
-            columns={statusColumns}
-            rowKey="statusId"
             scroll={{ x: true }}
           />
+        );
+      case "2-1":
+        const pendingStatuses = staffStatuses.filter(status => !status.complete);
+        return (
+          <div className="status-section">
+            <h2>Pending Tasks ({pendingStatuses.length})</h2>
+            <Table
+              dataSource={pendingStatuses}
+              columns={statusColumns}
+              rowKey="statusId"
+              scroll={{ x: true }}
+            />
+          </div>
+        );
+      case "2-2":
+        const completedStatuses = staffStatuses.filter(status => status.complete);
+        return (
+          <div className="status-section">
+            <h2>Completed ({completedStatuses.length})</h2>
+            <Table
+              dataSource={completedStatuses}
+              columns={statusColumns.map(col => {
+                if (col.key === 'complete') {
+                  return null;
+                }
+                return col;
+              }).filter(Boolean)}
+              rowKey="statusId"
+              scroll={{ x: true }}
+            />
+          </div>
         );
       default:
         return <div>Select an option from the menu</div>;
@@ -458,7 +495,11 @@ function ConstructionStaffPage() {
             <Breadcrumb style={{ margin: "16px 0" }}>
               <Breadcrumb.Item>Construction Staff</Breadcrumb.Item>
               <Breadcrumb.Item>
-                {items.find((item) => item.key === selectedMenuItem)?.label}
+                {selectedMenuItem === "2-1" 
+                  ? "Pending Tasks" 
+                  : selectedMenuItem === "2-2" 
+                  ? "Completed History"
+                  : items.find((item) => item.key === selectedMenuItem)?.label}
               </Breadcrumb.Item>
             </Breadcrumb>
             <div
