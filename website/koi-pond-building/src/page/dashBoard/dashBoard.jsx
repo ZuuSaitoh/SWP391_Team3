@@ -145,6 +145,12 @@ const Dashboard = () => {
 
   const [selectedManager, setSelectedManager] = useState(null);
 
+  const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [rejectingFormId, setRejectingFormId] = useState(null);
+
+  const [activeRequestTab, setActiveRequestTab] = useState("pending"); // 'pending', 'rejected', or 'created'
+
   const toggleLock = () => {
     setSidebarLocked(!sidebarLocked);
     if (sidebarLocked) {
@@ -1714,6 +1720,35 @@ const Dashboard = () => {
   const renderCustomerRequests = () => (
     <div className="table-container">
       {renderSearchBar()}
+
+      {/* Add tab buttons */}
+      <div className="request-tabs">
+        <button
+          className={`tab-button ${
+            activeRequestTab === "pending" ? "active" : ""
+          }`}
+          onClick={() => setActiveRequestTab("pending")}
+        >
+          Pending Requests
+        </button>
+        <button
+          className={`tab-button ${
+            activeRequestTab === "created" ? "active" : ""
+          }`}
+          onClick={() => setActiveRequestTab("created")}
+        >
+          Created Orders
+        </button>
+        <button
+          className={`tab-button ${
+            activeRequestTab === "rejected" ? "active" : ""
+          }`}
+          onClick={() => setActiveRequestTab("rejected")}
+        >
+          Rejected Requests
+        </button>
+      </div>
+
       <table className="data-table">
         <thead>
           <tr>
@@ -1724,12 +1759,28 @@ const Dashboard = () => {
             <th>Stage</th>
             <th>Contact Method</th>
             <th>Created Date</th>
+            {activeRequestTab === "rejected" && <th>Reject Reason</th>}
+            {activeRequestTab === "created" && <th>Order ID</th>}
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {customerRequests
             .filter((request) => {
+              // Filter by tab
+              if (activeRequestTab === "pending") {
+                return (
+                  !request.rejectReason && !formsWithOrders.has(request.formId)
+                );
+              } else if (activeRequestTab === "rejected") {
+                return request.rejectReason;
+              } else {
+                // created
+                return formsWithOrders.has(request.formId);
+              }
+            })
+            .filter((request) => {
+              // Then filter by search
               if (!request) return false;
               const searchLower = search.toLowerCase().trim();
               return (
@@ -1750,8 +1801,54 @@ const Dashboard = () => {
                 <td>{request.stage}</td>
                 <td>{request.contactMethod}</td>
                 <td>{new Date(request.createDate).toLocaleString()}</td>
+                {activeRequestTab === "rejected" && (
+                  <td>{request.rejectReason}</td>
+                )}
+                {activeRequestTab === "created" && (
+                  <td>
+                    {orders.find(
+                      (order) => order.form?.formId === request.formId
+                    )?.orderId || "N/A"}
+                  </td>
+                )}
                 <td>
-                  {formsWithOrders.has(request.formId) ? (
+                  {activeRequestTab === "pending" ? (
+                    formsWithOrders.has(request.formId) ? (
+                      <button
+                        onClick={() => handleViewOrder(request.formId)}
+                        className="view-order-btn"
+                      >
+                        View Order
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => {
+                            setSelectedRequest(request);
+                            setIsCreateOrderModalVisible(true);
+                          }}
+                          className="create-order-btn"
+                        >
+                          Create Order
+                        </button>
+                        <button
+                          onClick={() => {
+                            setRejectingFormId(request.formId);
+                            setIsRejectModalVisible(true);
+                          }}
+                          className="reject-form-btn"
+                        >
+                          Reject
+                        </button>
+                        <button
+                          onClick={() => handleDeleteForm(request.formId)}
+                          className="delete-form-btn"
+                        >
+                          Delete Form
+                        </button>
+                      </>
+                    )
+                  ) : activeRequestTab === "created" ? (
                     <button
                       onClick={() => handleViewOrder(request.formId)}
                       className="view-order-btn"
@@ -1760,22 +1857,12 @@ const Dashboard = () => {
                     </button>
                   ) : (
                     <button
-                      onClick={() => {
-                        setSelectedRequest(request);
-                        setIsCreateOrderModalVisible(true);
-                      }}
-                      className="create-order-btn"
+                      onClick={() => handleDeleteForm(request.formId)}
+                      className="delete-form-btn"
                     >
-                      Create Order
+                      Delete Form
                     </button>
                   )}
-                  <button
-                    onClick={() => handleDeleteForm(request.formId)}
-                    className="delete-form-btn"
-                    disabled={formsWithOrders.has(request.formId)}
-                  >
-                    Delete Form
-                  </button>
                 </td>
               </tr>
             ))}
@@ -1844,6 +1931,57 @@ const Dashboard = () => {
           </Select>
         </div>
       </Modal>
+
+      <Modal
+        title="Reject Form"
+        visible={isRejectModalVisible}
+        onCancel={() => {
+          setIsRejectModalVisible(false);
+          setRejectReason("");
+          setRejectingFormId(null);
+        }}
+        footer={[
+          <Button
+            key="cancel"
+            onClick={() => {
+              setIsRejectModalVisible(false);
+              setRejectReason("");
+              setRejectingFormId(null);
+            }}
+          >
+            Cancel
+          </Button>,
+          <Button
+            key="reject"
+            type="primary"
+            danger
+            onClick={handleRejectForm}
+            disabled={!rejectReason.trim()}
+          >
+            Reject
+          </Button>,
+        ]}
+      >
+        <Form layout="vertical">
+          <Form.Item
+            label="Rejection Reason"
+            required
+            rules={[
+              {
+                required: true,
+                message: "Please provide a reason for rejection",
+              },
+            ]}
+          >
+            <Input.TextArea
+              rows={4}
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="Please provide a reason for rejecting this form..."
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 
@@ -1878,6 +2016,34 @@ const Dashboard = () => {
         console.error("Error deleting form:", err);
         toast.error("An error occurred while deleting the form");
       }
+    }
+  };
+
+  // Add this function to handle form rejection
+  const handleRejectForm = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/forms/update/reject/${rejectingFormId}`,
+        { rejectReason }
+      );
+
+      if (response.data.code === 2222) {
+        toast.success("Form rejected successfully");
+        // Update the customer requests list
+        setCustomerRequests(
+          customerRequests.filter(
+            (request) => request.formId !== rejectingFormId
+          )
+        );
+        setIsRejectModalVisible(false);
+        setRejectReason("");
+        setRejectingFormId(null);
+      } else {
+        toast.error("Failed to reject form");
+      }
+    } catch (err) {
+      console.error("Error rejecting form:", err);
+      toast.error("An error occurred while rejecting the form");
     }
   };
 

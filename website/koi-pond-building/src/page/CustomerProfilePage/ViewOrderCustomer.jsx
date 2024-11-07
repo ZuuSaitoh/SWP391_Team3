@@ -213,8 +213,14 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (feedback.length <= 5) {
-      alert("Feedback must be more than 5 characters long.");
+    // Validate rating and feedback
+    if (rating === 0) {
+      toast.error("Please provide a rating before submitting");
+      return;
+    }
+
+    if (feedback.trim().length <= 5) {
+      toast.error("Please provide feedback with more than 5 characters");
       return;
     }
 

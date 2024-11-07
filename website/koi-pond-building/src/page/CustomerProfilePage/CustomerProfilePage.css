@@ -869,7 +869,8 @@ body {
 }
 
 .Toastify__toast--success .Toastify__toast-body {
-  color: #4caf50 !important; /* Green text for success message */
+  color: #4caf50 !important;
+  /* Green text for success message */
 }
 
 .Toastify__toast--error {
@@ -877,7 +878,8 @@ body {
 }
 
 .Toastify__toast--error .Toastify__toast-body {
-  color: #f44336 !important; /* Red text for error message */
+  color: #f44336 !important;
+  /* Red text for error message */
 }
 
 .Toastify__toast--warning {
@@ -885,7 +887,8 @@ body {
 }
 
 .Toastify__toast--warning .Toastify__toast-body {
-  color: #ff9800 !important; /* Orange text for warning message */
+  color: #ff9800 !important;
+  /* Orange text for warning message */
 }
 
 .Toastify__toast-body {
@@ -926,4 +929,116 @@ body {
 .Toastify {
   position: fixed;
   z-index: 9999;
+}
+
+.form-reject-reason,
+.form-reject-date {
+  color: #dc3545;
+  font-size: 0.9em;
+  margin: 3px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-reject-reason i,
+.form-reject-date i {
+  color: #dc3545;
+  width: 16px;
+  text-align: center;
+}
+
+.form-status.rejected {
+  background-color: #dc3545;
+  color: white;
+}
+
+.form-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 15px 20px;
+}
+
+.form-tabs .tab-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.form-tabs .tab-button.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.form-tabs .tab-button:hover {
+  background-color: #e0e0e0;
+}
+
+.form-tabs .tab-button.active:hover {
+  background-color: #45a049;
+}
+
+.star-rating {
+  display: flex;
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.star {
+  cursor: pointer;
+  font-size: 24px;
+  color: #ddd;
+}
+
+.star.filled {
+  color: #ffd700;
+}
+
+.rating-section {
+  margin-bottom: 15px;
+}
+
+.rating-section label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.rating-display {
+  margin-bottom: 5px;
+}
+
+.rating-display strong {
+  margin-right: 5px;
+}
+
+.booking-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 15px 20px;
+}
+
+.booking-tabs .tab-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 0.9em;
+}
+
+.booking-tabs .tab-button.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.booking-tabs .tab-button:hover {
+  background-color: #e0e0e0;
+}
+
+.booking-tabs .tab-button.active:hover {
+  background-color: #45a049;
 }

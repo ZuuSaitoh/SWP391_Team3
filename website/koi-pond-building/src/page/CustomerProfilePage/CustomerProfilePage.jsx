@@ -38,6 +38,9 @@ function CustomerProfilePage() {
   const [activeOrderTab, setActiveOrderTab] = useState("inProgress");
   const [forms, setForms] = useState([]);
   const [isFormsExpanded, setIsFormsExpanded] = useState(false);
+  const [activeFormTab, setActiveFormTab] = useState("active");
+  const [feedbackRating, setFeedbackRating] = useState(5);
+  const [activeBookingTab, setActiveBookingTab] = useState("pending");
 
   useEffect(() => {
     const fetchCustomerData = async () => {
@@ -235,10 +238,13 @@ function CustomerProfilePage() {
     try {
       const response = await axios.put(
         `http://localhost:8080/bookingservices/updateFeedback/${bookingId}`,
-        { feedback: feedbackText }
+        {
+          feedback: feedbackText,
+          rating: feedbackRating,
+        }
       );
       if (response.data.code === 1000) {
-        toast.success("Feedback submitted successfully");
+        toast.success("Feedback and rating submitted successfully");
         setBookings(
           bookings.map((booking) =>
             booking.bookingServiceId === bookingId
@@ -248,6 +254,7 @@ function CustomerProfilePage() {
         );
         setFeedbackBookingId(null);
         setFeedbackText("");
+        setFeedbackRating(5); // Reset rating
       } else {
         toast.error("Failed to submit feedback");
       }
@@ -270,71 +277,115 @@ function CustomerProfilePage() {
         <h3>Bookings</h3>
         {isBookingsExpanded ? <FaChevronUp /> : <FaChevronDown />}
       </div>
-      {isBookingsExpanded &&
-        (bookings.length > 0 ? (
-          <ul className="booking-list">
-            {[...bookings].reverse().map((booking) => (
-              <li key={booking.bookingServiceId} className="booking-item">
-                <div className="booking-info">
-                  <div className="booking-main-info">
-                    <div className="booking-details">
-                      <span className="booking-id">
-                        Booking #{booking.bookingServiceId}
-                      </span>
-                      <span className="booking-service">
-                        {booking.service.serviceName}
-                      </span>
-                      <div className="booking-dates">
-                        <span className="booking-date">
-                          <i className="far fa-calendar-alt"></i> Start:{" "}
-                          {new Date(booking.bookingDate).toLocaleDateString()}
-                        </span>
-                        <span className="booking-date">
-                          <i className="far fa-calendar-check"></i> Finish:{" "}
-                          {booking.finishDate
-                            ? new Date(booking.finishDate).toLocaleDateString()
-                            : "Not set"}
+      {isBookingsExpanded && (
+        <>
+          <div className="booking-tabs">
+            <button
+              className={`tab-button ${
+                activeBookingTab === "pending" ? "active" : ""
+              }`}
+              onClick={() => setActiveBookingTab("pending")}
+            >
+              Pending ({bookings.filter((booking) => !booking.status).length})
+            </button>
+            <button
+              className={`tab-button ${
+                activeBookingTab === "completed" ? "active" : ""
+              }`}
+              onClick={() => setActiveBookingTab("completed")}
+            >
+              Completed ({bookings.filter((booking) => booking.status).length})
+            </button>
+          </div>
+          {bookings.length > 0 ? (
+            <ul className="booking-list">
+              {[...bookings]
+                .filter((booking) =>
+                  activeBookingTab === "pending"
+                    ? !booking.status
+                    : booking.status
+                )
+                .reverse()
+                .map((booking) => (
+                  <li key={booking.bookingServiceId} className="booking-item">
+                    <div className="booking-info">
+                      <div className="booking-main-info">
+                        <div className="booking-details">
+                          <span className="booking-id">
+                            Booking #{booking.bookingServiceId}
+                          </span>
+                          <span className="booking-service">
+                            {booking.service.serviceName}
+                          </span>
+                          <div className="booking-dates">
+                            <span className="booking-date">
+                              <i className="far fa-calendar-alt"></i> Start:{" "}
+                              {new Date(
+                                booking.bookingDate
+                              ).toLocaleDateString()}
+                            </span>
+                            <span className="booking-date">
+                              <i className="far fa-calendar-check"></i> Finish:{" "}
+                              {booking.finishDate
+                                ? new Date(
+                                    booking.finishDate
+                                  ).toLocaleDateString()
+                                : "Not set"}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="booking-price">
+                          {formatCurrency(booking.price)} VND
                         </span>
                       </div>
+                      <span
+                        className={`booking-status ${
+                          booking.status ? "completed" : "pending"
+                        }`}
+                      >
+                        {booking.status ? "Completed" : "Pending"}
+                      </span>
+                      {booking.feedback && (
+                        <div className="booking-feedback">
+                          <div className="rating-display">
+                            <strong>Rating:</strong> {booking.rating} ★
+                          </div>
+                          <div>
+                            <strong>Feedback:</strong> {booking.feedback}
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <span className="booking-price">
-                      {formatCurrency(booking.price)} VND
-                    </span>
-                  </div>
-                  <span
-                    className={`booking-status ${
-                      booking.status ? "completed" : "pending"
-                    }`}
-                  >
-                    {booking.status ? "Completed" : "Pending"}
-                  </span>
-                  {booking.feedback && (
-                    <div className="booking-feedback">
-                      <strong>Feedback:</strong> {booking.feedback}
+                    <div className="booking-actions">
+                      {booking.status && !booking.feedback && (
+                        <button
+                          className="feedback-btn"
+                          onClick={() =>
+                            setFeedbackBookingId(booking.bookingServiceId)
+                          }
+                        >
+                          Leave Feedback
+                        </button>
+                      )}
                     </div>
-                  )}
-                </div>
-                <div className="booking-actions">
-                  {booking.status && !booking.feedback && (
-                    <button
-                      className="feedback-btn"
-                      onClick={() =>
-                        setFeedbackBookingId(booking.bookingServiceId)
-                      }
-                    >
-                      Leave Feedback
-                    </button>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No bookings found for this customer.</p>
-        ))}
+                  </li>
+                ))}
+            </ul>
+          ) : (
+            <p>No bookings found for this customer.</p>
+          )}
+        </>
+      )}
       {feedbackBookingId && (
         <div className="feedback-modal">
           <h4>Leave Feedback</h4>
+          <div className="rating-section">
+            <label>Rating:</label>
+            <StarRating
+              rating={feedbackRating}
+              onRatingChange={setFeedbackRating}
+            />
+          </div>
           <textarea
             value={feedbackText}
             onChange={(e) => setFeedbackText(e.target.value)}
@@ -344,7 +395,15 @@ function CustomerProfilePage() {
             <button onClick={() => handleFeedbackSubmit(feedbackBookingId)}>
               Submit
             </button>
-            <button onClick={() => setFeedbackBookingId(null)}>Cancel</button>
+            <button
+              onClick={() => {
+                setFeedbackBookingId(null);
+                setFeedbackText("");
+                setFeedbackRating(5);
+              }}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       )}
@@ -438,48 +497,108 @@ function CustomerProfilePage() {
         <h3>Service Requests</h3>
         {isFormsExpanded ? <FaChevronUp /> : <FaChevronDown />}
       </div>
-      {isFormsExpanded &&
-        (forms.length > 0 ? (
-          <ul className="form-list">
-            {forms.map((form) => (
-              <li key={form.formId} className="form-item">
-                <div className="form-info">
-                  <div className="form-main-info">
-                    <div className="form-details">
-                      <span className="form-id">Request #{form.formId}</span>
-                      <span className="form-area">
-                        <i className="fas fa-ruler-combined"></i> Area:{" "}
-                        {form.area}
-                      </span>
-                      <span className="form-style">
-                        <i className="fas fa-paint-brush"></i> Style:{" "}
-                        {form.style}
-                      </span>
-                      <span className="form-stage">
-                        <i className="fas fa-tasks"></i> Stage: {form.stage}
-                      </span>
-                      <span className="form-contact">
-                        <i className="fas fa-comments"></i> Contact via:{" "}
-                        {form.contactMethod}
-                      </span>
+      {isFormsExpanded && (
+        <>
+          <div className="form-tabs">
+            <button
+              className={`tab-button ${
+                activeFormTab === "active" ? "active" : ""
+              }`}
+              onClick={() => setActiveFormTab("active")}
+            >
+              Active Requests
+            </button>
+            <button
+              className={`tab-button ${
+                activeFormTab === "rejected" ? "active" : ""
+              }`}
+              onClick={() => setActiveFormTab("rejected")}
+            >
+              Rejected
+            </button>
+          </div>
+          {forms.length > 0 ? (
+            <ul className="form-list">
+              {forms
+                .filter((form) =>
+                  activeFormTab === "active"
+                    ? !form.rejectReason
+                    : form.rejectReason
+                )
+                .map((form) => (
+                  <li key={form.formId} className="form-item">
+                    <div className="form-info">
+                      <div className="form-main-info">
+                        <div className="form-details">
+                          <span className="form-id">
+                            Request #{form.formId}
+                          </span>
+                          <span className="form-area">
+                            <i className="fas fa-ruler-combined"></i> Area:{" "}
+                            {form.area}
+                          </span>
+                          <span className="form-style">
+                            <i className="fas fa-paint-brush"></i> Style:{" "}
+                            {form.style}
+                          </span>
+                          <span className="form-stage">
+                            <i className="fas fa-tasks"></i> Stage: {form.stage}
+                          </span>
+                          <span className="form-contact">
+                            <i className="fas fa-comments"></i> Contact via:{" "}
+                            {form.contactMethod}
+                          </span>
+                          {form.rejectReason && (
+                            <span className="form-reject-reason">
+                              <i className="fas fa-exclamation-circle"></i>{" "}
+                              Reject Reason: {form.rejectReason}
+                            </span>
+                          )}
+                          {form.rejectDate && (
+                            <span className="form-reject-date">
+                              <i className="fas fa-calendar-times"></i> Rejected
+                              on:{" "}
+                              {new Date(form.rejectDate).toLocaleDateString()}
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          className={`form-status ${
+                            form.rejectReason
+                              ? "rejected"
+                              : form.stage.toLowerCase().replace(" ", "-")
+                          }`}
+                        >
+                          {form.rejectReason ? "Rejected" : form.stage}
+                        </span>
+                      </div>
                     </div>
-                    <span
-                      className={`form-status ${form.stage
-                        .toLowerCase()
-                        .replace(" ", "-")}`}
-                    >
-                      {form.stage}
-                    </span>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No service requests found.</p>
-        ))}
+                  </li>
+                ))}
+            </ul>
+          ) : (
+            <p>No service requests found.</p>
+          )}
+        </>
+      )}
     </div>
   );
+
+  const StarRating = ({ rating, onRatingChange }) => {
+    return (
+      <div className="star-rating">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            className={`star ${star <= rating ? "filled" : ""}`}
+            onClick={() => onRatingChange(star)}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+    );
+  };
 
   if (isLoading) {
     return (

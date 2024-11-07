@@ -2857,7 +2857,8 @@ body {
 }
 
 .Toastify__toast--success .Toastify__toast-body {
-  color: #4caf50 !important; /* Green text for success message */
+  color: #4caf50 !important;
+  /* Green text for success message */
 }
 
 .Toastify__toast--error {
@@ -2865,7 +2866,8 @@ body {
 }
 
 .Toastify__toast--error .Toastify__toast-body {
-  color: #f44336 !important; /* Red text for error message */
+  color: #f44336 !important;
+  /* Red text for error message */
 }
 
 .Toastify__toast--warning {
@@ -2873,7 +2875,8 @@ body {
 }
 
 .Toastify__toast--warning .Toastify__toast-body {
-  color: #ff9800 !important; /* Orange text for warning message */
+  color: #ff9800 !important;
+  /* Orange text for warning message */
 }
 
 .Toastify__toast-body {
@@ -3116,7 +3119,8 @@ body {
   gap: 5px;
   justify-content: flex-start;
   align-items: center;
-  min-width: 200px; /* Ensure enough space for buttons */
+  min-width: 200px;
+  /* Ensure enough space for buttons */
 }
 
 .view-order-btn:active,
@@ -3124,4 +3128,48 @@ body {
 .delete-form-btn:active {
   transform: translateY(1px);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.reject-form-btn {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.reject-form-btn:hover {
+  background-color: #ff7875;
+}
+
+.reject-form-btn:disabled {
+  background-color: #d9d9d9;
+  cursor: not-allowed;
+}
+
+.request-tabs {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  background-color: #1890ff;
+  color: white;
+}
+
+.tab-button:hover {
+  background-color: #40a9ff;
+  color: white;
 }
