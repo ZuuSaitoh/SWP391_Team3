@@ -45,6 +45,8 @@ public enum ErrorCode {
     ORDER_CREATED(1038, "Order have been created with this form!"),
     ORDER_COMPLETE(1039,"The order is done so that you can't set end date!"),
     MAX_POINT(1040,"You are using points more than the number that you have!"),
+    HISTORY_NOT_EXISTED(1041,"History point id is not existed!"),
+    CUSTOMER_HISTORY_NOT_EXISTED(1042,"History point of customer is not existed!")
     ;
 
     ErrorCode(int code, String message) {

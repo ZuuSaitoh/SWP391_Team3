@@ -35,6 +35,9 @@ public class OrderService {
     @Autowired
     TransactionRepository transactionRepository;
 
+    @Autowired
+    PointHistoryService pointHistoryService;
+
 
     public Order createOrder(OrderCreationRequest request){
         Order order = new Order();
@@ -87,6 +90,9 @@ public class OrderService {
                 }
                 point = (int) Math.floor(total/100000);
                 Customer customer = order.getCustomer();
+
+                pointHistoryService.addPointOrder(customer, order, point);
+
                 customer.setPoint(customer.getPoint() + point);
                 customerRepository.save(customer);
             }

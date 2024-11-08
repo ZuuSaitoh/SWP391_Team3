@@ -29,6 +29,8 @@ public class BookingServiceService {
     ServiceTransactionRepository serviceTransactionRepository;
     @Autowired
     ServiceTransactionService serviceTransactionService;
+    @Autowired
+    PointHistoryService pointHistoryService;
 
     public BookingService createBookingService(BookingServiceCreationRequest request){
         BookingService bookingService = new BookingService();
@@ -50,12 +52,14 @@ public class BookingServiceService {
         if (customer.getPoint() < request.getUsingPoint()){
             throw new AppException(ErrorCode.MAX_POINT);
         }
+        bookingService.setUsingPoint(request.getUsingPoint());
+        bookingService = bookingServiceRepository.save(bookingService);
+
+        pointHistoryService.usingPointBookingService(customer, bookingService, request.getUsingPoint());
+
         customer.setPoint(customer.getPoint() - request.getUsingPoint());
         customerRepository.save(customer);
-        bookingService.setUsingPoint(request.getUsingPoint());
-
-
-        return bookingServiceRepository.save(bookingService);
+        return bookingService;
     }
 
     //Hàm dùng để cho Manager chọn ConstructionStaff làm 1 Order nào đó
@@ -92,6 +96,9 @@ public class BookingServiceService {
             if (bookingService.getPrice()>0) {
                 Customer customer = bookingService.getCustomer();
                 int point = (int) Math.floor(bookingService.getPrice()/100000);
+
+                pointHistoryService.addPointBookingService(customer, bookingService, point);
+
                 customer.setPoint(customer.getPoint() + point);
                 customerRepository.save(customer);
             }
