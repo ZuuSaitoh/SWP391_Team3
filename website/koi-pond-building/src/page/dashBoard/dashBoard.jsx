@@ -2029,15 +2029,19 @@ const Dashboard = () => {
 
       if (response.data.code === 2222) {
         toast.success("Form rejected successfully");
-        // Update the customer requests list
+        // Update the customer requests list by updating the rejected form
         setCustomerRequests(
-          customerRequests.filter(
-            (request) => request.formId !== rejectingFormId
+          customerRequests.map((request) =>
+            request.formId === rejectingFormId
+              ? { ...request, rejectReason: rejectReason }
+              : request
           )
         );
         setIsRejectModalVisible(false);
         setRejectReason("");
         setRejectingFormId(null);
+        // Automatically switch to rejected tab
+        setActiveRequestTab("rejected");
       } else {
         toast.error("Failed to reject form");
       }

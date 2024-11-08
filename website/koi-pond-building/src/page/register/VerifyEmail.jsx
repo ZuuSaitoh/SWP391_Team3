@@ -20,31 +20,47 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified }) {
 
   const sendOtp = async (e) => {
     e.preventDefault();
-    const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
-    setGeneratedOtp(newOtp);
-
-    const emailData = {
-      to_email: email,
-      to_name: email,
-      from_name: "KoiPond Design",
-      email: email,
-      message: `Your OTP is: ${newOtp}`,
-    };
 
     try {
+      // Check if email exists using the API
+      const response = await fetch(
+        `http://localhost:8080/customers/checkMail/${email}`
+      );
+      const data = await response.json();
+
+      if (response.ok && data.result === true) {
+        toast.error(
+          "This email is already registered. Please use a different email."
+        );
+        return;
+      }
+
+      // If email doesn't exist, proceed with OTP sending
+      const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      setGeneratedOtp(newOtp);
+
+      const emailData = {
+        to_email: email,
+        to_name: email,
+        from_name: "KoiPond Design",
+        email: email,
+        message: `Your OTP is: ${newOtp}`,
+      };
+
       const result = await emailjs.send(
         "service_flpieon",
         "template_qs6prd4",
         emailData,
         "bOlGczQDScAz13xZx"
       );
+
       console.log(result.text);
       setOtpSent(true);
       setCountdown(60);
       toast.success("OTP sent to your email. Please check your inbox.");
     } catch (error) {
-      console.error("Error sending OTP:", error);
-      toast.error("Error sending OTP. Please try again.");
+      console.error("Error:", error);
+      toast.error("Error checking email or sending OTP. Please try again.");
     }
   };
 
