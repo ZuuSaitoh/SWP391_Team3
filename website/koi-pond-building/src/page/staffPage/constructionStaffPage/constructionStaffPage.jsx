@@ -30,13 +30,14 @@ const { Header, Content, Footer, Sider } = Layout;
 
 function ConstructionStaffPage() {
   const [bookings, setBookings] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
   const [statusModalVisible, setStatusModalVisible] = useState(false);
   const [staffStatuses, setStaffStatuses] = useState([]);
   const [updateStatusModalVisible, setUpdateStatusModalVisible] =
     useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedMenuItem, setSelectedMenuItem] = useState("1");
+  const [selectedMenuItem, setSelectedMenuItem] = useState("1-1");
 
   const staffId = localStorage.getItem("staffId");
   const navigate = useNavigate();
@@ -66,6 +67,23 @@ function ConstructionStaffPage() {
     }
   };
 
+  const calculateAverageRating = (bookingsData) => {
+    const completedBookingsWithRating = bookingsData.filter(
+      booking => booking.status && booking.rating
+    );
+    
+    if (completedBookingsWithRating.length === 0) {
+      return 0;
+    }
+
+    const totalRating = completedBookingsWithRating.reduce(
+      (sum, booking) => sum + booking.rating,
+      0
+    );
+    
+    return (totalRating / completedBookingsWithRating.length).toFixed(1);
+  };
+
   const fetchBookings = async () => {
     try {
       const response = await api.get(
@@ -76,6 +94,7 @@ function ConstructionStaffPage() {
           (a, b) => new Date(b.bookingDate) - new Date(a.bookingDate)
         );
         setBookings(sortedBookings);
+        setAverageRating(calculateAverageRating(sortedBookings));
       } else {
         console.warn(
           "Unexpected response when fetching bookings:",
@@ -348,6 +367,12 @@ function ConstructionStaffPage() {
       render: (status) => (status ? "Completed" : "Pending"),
     },
     {
+      title: "Rating",
+      dataIndex: "rating",
+      key: "rating",
+      render: (rating) => rating ? `${rating} stars` : "Not rated",
+    },
+    {
       title: "Feedback",
       dataIndex: "feedback",
       key: "feedback",
@@ -382,6 +407,18 @@ function ConstructionStaffPage() {
       key: "1",
       icon: <PieChartOutlined />,
       label: "Bookings",
+      children: [
+        {
+          key: "1-1",
+          icon: <ClockCircleOutlined />,
+          label: "Pending",
+        },
+        {
+          key: "1-2",
+          icon: <CheckSquareOutlined />,
+          label: "Completed",
+        },
+      ],
     },
     {
       key: "2",
@@ -410,8 +447,9 @@ function ConstructionStaffPage() {
   const handleMenuClick = (key) => {
     setSelectedMenuItem(key);
     switch (key) {
-      case "1":
-        // Already on Bookings page
+      case "1-1":
+      case "1-2":
+        fetchBookings();
         break;
       case "2-1":
       case "2-2":
@@ -427,17 +465,39 @@ function ConstructionStaffPage() {
 
   const renderContent = () => {
     switch (selectedMenuItem) {
-      case "1":
+      case "1-1":
+        const pendingBookings = bookings.filter(booking => !booking.status);
+        const pendingColumns = bookingColumns.filter(col => 
+          col.key !== 'rating' && col.key !== 'feedback'
+        );
         return (
-          <Table
-            dataSource={bookings}
-            columns={bookingColumns}
-            rowKey="bookingServiceId"
-            scroll={{ x: true }}
-          />
+          <div className="status-section">
+            <h2>Pending Bookings ({pendingBookings.length})</h2>
+            <Table
+              dataSource={pendingBookings}
+              columns={pendingColumns}
+              rowKey="bookingServiceId"
+              scroll={{ x: true }}
+            />
+          </div>
+        );
+      case "1-2":
+        const completedBookings = bookings.filter(booking => booking.status);
+        return (
+          <div className="status-section">
+            <h2>Completed Bookings ({completedBookings.length})</h2>
+            <Table
+              dataSource={completedBookings}
+              columns={bookingColumns}
+              rowKey="bookingServiceId"
+              scroll={{ x: true }}
+            />
+          </div>
         );
       case "2-1":
-        const pendingStatuses = staffStatuses.filter(status => !status.complete);
+        const pendingStatuses = staffStatuses
+          .filter(status => !status.complete)
+          .sort((a, b) => new Date(b.statusDate) - new Date(a.statusDate));
         return (
           <div className="status-section">
             <h2>Pending Tasks ({pendingStatuses.length})</h2>
@@ -472,6 +532,13 @@ function ConstructionStaffPage() {
     }
   };
 
+  const contentStyle = {
+    padding: 24,
+    minHeight: 360,
+    background: colorBgContainer,
+    borderRadius: borderRadiusLG,
+  };
+
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
@@ -490,26 +557,67 @@ function ConstructionStaffPage() {
           />
         </Sider>
         <Layout>
-          <Header style={{ padding: 0, background: colorBgContainer }} />
+          <Header style={{ padding: 0, background: colorBgContainer }}>
+            <div style={{ 
+              float: 'right', 
+              marginRight: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              height: '100%'
+            }}>
+              <div style={{
+                backgroundColor: '#f0f2f5',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <span style={{ fontWeight: 'bold' }}>Average Rating:</span>
+                <span style={{ 
+                  color: '#1890ff',
+                  fontSize: '16px'
+                }}>
+                  {averageRating > 0 ? `${averageRating} ★` : 'No ratings yet'}
+                </span>
+                <span style={{ color: '#8c8c8c', fontSize: '14px' }}>
+                  ({bookings.filter(b => b.status && b.rating).length} ratings)
+                </span>
+              </div>
+            </div>
+          </Header>
           <Content style={{ margin: "0 16px" }}>
             <Breadcrumb style={{ margin: "16px 0" }}>
               <Breadcrumb.Item>Construction Staff</Breadcrumb.Item>
               <Breadcrumb.Item>
-                {selectedMenuItem === "2-1" 
+                {selectedMenuItem.startsWith("1-") 
+                  ? `Bookings - ${selectedMenuItem === "1-1" ? "Pending" : "Completed"}`
+                  : selectedMenuItem === "2-1" 
                   ? "Pending Tasks" 
                   : selectedMenuItem === "2-2" 
                   ? "Completed History"
                   : items.find((item) => item.key === selectedMenuItem)?.label}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <div
-              style={{
-                padding: 24,
-                minHeight: 360,
-                background: colorBgContainer,
-                borderRadius: borderRadiusLG,
-              }}
-            >
+            <div style={contentStyle}>
+              <div style={{ 
+                marginBottom: '16px',
+                color: '#1890ff',
+                fontSize: '20px',
+                fontWeight: 'bold'
+              }}>
+                {selectedMenuItem.startsWith("1-") 
+                  ? `${selectedMenuItem === "1-1" ? "Pending Bookings" : "Completed Bookings"} (${
+                      selectedMenuItem === "1-1" 
+                        ? bookings.filter(b => !b.status).length 
+                        : bookings.filter(b => b.status).length
+                    })`
+                  : selectedMenuItem === "2-1"
+                  ? `Pending Tasks (${staffStatuses.filter(s => !s.complete).length})`
+                  : selectedMenuItem === "2-2"
+                  ? `Completed History (${staffStatuses.filter(s => s.complete).length})`
+                  : ""}
+              </div>
               {renderContent()}
             </div>
           </Content>
