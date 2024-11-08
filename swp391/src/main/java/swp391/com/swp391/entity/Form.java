@@ -35,8 +35,18 @@ public class Form {
     String rejectReason;
     @Column(name = "reject_date")
     LocalDateTime rejectDate;
+    @Column(name = "phone")
+    String phone;
 
     public Form() {
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public int getFormId() {

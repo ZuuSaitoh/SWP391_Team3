@@ -1,6 +1,7 @@
 package swp391.com.swp391.dto.request;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -22,6 +23,16 @@ public class FormCreationRequest {
     String stage;
     @NotNull(message = "ENTER_ALL_FIELDS")
     String contactMethod;
+    @Pattern(regexp = "^(\\+84|0[3|5|7|8|9])+([0-9]{8})$", message = "PHONE_NUMBER_INVALID", flags = Pattern.Flag.CASE_INSENSITIVE)
+    String phone;
+
+    public @Pattern(regexp = "^(\\+84|0[3|5|7|8|9])+([0-9]{8})$", message = "PHONE_NUMBER_INVALID", flags = Pattern.Flag.CASE_INSENSITIVE) String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(@Pattern(regexp = "^(\\+84|0[3|5|7|8|9])+([0-9]{8})$", message = "PHONE_NUMBER_INVALID", flags = Pattern.Flag.CASE_INSENSITIVE) String phone) {
+        this.phone = phone;
+    }
 
     @NotNull(message = "ENTER_ALL_FIELDS")
     public int getCustomerId() {

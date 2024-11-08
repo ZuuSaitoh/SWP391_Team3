@@ -31,6 +31,7 @@ public class FormService {
         form.setStyle(request.getStyle());
         form.setStage(request.getStage());
         form.setCreateDate(LocalDateTime.now());
+        form.setPhone(request.getPhone());
         return formRepository.save(form);
     }
     public List<Form> getAllForm(){
