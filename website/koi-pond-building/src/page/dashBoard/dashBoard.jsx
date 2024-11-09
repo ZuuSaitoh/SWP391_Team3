@@ -1800,7 +1800,7 @@ const Dashboard = () => {
                 <td>{request.style}</td>
                 <td>{request.stage}</td>
                 <td>{request.contactMethod}</td>
-                <td>{new Date(request.createDate).toLocaleString()}</td>
+                <td>{request.createDate ? new Date(request.createDate).toLocaleString() : "N/A"}</td>
                 {activeRequestTab === "rejected" && (
                   <td>{request.rejectReason}</td>
                 )}

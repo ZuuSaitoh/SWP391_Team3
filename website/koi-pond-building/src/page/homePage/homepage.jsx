@@ -53,7 +53,7 @@ function HomePage() {
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  console.log("da vao home");
+  console.log("Home");
   useEffect(() => {
     // Fetch current user information from localStorage or your authentication system
     const user = JSON.parse(localStorage.getItem("user"));
