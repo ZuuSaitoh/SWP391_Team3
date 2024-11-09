@@ -45,16 +45,16 @@ function ServiceMaintenance() {
     fetch("http://localhost:8080/services/fetchAll")
       .then((response) => response.json())
       .then((data) => {
-        console.log("Fetched services:", data);
+        // console.log("Fetched services:", data);
         if (data.code === 9999 && Array.isArray(data.result)) {
           // Filter services to only include maintenance services
           const maintenanceServicesData = data.result.filter(
             (service) => service.serviceType === "Maintenance"
           );
-          console.log(
-            "Filtered maintenance services:",
-            maintenanceServicesData
-          );
+          // console.log(
+          //   "Filtered maintenance services:",
+          //   maintenanceServicesData
+          // );
           setMaintenanceServices(maintenanceServicesData);
         } else {
           console.error("Unexpected API response format");

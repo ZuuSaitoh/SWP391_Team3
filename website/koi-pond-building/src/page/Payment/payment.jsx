@@ -54,7 +54,7 @@ const Payment = () => {
       if (serviceData && !selectedService) {
         const parsedService = JSON.parse(serviceData);
         setSelectedService(parsedService);
-        console.log("Fetched service data:", parsedService); // Log only once
+        // console.log("Fetched service data:", parsedService); // Log only once
       }
     };
 
@@ -123,14 +123,14 @@ const Payment = () => {
         discountId: selectedDiscount?.discountId, // Add discount ID if selected
       };
 
-      console.log("Sending order data:", orderData);
+      // console.log("Sending order data:", orderData);
 
       const response = await axios.post(
         "http://localhost:8080/bookingservices/create",
         orderData
       );
 
-      console.log("Server response:", response.data);
+      // console.log("Server response:", response.data);
 
       if (response.data && response.data.code === 1000) {
         toast.success("Order placed successfully!");

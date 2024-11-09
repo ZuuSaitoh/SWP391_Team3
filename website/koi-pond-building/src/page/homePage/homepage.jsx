@@ -53,13 +53,13 @@ function HomePage() {
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  console.log("Home");
+  // console.log("Home");
   useEffect(() => {
     // Fetch current user information from localStorage or your authentication system
     const user = JSON.parse(localStorage.getItem("user"));
     // toast.success("Login successful! Welcome back!");
 
-    console.log(user);
+    // console.log(user);
     if (user) {
       setCurrentUser(user);
     }
@@ -69,8 +69,8 @@ function HomePage() {
         window.pageYOffset || document.documentElement.scrollTop;
       setIsHeaderScrolled(scrollTop > 50);
       setShowScrollTop(scrollTop > 300);
-      console.log("Scroll position:", scrollTop);
-      console.log("Show scroll top:", scrollTop > 300);
+      // console.log("Scroll position:", scrollTop);
+      // console.log("Show scroll top:", scrollTop > 300);
 
       const aboutSection = document.getElementById("about");
       if (aboutSection && !animationTriggered.current) {
@@ -216,16 +216,16 @@ function HomePage() {
   const handleContactMethodChange = (e) => {
     const { name, checked } = e.target;
     if (checked) {
-      setFormData(prevData => ({
+      setFormData((prevData) => ({
         ...prevData,
         contactMethods: name, // Only store the current selection
-        phoneNumber: name !== 'zalo' ? '' : prevData.phoneNumber // Clear phone number if not Zalo
+        phoneNumber: name !== "zalo" ? "" : prevData.phoneNumber, // Clear phone number if not Zalo
       }));
     } else {
-      setFormData(prevData => ({
+      setFormData((prevData) => ({
         ...prevData,
         contactMethods: [], // Clear the selection
-        phoneNumber: '' // Clear phone number when unchecking
+        phoneNumber: "", // Clear phone number when unchecking
       }));
     }
   };
@@ -257,7 +257,7 @@ function HomePage() {
       );
 
       if (response.data.code === 1000 || response.data.code === 1005) {
-        console.log("Form submitted successfully:", response.data);
+        // console.log("Form submitted successfully:", response.data);
         toast.success("Request submitted successfully!");
         handleClosePopup();
       } else {
@@ -646,16 +646,16 @@ function HomePage() {
                     <input
                       type="checkbox"
                       name="zalo"
-                      checked={formData.contactMethods?.includes('zalo')}
+                      checked={formData.contactMethods?.includes("zalo")}
                       onChange={handleContactMethodChange}
                     />
                     Zalo
                   </label>
-                  {formData.contactMethods?.includes('zalo') && (
+                  {formData.contactMethods?.includes("zalo") && (
                     <input
                       type="tel"
                       name="phoneNumber"
-                      value={formData.phoneNumber || ''}
+                      value={formData.phoneNumber || ""}
                       onChange={handleInputChange}
                       placeholder="Enter your phone number for Zalo"
                       required
@@ -665,7 +665,7 @@ function HomePage() {
                     <input
                       type="checkbox"
                       name="phone"
-                      checked={formData.contactMethods?.includes('phone')}
+                      checked={formData.contactMethods?.includes("phone")}
                       onChange={handleContactMethodChange}
                     />
                     Phone
@@ -674,7 +674,7 @@ function HomePage() {
                     <input
                       type="checkbox"
                       name="mail"
-                      checked={formData.contactMethods?.includes('mail')}
+                      checked={formData.contactMethods?.includes("mail")}
                       onChange={handleContactMethodChange}
                     />
                     Mail

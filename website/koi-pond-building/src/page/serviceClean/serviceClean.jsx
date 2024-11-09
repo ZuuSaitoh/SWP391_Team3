@@ -44,13 +44,13 @@ function ServiceClean() {
     fetch("http://localhost:8080/services/fetchAll")
       .then((response) => response.json())
       .then((data) => {
-        console.log("Fetched services:", data);
+        // console.log("Fetched services:", data);
         if (data.code === 9999 && Array.isArray(data.result)) {
           // Filter services to only include cleaning services
           const cleaningServicesData = data.result.filter(
             (service) => service.serviceType === "Cleaning Pond Service"
           );
-          console.log("Filtered cleaning services:", cleaningServicesData);
+          // console.log("Filtered cleaning services:", cleaningServicesData);
           setCleaningServices(cleaningServicesData);
         } else {
           console.error("Unexpected API response format");

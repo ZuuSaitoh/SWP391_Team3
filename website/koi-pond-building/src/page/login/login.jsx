@@ -39,10 +39,7 @@ function Login() {
   };
 
   const forgotClick = () => {
-    console.log("Forgot password clicked");
-    navigate("/forgotpassword").catch((error) =>
-      console.error("Navigation error:", error)
-    );
+    navigate("/forgotpassword");
   };
 
   const handleLoginGoogle = async () => {
@@ -97,7 +94,7 @@ function Login() {
 
   const handleLogin = async (values) => {
     try {
-      console.log("Sending login data:", values);
+      // console.log("Sending login data:", values);
       const response = await api.post(
         "http://localhost:8080/customers/auth/token",
         values
@@ -105,11 +102,11 @@ function Login() {
       const token = response.data.result.token;
       const isAuthenticated = response.data.result.authenticated;
 
-      console.log("Login response:", response.data);
+      // console.log("Login response:", response.data);
 
       if (isAuthenticated) {
         const decodedToken = jwtDecode(token);
-        console.log("Decoded token:", decodedToken);
+        // console.log("Decoded token:", decodedToken);
         const { customerId, sub: username, role, mail: email } = decodedToken;
 
         localStorage.setItem("authToken", token);

@@ -96,8 +96,8 @@ const OrderViewDashboard = () => {
         if (orderResponse.data && orderResponse.data.staff) {
           setCurrentStaffId(orderResponse.data.staff.staffId);
           setCurrentStaffRole(orderResponse.data.staff.role);
-          console.log("Current Staff ID:", orderResponse.data.staff.staffId);
-          console.log("Current Staff Role:", orderResponse.data.staff.role);
+          // console.log("Current Staff ID:", orderResponse.data.staff.staffId);
+          // console.log("Current Staff Role:", orderResponse.data.staff.role);
         } else {
           console.warn("Staff information not found in order data");
         }
@@ -114,6 +114,11 @@ const OrderViewDashboard = () => {
 
           if (fetchedStatuses.length === 0) {
             console.warn("No statuses found for this order");
+          }
+
+          // Set the timeline index to the latest status
+          if (fetchedStatuses.length > 0) {
+            setCurrentTimelineIndex(fetchedStatuses.length - 1);
           }
         } else {
           console.warn("Failed to fetch statuses");
@@ -1646,7 +1651,7 @@ const OrderViewDashboard = () => {
     try {
       // Skip creation of initial status since it's already created
       if (statuses.length === 0) {
-        console.log("Initial status should already exist");
+        // console.log("Initial status should already exist");
         return;
       }
 
