@@ -492,6 +492,22 @@ const OrderViewDashboard = () => {
                 <button
                   onClick={() => onDelete(transaction.transactionId)}
                   className="delete-btn"
+                  disabled={
+                    transaction.depositMethod === "Cash" ||
+                    transaction.depositMethod === "VNPay"
+                  }
+                  style={{
+                    opacity:
+                      transaction.depositMethod === "Cash" ||
+                      transaction.depositMethod === "VNPay"
+                        ? 0.5
+                        : 1,
+                    cursor:
+                      transaction.depositMethod === "Cash" ||
+                      transaction.depositMethod === "VNPay"
+                        ? "not-allowed"
+                        : "pointer",
+                  }}
                 >
                   <FontAwesomeIcon icon={faTrash} /> Delete
                 </button>
@@ -1985,12 +2001,6 @@ const OrderViewDashboard = () => {
               <h2>Contract Information</h2>
               <div className="status-button-container">
                 <button
-                  onClick={() => setShowCreateContractModal(true)}
-                  className="create-status-btn"
-                >
-                  Create Contract
-                </button>
-                <button
                   onClick={() => setShowViewContractsModal(true)}
                   className="view-status-btn"
                 >
@@ -2005,12 +2015,6 @@ const OrderViewDashboard = () => {
               <div className="status-button-container">
                 <button onClick={fetchAcceptances} className="view-status-btn">
                   View Acceptance
-                </button>
-                <button
-                  onClick={() => setShowCreateAcceptanceModal(true)}
-                  className="create-status-btn"
-                >
-                  Create Acceptance
                 </button>
               </div>
             </>
