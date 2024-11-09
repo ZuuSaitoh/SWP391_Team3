@@ -20,19 +20,19 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
   const modalRef = useRef(null);
 
   useEffect(() => {
-    console.log("Statuses state updated:", statuses);
+    // console.log("Statuses state updated:", statuses);
   }, [statuses]);
 
   const fetchStatuses = useCallback(async () => {
     setIsLoading(true);
     try {
-      console.log("Fetching statuses for order:", order.orderId);
+      // console.log("Fetching statuses for order:", order.orderId);
       const response = await axios.get(
         `http://localhost:8080/status/fetchAll/order/${order.orderId}`
       );
-      console.log("Full statuses response:", response);
+      // console.log("Full statuses response:", response);
       if (response.data.code === 9999) {
-        console.log("Statuses fetched successfully:", response.data.result);
+        // console.log("Statuses fetched successfully:", response.data.result);
         setStatuses(response.data.result);
       } else {
         console.warn("Failed to fetch statuses:", response.data);
@@ -60,14 +60,14 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
   };
 
   useEffect(() => {
-    console.log("ViewOrderCustomer useEffect triggered");
+    // console.log("ViewOrderCustomer useEffect triggered");
     setUpdatedOrder(order);
     setRating(order.rating || 0);
     setFeedback(order.feedback || "");
 
     const fetchContractsAndStatusesAndTransactions = async () => {
       try {
-        console.log("Fetching contracts, statuses, and transactions");
+        // console.log("Fetching contracts, statuses, and transactions");
         const [contractsResponse] = await Promise.all([
           axios.get(
             `http://localhost:8080/contracts/fetchAll/order/${order.orderId}`
@@ -76,7 +76,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
           fetchTransactions(), // Add this line to fetch transactions
         ]);
 
-        console.log("Contracts response:", contractsResponse.data);
+        // console.log("Contracts response:", contractsResponse.data);
         if (contractsResponse.data.code === 9999) {
           setContracts(contractsResponse.data.result);
         } else {
@@ -261,7 +261,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
 
     setIsLoading(true);
     try {
-      console.log("Sending accept request for status ID:", statusId);
+      // console.log("Sending accept request for status ID:", statusId);
       const response = await axios.put(
         `http://localhost:8080/status/update-complete/${statusId}`,
         { complete: true },
@@ -272,10 +272,10 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
         }
       );
 
-      console.log("Full status update response:", response);
+      // console.log("Full status update response:", response);
 
       if (response.data && response.data.code === 999) {
-        console.log("Status updated successfully in backend");
+        // console.log("Status updated successfully in backend");
         // Update the local state immediately
         setStatuses((prevStatuses) => {
           const updatedStatuses = prevStatuses.map((status) =>
@@ -283,7 +283,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
               ? { ...status, complete: 1, checkDate: new Date().toISOString() }
               : status
           );
-          console.log("Updated statuses:", updatedStatuses);
+          // console.log("Updated statuses:", updatedStatuses);
           return updatedStatuses;
         });
         toast.success("Status updated successfully");
@@ -448,7 +448,7 @@ function ViewOrderCustomer({ order, onClose, onOrderUpdate }) {
     <div className="view-order-overlay">
       <div className="view-order-modal" ref={modalRef}>
         <h2>Order Details</h2>
-        {console.log("Rendering order details:", updatedOrder)}
+        {/* {console.log("Rendering order details:", updatedOrder)} */}
         <p>
           <strong>Order ID:</strong> {updatedOrder.orderId}
         </p>

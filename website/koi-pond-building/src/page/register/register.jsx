@@ -66,9 +66,9 @@ const RegisterPage = () => {
 
   const handleRegister = async (values) => {
     try {
-      console.log("Sending registration data:", values);
+      // console.log("Sending registration data:", values);
       const response = await api.post("/customers/create", values);
-      console.log("Registration response:", response.data);
+      // console.log("Registration response:", response.data);
       toast.success("Registration successful!");
       navigate("/login?registered=true"); // Add this parameter
     } catch (err) {

@@ -18,7 +18,7 @@ function LoginStaff() {
   };
 
   const forgotClick = () => {
-    console.log("Forgot password clicked");
+    // console.log("Forgot password clicked");
     navigate("/staff-forgot-password").catch((error) =>
       console.error("Navigation error:", error)
     );
@@ -54,7 +54,7 @@ function LoginStaff() {
 
       if (isAuthenticated && token) {
         const decodedToken = jwtDecode(token);
-        console.log("Decoded token:", decodedToken);
+        // console.log("Decoded token:", decodedToken);
 
         // Clear any existing tokens first
         localStorage.clear();

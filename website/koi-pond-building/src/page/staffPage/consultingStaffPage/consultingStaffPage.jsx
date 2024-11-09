@@ -131,7 +131,7 @@ function ConsultingStaffPage() {
   const fetchAcceptanceTests = async () => {
     try {
       const response = await api.get(`/acceptancetests/fetchAll`);
-      console.log("Fetched acceptance tests:", response.data);
+      // console.log("Fetched acceptance tests:", response.data);
 
       setAcceptanceTests(response.data.result);
     } catch (err) {
@@ -157,11 +157,14 @@ function ConsultingStaffPage() {
 
   useEffect(() => {
     if (staffId) {
-      if (activeTab === 'orders') {
+      if (activeTab === "orders") {
         fetchOrders();
-      } else if (activeTab === 'acceptance') {
+      } else if (activeTab === "acceptance") {
         fetchAcceptanceTests();
-      } else if (activeTab === 'pending-statuses' || activeTab === 'completed-statuses') {
+      } else if (
+        activeTab === "pending-statuses" ||
+        activeTab === "completed-statuses"
+      ) {
         fetchStatusesByStaffId();
       }
     } else {
@@ -441,12 +444,12 @@ function ConsultingStaffPage() {
     {
       key: "orders",
       icon: <FileOutlined />,
-      label: "Orders"
+      label: "Orders",
     },
     {
       key: "acceptance",
       icon: <CheckCircleOutlined />,
-      label: "Acceptance"
+      label: "Acceptance",
     },
     {
       key: "statuses",
@@ -456,15 +459,15 @@ function ConsultingStaffPage() {
         {
           key: "pending-statuses",
           icon: <ClockCircleOutlined />,
-          label: "Pending Tasks"
+          label: "Pending Tasks",
         },
         {
           key: "completed-statuses",
           icon: <CheckSquareOutlined />,
-          label: "Completed"
-        }
-      ]
-    }
+          label: "Completed",
+        },
+      ],
+    },
   ];
 
   const handleSubmitAcceptance = async (values) => {
@@ -479,7 +482,7 @@ function ConsultingStaffPage() {
       ) {
         try {
           imageUrl = await uploadFile(values.imageData[0].originFileObj);
-          console.log("File uploaded successfully, URL:", imageUrl);
+          // console.log("File uploaded successfully, URL:", imageUrl);
         } catch (uploadError) {
           console.error("Error uploading file:", uploadError);
           toast.error("Failed to upload file. Please try again.");
@@ -497,14 +500,14 @@ function ConsultingStaffPage() {
         description: values.description,
       };
 
-      console.log("Sending acceptance data:", acceptanceData);
+      // console.log("Sending acceptance data:", acceptanceData);
 
       const response = await api.post(
         "/acceptancetests/create",
         acceptanceData
       );
 
-      console.log("Full API response:", response);
+      // console.log("Full API response:", response);
 
       if (response.status === 200) {
         toast.success("Acceptance test created successfully");
@@ -690,7 +693,9 @@ function ConsultingStaffPage() {
           </>
         );
       case "pending-statuses":
-        const pendingStatuses = staffStatuses.filter(status => !status.complete);
+        const pendingStatuses = staffStatuses.filter(
+          (status) => !status.complete
+        );
         return (
           <div className="status-section">
             <h2>Pending Tasks ({pendingStatuses.length})</h2>
@@ -703,19 +708,23 @@ function ConsultingStaffPage() {
           </div>
         );
       case "completed-statuses":
-        const completedStatuses = staffStatuses.filter(status => status.complete);
+        const completedStatuses = staffStatuses.filter(
+          (status) => status.complete
+        );
         return (
           <div className="status-section">
             <h2>Completed ({completedStatuses.length})</h2>
             <Table
               dataSource={completedStatuses}
-              columns={statusColumns.map(col => {
-                // Remove the Complete button column for completed statuses
-                if (col.key === 'complete') {
-                  return null;
-                }
-                return col;
-              }).filter(Boolean)}
+              columns={statusColumns
+                .map((col) => {
+                  // Remove the Complete button column for completed statuses
+                  if (col.key === "complete") {
+                    return null;
+                  }
+                  return col;
+                })
+                .filter(Boolean)}
               rowKey="statusId"
               scroll={{ x: true }}
             />
@@ -797,14 +806,15 @@ function ConsultingStaffPage() {
               items={[
                 { title: "Home" },
                 { title: "Consulting Staff" },
-                { 
-                  title: activeTab === "orders" 
-                    ? "Orders" 
-                    : activeTab === "acceptance" 
-                    ? "Acceptance"
-                    : activeTab === "pending-statuses"
-                    ? "Pending Tasks"
-                    : "Completed"
+                {
+                  title:
+                    activeTab === "orders"
+                      ? "Orders"
+                      : activeTab === "acceptance"
+                      ? "Acceptance"
+                      : activeTab === "pending-statuses"
+                      ? "Pending Tasks"
+                      : "Completed",
                 },
               ]}
               style={{

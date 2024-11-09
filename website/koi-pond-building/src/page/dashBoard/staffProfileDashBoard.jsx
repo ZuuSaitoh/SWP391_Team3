@@ -50,7 +50,7 @@ const StaffProfileDashboard = () => {
         `http://localhost:8080/staffs/update/${Id}`,
         updatedStaffData
       );
-      console.log("Update response:", response.data);
+      // console.log("Update response:", response.data);
 
       if (response.data && response.data.staffId) {
         setStaff(response.data);

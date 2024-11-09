@@ -82,7 +82,7 @@ function DesignStaffPage() {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const [activeTab, setActiveTab] = useState('incomplete');
+  const [activeTab, setActiveTab] = useState("incomplete");
 
   const fetchData = async () => {
     try {
@@ -130,14 +130,14 @@ function DesignStaffPage() {
   const handleSubmit = async (values) => {
     try {
       setLoading(true);
-      console.log("Form values:", values);
+      // console.log("Form values:", values);
 
       let imageUrl = editingDesign ? editingDesign.imageData : null;
       if (fileList.length > 0 && fileList[0].originFileObj) {
         const file = fileList[0];
-        console.log("Uploading file:", file);
+        // console.log("Uploading file:", file);
         imageUrl = await uploadFile(file.originFileObj);
-        console.log("Uploaded image URL:", imageUrl);
+        // console.log("Uploaded image URL:", imageUrl);
       }
 
       const designData = {
@@ -147,7 +147,7 @@ function DesignStaffPage() {
         designVersion: values.designVersion,
       };
 
-      console.log("Design data to be sent:", designData);
+      // console.log("Design data to be sent:", designData);
 
       let response;
       if (editingDesign) {
@@ -164,7 +164,7 @@ function DesignStaffPage() {
         );
       }
 
-      console.log("API response:", response);
+      // console.log("API response:", response);
 
       if (response.data) {
         const newOrUpdatedDesign = {
@@ -263,9 +263,9 @@ function DesignStaffPage() {
 
   const handleDelete = async (designId) => {
     try {
-      console.log("Attempting to delete design with ID:", designId);
+      // console.log("Attempting to delete design with ID:", designId);
       const response = await api.delete(`/designs/delete/${designId}`);
-      console.log("Delete response:", response);
+      // console.log("Delete response:", response);
 
       if (
         response.data &&
@@ -851,11 +851,11 @@ function DesignStaffPage() {
         // Designs page
         break;
       case "2-1":
-        setActiveTab('incomplete');
+        setActiveTab("incomplete");
         fetchStatusesByStaffId();
         break;
       case "2-2":
-        setActiveTab('completed');
+        setActiveTab("completed");
         fetchStatusesByStaffId();
         break;
       case "3":
@@ -883,7 +883,9 @@ function DesignStaffPage() {
           </>
         );
       case "2-1":
-        const incompleteStatuses = staffStatuses.filter(status => !status.complete);
+        const incompleteStatuses = staffStatuses.filter(
+          (status) => !status.complete
+        );
         return (
           <div className="status-section">
             <h2>Pending Tasks ({incompleteStatuses.length})</h2>
@@ -901,26 +903,38 @@ function DesignStaffPage() {
           </div>
         );
       case "2-2":
-        const completedStatuses = staffStatuses.filter(status => status.complete);
+        const completedStatuses = staffStatuses.filter(
+          (status) => status.complete
+        );
         return (
           <div className="status-section">
             <h2>Completed History ({completedStatuses.length})</h2>
             <Table
               dataSource={completedStatuses}
-              columns={statusColumns.map(col => {
-                if (col.key === 'updateDesign') {
-                  return {
-                    ...col,
-                    render: () => (
-                      <Button disabled style={{ backgroundColor: '#f5f5f5', color: '#d9d9d9' }}>
-                        Update Design
-                      </Button>
-                    )
-                  };
-                }
-                // Filter out 'complete' and 'actions' columns
-                return col.key !== 'complete' && col.key !== 'actions' ? col : null;
-              }).filter(Boolean)}
+              columns={statusColumns
+                .map((col) => {
+                  if (col.key === "updateDesign") {
+                    return {
+                      ...col,
+                      render: () => (
+                        <Button
+                          disabled
+                          style={{
+                            backgroundColor: "#f5f5f5",
+                            color: "#d9d9d9",
+                          }}
+                        >
+                          Update Design
+                        </Button>
+                      ),
+                    };
+                  }
+                  // Filter out 'complete' and 'actions' columns
+                  return col.key !== "complete" && col.key !== "actions"
+                    ? col
+                    : null;
+                })
+                .filter(Boolean)}
               rowKey="statusId"
               scroll={{ x: true }}
             />
@@ -986,7 +1000,9 @@ function DesignStaffPage() {
                 <>
                   <Breadcrumb.Item>My Statuses</Breadcrumb.Item>
                   <Breadcrumb.Item>
-                    {selectedMenuItem === "2-1" ? "Pending Tasks" : "Completed History"}
+                    {selectedMenuItem === "2-1"
+                      ? "Pending Tasks"
+                      : "Completed History"}
                   </Breadcrumb.Item>
                 </>
               ) : (
@@ -1024,14 +1040,14 @@ function DesignStaffPage() {
           <Form.Item
             name="designName"
             label="Design Name"
-            rules={[{ required: true, message: 'Please input design name!' }]}
+            rules={[{ required: true, message: "Please input design name!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="designVersion"
             label="Version"
-            rules={[{ required: true, message: 'Please input version!' }]}
+            rules={[{ required: true, message: "Please input version!" }]}
           >
             <Input />
           </Form.Item>
@@ -1063,7 +1079,7 @@ function DesignStaffPage() {
         theme="light"
         style={{ zIndex: 9999 }}
       />
-      <UpdateDesignModal 
+      <UpdateDesignModal
         visible={updateDesignModalVisible}
         onClose={() => setUpdateDesignModalVisible(false)}
       />

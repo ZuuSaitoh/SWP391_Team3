@@ -89,11 +89,11 @@ const ViewBookingDashboard = () => {
 
     const checkTransaction = async () => {
       try {
-        console.log(`Checking transaction for booking ID: ${bookingId}`);
+        // console.log(`Checking transaction for booking ID: ${bookingId}`);
         const response = await axios.get(
           `http://localhost:8080/serviceTransaction/check/${bookingId}`
         );
-        console.log("Transaction check response:", response.data);
+        // console.log("Transaction check response:", response.data);
         if (response.data.code === 1234) {
           setHasTransaction(true);
           setPaymentStatus(response.data.result);
@@ -109,9 +109,9 @@ const ViewBookingDashboard = () => {
           console.error("Response status:", err.response.status);
           console.error("Response headers:", err.response.headers);
           if (err.response.status === 400) {
-            console.log(
-              "Bad request. Possibly no transaction exists for this booking."
-            );
+            // console.log(
+            //   "Bad request. Possibly no transaction exists for this booking."
+            // );
             setHasTransaction(false);
             setPaymentStatus(false);
           }

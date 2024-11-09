@@ -48,7 +48,7 @@ function CustomerProfilePage() {
         const response = await axios.get(
           `http://localhost:8080/customers/${customerId}`
         );
-        console.log(response.data);
+        // console.log(response.data);
         const customerData = {
           name: response.data.fullName,
           username: response.data.username,
@@ -67,7 +67,7 @@ function CustomerProfilePage() {
         const ordersResponse = await axios.get(
           `http://localhost:8080/orders/customer/fetchAll/${customerId}`
         );
-        console.log("Orders response:", ordersResponse.data);
+        // console.log("Orders response:", ordersResponse.data);
         // Access the orders from the result property and sort them
         const ordersList = ordersResponse.data.result || [];
         const sortedOrders = ordersList.sort(
@@ -79,7 +79,7 @@ function CustomerProfilePage() {
         const bookingsResponse = await axios.get(
           `http://localhost:8080/bookingservices/fetchAll/customer/${customerId}`
         );
-        console.log("Bookings response:", bookingsResponse.data);
+        // console.log("Bookings response:", bookingsResponse.data);
         if (bookingsResponse.data.code === 9999) {
           setBookings(bookingsResponse.data.result);
         } else {
@@ -90,7 +90,7 @@ function CustomerProfilePage() {
         const formsResponse = await axios.get(
           `http://localhost:8080/forms/customer/${customerId}`
         );
-        console.log("Forms response:", formsResponse.data);
+        // console.log("Forms response:", formsResponse.data);
         if (formsResponse.data.code === 1111) {
           setForms(formsResponse.data.result);
         } else {
@@ -107,7 +107,7 @@ function CustomerProfilePage() {
     fetchCustomerData();
   }, [customerId]);
 
-  console.log("Customer ID:", customerId);
+  // console.log("Customer ID:", customerId);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -124,14 +124,14 @@ function CustomerProfilePage() {
         // Add any other fields that the API might require
       };
 
-      console.log("Sending update request with data:", updatedCustomer);
+      // console.log("Sending update request with data:", updatedCustomer);
 
       const response = await axios.put(
         `/customers/update/${customerId}`,
         updatedCustomer
       );
 
-      console.log("Update response:", response);
+      // console.log("Update response:", response);
 
       if (response.status === 200) {
         setCustomer({
@@ -220,7 +220,7 @@ function CustomerProfilePage() {
 
   const handleChangePassword = () => {
     // Implement password change logic here
-    console.log("Change password clicked");
+    // console.log("Change password clicked");
     navigate("/change-password");
   };
 

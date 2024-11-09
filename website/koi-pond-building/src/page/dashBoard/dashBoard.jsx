@@ -273,14 +273,14 @@ const Dashboard = () => {
 
     const fetchAvailableStaff = async () => {
       try {
-        console.log("Fetching available staff...");
+        // console.log("Fetching available staff...");
         const response = await axios.get(
           "http://localhost:8080/staffs/fetchAll"
         );
-        console.log("Staff API response:", response.data);
+        // console.log("Staff API response:", response.data);
         if (response.data && response.data.result) {
           setAvailableStaff(response.data.result);
-          console.log("Available staff set:", response.data.result);
+          // console.log("Available staff set:", response.data.result);
         } else {
           console.warn(
             "Unexpected response when fetching staff:",
@@ -332,8 +332,8 @@ const Dashboard = () => {
     fetchCustomerRequests();
   }, [navigate]);
 
-  console.log("Rendering dashboard. Customers:", customers);
-  console.log("Rendering dashboard. Staffs:", staffs);
+  // console.log("Rendering dashboard. Customers:", customers);
+  // console.log("Rendering dashboard. Staffs:", staffs);
 
   if (loading) return <div className="dashboard-loading">Loading...</div>;
   if (error) return <div className="dashboard-error">{error}</div>;
@@ -1231,17 +1231,17 @@ const Dashboard = () => {
   //view transaction details
   const handleViewTransactionDetails = (transactionId) => {
     // Implement view transaction details functionality
-    console.log("View transaction details for ID:", transactionId);
+    // console.log("View transaction details for ID:", transactionId);
     // You might want to navigate to a detailed view or open a modal here
   };
 
   //render overview
   const renderOverview = () => {
-    console.log("Rendering overview");
-    console.log("Customers:", customers);
-    console.log("Orders:", orders);
-    console.log("Staffs:", staffs);
-    console.log("Services:", services);
+    // console.log("Rendering overview");
+    // console.log("Customers:", customers);
+    // console.log("Orders:", orders);
+    // console.log("Staffs:", staffs);
+    // console.log("Services:", services);
 
     const doughnutData = {
       labels: ["Customers", "Orders", "Staff"],
@@ -1649,10 +1649,10 @@ const Dashboard = () => {
     }
 
     try {
-      console.log(
-        "Attempting to create order with form ID:",
-        selectedRequest.formId
-      );
+      // console.log(
+      //   "Attempting to create order with form ID:",
+      //   selectedRequest.formId
+      // );
 
       // First create the order with manager
       const orderResponse = await axios.post(
@@ -1800,7 +1800,11 @@ const Dashboard = () => {
                 <td>{request.style}</td>
                 <td>{request.stage}</td>
                 <td>{request.contactMethod}</td>
-                <td>{request.createDate ? new Date(request.createDate).toLocaleString() : "N/A"}</td>
+                <td>
+                  {request.createDate
+                    ? new Date(request.createDate).toLocaleString()
+                    : "N/A"}
+                </td>
                 {activeRequestTab === "rejected" && (
                   <td>{request.rejectReason}</td>
                 )}

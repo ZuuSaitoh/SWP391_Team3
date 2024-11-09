@@ -66,7 +66,7 @@ const CustomerProfileDashboard = () => {
         `http://localhost:8080/customers/update/${Id}`,
         updatedCustomerData
       );
-      console.log("Update response:", response.data); // Log the response for debugging
+      // console.log("Update response:", response.data); // Log the response for debugging
 
       // Check if the response contains updated customer data
       if (response.data && response.data.id) {

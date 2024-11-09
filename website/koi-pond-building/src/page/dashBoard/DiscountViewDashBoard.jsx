@@ -18,9 +18,11 @@ const DiscountViewDashBoard = () => {
 
   const fetchDiscounts = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/discounts/fetchAll");
+      const response = await axios.get(
+        "http://localhost:8080/discounts/fetchAll"
+      );
       if (response.data.code === 9999) {
-        console.log("Fetched discounts:", response.data.result); 
+        // console.log("Fetched discounts:", response.data.result);
         setDiscounts(response.data.result);
       } else {
         toast.error("Failed to fetch discounts");
@@ -36,19 +38,22 @@ const DiscountViewDashBoard = () => {
   const handleCreateDiscount = async (values) => {
     try {
       const staffUser = JSON.parse(localStorage.getItem("staffUser"));
-      console.log("Staff user from localStorage:", staffUser);
+      // console.log("Staff user from localStorage:", staffUser);
 
       if (!staffUser || !staffUser.id) {
         toast.error("Staff ID not found. Please log in again.");
         return;
       }
 
-      const response = await axios.post("http://localhost:8080/discounts/create", {
-        discountAuthorId: staffUser.id, 
-        discountName: values.discountName,
-        discountPercent: values.discountPercentage,
-        status: true
-      });
+      const response = await axios.post(
+        "http://localhost:8080/discounts/create",
+        {
+          discountAuthorId: staffUser.id,
+          discountName: values.discountName,
+          discountPercent: values.discountPercentage,
+          status: true,
+        }
+      );
 
       if (response.data.code === 1000) {
         toast.success("Discount created successfully");
@@ -61,18 +66,20 @@ const DiscountViewDashBoard = () => {
     } catch (err) {
       console.error("Error creating discount:", err);
       console.error("Error response:", err.response?.data);
-      const errorMessage = err.response?.data?.message || "An error occurred while creating the discount";
+      const errorMessage =
+        err.response?.data?.message ||
+        "An error occurred while creating the discount";
       toast.error(errorMessage);
     }
   };
 
   const handleEditDiscount = (record) => {
-    console.log("Editing discount:", record); 
+    // console.log("Editing discount:", record);
     setEditingDiscount(record);
     editForm.setFieldsValue({
       discountName: record.discountName,
       discountPercentage: record.discountPercent,
-      status: record.status === true 
+      status: record.status === true,
     });
     setIsEditModalVisible(true);
   };
@@ -80,7 +87,7 @@ const DiscountViewDashBoard = () => {
   const handleUpdateDiscount = async (values) => {
     try {
       const staffUser = JSON.parse(localStorage.getItem("staffUser"));
-      
+
       if (!staffUser || !staffUser.id) {
         toast.error("Staff ID not found. Please log in again.");
         return;
@@ -94,21 +101,21 @@ const DiscountViewDashBoard = () => {
           discountAuthorId: staffUser.id,
           discountName: values.discountName,
           discountPercent: values.discountPercentage,
-          status: status
+          status: status,
         }
       );
 
-      console.log("Update response:", response.data);
+      // console.log("Update response:", response.data);
 
       if (response.data.code === 1234) {
-        setDiscounts(prevDiscounts => 
-          prevDiscounts.map(discount => 
+        setDiscounts((prevDiscounts) =>
+          prevDiscounts.map((discount) =>
             discount.discountId === editingDiscount.discountId
               ? {
                   ...discount,
                   discountName: values.discountName,
                   discountPercent: values.discountPercentage,
-                  status: status
+                  status: status,
                 }
               : discount
           )
@@ -122,13 +129,16 @@ const DiscountViewDashBoard = () => {
 
         fetchDiscounts();
       } else {
-        const errorMessage = response.data.message || "Failed to update discount";
+        const errorMessage =
+          response.data.message || "Failed to update discount";
         toast.error(errorMessage);
       }
     } catch (err) {
       console.error("Error updating discount:", err);
       console.error("Error response:", err.response?.data);
-      const errorMessage = err.response?.data?.message || "An error occurred while updating the discount";
+      const errorMessage =
+        err.response?.data?.message ||
+        "An error occurred while updating the discount";
       toast.error(errorMessage);
     }
   };
@@ -139,7 +149,7 @@ const DiscountViewDashBoard = () => {
         const response = await axios.delete(
           `http://localhost:8080/discounts/delete/${discountId}`
         );
-        if (response.data.code === 9876) { 
+        if (response.data.code === 9876) {
           toast.success("Discount deleted successfully");
           fetchDiscounts();
         } else {
@@ -147,7 +157,9 @@ const DiscountViewDashBoard = () => {
         }
       } catch (err) {
         console.error("Error deleting discount:", err);
-        const errorMessage = err.response?.data?.message || "An error occurred while deleting the discount";
+        const errorMessage =
+          err.response?.data?.message ||
+          "An error occurred while deleting the discount";
         toast.error(errorMessage);
       }
     }
@@ -179,14 +191,18 @@ const DiscountViewDashBoard = () => {
       key: "status",
       className: "column-header",
       render: (status) => (
-        <span className={`status-badge ${status ? 'status-active' : 'status-inactive'}`}>
+        <span
+          className={`status-badge ${
+            status ? "status-active" : "status-inactive"
+          }`}
+        >
           {status ? "Active" : "Inactive"}
         </span>
       ),
     },
     {
       title: "Author",
-      dataIndex: ["staff", "username"], 
+      dataIndex: ["staff", "username"],
       key: "author",
       className: "column-header",
       render: (text, record) => record.staff?.username || "N/A",
@@ -197,16 +213,16 @@ const DiscountViewDashBoard = () => {
       className: "column-header",
       render: (_, record) => (
         <>
-          <Button 
+          <Button
             type="primary"
             onClick={() => handleEditDiscount(record)}
-            style={{ marginRight: 8, backgroundColor: '#3498db' }}
+            style={{ marginRight: 8, backgroundColor: "#3498db" }}
           >
             Edit
           </Button>
-          <Button 
-            type="primary" 
-            danger 
+          <Button
+            type="primary"
+            danger
             onClick={() => handleDeleteDiscount(record.discountId)}
           >
             Delete
@@ -220,11 +236,11 @@ const DiscountViewDashBoard = () => {
     <div className="dashboard-section discount-dashboard">
       <div className="section-header">
         <h2 className="section-title">Discounts Management</h2>
-        <Button 
-          type="primary" 
+        <Button
+          type="primary"
           onClick={() => setIsModalVisible(true)}
           className="add-button"
-          style={{ backgroundColor: '#3498db' }}
+          style={{ backgroundColor: "#3498db" }}
         >
           + Create New Discount
         </Button>
@@ -239,7 +255,7 @@ const DiscountViewDashBoard = () => {
           rowKey="discountId"
           pagination={{
             pageSize: 10,
-            position: ['bottomCenter']
+            position: ["bottomCenter"],
           }}
         />
       </div>
@@ -250,11 +266,7 @@ const DiscountViewDashBoard = () => {
         onCancel={() => setIsModalVisible(false)}
         footer={null}
       >
-        <Form
-          form={form}
-          onFinish={handleCreateDiscount}
-          layout="vertical"
-        >
+        <Form form={form} onFinish={handleCreateDiscount} layout="vertical">
           <Form.Item
             name="discountName"
             label="Discount Name"
@@ -268,7 +280,12 @@ const DiscountViewDashBoard = () => {
             label="Discount Percentage"
             rules={[
               { required: true, message: "Please enter discount percentage" },
-              { type: "number", min: 0, max: 100, message: "Percentage must be between 0 and 100" }
+              {
+                type: "number",
+                min: 0,
+                max: 100,
+                message: "Percentage must be between 0 and 100",
+              },
             ]}
           >
             <InputNumber min={0} max={100} />
@@ -293,11 +310,7 @@ const DiscountViewDashBoard = () => {
         }}
         footer={null}
       >
-        <Form
-          form={editForm}
-          onFinish={handleUpdateDiscount}
-          layout="vertical"
-        >
+        <Form form={editForm} onFinish={handleUpdateDiscount} layout="vertical">
           <Form.Item
             name="discountName"
             label="Discount Name"
@@ -311,17 +324,18 @@ const DiscountViewDashBoard = () => {
             label="Discount Percentage"
             rules={[
               { required: true, message: "Please enter discount percentage" },
-              { type: "number", min: 0, max: 100, message: "Percentage must be between 0 and 100" }
+              {
+                type: "number",
+                min: 0,
+                max: 100,
+                message: "Percentage must be between 0 and 100",
+              },
             ]}
           >
             <InputNumber min={0} max={100} />
           </Form.Item>
 
-          <Form.Item
-            name="status"
-            label="Status"
-            valuePropName="checked"
-          >
+          <Form.Item name="status" label="Status" valuePropName="checked">
             <Input type="checkbox" />
           </Form.Item>
 

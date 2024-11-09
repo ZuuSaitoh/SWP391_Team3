@@ -66,7 +66,7 @@ function VerifyEmail({ email, setEmail, setIsEmailVerified }) {
         emailData,
         "bOlGczQDScAz13xZx"
       );
-      console.log(result.text);
+      // console.log(result.text);
       setOtpSent(true);
       setCountdown(60);
       toast.success("OTP sent to your email. Please check your inbox.");
