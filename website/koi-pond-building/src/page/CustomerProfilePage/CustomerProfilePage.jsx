@@ -645,7 +645,8 @@ function CustomerProfilePage() {
           <div className="point-history-content">
             {pointHistory.length > 0 ? (
               <ul className="point-history-list">
-                {pointHistory
+                {[...pointHistory]
+                  .sort((a, b) => new Date(b.pointHistoryDate) - new Date(a.pointHistoryDate))
                   .filter(history => {
                     if (activePointHistoryTab === "all") return true;
                     if (activePointHistoryTab === "earned") return history.changeType === "Get point";
