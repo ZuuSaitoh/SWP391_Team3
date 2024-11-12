@@ -645,25 +645,33 @@ function CustomerProfilePage() {
           <div className="point-history-content">
             {pointHistory.length > 0 ? (
               <ul className="point-history-list">
-                {[...pointHistory]
-                  .sort((a, b) => new Date(b.pointHistoryDate) - new Date(a.pointHistoryDate))
-                  .filter(history => {
+                {pointHistory
+                  .filter((history) => {
                     if (activePointHistoryTab === "all") return true;
-                    if (activePointHistoryTab === "earned") return history.changeType === "Get point";
-                    if (activePointHistoryTab === "used") return history.changeType === "Using point";
+                    if (activePointHistoryTab === "earned")
+                      return history.changeType === "Get point";
+                    if (activePointHistoryTab === "used")
+                      return history.changeType === "Using point";
                     return true;
                   })
-                  .map(history => (
-                    <li key={history.pointHistoryId} className="point-history-item">
+                  .map((history) => (
+                    <li
+                      key={history.pointHistoryId}
+                      className="point-history-item"
+                    >
                       <div className="point-history-info">
                         <div className="point-history-main-info">
                           <div className="point-history-details">
                             <span className="point-history-id">
                               Transaction #{history.pointHistoryId}
                             </span>
-                            <span className={`point-change ${
-                              history.changeType === "Get point" ? "earned" : "used"
-                            }`}>
+                            <span
+                              className={`point-change ${
+                                history.changeType === "Get point"
+                                  ? "earned"
+                                  : "used"
+                              }`}
+                            >
                               {history.changeType === "Get point" ? "+" : "-"}
                               {history.changePoint} points
                             </span>
@@ -671,7 +679,9 @@ function CustomerProfilePage() {
                               Balance: {history.afterUpdatePoint} points
                             </span>
                             <span className="point-date">
-                              {new Date(history.pointHistoryDate).toLocaleString()}
+                              {new Date(
+                                history.pointHistoryDate
+                              ).toLocaleString()}
                             </span>
                             {history.order && (
                               <span className="point-source">
@@ -680,7 +690,8 @@ function CustomerProfilePage() {
                             )}
                             {history.bookingService && (
                               <span className="point-source">
-                                From Booking #{history.bookingService.bookingServiceId}
+                                From Booking #
+                                {history.bookingService.bookingServiceId}
                               </span>
                             )}
                           </div>
