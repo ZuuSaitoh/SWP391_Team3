@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import "./serviceMaintenance.css";
-import ScrollToTop from "react-scroll-to-top";
+import { FaCheckCircle } from "react-icons/fa";
 import slider1 from "../koi_photo/slider/slider1.jpg";
 import slider2 from "../koi_photo/slider/slider2.jpg";
 import slider3 from "../koi_photo/slider/slider3.jpg";
 import mainTainGuy from "../koi_photo/backgroundPage/MainTainGuy.jpg";
-import { FaCheckCircle } from "react-icons/fa";
 
 function ServiceMaintenance() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [slider1, slider2, slider3];
@@ -38,7 +38,7 @@ function ServiceMaintenance() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     // Fetch all services from the API

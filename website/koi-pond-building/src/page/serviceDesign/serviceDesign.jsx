@@ -5,12 +5,14 @@ import "./serviceDesign.css";
 import slider1 from "../koi_photo/slider/slider 1- design.jpg";
 import slider2 from "../koi_photo/slider/slider 2 - design.jpg";
 import slider3 from "../koi_photo/slider/slider 3 - design.jpg";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function ServiceDesign() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [slider1, slider2, slider3];
   const [designs, setDesigns] = useState([]);
+  const location = useLocation();
 
   // Add this new useEffect to fetch designs
   useEffect(() => {
@@ -90,7 +92,7 @@ function ServiceDesign() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [location.pathname]);
 
   return (
     <div className="service-design-page">

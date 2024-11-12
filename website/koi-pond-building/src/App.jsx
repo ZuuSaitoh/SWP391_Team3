@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import ScrollToTop from "./components/ScrollToTop";
 import "./index.css";
 import HomePage from "./page/homePage/homepage.jsx";
 import LoginPage from "./page/login/login.jsx";
@@ -35,7 +34,6 @@ import { ToastConfig } from "./components/ToastConfig";
 function App() {
   return (
     <>
-      <ScrollToTop />
       <ToastConfig />
       <Routes>
         {/* Public routes */}

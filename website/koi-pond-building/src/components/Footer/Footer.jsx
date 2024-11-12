@@ -5,6 +5,9 @@ import mailIcon from "../../page/koi_photo/logo-icon/mail.png";
 import phoneIcon from "../../page/koi_photo/logo-icon/phone-call.png";
 import securityIcon from "../../page/koi_photo/logo-icon/security.png";
 import facebookIcon from "../../page/koi_photo/logo-icon/Facebook_Logo_Primary.png";
+import zaloIcon from "../../page/koi_photo/logo-icon/zalo-logo.png";
+import telegramIcon from "../../page/koi_photo/logo-icon/telegram.jpg";
+import twitterIcon from "../../page/koi_photo/logo-icon/Twitter.jpg";
 import koiLogo from "../../page/koi_photo/logo-icon/koilogo.jpg";
 
 function Footer() {
@@ -33,9 +36,15 @@ function Footer() {
             <a href="https://www.facebook.com/profile.php?id=100043132098637" target="_blank" rel="noopener noreferrer" className="social-icon-link">
               <img src={facebookIcon} alt="Facebook" className="social-icon facebook" />
             </a>
-            <div className="social-icon-placeholder"></div>
-            <div className="social-icon-placeholder"></div>
-            <div className="social-icon-placeholder"></div>
+            <a href="https://zalo.me/0934103416" target="_blank" rel="noopener noreferrer" className="social-icon-link">
+              <img src={zaloIcon} alt="Zalo" className="social-icon zalo" />
+            </a>
+            <a href="https://t.me/phat2105" target="_blank" rel="noopener noreferrer" className="social-icon-link">
+              <img src={telegramIcon} alt="Telegram" className="social-icon telegram" />
+            </a>
+            <a href="https://twitter.com/your-twitter-handle" target="_blank" rel="noopener noreferrer" className="social-icon-link">
+              <img src={twitterIcon} alt="Twitter" className="social-icon twitter" />
+            </a>
           </div>
         </div>
       </div>

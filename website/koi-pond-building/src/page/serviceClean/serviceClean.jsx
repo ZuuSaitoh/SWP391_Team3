@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import "./serviceClean.css";
-import ScrollToTop from "react-scroll-to-top";
 import slider1 from "../koi_photo/slider/slider1.jpg";
 import slider2 from "../koi_photo/slider/slider2.jpg";
 import slider3 from "../koi_photo/slider/slider3.jpg";
@@ -11,6 +10,7 @@ import cleanpic from "../koi_photo/clean/clean1.jpg";
 
 function ServiceClean() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [slider1, slider2, slider3];
@@ -37,7 +37,7 @@ function ServiceClean() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     // Fetch all services from the API
