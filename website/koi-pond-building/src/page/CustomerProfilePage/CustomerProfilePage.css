@@ -1042,3 +1042,127 @@ body {
 .booking-tabs .tab-button.active:hover {
   background-color: #45a049;
 }
+
+.customer-point-history {
+  margin-top: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.point-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.point-history-header:hover {
+  background-color: #e9ecef;
+}
+
+.point-history-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.point-history-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 15px 20px;
+}
+
+.point-history-tabs .tab-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 0.9em;
+}
+
+.point-history-tabs .tab-button.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.point-history-tabs .tab-button:hover {
+  background-color: #e0e0e0;
+}
+
+.point-history-tabs .tab-button.active:hover {
+  background-color: #45a049;
+}
+
+.point-history-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.point-history-item {
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.point-history-item:last-child {
+  border-bottom: none;
+}
+
+.point-history-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.point-history-main-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.point-history-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.point-history-id {
+  font-weight: bold;
+  color: #333;
+}
+
+.point-change {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.point-change.earned {
+  color: #28a745;
+}
+
+.point-change.used {
+  color: #dc3545;
+}
+
+.point-balance {
+  color: #666;
+  font-size: 0.95em;
+}
+
+.point-date {
+  color: #888;
+  font-size: 0.9em;
+}
+
+.point-source {
+  color: #666;
+  font-style: italic;
+  font-size: 0.9em;
+}

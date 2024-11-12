@@ -41,6 +41,9 @@ function CustomerProfilePage() {
   const [activeFormTab, setActiveFormTab] = useState("active");
   const [feedbackRating, setFeedbackRating] = useState(5);
   const [activeBookingTab, setActiveBookingTab] = useState("pending");
+  const [pointHistory, setPointHistory] = useState([]);
+  const [isPointHistoryExpanded, setIsPointHistoryExpanded] = useState(false);
+  const [activePointHistoryTab, setActivePointHistoryTab] = useState("all");
 
   useEffect(() => {
     const fetchCustomerData = async () => {
@@ -96,6 +99,24 @@ function CustomerProfilePage() {
         } else {
           console.warn("Failed to fetch forms");
         }
+
+        // Fetch point history
+        const fetchPointHistory = async () => {
+          try {
+            const response = await axios.get(
+              `http://localhost:8080/pointHistory/fetchAll/${customerId}`
+            );
+            if (response.data.code === 9999) {
+              setPointHistory(response.data.result);
+            } else {
+              console.warn("Failed to fetch point history");
+            }
+          } catch (error) {
+            console.error("Error fetching point history:", error);
+          }
+        };
+
+        fetchPointHistory();
       } catch (error) {
         console.error("Error fetching data:", error);
         setIsError(true); // Set error state if fetch fails
@@ -584,6 +605,98 @@ function CustomerProfilePage() {
     </div>
   );
 
+  const renderPointHistory = () => (
+    <div className="customer-point-history">
+      <div
+        className="point-history-header"
+        onClick={() => setIsPointHistoryExpanded(!isPointHistoryExpanded)}
+      >
+        <h3>Point History</h3>
+        {isPointHistoryExpanded ? <FaChevronUp /> : <FaChevronDown />}
+      </div>
+      {isPointHistoryExpanded && (
+        <>
+          <div className="point-history-tabs">
+            <button
+              className={`tab-button ${
+                activePointHistoryTab === "all" ? "active" : ""
+              }`}
+              onClick={() => setActivePointHistoryTab("all")}
+            >
+              All History
+            </button>
+            <button
+              className={`tab-button ${
+                activePointHistoryTab === "earned" ? "active" : ""
+              }`}
+              onClick={() => setActivePointHistoryTab("earned")}
+            >
+              Points Earned
+            </button>
+            <button
+              className={`tab-button ${
+                activePointHistoryTab === "used" ? "active" : ""
+              }`}
+              onClick={() => setActivePointHistoryTab("used")}
+            >
+              Points Used
+            </button>
+          </div>
+          <div className="point-history-content">
+            {pointHistory.length > 0 ? (
+              <ul className="point-history-list">
+                {pointHistory
+                  .filter(history => {
+                    if (activePointHistoryTab === "all") return true;
+                    if (activePointHistoryTab === "earned") return history.changeType === "Get point";
+                    if (activePointHistoryTab === "used") return history.changeType === "Using point";
+                    return true;
+                  })
+                  .map(history => (
+                    <li key={history.pointHistoryId} className="point-history-item">
+                      <div className="point-history-info">
+                        <div className="point-history-main-info">
+                          <div className="point-history-details">
+                            <span className="point-history-id">
+                              Transaction #{history.pointHistoryId}
+                            </span>
+                            <span className={`point-change ${
+                              history.changeType === "Get point" ? "earned" : "used"
+                            }`}>
+                              {history.changeType === "Get point" ? "+" : "-"}
+                              {history.changePoint} points
+                            </span>
+                            <span className="point-balance">
+                              Balance: {history.afterUpdatePoint} points
+                            </span>
+                            <span className="point-date">
+                              {new Date(history.pointHistoryDate).toLocaleString()}
+                            </span>
+                            {history.order && (
+                              <span className="point-source">
+                                From Order #{history.order.orderId}
+                              </span>
+                            )}
+                            {history.bookingService && (
+                              <span className="point-source">
+                                From Booking #{history.bookingService.bookingServiceId}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <p className="no-history">No point history found.</p>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+
   const StarRating = ({ rating, onRatingChange }) => {
     return (
       <div className="star-rating">
@@ -738,6 +851,7 @@ function CustomerProfilePage() {
               onOrderUpdate={handleOrderUpdate}
             />
           )}
+          {renderPointHistory()}
           {renderForms()}
           <ToastContainer />
         </div>
