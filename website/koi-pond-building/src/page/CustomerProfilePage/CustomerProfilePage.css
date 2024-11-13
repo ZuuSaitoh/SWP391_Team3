@@ -1166,3 +1166,194 @@ body {
   font-style: italic;
   font-size: 0.9em;
 }
+
+.payment-info {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.payment-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 0.85em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.payment-status.paid {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #a5d6a7;
+}
+
+.payment-status.unpaid {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+}
+
+.payment-status i {
+  margin-right: 6px;
+  font-size: 0.9em;
+}
+
+.payment-text {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Remove these as they're no longer needed */
+.payment-method,
+.payment-date {
+  display: none;
+}
+
+.unpaid-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vnpay-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background-color: #0066FF;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.vnpay-logo {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  margin-right: 4px;
+}
+
+.vnpay-button:hover {
+  background-color: #0052cc;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vnpay-button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.feedback-section {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.feedback-form {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.feedback-textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.feedback-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.submit-feedback,
+.cancel-feedback {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.submit-feedback {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.cancel-feedback {
+  background-color: #dc3545;
+  color: white;
+}
+
+.submit-feedback:hover,
+.cancel-feedback:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.rating-section {
+  margin-bottom: 10px;
+}
+
+.rating-section label {
+  display: block;
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.star-rating {
+  display: flex;
+  gap: 5px;
+}
+
+.star {
+  cursor: pointer;
+  font-size: 24px;
+  color: #ddd;
+  transition: color 0.2s ease;
+}
+
+.star.filled {
+  color: #ffd700;
+}
+
+.star:hover {
+  transform: scale(1.1);
+}
+
+.booking-feedback {
+  margin-top: 15px;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  font-size: 0.9em;
+}
+
+.rating-display {
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.rating-display strong,
+.booking-feedback strong {
+  color: #333;
+  margin-right: 5px;
+}

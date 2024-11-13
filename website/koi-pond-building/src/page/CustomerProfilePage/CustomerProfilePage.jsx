@@ -10,6 +10,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { toast } from "react-toastify"; // Make sure you have this import
 import { ToastContainer } from "react-toastify";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa"; // Import icons
+import vnpayLogo from "../koi_photo/vnpay/v-vnpay-svgrepo-com.png";
 
 function CustomerProfilePage() {
   const { customerId } = useParams(); // Fetch customerId from URL params
@@ -44,6 +45,7 @@ function CustomerProfilePage() {
   const [pointHistory, setPointHistory] = useState([]);
   const [isPointHistoryExpanded, setIsPointHistoryExpanded] = useState(false);
   const [activePointHistoryTab, setActivePointHistoryTab] = useState("all");
+  const [bookingTransactions, setBookingTransactions] = useState({});
 
   useEffect(() => {
     const fetchCustomerData = async () => {
@@ -84,7 +86,28 @@ function CustomerProfilePage() {
         );
         // console.log("Bookings response:", bookingsResponse.data);
         if (bookingsResponse.data.code === 9999) {
-          setBookings(bookingsResponse.data.result);
+          const bookings = bookingsResponse.data.result;
+          setBookings(bookings);
+
+          // Fetch transaction data for each booking
+          const transactionPromises = bookings.map(
+            (booking) =>
+              axios
+                .get(
+                  `http://localhost:8080/serviceTransaction/bookingService/${booking.bookingServiceId}`
+                )
+                .catch((err) => ({ data: null })) // Handle case where transaction might not exist
+          );
+
+          const transactionResponses = await Promise.all(transactionPromises);
+          const transactionMap = {};
+          transactionResponses.forEach((response, index) => {
+            if (response.data?.code === 9999) {
+              transactionMap[bookings[index].bookingServiceId] =
+                response.data.result;
+            }
+          });
+          setBookingTransactions(transactionMap);
         } else {
           console.warn("Failed to fetch bookings");
         }
@@ -289,6 +312,24 @@ function CustomerProfilePage() {
     return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 
+  const handleVnpayPayment = async (bookingId) => {
+    try {
+      const vnpayResponse = await axios.post(
+        `http://localhost:8080/serviceTransaction/test-payment`,
+        { bookingServiceId: bookingId }
+      );
+
+      if (vnpayResponse.data && vnpayResponse.data.code === 6666) {
+        window.location.href = vnpayResponse.data.result;
+      } else {
+        toast.error("Failed to generate payment link");
+      }
+    } catch (error) {
+      console.error("Error initiating payment:", error);
+      toast.error("Failed to initiate payment");
+    }
+  };
+
   const renderBookings = () => (
     <div className="customer-bookings">
       <div
@@ -354,6 +395,47 @@ function CustomerProfilePage() {
                                 : "Not set"}
                             </span>
                           </div>
+                          <div className="payment-info">
+                            {bookingTransactions[booking.bookingServiceId] ? (
+                              <span className="payment-status paid">
+                                <i className="fas fa-check-circle"></i>
+                                <span className="payment-text">
+                                  Paid •{" "}
+                                  {
+                                    bookingTransactions[
+                                      booking.bookingServiceId
+                                    ].depositMethod
+                                  }{" "}
+                                  •{" "}
+                                  {new Date(
+                                    bookingTransactions[
+                                      booking.bookingServiceId
+                                    ].depositDate
+                                  ).toLocaleDateString()}
+                                </span>
+                              </span>
+                            ) : (
+                              <div className="unpaid-container">
+                                <span className="payment-status unpaid">
+                                  <i className="fas fa-times-circle"></i>
+                                  <span className="payment-text">Unpaid</span>
+                                </span>
+                                <button
+                                  className="vnpay-button"
+                                  onClick={() =>
+                                    handleVnpayPayment(booking.bookingServiceId)
+                                  }
+                                >
+                                  <img
+                                    src={vnpayLogo}
+                                    alt="VNPAY"
+                                    className="vnpay-logo"
+                                  />
+                                  Pay with VNPAY
+                                </button>
+                              </div>
+                            )}
+                          </div>
                         </div>
                         <span className="booking-price">
                           {formatCurrency(booking.price)} VND
@@ -366,7 +448,7 @@ function CustomerProfilePage() {
                       >
                         {booking.status ? "Completed" : "Pending"}
                       </span>
-                      {booking.feedback && (
+                      {booking.feedback ? (
                         <div className="booking-feedback">
                           <div className="rating-display">
                             <strong>Rating:</strong> {booking.rating} ★
@@ -375,18 +457,61 @@ function CustomerProfilePage() {
                             <strong>Feedback:</strong> {booking.feedback}
                           </div>
                         </div>
-                      )}
-                    </div>
-                    <div className="booking-actions">
-                      {booking.status && !booking.feedback && (
-                        <button
-                          className="feedback-btn"
-                          onClick={() =>
-                            setFeedbackBookingId(booking.bookingServiceId)
-                          }
-                        >
-                          Leave Feedback
-                        </button>
+                      ) : (
+                        booking.status && (
+                          <div className="feedback-section">
+                            {feedbackBookingId === booking.bookingServiceId ? (
+                              <div className="feedback-form">
+                                <div className="rating-section">
+                                  <label>Rating:</label>
+                                  <StarRating
+                                    rating={feedbackRating}
+                                    onRatingChange={setFeedbackRating}
+                                  />
+                                </div>
+                                <textarea
+                                  value={feedbackText}
+                                  onChange={(e) =>
+                                    setFeedbackText(e.target.value)
+                                  }
+                                  placeholder="Enter your feedback here..."
+                                  className="feedback-textarea"
+                                />
+                                <div className="feedback-actions">
+                                  <button
+                                    className="submit-feedback"
+                                    onClick={() =>
+                                      handleFeedbackSubmit(
+                                        booking.bookingServiceId
+                                      )
+                                    }
+                                  >
+                                    Submit
+                                  </button>
+                                  <button
+                                    className="cancel-feedback"
+                                    onClick={() => {
+                                      setFeedbackBookingId(null);
+                                      setFeedbackText("");
+                                      setFeedbackRating(5);
+                                    }}
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <button
+                                className="feedback-btn"
+                                onClick={() =>
+                                  setFeedbackBookingId(booking.bookingServiceId)
+                                }
+                              >
+                                Leave Feedback
+                              </button>
+                            )}
+                          </div>
+                        )
                       )}
                     </div>
                   </li>
@@ -396,37 +521,6 @@ function CustomerProfilePage() {
             <p>No bookings found for this customer.</p>
           )}
         </>
-      )}
-      {feedbackBookingId && (
-        <div className="feedback-modal">
-          <h4>Leave Feedback</h4>
-          <div className="rating-section">
-            <label>Rating:</label>
-            <StarRating
-              rating={feedbackRating}
-              onRatingChange={setFeedbackRating}
-            />
-          </div>
-          <textarea
-            value={feedbackText}
-            onChange={(e) => setFeedbackText(e.target.value)}
-            placeholder="Enter your feedback here..."
-          />
-          <div className="feedback-actions">
-            <button onClick={() => handleFeedbackSubmit(feedbackBookingId)}>
-              Submit
-            </button>
-            <button
-              onClick={() => {
-                setFeedbackBookingId(null);
-                setFeedbackText("");
-                setFeedbackRating(5);
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
       )}
     </div>
   );
