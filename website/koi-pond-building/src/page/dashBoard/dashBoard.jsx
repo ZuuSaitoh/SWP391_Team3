@@ -151,6 +151,8 @@ const Dashboard = () => {
 
   const [activeRequestTab, setActiveRequestTab] = useState("pending"); // 'pending', 'rejected', or 'created'
 
+  const [activeBookingTab, setActiveBookingTab] = useState("pending"); // 'pending' or 'completed'
+
   const toggleLock = () => {
     setSidebarLocked(!sidebarLocked);
     if (sidebarLocked) {
@@ -1394,6 +1396,27 @@ const Dashboard = () => {
   const renderBookings = () => (
     <div className="table-container">
       {renderSearchBar()}
+
+      {/* Add tab buttons */}
+      <div className="booking-tabs">
+        <button
+          className={`tab-button ${
+            activeBookingTab === "pending" ? "active" : ""
+          }`}
+          onClick={() => setActiveBookingTab("pending")}
+        >
+          Pending Bookings
+        </button>
+        <button
+          className={`tab-button ${
+            activeBookingTab === "completed" ? "active" : ""
+          }`}
+          onClick={() => setActiveBookingTab("completed")}
+        >
+          Completed Bookings
+        </button>
+      </div>
+
       <table className="data-table">
         <thead>
           <tr>
@@ -1409,6 +1432,15 @@ const Dashboard = () => {
         <tbody>
           {bookings
             .filter((booking) => {
+              // First filter by tab
+              if (activeBookingTab === "pending") {
+                return !booking.status;
+              } else {
+                return booking.status;
+              }
+            })
+            .filter((booking) => {
+              // Then filter by search
               if (!booking) return false;
               const searchLower = search.toLowerCase().trim();
               return (
@@ -1418,7 +1450,7 @@ const Dashboard = () => {
                 booking.service.serviceName.toLowerCase().includes(searchLower)
               );
             })
-            .sort((a, b) => b.bookingServiceId - a.bookingServiceId) // Sort in descending order
+            .sort((a, b) => b.bookingServiceId - a.bookingServiceId)
             .map((booking) => (
               <tr key={booking.bookingServiceId}>
                 <td>{booking.bookingServiceId}</td>

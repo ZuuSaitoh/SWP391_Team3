@@ -3149,6 +3149,8 @@ body {
   cursor: not-allowed;
 }
 
+/* Consolidated tab styles */
+.booking-tabs,
 .request-tabs {
   margin-bottom: 20px;
   display: flex;
@@ -3159,17 +3161,21 @@ body {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
   background-color: #f0f0f0;
+  cursor: pointer;
+  font-size: 14px;
   transition: all 0.3s ease;
 }
 
+.tab-button:hover {
+  background-color: #e0e0e0;
+}
+
 .tab-button.active {
-  background-color: #1890ff;
+  background-color: #3498db;
   color: white;
 }
 
-.tab-button:hover {
-  background-color: #40a9ff;
-  color: white;
+.tab-button:hover:not(.active) {
+  background-color: #e0e0e0;
 }
