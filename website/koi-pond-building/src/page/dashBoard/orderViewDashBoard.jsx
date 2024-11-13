@@ -484,15 +484,14 @@ const OrderViewDashboard = () => {
                 value={transaction.transactionNumber || "Not assigned"}
               />
               <div className="status-actions">
-                {transaction.depositMethod !== "Cash" &&
-                  transaction.depositMethod !== "VNPay" && (
-                    <button
-                      onClick={() => handlePayByCash(transaction.transactionId)}
-                      className="pay-cash-btn"
-                    >
-                      <FontAwesomeIcon icon={faMoneyBillWave} /> Pay by Cash
-                    </button>
-                  )}
+                {!transaction.depositMethod && (
+                  <button
+                    onClick={() => handlePayByCash(transaction.transactionId)}
+                    className="pay-cash-btn"
+                  >
+                    <FontAwesomeIcon icon={faMoneyBillWave} /> Pay by Cash
+                  </button>
+                )}
                 <button
                   onClick={() => onDelete(transaction.transactionId)}
                   className="delete-btn"
