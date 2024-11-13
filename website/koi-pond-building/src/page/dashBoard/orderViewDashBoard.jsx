@@ -515,45 +515,43 @@ const OrderViewDashboard = () => {
     const [localTransactionData, setLocalTransactionData] = useState({
       deposit: "",
       depositDescription: "",
-      depositMethod: "",
     });
 
     const handleInputChange = (e) => {
       const { id, value } = e.target;
       if (id === "deposit") {
-        // Remove non-digit characters and convert to number
-        const numericValue = value.replace(/[^0-9]/g, "");
-        // Format as VND
-        const formattedValue = new Intl.NumberFormat("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        }).format(numericValue);
-        setLocalTransactionData((prevData) => ({
+        // Allow only numbers
+        const numericValue = value.replace(/\D/g, '');
+        setLocalTransactionData(prevData => ({
           ...prevData,
-          [id]: formattedValue,
+          [id]: numericValue
         }));
       } else {
-        setLocalTransactionData((prevData) => ({
+        setLocalTransactionData(prevData => ({
           ...prevData,
-          [id]: value,
+          [id]: value
         }));
       }
     };
 
     const handleSubmit = (e) => {
       e.preventDefault();
-      // Convert the formatted VND string back to a number for submission
-      const depositValue = parseFloat(
-        localTransactionData.deposit.replace(/[^0-9]/g, "")
-      );
       handleCreateTransaction({
         ...localTransactionData,
-        deposit: depositValue,
+        deposit: parseInt(localTransactionData.deposit, 10) || 0,
       });
     };
 
+    // Add this function to handle overlay clicks
+    const handleOverlayClick = (e) => {
+      // Only close if the actual overlay was clicked
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    };
+
     return (
-      <div className="status-modal-overlay" onClick={onClose}>
+      <div className="status-modal-overlay" onClick={handleOverlayClick}>
         <div
           className="status-modal-content"
           onClick={(e) => e.stopPropagation()}
@@ -567,7 +565,7 @@ const OrderViewDashboard = () => {
                 id="deposit"
                 value={localTransactionData.deposit}
                 onChange={handleInputChange}
-                placeholder="0 ₫"
+                placeholder="Enter amount"
                 required
               />
             </div>
@@ -578,41 +576,7 @@ const OrderViewDashboard = () => {
                 value={localTransactionData.depositDescription}
                 onChange={handleInputChange}
                 required
-              />
-            </div>
-            <div>
-              <label htmlFor="depositMethod">Deposit Method:</label>
-              <select
-                id="depositMethod"
-                value={localTransactionData.depositMethod}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select a method</option>
-                <option value="VNPay">VNPay</option>
-                <option value="Cash">Cash</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="depositPersonId">
-                Deposit Person ID (Customer ID):
-              </label>
-              <input
-                type="number"
-                id="depositPersonId"
-                value={order.customer.id}
-                readOnly
-              />
-            </div>
-            <div>
-              <label htmlFor="transactionNumber">
-                Transaction Number (Order ID):
-              </label>
-              <input
-                type="text"
-                id="transactionNumber"
-                value={orderId}
-                readOnly
+                style={{ width: '100%', minHeight: '100px', resize: 'vertical' }}
               />
             </div>
             <button type="submit" className="create-status-btn">
