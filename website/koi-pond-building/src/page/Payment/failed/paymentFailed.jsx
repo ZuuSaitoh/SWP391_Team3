@@ -1,26 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import "./paymentFailed.css";
 
-const PaymentFail = () => {
+function PaymentFail() {
   return (
-    <div className="payment-fail-container">
-      <div className="payment-fail-content">
-        <h1>Payment Failed</h1>
-        <p>We're sorry, but there was an issue processing your payment.</p>
-        <div className="icon-container">
-          <i className="fas fa-times-circle"></i>
-        </div>
-        <p>Please check your payment details and try again.</p>
-        <Link to="/checkout" className="try-again-button">
-          Try Again
-        </Link>
-        <Link to="/" className="home-button">
-          Return to Home
-        </Link>
-      </div>
+    <div className="payment-failed-container">
+      <h1>Payment Failed!</h1>
+      <p>
+        We're sorry, but there was an issue processing your payment. Please try again.
+      </p>
+      <p>If you continue to experience issues, please contact our support team.</p>
+      <button onClick={() => (window.location.href = "/")}>
+        Return to Home
+      </button>
     </div>
   );
-};
+}
 
 export default PaymentFail;

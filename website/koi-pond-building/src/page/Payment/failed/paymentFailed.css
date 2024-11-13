@@ -1,65 +1,28 @@
-.payment-fail-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f8f8f8;
-}
-
-.payment-fail-content {
-    background-color: white;
-    border-radius: 8px;
-    padding: 40px;
+.payment-failed-container {
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    width: 100%;
+    margin-top: 50px;
 }
 
-h1 {
-    color: #e74c3c;
-    margin-bottom: 20px;
+.payment-failed-container h1 {
+    color: #dc3545;
 }
 
-p {
+.payment-failed-container p {
+    margin: 15px 0;
     color: #333;
-    margin-bottom: 20px;
 }
 
-.icon-container {
-    margin-bottom: 20px;
-}
-
-.fas.fa-times-circle {
-    font-size: 64px;
-    color: #e74c3c;
-}
-
-.try-again-button,
-.home-button {
-    display: inline-block;
+.payment-failed-container button {
+    margin-top: 20px;
     padding: 10px 20px;
-    margin: 10px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-.try-again-button {
-    background-color: #3498db;
+    background-color: #dc3545;
     color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.try-again-button:hover {
-    background-color: #2980b9;
-}
-
-.home-button {
-    background-color: #ecf0f1;
-    color: #34495e;
-}
-
-.home-button:hover {
-    background-color: #bdc3c7;
+.payment-failed-container button:hover {
+    background-color: #c82333;
 }
