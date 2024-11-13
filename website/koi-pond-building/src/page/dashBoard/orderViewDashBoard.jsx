@@ -492,28 +492,14 @@ const OrderViewDashboard = () => {
                     <FontAwesomeIcon icon={faMoneyBillWave} /> Pay by Cash
                   </button>
                 )}
-                <button
-                  onClick={() => onDelete(transaction.transactionId)}
-                  className="delete-btn"
-                  disabled={
-                    transaction.depositMethod === "Cash" ||
-                    transaction.depositMethod === "VNPay"
-                  }
-                  style={{
-                    opacity:
-                      transaction.depositMethod === "Cash" ||
-                      transaction.depositMethod === "VNPay"
-                        ? 0.5
-                        : 1,
-                    cursor:
-                      transaction.depositMethod === "Cash" ||
-                      transaction.depositMethod === "VNPay"
-                        ? "not-allowed"
-                        : "pointer",
-                  }}
-                >
-                  <FontAwesomeIcon icon={faTrash} /> Delete
-                </button>
+                {!transaction.depositMethod && (
+                  <button
+                    onClick={() => onDelete(transaction.transactionId)}
+                    className="delete-btn"
+                  >
+                    <FontAwesomeIcon icon={faTrash} /> Delete
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -673,30 +659,22 @@ const OrderViewDashboard = () => {
                   value={new Date(status.checkDate).toLocaleString()}
                 />
               )}
-              <div className="status-actions">
-                <button
-                  onClick={() => handleUpdateStatus(status.statusId)}
-                  className="update-btn"
-                  disabled={order.end_date}
-                  style={{
-                    opacity: order.end_date ? 0.5 : 1,
-                    cursor: order.end_date ? "not-allowed" : "pointer",
-                  }}
-                >
-                  <FontAwesomeIcon icon={faEdit} /> Update
-                </button>
-                <button
-                  onClick={() => handleDeleteStatus(status.statusId)}
-                  className="delete-btn"
-                  disabled={order.end_date}
-                  style={{
-                    opacity: order.end_date ? 0.5 : 1,
-                    cursor: order.end_date ? "not-allowed" : "pointer",
-                  }}
-                >
-                  <FontAwesomeIcon icon={faTrash} /> Delete
-                </button>
-              </div>
+              {!order.end_date && (
+                <div className="status-actions">
+                  <button
+                    onClick={() => handleUpdateStatus(status.statusId)}
+                    className="update-btn"
+                  >
+                    <FontAwesomeIcon icon={faEdit} /> Update
+                  </button>
+                  <button
+                    onClick={() => handleDeleteStatus(status.statusId)}
+                    className="delete-btn"
+                  >
+                    <FontAwesomeIcon icon={faTrash} /> Delete
+                  </button>
+                </div>
+              )}
             </div>
           ))}
           <button onClick={onClose} className="close-modal-btn">
@@ -873,22 +851,20 @@ const OrderViewDashboard = () => {
               <InfoRow label="Description" value={contract.description} />
               <div className="info-row">
                 <span className="info-label">Image Data:</span>
-                <a
-                  href={contract.imageData} // Assuming imageData contains the file URL
-                  download
-                  className="download-btn"
-                >
+                <a href={contract.imageData} download className="download-btn">
                   <FontAwesomeIcon icon={faDownload} /> Download
                 </a>
               </div>
               <InfoRow label="Upload Staff" value={contract.staff.username} />
               <div className="status-actions">
-                <button
-                  onClick={() => onDelete(contract.contractId)}
-                  className="delete-btn"
-                >
-                  <FontAwesomeIcon icon={faTrash} /> Delete
-                </button>
+                {!order.end_date && (
+                  <button
+                    onClick={() => onDelete(contract.contractId)}
+                    className="delete-btn"
+                  >
+                    <FontAwesomeIcon icon={faTrash} /> Delete
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -1201,21 +1177,23 @@ const OrderViewDashboard = () => {
               <InfoRow label="Description" value={acceptance.description} />
               <div className="status-actions">
                 <a
-                  href={acceptance.imageData} // Assuming imageData contains the file URL
+                  href={acceptance.imageData}
                   download
                   className="download-btn"
                 >
                   <FontAwesomeIcon icon={faDownload} /> Download
                 </a>
-                <button
-                  onClick={() => {
-                    setCurrentAcceptance(acceptance);
-                    setShowUpdateAcceptanceModal(true);
-                  }}
-                  className="update-btn"
-                >
-                  <FontAwesomeIcon icon={faEdit} /> Update
-                </button>
+                {!order.end_date && (
+                  <button
+                    onClick={() => {
+                      setCurrentAcceptance(acceptance);
+                      setShowUpdateAcceptanceModal(true);
+                    }}
+                    className="update-btn"
+                  >
+                    <FontAwesomeIcon icon={faEdit} /> Update
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -1530,12 +1508,11 @@ const OrderViewDashboard = () => {
                   className="timeline-btn"
                   onClick={() => setShowCreateTransactionModal(true)}
                   disabled={isCurrentStatusComplete()}
-                  style={{
-                    opacity: isCurrentStatusComplete() ? 0.5 : 1,
-                    cursor: isCurrentStatusComplete()
-                      ? "not-allowed"
-                      : "pointer",
-                  }}
+                  style={
+                    order.end_date
+                      ? { opacity: 0.5, cursor: "not-allowed" }
+                      : {}
+                  }
                 >
                   Create Transaction
                 </button>
@@ -2003,6 +1980,12 @@ const OrderViewDashboard = () => {
                 <button
                   onClick={() => setShowCreateTransactionModal(true)}
                   className="create-status-btn"
+                  disabled={order.end_date}
+                  style={
+                    order.end_date
+                      ? { opacity: 0.5, cursor: "not-allowed" }
+                      : {}
+                  }
                 >
                   Create Transaction
                 </button>
