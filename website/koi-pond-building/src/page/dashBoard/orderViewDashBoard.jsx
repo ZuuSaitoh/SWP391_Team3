@@ -653,14 +653,14 @@ const OrderViewDashboard = () => {
   const getRequiredRoleForStatus = (statusCount) => {
     const statusRoleMap = {
       0: "Consulting Staff", // Tu van
-      1: "Consulting Staff", // Tu van
-      2: "Consulting Staff", // Tu van
+      1: "Manager", // Quan ly
+      2: "Manager", // Quan ly
       3: "Design Staff", // Design
-      4: "Consulting Staff", // Tu van
+      4: "Manager", // Quan ly
       5: "Construction Staff", // Xay dung
-      6: "Consulting Staff", // Tu van
-      7: "Consulting Staff", // Tu van
-      8: "Consulting Staff", // Tu van
+      6: "Manager", // Quan ly
+      7: "Manager", // Quan ly
+      8: "Manager", // Quan ly
     };
     return statusRoleMap[statusCount] || "Consulting Staff";
   };
