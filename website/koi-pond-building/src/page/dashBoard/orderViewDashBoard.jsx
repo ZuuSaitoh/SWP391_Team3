@@ -481,39 +481,6 @@ const OrderViewDashboard = () => {
                 value={transaction.transactionNumber || "Not assigned"}
               />
               <div className="status-actions">
-<<<<<<< HEAD
-                {transaction.depositMethod !== "Cash" &&
-                  transaction.depositMethod !== "VNPay" && (
-                    <button
-                      onClick={() => handlePayByCash(transaction.transactionId)}
-                      className="pay-cash-btn"
-                    >
-                      <FontAwesomeIcon icon={faMoneyBillWave} /> Pay by Cash
-                    </button>
-                  )}
-                <button
-                  onClick={() => onDelete(transaction.transactionId)}
-                  className="delete-btn"
-                  disabled={
-                    transaction.depositMethod === "Cash" ||
-                    transaction.depositMethod === "VNPay"
-                  }
-                  style={{
-                    opacity:
-                      transaction.depositMethod === "Cash" ||
-                      transaction.depositMethod === "VNPay"
-                        ? 0.5
-                        : 1,
-                    cursor:
-                      transaction.depositMethod === "Cash" ||
-                      transaction.depositMethod === "VNPay"
-                        ? "not-allowed"
-                        : "pointer",
-                  }}
-                >
-                  <FontAwesomeIcon icon={faTrash} /> Delete
-                </button>
-=======
                 {!transaction.depositMethod && (
                   <button
                     onClick={() => handlePayByCash(transaction.transactionId)}
@@ -530,7 +497,6 @@ const OrderViewDashboard = () => {
                     <FontAwesomeIcon icon={faTrash} /> Delete
                   </button>
                 )}
->>>>>>> FE
               </div>
             </div>
           ))}
