@@ -313,41 +313,38 @@ const OrderViewDashboard = () => {
   const getNextStatusConfig = (currentIndex) => {
     const statusConfigs = [
       {
-        description: "Koi Pond Construction Contract (Signed)",
+        description: "Contract", // Status 2
         role: "Manager",
       },
       {
-        description: "Design Fee Payment",
+        description: "Design Payment", // Status 3
         role: "Manager",
       },
       {
-        description: "Design Drawing",
+        description: "Design Drawing", // Status 4
         role: "Design Staff",
+        requiresAssignment: true,
       },
       {
-        description: "Material Cost Payment",
+        description: "Material Payment", // Status 5
         role: "Manager",
       },
       {
-        description: "Construction",
+        description: "Construction", // Status 6
         role: "Construction Staff",
+        requiresAssignment: true,
       },
       {
-        description: "Acceptance Contract",
+        description: "Acceptance", // Status 7
         role: "Manager",
       },
       {
-        description: "Construction Fee Payment",
-        role: "Manager",
-      },
-      {
-        description: "Project Completion",
+        description: "Final Payment", // Status 8
         role: "Manager",
       },
     ];
 
-    // Return null if we're at or beyond status 8 (index 7)
-    return currentIndex < statusConfigs.length && currentIndex !== 8
+    return currentIndex < statusConfigs.length
       ? statusConfigs[currentIndex]
       : null;
   };
@@ -484,6 +481,7 @@ const OrderViewDashboard = () => {
                 value={transaction.transactionNumber || "Not assigned"}
               />
               <div className="status-actions">
+<<<<<<< HEAD
                 {transaction.depositMethod !== "Cash" &&
                   transaction.depositMethod !== "VNPay" && (
                     <button
@@ -515,6 +513,24 @@ const OrderViewDashboard = () => {
                 >
                   <FontAwesomeIcon icon={faTrash} /> Delete
                 </button>
+=======
+                {!transaction.depositMethod && (
+                  <button
+                    onClick={() => handlePayByCash(transaction.transactionId)}
+                    className="pay-cash-btn"
+                  >
+                    <FontAwesomeIcon icon={faMoneyBillWave} /> Pay by Cash
+                  </button>
+                )}
+                {!transaction.depositMethod && (
+                  <button
+                    onClick={() => onDelete(transaction.transactionId)}
+                    className="delete-btn"
+                  >
+                    <FontAwesomeIcon icon={faTrash} /> Delete
+                  </button>
+                )}
+>>>>>>> FE
               </div>
             </div>
           ))}
@@ -530,22 +546,16 @@ const OrderViewDashboard = () => {
     const [localTransactionData, setLocalTransactionData] = useState({
       deposit: "",
       depositDescription: "",
-      depositMethod: "",
     });
 
     const handleInputChange = (e) => {
       const { id, value } = e.target;
       if (id === "deposit") {
-        // Remove non-digit characters and convert to number
-        const numericValue = value.replace(/[^0-9]/g, "");
-        // Format as VND
-        const formattedValue = new Intl.NumberFormat("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        }).format(numericValue);
+        // Allow only numbers
+        const numericValue = value.replace(/\D/g, "");
         setLocalTransactionData((prevData) => ({
           ...prevData,
-          [id]: formattedValue,
+          [id]: numericValue,
         }));
       } else {
         setLocalTransactionData((prevData) => ({
@@ -557,18 +567,22 @@ const OrderViewDashboard = () => {
 
     const handleSubmit = (e) => {
       e.preventDefault();
-      // Convert the formatted VND string back to a number for submission
-      const depositValue = parseFloat(
-        localTransactionData.deposit.replace(/[^0-9]/g, "")
-      );
       handleCreateTransaction({
         ...localTransactionData,
-        deposit: depositValue,
+        deposit: parseInt(localTransactionData.deposit, 10) || 0,
       });
     };
 
+    // Add this function to handle overlay clicks
+    const handleOverlayClick = (e) => {
+      // Only close if the actual overlay was clicked
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    };
+
     return (
-      <div className="status-modal-overlay" onClick={onClose}>
+      <div className="status-modal-overlay" onClick={handleOverlayClick}>
         <div
           className="status-modal-content"
           onClick={(e) => e.stopPropagation()}
@@ -582,7 +596,7 @@ const OrderViewDashboard = () => {
                 id="deposit"
                 value={localTransactionData.deposit}
                 onChange={handleInputChange}
-                placeholder="0 ₫"
+                placeholder="Enter amount"
                 required
               />
             </div>
@@ -593,41 +607,11 @@ const OrderViewDashboard = () => {
                 value={localTransactionData.depositDescription}
                 onChange={handleInputChange}
                 required
-              />
-            </div>
-            <div>
-              <label htmlFor="depositMethod">Deposit Method:</label>
-              <select
-                id="depositMethod"
-                value={localTransactionData.depositMethod}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select a method</option>
-                <option value="VNPay">VNPay</option>
-                <option value="Cash">Cash</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="depositPersonId">
-                Deposit Person ID (Customer ID):
-              </label>
-              <input
-                type="number"
-                id="depositPersonId"
-                value={order.customer.id}
-                readOnly
-              />
-            </div>
-            <div>
-              <label htmlFor="transactionNumber">
-                Transaction Number (Order ID):
-              </label>
-              <input
-                type="text"
-                id="transactionNumber"
-                value={orderId}
-                readOnly
+                style={{
+                  width: "100%",
+                  minHeight: "100px",
+                  resize: "vertical",
+                }}
               />
             </div>
             <button type="submit" className="create-status-btn">
@@ -674,30 +658,22 @@ const OrderViewDashboard = () => {
                   value={new Date(status.checkDate).toLocaleString()}
                 />
               )}
-              <div className="status-actions">
-                <button
-                  onClick={() => handleUpdateStatus(status.statusId)}
-                  className="update-btn"
-                  disabled={order.end_date}
-                  style={{
-                    opacity: order.end_date ? 0.5 : 1,
-                    cursor: order.end_date ? "not-allowed" : "pointer",
-                  }}
-                >
-                  <FontAwesomeIcon icon={faEdit} /> Update
-                </button>
-                <button
-                  onClick={() => handleDeleteStatus(status.statusId)}
-                  className="delete-btn"
-                  disabled={order.end_date}
-                  style={{
-                    opacity: order.end_date ? 0.5 : 1,
-                    cursor: order.end_date ? "not-allowed" : "pointer",
-                  }}
-                >
-                  <FontAwesomeIcon icon={faTrash} /> Delete
-                </button>
-              </div>
+              {!order.end_date && (
+                <div className="status-actions">
+                  <button
+                    onClick={() => handleUpdateStatus(status.statusId)}
+                    className="update-btn"
+                  >
+                    <FontAwesomeIcon icon={faEdit} /> Update
+                  </button>
+                  <button
+                    onClick={() => handleDeleteStatus(status.statusId)}
+                    className="delete-btn"
+                  >
+                    <FontAwesomeIcon icon={faTrash} /> Delete
+                  </button>
+                </div>
+              )}
             </div>
           ))}
           <button onClick={onClose} className="close-modal-btn">
@@ -712,14 +688,14 @@ const OrderViewDashboard = () => {
   const getRequiredRoleForStatus = (statusCount) => {
     const statusRoleMap = {
       0: "Consulting Staff", // Tu van
-      1: "Consulting Staff", // Tu van
-      2: "Consulting Staff", // Tu van
+      1: "Manager", // Quan ly
+      2: "Manager", // Quan ly
       3: "Design Staff", // Design
-      4: "Consulting Staff", // Tu van
+      4: "Manager", // Quan ly
       5: "Construction Staff", // Xay dung
-      6: "Consulting Staff", // Tu van
-      7: "Consulting Staff", // Tu van
-      8: "Consulting Staff", // Tu van
+      6: "Manager", // Quan ly
+      7: "Manager", // Quan ly
+      8: "Manager", // Quan ly
     };
     return statusRoleMap[statusCount] || "Consulting Staff";
   };
@@ -874,22 +850,20 @@ const OrderViewDashboard = () => {
               <InfoRow label="Description" value={contract.description} />
               <div className="info-row">
                 <span className="info-label">Image Data:</span>
-                <a
-                  href={contract.imageData} // Assuming imageData contains the file URL
-                  download
-                  className="download-btn"
-                >
+                <a href={contract.imageData} download className="download-btn">
                   <FontAwesomeIcon icon={faDownload} /> Download
                 </a>
               </div>
               <InfoRow label="Upload Staff" value={contract.staff.username} />
               <div className="status-actions">
-                <button
-                  onClick={() => onDelete(contract.contractId)}
-                  className="delete-btn"
-                >
-                  <FontAwesomeIcon icon={faTrash} /> Delete
-                </button>
+                {!order.end_date && (
+                  <button
+                    onClick={() => onDelete(contract.contractId)}
+                    className="delete-btn"
+                  >
+                    <FontAwesomeIcon icon={faTrash} /> Delete
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -1202,21 +1176,23 @@ const OrderViewDashboard = () => {
               <InfoRow label="Description" value={acceptance.description} />
               <div className="status-actions">
                 <a
-                  href={acceptance.imageData} // Assuming imageData contains the file URL
+                  href={acceptance.imageData}
                   download
                   className="download-btn"
                 >
                   <FontAwesomeIcon icon={faDownload} /> Download
                 </a>
-                <button
-                  onClick={() => {
-                    setCurrentAcceptance(acceptance);
-                    setShowUpdateAcceptanceModal(true);
-                  }}
-                  className="update-btn"
-                >
-                  <FontAwesomeIcon icon={faEdit} /> Update
-                </button>
+                {!order.end_date && (
+                  <button
+                    onClick={() => {
+                      setCurrentAcceptance(acceptance);
+                      setShowUpdateAcceptanceModal(true);
+                    }}
+                    className="update-btn"
+                  >
+                    <FontAwesomeIcon icon={faEdit} /> Update
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -1347,10 +1323,22 @@ const OrderViewDashboard = () => {
           showTransaction: true,
           showAcceptance: false,
         };
+      case 3: // Status 4 - Design Drawing
+        return {
+          showContract: false,
+          showTransaction: false,
+          showAcceptance: false,
+        };
       case 4: // Status 5 - Material Cost Payment
         return {
           showContract: false,
           showTransaction: true,
+          showAcceptance: false,
+        };
+      case 5: // Status 6 - Construction
+        return {
+          showContract: false,
+          showTransaction: false,
           showAcceptance: false,
         };
       case 6: // Status 7 - Acceptance Contract
@@ -1377,6 +1365,21 @@ const OrderViewDashboard = () => {
   // Add this new function to handle status completion
   const handleCompleteStatus = async (statusId) => {
     try {
+      const currentStatus = statuses[currentTimelineIndex];
+
+      // Check if staff needs to be assigned before completing the status
+      if (
+        (currentTimelineIndex === 3 &&
+          !currentStatus.staff.role.includes("Design")) ||
+        (currentTimelineIndex === 5 &&
+          !currentStatus.staff.role.includes("Construction"))
+      ) {
+        toast.error(
+          "Please assign appropriate staff before completing this status"
+        );
+        return;
+      }
+
       const response = await axios.put(
         `http://localhost:8080/status/update-complete/${statusId}`,
         {
@@ -1410,43 +1413,95 @@ const OrderViewDashboard = () => {
       setSelectedStatus(status);
     };
 
+    // Update isAtFinalStatus function
+    const isAtFinalStatus = () => {
+      return currentTimelineIndex === 7; // We're at status 8 (index 7)
+    };
+
+    // Update canEndOrder function
+    const canEndOrder = () => {
+      const currentStatus = statuses[currentTimelineIndex];
+      return (
+        isAtFinalStatus() && // We're at status 8
+        currentStatus?.complete && // Status is complete
+        !order.end_date // Order hasn't been ended yet
+      );
+    };
+
+    // Update isNextEnabled function
+    const isNextEnabled = () => {
+      const currentStatus = statuses[currentTimelineIndex];
+      return (
+        currentStatus?.complete &&
+        (currentTimelineIndex < statuses.length - 1 || // There's a next status
+          (currentTimelineIndex === statuses.length - 1 &&
+            statuses.length < 8) || // Can create new status
+          canEndOrder()) // Or we can end the order
+      );
+    };
+
+    // Update the handleNext function
     const handleNext = async () => {
       const currentStatus = statuses[currentTimelineIndex];
 
-      if (
-        currentStatus?.complete &&
-        currentTimelineIndex === statuses.length - 1
-      ) {
-        const nextStatusConfig = getNextStatusConfig(currentTimelineIndex);
-
-        // Check if next status is Design Drawing (status 4)
-        if (
-          nextStatusConfig &&
-          nextStatusConfig.description === "Design Drawing"
-        ) {
-          setShowAssignDesignStaffModal(true);
-          setPendingStatusCreation(nextStatusConfig);
+      // If we're at status 8 (index 7) and it's complete, end the order
+      if (isAtFinalStatus() && currentStatus?.complete) {
+        try {
+          const response = await axios.get(
+            `http://localhost:8080/orders/update-end-date/${orderId}`
+          );
+          if (response.data.code === 9998) {
+            setOrder(response.data.result);
+            toast.success("Order completed successfully");
+          } else {
+            toast.error("Failed to complete order");
+          }
+          return;
+        } catch (err) {
+          console.error("Error completing order:", err);
+          toast.error("An error occurred while completing the order");
           return;
         }
+      }
 
-        // Check if next status is Construction (status 6)
+      // If current status is complete, just move to next status if it exists
+      if (currentStatus?.complete) {
+        // If next status doesn't exist yet and we're not at max status
         if (
-          nextStatusConfig &&
-          nextStatusConfig.description === "Construction"
+          currentTimelineIndex === statuses.length - 1 &&
+          statuses.length < 8
         ) {
-          setShowAssignConstructionStaffModal(true);
-          setPendingStatusCreation(nextStatusConfig);
-          return;
-        }
+          const nextIndex = currentTimelineIndex + 1;
 
-        // Normal status creation logic...
-        if (nextStatusConfig) {
-          createNextStatus(nextStatusConfig);
+          // For Design Staff (Status 4)
+          if (nextIndex === 3) {
+            setShowAssignDesignStaffModal(true);
+            setPendingStatusCreation({
+              description: "Design Drawing",
+              role: "Design Staff",
+            });
+            return;
+          }
+
+          // For Construction Staff (Status 6)
+          if (nextIndex === 5) {
+            setShowAssignConstructionStaffModal(true);
+            setPendingStatusCreation({
+              description: "Construction",
+              role: "Construction Staff",
+            });
+            return;
+          }
+
+          // For other statuses, proceed with normal creation
+          const nextStatusConfig = getNextStatusConfig(currentTimelineIndex);
+          if (nextStatusConfig) {
+            await createNextStatus(nextStatusConfig);
+          }
+        } else {
+          // Just move to next existing status
+          setCurrentTimelineIndex((prev) => prev + 1);
         }
-      } else {
-        setCurrentTimelineIndex((prev) =>
-          prev < statuses.length - 1 ? prev + 1 : prev
-        );
       }
     };
 
@@ -1456,21 +1511,25 @@ const OrderViewDashboard = () => {
 
     const visibleButtons = getVisibleButtons(currentTimelineIndex);
 
-    // Updated isNextEnabled function
-    const isNextEnabled = () => {
-      const currentStatus = statuses[currentTimelineIndex];
-      // Disable next button if we're at status 9 (index 8)
-      if (currentTimelineIndex === 8) {
-        return false;
-      }
-      // Enable next button if current status is complete
-      return currentStatus?.complete;
-    };
-
     // Add this function to check if current status is complete
     const isCurrentStatusComplete = () => {
       const currentStatus = statuses[currentTimelineIndex];
       return currentStatus?.complete;
+    };
+
+    // Add this function near the top of your component, with other utility functions
+    const getStatusDisplayName = (index) => {
+      const statusNames = [
+        "Initial Consultation", // Status 1
+        "Construction Contract", // Status 2
+        "Design Fee Payment", // Status 3
+        "Design Drawing", // Status 4
+        "Material Cost Payment", // Status 5
+        "Construction Phase", // Status 6
+        "Acceptance Contract", // Status 7
+        "Final Payment", // Status 8
+      ];
+      return statusNames[index] || `Status ${index + 1}`;
     };
 
     return (
@@ -1488,7 +1547,9 @@ const OrderViewDashboard = () => {
               } ${status.complete ? "complete" : ""}`}
               onClick={() => handleNodeClick(status)}
             >
-              <span className="timeline-label">{`Status ${index + 1}`}</span>
+              <span className="timeline-label">
+                {getStatusDisplayName(index)}
+              </span>
             </div>
           ))}
         </div>
@@ -1531,12 +1592,11 @@ const OrderViewDashboard = () => {
                   className="timeline-btn"
                   onClick={() => setShowCreateTransactionModal(true)}
                   disabled={isCurrentStatusComplete()}
-                  style={{
-                    opacity: isCurrentStatusComplete() ? 0.5 : 1,
-                    cursor: isCurrentStatusComplete()
-                      ? "not-allowed"
-                      : "pointer",
-                  }}
+                  style={
+                    order.end_date
+                      ? { opacity: 0.5, cursor: "not-allowed" }
+                      : {}
+                  }
                 >
                   Create Transaction
                 </button>
@@ -1579,9 +1639,10 @@ const OrderViewDashboard = () => {
             style={{
               opacity: isNextEnabled() ? 1 : 0.5,
               cursor: isNextEnabled() ? "pointer" : "not-allowed",
+              backgroundColor: canEndOrder() ? "#ff4444" : undefined,
             }}
           >
-            Next
+            {canEndOrder() ? "End Order" : "Next"}
           </button>
         </div>
         {selectedStatus && (
@@ -1679,30 +1740,20 @@ const OrderViewDashboard = () => {
   // Add helper function for creating next status
   const createNextStatus = async (statusConfig) => {
     try {
-      // Skip creation of initial status since it's already created
-      if (statuses.length === 0) {
-        // console.log("Initial status should already exist");
-        return;
-      }
+      const response = await axios.post("http://localhost:8080/status/create", {
+        orderId: orderId,
+        statusDescription: statusConfig.description,
+        staffId:
+          statusConfig.role === currentStaffRole
+            ? currentStaffId
+            : findStaffByRole(staffList, statusConfig.role)?.staffId,
+      });
 
-      const createStatusResponse = await axios.post(
-        "http://localhost:8080/status/create",
-        {
-          orderId: orderId,
-          statusDescription: statusConfig.description,
-          staffId:
-            statusConfig.staffId ||
-            (statusConfig.role === currentStaffRole
-              ? currentStaffId
-              : findStaffByRole(staffList, statusConfig.role)?.staffId),
-        }
-      );
-
-      if (createStatusResponse.data.code === 1000) {
-        const newStatuses = [...statuses, createStatusResponse.data.result];
+      if (response.data.code === 1000) {
+        const newStatuses = [...statuses, response.data.result];
         setStatuses(newStatuses);
         setCurrentTimelineIndex(currentTimelineIndex + 1);
-        toast.success(`${statusConfig.description} created automatically`);
+        toast.success(`${statusConfig.description} created successfully`);
       } else {
         toast.error(`Failed to create ${statusConfig.description}`);
       }
@@ -2004,6 +2055,12 @@ const OrderViewDashboard = () => {
                 <button
                   onClick={() => setShowCreateTransactionModal(true)}
                   className="create-status-btn"
+                  disabled={order.end_date}
+                  style={
+                    order.end_date
+                      ? { opacity: 0.5, cursor: "not-allowed" }
+                      : {}
+                  }
                 >
                   Create Transaction
                 </button>
@@ -2044,6 +2101,7 @@ const OrderViewDashboard = () => {
             <InfoRow label="STYLE" value={formData.style} />
             <InfoRow label="STAGE" value={formData.stage} />
             <InfoRow label="CONTACT METHOD" value={formData.contactMethod} />
+            <InfoRow label="ZALO" value={formData.phone} />
           </div>
         )}
       </div>
