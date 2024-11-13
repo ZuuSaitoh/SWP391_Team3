@@ -262,35 +262,38 @@ const Payment = () => {
               onChange={(e) => setAddress(e.target.value)}
               placeholder="Address"
             />
-            <h3>Payment Method</h3>
-            <div className="payment-methods">
-              <label className="payment-method">
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="COD"
-                  checked={paymentMethod === "COD"}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                />
-                <span className="payment-method-icon">🚚</span>
-                Cash
-              </label>
-              <label
-                className={`payment-method ${
-                  discountedPrice === 0 ? "disabled" : ""
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="VNPay"
-                  checked={paymentMethod === "VNPay"}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                  disabled={discountedPrice === 0}
-                />
-                <span className="payment-method-icon">💳</span>
-                VNPay
-              </label>
+
+            <div className="payment-method-section">
+              <h3>Payment Method</h3>
+              <div className="payment-methods">
+                <label className="payment-method">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="COD"
+                    checked={paymentMethod === "COD"}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                  />
+                  <span className="payment-method-icon">🚚</span>
+                  Cash
+                </label>
+                <label
+                  className={`payment-method ${
+                    discountedPrice === 0 ? "disabled" : ""
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="VNPay"
+                    checked={paymentMethod === "VNPay"}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    disabled={discountedPrice === 0}
+                  />
+                  <span className="payment-method-icon">💳</span>
+                  VNPay
+                </label>
+              </div>
             </div>
           </div>
           <div className="payment-order-summary">

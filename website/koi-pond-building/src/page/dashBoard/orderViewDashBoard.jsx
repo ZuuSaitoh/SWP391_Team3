@@ -176,6 +176,10 @@ const OrderViewDashboard = () => {
   };
 
   const toggleCreateStatusModal = () => {
+    if (order.end_date) {
+      toast.warning("Cannot create new status - order has ended");
+      return;
+    }
     if (statuses.length >= 9) {
       toast.warning("Maximum number of statuses (9) reached");
       return;
@@ -674,12 +678,22 @@ const OrderViewDashboard = () => {
                 <button
                   onClick={() => handleUpdateStatus(status.statusId)}
                   className="update-btn"
+                  disabled={order.end_date}
+                  style={{
+                    opacity: order.end_date ? 0.5 : 1,
+                    cursor: order.end_date ? "not-allowed" : "pointer",
+                  }}
                 >
                   <FontAwesomeIcon icon={faEdit} /> Update
                 </button>
                 <button
                   onClick={() => handleDeleteStatus(status.statusId)}
                   className="delete-btn"
+                  disabled={order.end_date}
+                  style={{
+                    opacity: order.end_date ? 0.5 : 1,
+                    cursor: order.end_date ? "not-allowed" : "pointer",
+                  }}
                 >
                   <FontAwesomeIcon icon={faTrash} /> Delete
                 </button>
@@ -1953,9 +1967,9 @@ const OrderViewDashboard = () => {
                 <button
                   onClick={toggleCreateStatusModal}
                   className="create-status-btn"
-                  disabled={statuses.length >= 9}
+                  disabled={order.end_date}
                   style={
-                    statuses.length >= 9
+                    order.end_date
                       ? { opacity: 0.5, cursor: "not-allowed" }
                       : {}
                   }

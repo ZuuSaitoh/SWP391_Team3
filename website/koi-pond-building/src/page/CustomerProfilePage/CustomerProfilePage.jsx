@@ -396,22 +396,29 @@ function CustomerProfilePage() {
                             </span>
                           </div>
                           <div className="payment-info">
-                            {bookingTransactions[booking.bookingServiceId] ? (
+                            {bookingTransactions[booking.bookingServiceId] ||
+                            booking.price === 0 ? (
                               <span className="payment-status paid">
                                 <i className="fas fa-check-circle"></i>
                                 <span className="payment-text">
-                                  Paid •{" "}
-                                  {
-                                    bookingTransactions[
-                                      booking.bookingServiceId
-                                    ].depositMethod
-                                  }{" "}
-                                  •{" "}
-                                  {new Date(
-                                    bookingTransactions[
-                                      booking.bookingServiceId
-                                    ].depositDate
-                                  ).toLocaleDateString()}
+                                  {booking.price === 0 ? (
+                                    "Free Service"
+                                  ) : (
+                                    <>
+                                      Paid •{" "}
+                                      {
+                                        bookingTransactions[
+                                          booking.bookingServiceId
+                                        ].depositMethod
+                                      }{" "}
+                                      •{" "}
+                                      {new Date(
+                                        bookingTransactions[
+                                          booking.bookingServiceId
+                                        ].depositDate
+                                      ).toLocaleDateString()}
+                                    </>
+                                  )}
                                 </span>
                               </span>
                             ) : (
