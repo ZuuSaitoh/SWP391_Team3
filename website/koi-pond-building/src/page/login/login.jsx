@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { getAuth, signInWithPopup } from "firebase/auth";
-import { googleProvider } from "../../config/firebase.js";
 import { useNavigate, useLocation } from "react-router-dom";
 import AnimatedPage from "../animationpage/AnimatedPage.jsx";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./login.css";
-import googleLogo from "../koi_photo/logo-icon/google-logo.png";
 import api from "../../config/axios.jsx";
 import { jwtDecode } from "jwt-decode";
 
@@ -17,7 +14,6 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const auth = getAuth();
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -40,26 +36,6 @@ function Login() {
 
   const forgotClick = () => {
     navigate("/forgotpassword");
-  };
-
-  const handleLoginGoogle = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-      console.log("Google login successful", user);
-      toast.success("Logged in successfully with Google");
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Google login error", error);
-      if (
-        error.code === "auth/cancelled-popup-request" ||
-        error.code === "auth/popup-closed-by-user"
-      ) {
-        console.log("Popup closed by user");
-      } else {
-        toast.error("Failed to login with Google: " + error.message);
-      }
-    }
   };
 
   const validateForm = () => {
@@ -213,11 +189,6 @@ function Login() {
               </div>
             </form>
 
-            <div className="login-submit-container">
-              <div className="login-google-submit" onClick={handleLoginGoogle}>
-                <img src={googleLogo} alt="Google logo" />
-              </div>
-            </div>
             <div className="login-already-have-account">
               Don't have an Account?{" "}
               <span
