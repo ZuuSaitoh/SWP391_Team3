@@ -252,7 +252,7 @@ function HomePage() {
         area: formData.area,
         stage: formData.stage,
         contactMethod: formData.contactMethods, // Now sending array of contact methods
-        phoneNumber: formData.phoneNumber, // Include phone number if provided
+        phone: formData.phoneNumber !== "" ? formData.phoneNumber : null, // Include phone number if provided
       };
 
       const response = await axios.post(
