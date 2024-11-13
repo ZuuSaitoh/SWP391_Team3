@@ -6,6 +6,9 @@ import slider1 from "../koi_photo/slider/slider 1- design.jpg";
 import slider2 from "../koi_photo/slider/slider 2 - design.jpg";
 import slider3 from "../koi_photo/slider/slider 3 - design.jpg";
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 function ServiceDesign() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -13,6 +16,16 @@ function ServiceDesign() {
   const slides = [slider1, slider2, slider3];
   const [designs, setDesigns] = useState([]);
   const location = useLocation();
+  const [showPopup, setShowPopup] = useState(false);
+  const [formData, setFormData] = useState({
+    location: "",
+    area: "",
+    style: "",
+    stage: "",
+    contactMethods: [],
+    phoneNumber: "",
+  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Add this new useEffect to fetch designs
   useEffect(() => {
@@ -94,6 +107,92 @@ function ServiceDesign() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
+  // Add this new useEffect to check login status
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  // Add these new handler functions before the return statement
+  const handleGetRequest = () => {
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+    setFormData({
+      location: "",
+      area: "",
+      style: "",
+      stage: "",
+      contactMethods: [],
+      phoneNumber: "",
+    });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleContactMethodChange = (e) => {
+    const { name, checked } = e.target;
+    if (checked) {
+      setFormData((prevData) => ({
+        ...prevData,
+        contactMethods: name,
+        phoneNumber: name !== "zalo" ? "" : prevData.phoneNumber,
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        contactMethods: [],
+        phoneNumber: "",
+      }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const customerId = user ? user.id : null;
+
+      if (!customerId) {
+        toast.error("User not found. Please log in again.");
+        return;
+      }
+
+      const requestData = {
+        customerId: customerId,
+        location: formData.location,
+        style: formData.style,
+        area: formData.area,
+        stage: formData.stage,
+        contactMethod: formData.contactMethods,
+        phoneNumber: formData.phoneNumber,
+      };
+
+      const response = await axios.post(
+        "http://localhost:8080/forms/create",
+        requestData
+      );
+
+      if (response.data.code === 1000 || response.data.code === 1005) {
+        toast.success("Request submitted successfully!");
+        handleClosePopup();
+      } else {
+        throw new Error("Unexpected response status");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Failed to submit request. Please try again.");
+    }
+  };
+
   return (
     <div className="service-design-page">
       <Header isTransparent={true} />
@@ -110,6 +209,11 @@ function ServiceDesign() {
         <div className="service-hero-content">
           <h1>Koi Pond Design and Construction</h1>
           <p>Expert design and construction for serene water gardens</p>
+          {isLoggedIn && (
+            <button className="cta-button" onClick={handleGetRequest}>
+              Send Request Now
+            </button>
+          )}
         </div>
         <div className="slider-controls">
           <button onClick={prevSlide} className="slider-control prev">
@@ -355,6 +459,111 @@ function ServiceDesign() {
         </div>
       )}
       <Footer />
+      {/* Add the popup form before the Footer component */}
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <h2>Request a Koi Pond Design</h2>
+            <form onSubmit={handleSubmit}>
+              <input
+                type="text"
+                name="location"
+                value={formData.location}
+                onChange={handleInputChange}
+                placeholder="Project location"
+                required
+              />
+              <select
+                name="area"
+                value={formData.area}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select estimated construction area</option>
+                <option value="50m2 - 100m2">50m2 - 100m2</option>
+                <option value="100m2 - 200m2">100m2 - 200m2</option>
+                <option value="200m2 - 300m2">200m2 - 300m2</option>
+                <option value="300m2 - 500m2">300m2 - 500m2</option>
+                <option value="500m2 - 1000m2">500m2 - 1000m2</option>
+                <option value="Custom">Custom</option>
+              </select>
+              <select
+                name="style"
+                value={formData.style}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select preferred style</option>
+                <option value="Japanese">Japanese</option>
+                <option value="Modern">Modern</option>
+                <option value="Minimalist">Minimalist</option>
+                <option value="Custom">Custom</option>
+              </select>
+              <select
+                name="stage"
+                value={formData.stage}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select design stage</option>
+                <option value="stage1">Stage 1: Current situation survey</option>
+                <option value="stage2">Stage 2: Overall site planning</option>
+                <option value="stage3">Stage 3: Overall 3D rendering</option>
+                <option value="stage4">
+                  Stage 4: Construction design documentation
+                </option>
+              </select>
+              <div className="contact-methods">
+                <h4>Contact Methods (Select one)</h4>
+                <div className="checkbox-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="zalo"
+                      checked={formData.contactMethods?.includes("zalo")}
+                      onChange={handleContactMethodChange}
+                    />
+                    Zalo
+                  </label>
+                  {formData.contactMethods?.includes("zalo") && (
+                    <input
+                      type="tel"
+                      name="phoneNumber"
+                      value={formData.phoneNumber || ""}
+                      onChange={handleInputChange}
+                      placeholder="Enter your phone number for Zalo"
+                      required
+                    />
+                  )}
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="phone"
+                      checked={formData.contactMethods?.includes("phone")}
+                      onChange={handleContactMethodChange}
+                    />
+                    Phone
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="mail"
+                      checked={formData.contactMethods?.includes("mail")}
+                      onChange={handleContactMethodChange}
+                    />
+                    Mail
+                  </label>
+                </div>
+              </div>
+              <button type="submit">Submit Request</button>
+            </form>
+            <button className="close-popup" onClick={handleClosePopup}>
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+      <ToastContainer />
     </div>
   );
 }
